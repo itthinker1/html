@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="大理洱海东线·海东秘境攻略 — 小普陀、文笔村、理想邦、天镜阁，沉浸式环海东路之旅">
+<title>大理洱海东线 · 海东秘境攻略</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Noto Sans SC',system-ui,-apple-system,sans-serif;
+  background:#0B1D3A;
+  color:#e8e4dd;
+  line-height:1.7;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ========== CUSTOM PROPERTIES ========== */
+:root{
+  --blue-deep:#0B1D3A;
+  --blue-mid:#1A3A5C;
+  --blue-teal:#2D6A7A;
+  --gold:#D4A15A;
+  --gold-light:#F0C87A;
+  --gold-lighter:#FDDFA8;
+  --sunset:#C97B5A;
+  --rose:#B85C6A;
+  --glass-bg:rgba(255,255,255,0.06);
+  --glass-border:rgba(255,255,255,0.08);
+  --card-radius:20px;
+  --nav-height:56px;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--blue-deep)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+
+/* ========== NAVIGATION ========== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:var(--nav-height);
+  background:linear-gradient(135deg,rgba(11,29,58,0.96),rgba(26,58,92,0.94));
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  transition:box-shadow 0.3s;
+}
+.nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,0.4)}
+.nav-brand{
+  font-family:'Noto Serif SC',serif;font-weight:700;font-size:17px;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;white-space:nowrap;
+}
+.nav-brand span{font-size:12px;opacity:0.6;margin-left:4px;-webkit-text-fill-color:rgba(232,228,221,0.5);}
+.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{
+  text-decoration:none;font-size:12px;font-weight:500;
+  color:rgba(232,228,221,0.65);padding:8px 10px;border-radius:8px;
+  white-space:nowrap;transition:all 0.25s;letter-spacing:0.3px;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-light);background:rgba(255,255,255,0.06)}
+.nav-links a .num{display:inline-block;margin-right:3px;font-size:10px;opacity:0.5}
+
+/* ========== HERO ========== */
+.hero{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:calc(var(--nav-height) + 40px) 20px 60px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 140% 60% at 50% 100%,#1A3A5C 0%,transparent 70%),
+    radial-gradient(ellipse 100% 50% at 30% 40%,#2D6A7A 0%,transparent 60%),
+    radial-gradient(ellipse 80% 40% at 70% 30%,#C97B5A 0%,transparent 50%),
+    linear-gradient(180deg,var(--blue-deep) 0%,#142B4A 40%,#1E3F58 60%,#2D5A6A 75%,#8B6B4A 90%,#C97B5A 100%);
+  z-index:0;
+}
+.hero-bg::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='glow'%3E%3CfeGaussianBlur stdDeviation='60'/%3E%3C/filter%3E%3Ccircle cx='200' cy='300' r='200' fill='%23D4A15A' opacity='0.04' filter='url(%23glow)'/%3E%3Ccircle cx='900' cy='200' r='180' fill='%23F0C87A' opacity='0.03' filter='url(%23glow)'/%3E%3C/svg%3E") center/cover no-repeat;
+  z-index:0;
+}
+.hero-bg-stars{
+  position:absolute;inset:0;z-index:1;overflow:hidden;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,0.6),transparent),
+    radial-gradient(1px 1px at 20% 40%,rgba(255,255,255,0.4),transparent),
+    radial-gradient(1.5px 1.5px at 30% 10%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 45% 25%,rgba(255,255,255,0.3),transparent),
+    radial-gradient(1px 1px at 55% 60%,rgba(255,255,255,0.4),transparent),
+    radial-gradient(1.5px 1.5px at 65% 15%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 75% 45%,rgba(255,255,255,0.3),transparent),
+    radial-gradient(1px 1px at 85% 70%,rgba(255,255,255,0.4),transparent),
+    radial-gradient(1px 1px at 15% 80%,rgba(255,255,255,0.3),transparent),
+    radial-gradient(1px 1px at 40% 90%,rgba(255,255,255,0.2),transparent),
+    radial-gradient(1px 1px at 92% 30%,rgba(255,255,255,0.3),transparent),
+    radial-gradient(1px 1px at 5% 55%,rgba(255,255,255,0.25),transparent),
+    radial-gradient(1px 1px at 60% 85%,rgba(255,255,255,0.2),transparent),
+    radial-gradient(1px 1px at 35% 70%,rgba(255,255,255,0.3),transparent),
+    radial-gradient(1px 1px at 78% 10%,rgba(255,255,255,0.35),transparent),
+    radial-gradient(1px 1px at 50% 50%,rgba(255,255,255,0.15),transparent);
+  background-size:200px 200px;opacity:0.7;
+}
+.hero-content{position:relative;z-index:2;max-width:520px}
+.hero-badge{
+  display:inline-block;padding:4px 16px;border-radius:20px;
+  font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  background:rgba(212,161,90,0.12);color:var(--gold-light);
+  border:1px solid rgba(212,161,90,0.2);margin-bottom:20px;
+}
+.hero h1{
+  font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(36px,8vw,56px);
+  line-height:1.15;margin-bottom:8px;
+  background:linear-gradient(135deg,#FDDFA8 0%,#F0C87A 30%,#D4A15A 60%,#C97B5A 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-family:'Noto Serif SC',serif;font-size:clamp(16px,3vw,22px);
+  font-weight:400;color:rgba(232,228,221,0.7);margin-bottom:12px;letter-spacing:4px;
+}
+.hero-desc{
+  font-size:14px;color:rgba(232,228,221,0.55);line-height:1.8;
+  max-width:400px;margin:0 auto 32px;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:30px;text-decoration:none;
+  font-size:14px;font-weight:500;color:var(--blue-deep);
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  transition:transform 0.3s,box-shadow 0.3s;
+  box-shadow:0 4px 20px rgba(212,161,90,0.25);
+}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,161,90,0.35)}
+.hero-cta .arrow{transition:transform 0.3s;display:inline-block}
+.hero-cta:hover .arrow{transform:translateX(4px)}
+
+.hero-scroll{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(232,228,221,0.35);
+  font-size:10px;letter-spacing:1px;animation:scrollPulse 2.5s ease-in-out infinite;
+}
+.scroll-line{width:1px;height:24px;background:linear-gradient(to bottom,var(--gold),transparent)}
+
+@keyframes scrollPulse{
+  0%,100%{opacity:0.35;transform:translateX(-50%) translateY(0)}
+  50%{opacity:0.8;transform:translateX(-50%) translateY(-4px)}
+}
+
+/* ========== SECTION HEADER ========== */
+.section{padding:60px 20px;max-width:720px;margin:0 auto;position:relative}
+.section-header{
+  text-align:center;margin-bottom:40px;
+}
+.section-header .label{
+  display:inline-block;font-size:10px;font-weight:500;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+  background:rgba(212,161,90,0.1);padding:2px 12px;border-radius:4px;
+}
+.section-header h2{
+  font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(24px,5vw,32px);
+  color:var(--gold-lighter);line-height:1.3;
+}
+.section-header p{
+  font-size:14px;color:rgba(232,228,221,0.5);margin-top:8px;
+}
+
+/* ========== ROUTE INTRO ========== */
+.route-intro{
+  background:linear-gradient(135deg,rgba(212,161,90,0.08),rgba(45,106,122,0.08));
+  border-radius:var(--card-radius);padding:28px 24px;margin-bottom:40px;
+  border:1px solid rgba(255,255,255,0.05);
+  position:relative;overflow:hidden;
+}
+.route-intro::before{
+  content:'';position:absolute;top:0;right:0;width:120px;height:120px;
+  background:radial-gradient(circle,var(--gold),transparent 70%);opacity:0.06;
+}
+.route-intro h3{
+  font-family:'Noto Serif SC',serif;font-weight:600;font-size:16px;
+  color:var(--gold-light);margin-bottom:10px;
+}
+.route-intro p{
+  font-size:13px;color:rgba(232,228,221,0.65);line-height:1.9;
+}
+.route-points{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;
+}
+.route-point{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;
+  background:rgba(255,255,255,0.04);color:var(--gold-light);
+  border:1px solid rgba(212,161,90,0.15);
+}
+.route-point .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+/* ========== CARD ========== */
+.card{
+  background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--card-radius);overflow:hidden;
+  margin-bottom:28px;transition:transform 0.3s,box-shadow 0.3s;
+  position:relative;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.card-number{
+  position:absolute;top:16px;left:20px;z-index:2;
+  font-family:'Noto Serif SC',serif;font-size:48px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold),rgba(212,161,90,0.15));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1;opacity:0.25;
+  pointer-events:none;
+}
+.card-header{
+  position:relative;padding:28px 24px 0;display:flex;align-items:flex-start;gap:12px;
+}
+.card-header-icon{
+  flex-shrink:0;width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  background:linear-gradient(135deg,rgba(212,161,90,0.15),rgba(45,106,122,0.15));
+  border:1px solid rgba(255,255,255,0.06);
+}
+.card-header-text{flex:1}
+.card-header-text h3{
+  font-family:'Noto Serif SC',serif;font-weight:700;font-size:20px;
+  color:var(--gold-lighter);margin-bottom:2px;
+}
+.card-header-text .subtitle{
+  font-size:12px;color:rgba(232,228,221,0.45);letter-spacing:0.5px;
+}
+.card-meta{
+  display:flex;flex-wrap:wrap;gap:8px;padding:10px 24px 0;
+}
+.card-meta span{
+  font-size:11px;color:rgba(232,228,221,0.5);
+  background:rgba(255,255,255,0.04);padding:3px 10px;border-radius:6px;
+  border:1px solid rgba(255,255,255,0.04);
+  display:flex;align-items:center;gap:4px;
+}
+.card-meta span::before{font-size:10px;opacity:0.6}
+.card-meta .tag-ticket::before{content:'🎫';}
+.card-meta .tag-time::before{content:'⏱';}
+.card-meta .tag-location::before{content:'📍';}
+.card-body{padding:16px 24px 24px}
+.card-body p{
+  font-size:13px;color:rgba(232,228,221,0.7);line-height:1.9;
+  margin-bottom:10px;
+}
+.card-body .highlight-list{
+  list-style:none;padding:0;margin:8px 0 0;
+}
+.card-body .highlight-list li{
+  font-size:13px;color:rgba(232,228,221,0.7);
+  padding:4px 0 4px 18px;position:relative;line-height:1.8;
+}
+.card-body .highlight-list li::before{
+  content:'✦';position:absolute;left:0;color:var(--gold);
+  font-size:10px;top:5px;
+}
+.card-body .highlight-list li strong{
+  color:var(--gold-light);font-weight:600;
+}
+
+/* ========== PHOTO TIP (HIGHLIGHTED) ========== */
+.photo-tip{
+  margin:16px -4px 0;padding:18px 20px;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(212,161,90,0.12),rgba(201,123,90,0.08));
+  border:1px solid rgba(212,161,90,0.15);
+  position:relative;overflow:hidden;
+}
+.photo-tip::before{
+  content:'📷';position:absolute;top:-6px;right:12px;font-size:40px;opacity:0.08;
+}
+.photo-tip-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.photo-tip-header .icon{font-size:18px;}
+.photo-tip-header .label{
+  font-size:13px;font-weight:600;color:var(--gold-light);
+  letter-spacing:0.5px;
+}
+.photo-tip ul{
+  list-style:none;padding:0;margin:0;
+}
+.photo-tip ul li{
+  font-size:12px;color:rgba(232,228,221,0.7);padding:3px 0 3px 16px;
+  position:relative;line-height:1.7;
+}
+.photo-tip ul li::before{
+  content:'▸';position:absolute;left:0;color:var(--gold);font-size:12px;
+}
+
+/* ========== TIPS SECTION ========== */
+.tips-card{
+  background:linear-gradient(135deg,rgba(45,106,122,0.08),rgba(11,29,58,0.08));
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:var(--card-radius);padding:28px 24px;margin-bottom:20px;
+}
+.tips-card h3{
+  font-family:'Noto Serif SC',serif;font-weight:600;font-size:17px;
+  color:var(--gold-light);margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.tips-card h3 .emoji{font-size:20px}
+.tips-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.tip-item{
+  padding:14px 16px;border-radius:12px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.04);
+}
+.tip-item .tip-title{
+  font-size:13px;font-weight:500;color:var(--gold-light);margin-bottom:4px;
+}
+.tip-item .tip-desc{
+  font-size:12px;color:rgba(232,228,221,0.55);line-height:1.7;
+}
+.tip-item .tip-desc strong{color:rgba(232,228,221,0.8)}
+
+/* ========== DIVIDER ========== */
+.divider{
+  text-align:center;padding:20px 0;position:relative;
+}
+.divider::before{
+  content:'';position:absolute;top:50%;left:20%;right:20%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(212,161,90,0.2),transparent);
+}
+.divider span{
+  position:relative;z-index:1;background:var(--blue-deep);
+  padding:0 16px;font-size:18px;color:var(--gold);opacity:0.5;
+}
+
+/* ========== FOOTER ========== */
+.footer{
+  text-align:center;padding:40px 20px 32px;
+  border-top:1px solid rgba(255,255,255,0.04);
+  position:relative;
+}
+.footer-mountain{
+  font-size:32px;opacity:0.15;margin-bottom:8px;letter-spacing:6px;
+}
+.footer p{
+  font-size:12px;color:rgba(232,228,221,0.3);
+}
+.footer p a{color:var(--gold);text-decoration:none;opacity:0.5}
+
+/* ========== RESPONSIVE ========== */
+@media(min-width:640px){
+  .section{padding:80px 32px;max-width:800px}
+  .card-header{padding:32px 32px 0}
+  .card-body{padding:16px 32px 28px}
+  .card-meta{padding:12px 32px 0;gap:10px}
+  .card-meta span{font-size:12px;padding:4px 12px}
+  .card-number{font-size:64px;top:20px;left:28px}
+  .photo-tip{padding:20px 24px}
+  .tips-card{padding:32px;margin-bottom:24px}
+  .tips-grid{grid-template-columns:1fr 1fr}
+  .route-intro{padding:32px}
+  .nav{padding:0 32px}
+  .nav-links a{padding:8px 14px;font-size:13px}
+  .nav-brand{font-size:18px}
+}
+@media(min-width:1024px){
+  .section{max-width:900px;padding:100px 40px}
+  .card{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr;
+    grid-template-rows:auto 1fr;
+  }
+  .card-number{grid-column:1/-1}
+  .card-header{grid-column:1;padding:36px 0 0 36px}
+  .card-meta{grid-column:1;padding:12px 0 0 36px}
+  .card-body{grid-column:1;padding:16px 36px 36px;display:flex;flex-direction:column;justify-content:space-between}
+  .card-visual{grid-column:2;grid-row:1/4;padding:20px 20px 20px 0;display:flex;align-items:center}
+  .card-visual-inner{width:100%;height:100%;min-height:200px;border-radius:16px;background:linear-gradient(135deg,var(--blue-teal),var(--blue-mid));border:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+  .card-visual-inner .vis-icon{font-size:48px;margin-bottom:10px;opacity:0.8}
+  .card-visual-inner .vis-label{font-size:12px;color:rgba(232,228,221,0.3);letter-spacing:1px}
+}
+
+/* ========== SCROLL ANIMATIONS ========== */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ========== REDUCED MOTION ========== */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fade-up{opacity:1;transform:none;transition:none}
+  .hero-scroll{animation:none}
+  .card:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">洱海东线<span>· 秘境</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#xiao-putuo" data-target="xiao-putuo"><span class="num">①</span>小普陀</a>
+    <a href="#wenbi-cun" data-target="wenbi-cun"><span class="num">②</span>文笔村</a>
+    <a href="#lixiang-bang" data-target="lixiang-bang"><span class="num">③</span>理想邦</a>
+    <a href="#tianjing-ge" data-target="tianjing-ge"><span class="num">④</span>天镜阁</a>
+    <a href="#tips"><span class="num">✦</span>游玩建议</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-stars"></div>
+  <div class="hero-content">
+    <div class="hero-badge">苍山为幕 · 洱海为镜</div>
+    <h1>海东秘境</h1>
+    <div class="hero-sub">环海东路 · 沉浸式旅行指南</div>
+    <p class="hero-desc">
+      从清晨的苍山蓝到黄昏的日落金，<br>
+      沿环海东路一路向南，邂逅洱海最动人的四幕风景。
+    </p>
+    <a href="#xiao-putuo" class="hero-cta">
+      开始探索 <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="hero-scroll">
+    <span>向下漫游</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main>
+
+<!-- ===== ROUTE INTRO ===== -->
+<div class="section" style="padding-top:40px;padding-bottom:0">
+  <div class="route-intro fade-up">
+    <h3>🌊 环海东路 · 海东秘境线路</h3>
+    <p>
+      海东线是环洱海最具「秘境感」的一段——沿苍山洱海渐变色而行，
+      从挖色向南至罗荃半岛，依次串联小普陀的袖珍禅意、文笔村的彩虹公路、
+      理想邦的圣托里尼白与天镜阁的苍茫古意。全程约25公里，建议自驾或包车，
+      半日即可沉浸式感受大理东岸的静谧与壮美。
+    </p>
+    <div class="route-points">
+      <span class="route-point"><span class="dot"></span>小普陀</span>
+      <span class="route-point"><span class="dot"></span>文笔村</span>
+      <span class="route-point"><span class="dot"></span>理想邦</span>
+      <span class="route-point"><span class="dot"></span>天镜阁</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ① 小普陀 ===== -->
+<section class="section" id="xiao-putuo">
+  <div class="section-header fade-up">
+    <div class="label">第一站</div>
+    <h2>小普陀</h2>
+    <p>洱海中的袖珍蓬莱 · 镇海印幻化之岛</p>
+  </div>
+
+  <div class="card fade-up">
+    <div class="card-number">01</div>
+    <div class="card-header">
+      <div class="card-header-icon">🏝️</div>
+      <div class="card-header-text">
+        <h3>小普陀</h3>
+        <div class="subtitle">挖色镇以南 · 环海东路边</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag-ticket">免费（岸边观赏）</span>
+      <span class="tag-time">建议20-30分钟</span>
+      <span class="tag-location">海东线起点</span>
+    </div>
+    <div class="card-body">
+      <p>
+        洱海中的袖珍石灰岩小岛，周长仅200米，形如印章，宛若天然盆景。
+        相传观音途经洱海，投下「镇海印」幻化成岛，镇压湖中蛟龙，白族渔民称之「海印岛」。
+        岛上两层歇山式楼阁始建于明代，供奉如来佛祖与女相观音，是白族渔民的精神寄托。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>「岚霭普陀」</strong> — 洱海八景之一，晨雾中的小岛如蓬莱仙境</li>
+        <li><strong>电影取景地</strong> — 《奇情侠侣》经典镜头取景于此</li>
+        <li><strong>因形得名</strong> — 因岛形与浙江普陀山相似且供奉观音，故得名「小普陀」</li>
+      </ul>
+
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📷</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>最佳机位在岸边，不用登岛，以苍山洱海为背景</li>
+          <li>黄昏时分，夕阳下的洱海和小普陀岛金光粼粼</li>
+          <li>冬季海鸥聚集时，画面更加灵动动人</li>
+          <li>路边有停车位 ¥10/次，自驾即停即拍</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ② 文笔村 ===== -->
+<section class="section" id="wenbi-cun">
+  <div class="section-header fade-up">
+    <div class="label">第二站</div>
+    <h2>文笔村</h2>
+    <p>彩虹公路直达洱海 · 白族文艺村落</p>
+  </div>
+
+  <div class="card fade-up">
+    <div class="card-number">02</div>
+    <div class="card-header">
+      <div class="card-header-icon">🌈</div>
+      <div class="card-header-text">
+        <h3>文笔村</h3>
+        <div class="subtitle">海东镇 · 环海东路边</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag-ticket">免费（24小时开放）</span>
+      <span class="tag-time">建议1小时</span>
+      <span class="tag-location">海东镇以南</span>
+    </div>
+    <div class="card-body">
+      <p>
+        以自然风光和传统白族文化著称的村落，村口牌楼匾额题「文经笔纬」。
+        火爆全网的<strong>彩虹公路</strong>从高处蜿蜒而下直通洱海，是文笔村最出片的打卡点。
+        白族民居保存完好，白墙灰瓦，雕梁画栋，处处透着大理的慢生活气息。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>彩虹公路</strong> — 从高处往下拍，彩虹路面蜿蜒通向洱海，超出片</li>
+        <li><strong>海之礼堂</strong> — 网红婚纱拍摄基地，近20个拍照场景</li>
+        <li><strong>文笔塔</strong> — 登塔俯瞰村庄和田园风光，视野开阔</li>
+        <li><strong>半山悦旅拍花园</strong> — 多个拍照场景，随手一拍都是大片</li>
+      </ul>
+
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📷</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>彩虹公路是必拍点，从高处往下拍，路面蜿蜒通向洱海</li>
+          <li>往上走还有彩虹墙和彩虹石，可以一并打卡</li>
+          <li>半山悦旅拍花园有多个拍照场景，适合爱拍照的你</li>
+          <li>建议自驾或租电动车，拍照顺路打卡更方便</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ③ 理想邦 ===== -->
+<section class="section" id="lixiang-bang">
+  <div class="section-header fade-up">
+    <div class="label">第三站</div>
+    <h2>理想邦 · 大理圣托里尼</h2>
+    <p>崖壁之上的地中海纯白梦境</p>
+  </div>
+
+  <div class="card fade-up">
+    <div class="card-number">03</div>
+    <div class="card-header">
+      <div class="card-header-icon">🏛️</div>
+      <div class="card-header-text">
+        <h3>理想邦</h3>
+        <div class="subtitle">环海东路 · 洱海东岸崖壁之上</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag-ticket">园区免费 / 理想花园约¥100</span>
+      <span class="tag-time">建议1-1.5小时</span>
+      <span class="tag-location">10:00-17:30开放</span>
+    </div>
+    <div class="card-body">
+      <p>
+        被称为「大理版圣托里尼」，以<strong>「山海剧场」</strong>为设计概念的地中海风格纯白阶梯式建筑群。
+        纯白建筑沿山势层叠错落，拱形门廊与多肉植物景观相映成趣，光影流动的立体艺术空间。
+        可沿九曲花街拾级而上，转角邂逅精心设计的观景框——拱门恰好将洱海双廊收入画中。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>十二座主题庭院</strong> — 摩洛哥风陶土花器、土耳其洞穴风茶室、波西米亚织物工坊等</li>
+        <li><strong>入夜灯光秀</strong> — 崖壁灯光渐亮，星空酒廊驻唱与洱海浪声交织</li>
+        <li><strong>「在地灵感」市集</strong> — 白族甲马版画、喜洲粑粑创新口味、扎染潮玩背包</li>
+      </ul>
+
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📷</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li><strong>路线一（步行）：</strong>进园区后第一个左转上楼梯→经过理想桥→上大陡坡→白色建筑群，下来时可走鲜花大道</li>
+          <li><strong>路线二（观光车）：</strong>坐观光车（¥10/人）→花园广场→时空长廊→向左拐→极光巷→一直走到底</li>
+          <li>穿搭建议：白裙配草帽 = 出片神器</li>
+          <li>建议下午4点后进场，阳光柔和，拍照顺光还不热</li>
+          <li>理想花园是主要出片区域，需购票¥100</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ④ 天镜阁 ===== -->
+<section class="section" id="tianjing-ge">
+  <div class="section-header fade-up">
+    <div class="label">第四站</div>
+    <h2>天镜阁</h2>
+    <p>山环吞海 · 澄海如镜的千年佛阁</p>
+  </div>
+
+  <div class="card fade-up">
+    <div class="card-number">04</div>
+    <div class="card-header">
+      <div class="card-header-icon">⛩️</div>
+      <div class="card-header-text">
+        <h3>天镜阁</h3>
+        <div class="subtitle">罗荃半岛旅游区 · 海东镇环海路</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag-ticket">门票约¥30</span>
+      <span class="tag-time">建议1-1.5小时</span>
+      <span class="tag-location">08:30-18:00开放</span>
+    </div>
+    <div class="card-body">
+      <p>
+        四层八面阁楼高耸山巅，三面临水，悬崖壁立，气势非凡。
+        山势向洱海伸去，形成「山环吞海，澄海如镜」之势。
+        南诏、大理国时期曾是很有影响的佛教圣地，传说《望夫云》的故事发生于此——
+        白族民间最动人的爱情传说。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>景区群组</strong> — 天镜阁、观音阁、太子阁、八仙楼、罗荃寺、罗荃塔遗址、郭沫若诗刻等</li>
+        <li><strong>白族「大本曲」</strong> — 可聆听到白族传统曲艺演唱</li>
+        <li><strong>「海八碗」</strong> — 品尝以洱海水煮洱海鱼为特色的白族宴席</li>
+        <li><strong>望夫云传说</strong> — 白族最动人的爱情故事发生地</li>
+      </ul>
+
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📷</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>夏秋季看「望夫云」——云朵从苍山翻涌而来，最是壮观</li>
+          <li>春天看「上帝之光」——阳光穿透云层洒向洱海，光影层次绝美</li>
+          <li>一年四季遥看洱海，景色各不同，每一季都有惊喜</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIVIDER ===== -->
+<div class="divider"><span>✦ ✦ ✦</span></div>
+
+<!-- ===== TIPS ===== -->
+<section class="section" id="tips">
+  <div class="section-header fade-up">
+    <div class="label">旅行锦囊</div>
+    <h2>游玩建议</h2>
+    <p>让海东之旅更从容、更尽兴</p>
+  </div>
+
+  <div class="tips-card fade-up">
+    <h3><span class="emoji">⏳</span> 时间分配</h3>
+    <div class="tips-grid">
+      <div class="tip-item">
+        <div class="tip-title">海西线 · 6个景点</div>
+        <div class="tip-desc">建议 <strong>1天</strong>，骑行或包车。<br>喜洲古镇、磻溪S湾、龙龛码头都在海西</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">海东线 · 7个景点</div>
+        <div class="tip-desc">建议 <strong>1天</strong>，自驾或包车。<br>本文介绍的4个景点属于海东精华段</div>
+      </div>
+      <div class="tip-item" style="grid-column:1/-1">
+        <div class="tip-title">🌟 最推荐：2日精华游</div>
+        <div class="tip-desc"><strong>Day1 海西 → Day2 海东</strong>，完整环洱海，节奏刚刚好</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips-card fade-up">
+    <h3><span class="emoji">🎯</span> 最佳节奏</h3>
+    <div class="tips-grid">
+      <div class="tip-item">
+        <div class="tip-title">🌅 早上 8点前</div>
+        <div class="tip-desc">趁人少去磻溪S湾和龙龛看日出，晨光中的洱海最温柔</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🍜 中午</div>
+        <div class="tip-desc">在喜洲或双廊吃午饭，推荐喜洲粑粑、乳扇、饵块</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🚗 下午</div>
+        <div class="tip-desc">走海东线，沿环海东路自驾，依次打卡小普陀→文笔村→理想邦/天镜阁</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🌇 傍晚</div>
+        <div class="tip-desc">在理想邦或双廊看日落，金色余晖洒满洱海</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips-card fade-up">
+    <h3><span class="emoji">💡</span> 温馨提示</h3>
+    <div class="tips-grid">
+      <div class="tip-item">
+        <div class="tip-title">☀️ 防晒必备</div>
+        <div class="tip-desc">大理紫外线强烈，帽子、墨镜、防晒霜一个都不能少</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🚗 安全驾驶</div>
+        <div class="tip-desc">环海东路弯道较多，自驾请务必注意安全</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🕊️ 冬季限定</div>
+        <div class="tip-desc">冬季海鸥聚集，是拍摄小普陀的最佳季节，但也是旅游旺季</div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">🅿️ 停车信息</div>
+        <div class="tip-desc">各景点对面或路边均有停车场，统一价 ¥10/次</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-mountain">⛰️  🌊</div>
+  <p>大理洱海东线 · 海东秘境攻略</p>
+  <p style="margin-top:4px;font-size:11px;opacity:0.2">
+    苍山不墨千秋画 · 洱海无弦万古琴
+  </p>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// Nav scroll shadow
+const nav = document.getElementById('nav');
+const hero = document.querySelector('.hero');
+const heroObserver = new IntersectionObserver(([entry]) => {
+  nav.classList.toggle('scrolled', !entry.isIntersecting);
+}, {threshold:0,rootMargin:'-56px 0px 0px 0px'});
+heroObserver.observe(hero);
+
+// Scroll fade-up animations
+const fadeEls = document.querySelectorAll('.fade-up');
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+fadeEls.forEach(el => fadeObserver.observe(el));
+
+// Active nav link highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, {threshold:0.3,rootMargin:'-56px 0px -40% 0px'});
+sections.forEach(s => navObserver.observe(s));
+
+// Close nav after tap on mobile (smooth scroll)
+navLinks.forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target){
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+});
+</script>
+</body>
+</html>

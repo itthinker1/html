@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沙溪古镇攻略 - 手绘网格</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#e8e0d4;padding:20px}
+.infographic{width:420px;background:#F5F0E6;border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12);position:relative;padding:24px 20px 28px}
+.bg-texture{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04;background:radial-gradient(circle at 20% 30%,#8B7355 0,transparent 50%),radial-gradient(circle at 80% 70%,#8B7355 0,transparent 50%);pointer-events:none}
+/* 手绘装饰 */
+.doodle{position:absolute;pointer-events:none;opacity:0.15}
+.d1{top:10px;right:15px;font-size:28px;transform:rotate(15deg)}.d2{bottom:60px;left:10px;font-size:24px;transform:rotate(-10deg)}.d3{top:120px;left:8px;font-size:18px;transform:rotate(-20deg)}
+/* 标题区 */
+.hero{background:linear-gradient(135deg,#D4956A,#C4845A);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;text-align:center;border:2px dashed rgba(255,255,255,0.3)}
+.hero h1{font-family:'Ma Shan Zheng',cursive;font-size:28px;color:#fff;text-shadow:1px 1px 3px rgba(0,0,0,0.2);letter-spacing:3px}
+.hero .sub{font-family:'ZCOOL XiaoWei',serif;font-size:12px;color:rgba(255,255,255,0.85);margin-top:6px;letter-spacing:2px}
+.hero .rating{display:inline-block;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 14px;margin-top:8px;font-size:11px;color:#fff;font-family:'ZCOOL XiaoWei',serif}
+/* 网格 */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
+.cell{background:#fff;border-radius:14px;padding:14px;position:relative;border:2px solid #e8ddd0;overflow:hidden}
+.cell::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:14px 14px 0 0}
+.cell-2col{grid-column:span 2}
+.cell .icon{font-size:22px;margin-bottom:6px;display:inline-block}
+.cell .label{font-family:'Ma Shan Zheng',cursive;font-size:16px;color:#5a4a3a;margin-bottom:4px;letter-spacing:1px}
+.cell .desc{font-family:'ZCOOL XiaoWei',serif;font-size:11px;color:#7a6a5a;line-height:1.5}
+.cell .price{display:inline-block;background:#F5E6C8;border-radius:8px;padding:1px 8px;font-size:10px;color:#D4956A;font-weight:700;margin-top:4px;font-family:'ZCOOL XiaoWei',serif}
+/* 颜色主题 */
+.c-stay::before{background:#7BA3A8}.c-stay .label{color:#5a8a8f}
+.c-transport::before{background:#D4956A}.c-transport .label{color:#b87a50}
+.c-food::before{background:#E8A87C}.c-food .label{color:#d48a60}
+.c-street::before{background:#9BB8A0}.c-street .label{color:#6a9a70}
+.c-spot::before{background:#A8B8D0}.c-spot .label{color:#6a8aa8}
+.c-village::before{background:#C4A8C0}.c-village .label{color:#9a78a0}
+.c-coffee::before{background:#8BB8A0}.c-coffee .label{color:#5a9a78}
+.c-event::before{background:#D4A080}.c-event .label{color:#b08060}
+.c-quote{background:linear-gradient(135deg,#7BA3A8,#6a9398);color:#fff;padding:12px;border:2px solid #5a8388}
+.c-quote .label{color:#fff;font-size:17px}.c-quote .desc{color:rgba(255,255,255,0.85)}
+/* 美食内联标签 */
+.food-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.food-tag{background:#f5ede4;border-radius:6px;padding:2px 7px;font-size:9px;color:#7a6a5a;font-family:'ZCOOL XiaoWei',serif;border:1px solid #e8ddd0}
+.food-tag.hot{background:#FFE4D6;color:#c46040;border-color:#FFD0B8}
+/* 路线 */
+.route{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:4px 0}
+.route-step{background:#f5ede4;border-radius:6px;padding:2px 6px;font-size:9px;color:#7a6a5a;font-family:'ZCOOL XiaoWei',serif;white-space:nowrap}
+.route-arrow{color:#D4956A;font-size:10px}
+/* 景点列表 */
+.spot-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.spot-item{background:#f0f0f5;border-radius:6px;padding:2px 8px;font-size:10px;color:#6a7a8a;font-family:'ZCOOL XiaoWei',serif}
+</style>
+</head>
+<body>
+<div class="infographic">
+  <div class="bg-texture"></div>
+  <div class="doodle d1">✿</div>
+  <div class="doodle d2">✦</div>
+  <div class="doodle d3">☕</div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>沙溪古镇</h1>
+    <div class="sub">深度旅居攻略 · 四个月亲身体验</div>
+    <div class="rating">✿ 来自「红烧鱼的红」 ✿</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- 住宿 -->
+    <div class="cell c-stay">
+      <div class="icon">🏡</div>
+      <div class="label">住宿</div>
+      <div class="desc">提前订带院子的民宿</div>
+      <div class="price">💰 一周约 1000+ 元</div>
+      <div class="desc" style="margin-top:3px;font-size:10px;color:#8a7a6a">院子里的朋友来自五湖四海</div>
+    </div>
+
+    <!-- 出行 -->
+    <div class="cell c-transport">
+      <div class="icon">🛵</div>
+      <div class="label">出行</div>
+      <div class="desc">租小电驴最方便</div>
+      <div class="price">🛺 小黄车 20元/趟</div>
+    </div>
+
+    <!-- 美食-跨列 -->
+    <div class="cell c-food cell-2col">
+      <div class="icon">🍜</div>
+      <div class="label">美食推荐</div>
+      <div class="food-tags">
+        <span class="food-tag hot">🏆 三娘食坊</span>
+        <span class="food-tag">鸡肉卷</span>
+        <span class="food-tag">米线</span>
+        <span class="food-tag">神仙姐姐小馆</span>
+        <span class="food-tag">食饱少饭</span>
+        <span class="food-tag hot">初见沙溪·牛肉</span>
+        <span class="food-tag hot">菌子锅</span>
+        <span class="food-tag">丁丁姐小吃街</span>
+        <span class="food-tag">春时·披萨</span>
+        <span class="food-tag">爱语故事</span>
+        <span class="food-tag">俊语花</span>
+      </div>
+      <div class="desc" style="margin-top:3px;font-size:10px;color:#8a7a6a">
+        <span class="price">二人 100出头</span>
+        <span class="price" style="margin-left:4px">牛肉火锅 100出头</span>
+      </div>
+    </div>
+
+    <!-- 主街漫步 -->
+    <div class="cell c-street cell-2col">
+      <div class="icon">🚶</div>
+      <div class="label">主街漫步</div>
+      <div class="route">
+        <span class="route-step">许红豆咖啡馆</span>
+        <span class="route-arrow">→</span>
+        <span class="route-step">古戏台</span>
+        <span class="route-arrow">→</span>
+        <span class="route-step">阿瑞奶奶·鲜花饼</span>
+        <span class="route-arrow">→</span>
+        <span class="route-step">有狸杂货铺</span>
+        <span class="route-arrow">→</span>
+        <span class="route-step">溪语酒馆🎵</span>
+      </div>
+      <div class="desc" style="margin-top:3px;font-size:10px;color:#8a7a6a">🍪 鲜花饼贼拉好吃 · 🐕 酒馆小狗"优雄"</div>
+    </div>
+
+    <!-- 必去景点 -->
+    <div class="cell c-spot cell-2col">
+      <div class="icon">🏔️</div>
+      <div class="label">必去景点</div>
+      <div class="spot-list">
+        <span class="spot-item">东寨门 · 同款路</span>
+        <span class="spot-item">玉津桥 · 晨雾</span>
+        <span class="spot-item">小巷子 · 慢慢逛</span>
+        <span class="spot-item">石涌水库 · 夏天</span>
+        <span class="spot-item">剑湖</span>
+      </div>
+    </div>
+
+    <!-- 周边村落 -->
+    <div class="cell c-village">
+      <div class="icon">🏘️</div>
+      <div class="label">周边村落</div>
+      <div class="desc">北龙村 · 华龙村</div>
+      <div class="food-tags" style="margin-top:3px">
+        <span class="food-tag">半山咖啡</span>
+        <span class="food-tag">山坪咖啡</span>
+        <span class="food-tag">宇宙面包店</span>
+      </div>
+    </div>
+
+    <!-- 咖啡馆 -->
+    <div class="cell c-coffee">
+      <div class="icon">☕</div>
+      <div class="label">咖啡馆</div>
+      <div class="desc">山里座 · 🌻窗景</div>
+      <div class="desc" style="font-size:10px">有溪咖啡 · 安静</div>
+      <div class="desc" style="font-size:10px">叁一咖啡 · 发呆看书</div>
+    </div>
+
+    <!-- 特色活动 -->
+    <div class="cell c-event cell-2col">
+      <div class="icon">🎉</div>
+      <div class="label">特色活动</div>
+      <div class="food-tags">
+        <span class="food-tag">8月山歌会 · 热闹</span>
+        <span class="food-tag hot">每周赶集 · 水果 6元/斤</span>
+      </div>
+    </div>
+
+    <!-- 总评 -->
+    <div class="cell c-quote cell-2col" style="text-align:center">
+      <div class="label">比大理更慢，适合深度躺平</div>
+      <div class="desc" style="margin-top:4px;font-size:14px;font-weight:700">来就对了，很美很美 ✨</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

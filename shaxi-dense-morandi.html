@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沙溪古镇攻略 - 莫兰迪手账</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#e0d8cc;padding:20px}
+.infographic{width:420px;background:#F5F0E6;border-radius:20px;padding:20px 18px 24px;position:relative;box-shadow:0 8px 40px rgba(0,0,0,0.1);overflow:hidden}
+/* 纹理 */
+.paper-texture{position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(180,160,140,0.06) 28px,rgba(180,160,140,0.06) 29px);pointer-events:none}
+/* washi tape装饰 */
+.washi{position:absolute;height:10px;left:0;right:0;background:repeating-linear-gradient(45deg,#D4956A 0,#D4956A 6px,transparent 6px,transparent 12px,#7BA3A8 12px,#7BA3A8 18px,transparent 18px,transparent 24px);opacity:0.6}
+.washi-top{top:0;border-radius:0 0 4px 4px}
+.washi-bottom{bottom:0;border-radius:4px 4px 0 0}
+/* 标题 */
+.title-area{text-align:center;margin-bottom:16px;padding:14px 0 10px;position:relative}
+.title-area::after{content:'';display:block;width:60%;height:2px;background:linear-gradient(90deg,transparent,#7BA3A8,transparent);margin:10px auto 0}
+.title-area h1{font-family:'Ma Shan Zheng',cursive;font-size:30px;color:#4A4540;letter-spacing:4px}
+.title-area .sub{font-family:'ZCOOL XiaoWei',serif;font-size:11px;color:#8a7a6a;letter-spacing:2px;margin-top:4px}
+.title-area .badge{display:inline-block;background:#7BA3A8;color:#fff;border-radius:12px;padding:2px 14px;font-size:10px;font-family:'ZCOOL XiaoWei',serif;margin-top:6px;letter-spacing:1px}
+/* 模块 */
+.modules{display:flex;flex-direction:column;gap:10px}
+.mod{background:#ffffff;border-radius:14px;padding:14px;border:1.5px solid #e8ddd0;position:relative;overflow:hidden}
+.mod::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+/* 模块头部 */
+.mod-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mod-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.mod-title{font-family:'Ma Shan Zheng',cursive;font-size:18px;letter-spacing:1px}
+.mod-count{font-family:'ZCOOL XiaoWei',serif;font-size:10px;color:#a09080;margin-left:auto}
+/* 颜色主题 */
+.mod:nth-child(1)::before{background:#7BA3A8}.mod:nth-child(1) .mod-icon{background:#7BA3A8}
+.mod:nth-child(2)::before{background:#D4956A}.mod:nth-child(2) .mod-icon{background:#D4956A}
+.mod:nth-child(3)::before{background:#E8A87C}.mod:nth-child(3) .mod-icon{background:#E8A87C}
+.mod:nth-child(4)::before{background:#9BB8A0}.mod:nth-child(4) .mod-icon{background:#9BB8A0}
+.mod:nth-child(5)::before{background:#A8B8D0}.mod:nth-child(5) .mod-icon{background:#A8B8D0}
+.mod:nth-child(6)::before{background:#C4A8C0}.mod:nth-child(6) .mod-icon{background:#C4A8C0}
+.mod:nth-child(7)::before{background:#8BB8A0}.mod:nth-child(7) .mod-icon{background:#8BB8A0}
+.mod:nth-child(8)::before{background:#D4A080}.mod:nth-child(8) .mod-icon{background:#D4A080}
+/* 内容 */
+.mod-body{font-family:'ZCOOL XiaoWei',serif;font-size:11px;color:#5a4a3a;line-height:1.6}
+/* 标签 */
+.tag-group{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tag{background:#f5ede4;border-radius:6px;padding:2px 8px;font-size:10px;color:#5a4a3a;font-family:'ZCOOL XiaoWei',serif;border:1px solid #e8ddd0}
+.tag.highlight{background:#D4956A;color:#fff;border-color:#D4956A}
+.tag.green{background:#7BA3A8;color:#fff;border-color:#7BA3A8}
+/* 价格标签 */
+.price-tag{display:inline-block;background:#F5E6C8;border-radius:6px;padding:1px 8px;font-size:10px;color:#D4956A;font-weight:700;margin:2px 2px 2px 0;font-family:'ZCOOL XiaoWei',serif}
+/* 路线 */
+.route-line{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:3px 0}
+.route-step{background:#f0eee8;border-radius:4px;padding:1px 6px;font-size:10px;color:#5a4a3a;white-space:nowrap;font-family:'ZCOOL XiaoWei',serif}
+.route-arrow{color:#D4956A;font-size:8px}
+/* 总评 */
+.final{background:linear-gradient(135deg,#7BA3A8,#6a9398);border-radius:14px;padding:14px;text-align:center;color:#fff;border:none}
+.final::before{display:none}
+.final .mod-title{color:#fff;font-size:20px}
+.final .mod-body{color:rgba(255,255,255,0.85);font-size:13px;margin-top:4px;font-weight:700}
+/* 小装饰 */
+.star{position:absolute;color:#D4956A;opacity:0.2;font-size:16px;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="infographic">
+  <div class="paper-texture"></div>
+  <div class="washi washi-top"></div>
+  <div class="star" style="top:40px;right:20px;transform:rotate(15deg)">✦</div>
+  <div class="star" style="bottom:80px;left:15px;transform:rotate(-10deg)">✿</div>
+
+  <div class="title-area">
+    <h1>沙溪古镇</h1>
+    <div class="sub">深度旅居攻略 · 4个月亲身体验</div>
+    <div class="badge">来自「红烧鱼的红」</div>
+  </div>
+
+  <div class="modules">
+
+    <!-- MOD 1: 住宿 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🏡</div>
+        <div class="mod-title">住宿</div>
+        <div class="mod-count">MOD-01</div>
+      </div>
+      <div class="mod-body">
+        提前订带院子的民宿，<span class="price-tag">一周约 1000+ 元</span>
+        <div style="margin-top:2px;font-size:10px;color:#8a7a6a">院子里来自五湖四海的朋友，一起聊天很有趣</div>
+      </div>
+    </div>
+
+    <!-- MOD 2: 出行 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🛵</div>
+        <div class="mod-title">古镇内出行</div>
+        <div class="mod-count">MOD-02</div>
+      </div>
+      <div class="mod-body">
+        租<span class="tag green">小电驴（电动车）</span>最方便
+        <div style="margin-top:2px;font-size:10px;color:#8a7a6a">或坐小黄车，不远的话 <span class="price-tag">20元/趟</span></div>
+      </div>
+    </div>
+
+    <!-- MOD 3: 美食 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🍜</div>
+        <div class="mod-title">美食推荐</div>
+        <div class="mod-count">MOD-03</div>
+      </div>
+      <div class="mod-body">
+        <div style="margin-bottom:3px;font-size:10px;color:#8a7a6a">🏆 必吃推荐</div>
+        <div class="tag-group">
+          <span class="tag highlight">三娘食坊</span>
+          <span class="tag">鸡肉卷</span>
+          <span class="tag">米线+火锅烧烤</span>
+          <span class="tag">神仙姐姐小馆</span>
+          <span class="tag">食饱少饭</span>
+          <span class="tag highlight">初见沙溪·牛肉</span>
+          <span class="tag highlight">菌子锅</span>
+          <span class="tag">丁丁姐小吃街</span>
+          <span class="tag">春时·披萨</span>
+          <span class="tag">爱语故事</span>
+          <span class="tag">俊语花</span>
+        </div>
+        <div style="margin-top:4px">
+          <span class="price-tag">三娘食坊 二人100出头</span>
+          <span class="price-tag">牛肉火锅 一大锅100出头</span>
+        </div>
+        <div style="margin-top:2px;font-size:10px;color:#8a7a6a">
+          三娘食坊炒饭鸡爪杨梅冰 · 初见沙溪牛肉必点 · 菌子锅贼香 · 烤鸡腿烤乳扇
+        </div>
+      </div>
+    </div>
+
+    <!-- MOD 4: 主街漫步 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🚶</div>
+        <div class="mod-title">主街漫步</div>
+        <div class="mod-count">MOD-04</div>
+      </div>
+      <div class="mod-body">
+        <div class="route-line">
+          <span class="route-step">☕ 许红豆咖啡馆</span>
+          <span class="route-arrow">→</span>
+          <span class="route-step">🏛️ 古戏台</span>
+          <span class="route-arrow">→</span>
+          <span class="route-step">🍪 阿瑞奶奶·鲜花饼</span>
+          <span class="route-arrow">→</span>
+          <span class="route-step">🎁 有狸杂货铺</span>
+          <span class="route-arrow">→</span>
+          <span class="route-step">🎵 溪语酒馆</span>
+        </div>
+        <div style="margin-top:3px;font-size:10px;color:#8a7a6a">
+          🐕 驻唱超好听 · 小狗"优雄"每首歌结束跟着叫
+        </div>
+      </div>
+    </div>
+
+    <!-- MOD 5: 景点 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🏔️</div>
+        <div class="mod-title">必去景点</div>
+        <div class="mod-count">MOD-05</div>
+      </div>
+      <div class="mod-body">
+        <div class="tag-group">
+          <span class="tag">东寨门 · 同款路</span>
+          <span class="tag highlight">玉津桥 · 晨雾</span>
+          <span class="tag">小巷子 · 慢慢逛</span>
+          <span class="tag">石涌水库 · 夏天</span>
+          <span class="tag">剑湖</span>
+        </div>
+        <div style="margin-top:3px;font-size:10px;color:#8a7a6a">
+          石涌水库有营地有咖啡还可以骑马 · 剑湖也很好看
+        </div>
+      </div>
+    </div>
+
+    <!-- MOD 6: 周边村落 + 咖啡馆 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">☕</div>
+        <div class="mod-title">周边村落 & 咖啡馆</div>
+        <div class="mod-count">MOD-06</div>
+      </div>
+      <div class="mod-body">
+        <div>🏘️ 北龙村 · 华龙村</div>
+        <div class="tag-group">
+          <span class="tag">半山咖啡</span>
+          <span class="tag">山坪咖啡</span>
+          <span class="tag">宇宙面包店</span>
+        </div>
+        <div style="margin-top:4px;border-top:1px dashed #e8ddd0;padding-top:4px">
+          <div style="font-size:10px;color:#8a7a6a;margin-bottom:2px">☕ 咖啡馆推荐</div>
+          <span class="tag highlight">山里座·向日葵窗景</span>
+          <span class="tag">有溪咖啡·安静</span>
+          <span class="tag">叁一咖啡·发呆看书</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOD 7: 特色活动 -->
+    <div class="mod">
+      <div class="mod-header">
+        <div class="mod-icon">🎉</div>
+        <div class="mod-title">特色活动</div>
+        <div class="mod-count">MOD-07</div>
+      </div>
+      <div class="mod-body">
+        <div class="tag-group">
+          <span class="tag">8月山歌会 · 热闹</span>
+          <span class="tag highlight">每周赶集 · 水果 6元/斤</span>
+        </div>
+        <div style="margin-top:2px;font-size:10px;color:#8a7a6a">
+          赶集一整条街，从早到晚都有
+        </div>
+      </div>
+    </div>
+
+    <!-- MOD 8: 总评 -->
+    <div class="mod final">
+      <div class="mod-header">
+        <div class="mod-icon" style="background:rgba(255,255,255,0.2)">✨</div>
+        <div class="mod-title">总评</div>
+      </div>
+      <div class="mod-body">比大理更慢，适合深度躺平 — 来就对了，很美很美</div>
+    </div>
+
+  </div>
+  <div class="washi washi-bottom"></div>
+</div>
+</body>
+</html>

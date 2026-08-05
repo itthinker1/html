@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="大理洱海环湖攻略完整版 — 海西线6景+海东线7景，全13景详细指南">
+<title>大理洱海 · 环湖攻略完整版</title>
+<style>
+/* ========== RESET & BASE ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;
+  background:#f7f2ea;
+  color:#3D3228;
+  line-height:1.8;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ========== CUSTOM PROPERTIES ========== */
+:root{
+  --mist-blue:#E8F4F8;
+  --mist-blue-dark:#B8D4DE;
+  --cangshan-green:#5B8C5A;
+  --cangshan-green-dark:#4A7B4A;
+  --rice-green:#7BA37A;
+  --rice-green-dark:#5B8C5A;
+  --terracotta:#C4956A;
+  --terracotta-light:#D4A882;
+  --terracotta-dark:#A67A52;
+  --sunset-gold:#D4A15A;
+  --warm-cream:#F7F2EA;
+  --warm-white:#FFFFFF;
+  --paper:#F5F0E8;
+  --ink:#3D3228;
+  --ink-light:#6B6058;
+  --ink-lighter:#9A8E84;
+  --west-accent:#5B8C5A;
+  --west-accent-dark:#4A7B4A;
+  --east-accent:#4A8BA4;
+  --east-accent-dark:#3A7A94;
+  --card-radius:16px;
+  --nav-height:56px;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--warm-cream)}
+::-webkit-scrollbar-thumb{background:var(--terracotta-light);border-radius:3px}
+
+/* ========== NAVIGATION ========== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:var(--nav-height);
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(196,149,106,0.1);
+  display:flex;align-items:center;
+  padding:0 12px;
+  transition:box-shadow 0.3s;
+}
+.nav.scrolled{box-shadow:0 2px 20px rgba(61,50,40,0.06)}
+.nav-brand{
+  font-weight:700;font-size:16px;white-space:nowrap;
+  color:var(--ink);letter-spacing:1px;
+  flex-shrink:0;
+}
+.nav-brand span{color:var(--cangshan-green)}
+.nav-links{
+  display:flex;gap:1px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+  margin-left:auto;padding-left:8px;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{
+  text-decoration:none;font-size:11px;font-weight:500;
+  color:var(--ink-light);padding:6px 8px;border-radius:6px;
+  white-space:nowrap;transition:all 0.25s;letter-spacing:0.3px;
+  font-family:inherit;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--cangshan-green);background:rgba(91,140,90,0.08)}
+.nav-links a .num{display:inline-block;margin-right:1px;font-size:9px;opacity:0.5;font-style:italic}
+
+/* ========== HERO ========== */
+.hero{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:calc(var(--nav-height) + 32px) 20px 48px;
+  overflow:hidden;
+  background:linear-gradient(180deg,var(--mist-blue) 0%,#C8DFD0 25%,#D4CAA8 55%,var(--warm-cream) 100%);
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+}
+.hero-bg svg{width:100%;height:100%;opacity:0.4}
+.hero-content{position:relative;z-index:2;max-width:480px}
+.hero-badge{
+  display:inline-block;padding:4px 16px;border-radius:20px;
+  font-size:11px;font-weight:500;letter-spacing:2px;
+  background:rgba(91,140,90,0.08);color:var(--cangshan-green);
+  border:1px solid rgba(91,140,90,0.15);margin-bottom:16px;
+}
+.hero h1{
+  font-family:"Georgia","Noto Serif SC","STSong",serif;font-weight:900;
+  font-size:clamp(34px,7vw,48px);
+  line-height:1.15;margin-bottom:6px;
+  color:var(--ink);
+}
+.hero h1 span{color:var(--cangshan-green)}
+.hero-sub{
+  font-family:"Georgia","Noto Serif SC","STSong",serif;
+  font-size:clamp(15px,2.8vw,20px);
+  font-weight:400;color:var(--ink-light);margin-bottom:8px;letter-spacing:3px;
+}
+.hero-desc{
+  font-size:13px;color:var(--ink-lighter);line-height:1.8;
+  max-width:360px;margin:0 auto 24px;
+}
+.hero-stats{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;
+}
+.hero-stat{
+  display:flex;align-items:center;gap:5px;
+  font-size:12px;color:var(--ink-light);
+  background:rgba(255,255,255,0.5);padding:5px 14px;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.6);
+  backdrop-filter:blur(4px);
+}
+.hero-stat .stat-icon{font-size:14px}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 26px;border-radius:30px;text-decoration:none;
+  font-size:14px;font-weight:500;color:var(--warm-white);
+  background:linear-gradient(135deg,var(--sunset-gold),var(--cangshan-green-dark));
+  transition:transform 0.3s,box-shadow 0.3s;
+  box-shadow:0 4px 16px rgba(91,140,90,0.3);
+}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,140,90,0.4)}
+.hero-cta .arrow{transition:transform 0.3s;display:inline-block}
+.hero-cta:hover .arrow{transform:translateX(4px)}
+.hero-scroll{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--ink-lighter);font-size:10px;letter-spacing:1px;
+  animation:scrollPulse 2.5s ease-in-out infinite;
+}
+.scroll-line{width:1px;height:20px;background:linear-gradient(to bottom,var(--terracotta-light),transparent)}
+@keyframes scrollPulse{
+  0%,100%{opacity:0.4;transform:translateX(-50%) translateY(0)}
+  50%{opacity:0.8;transform:translateX(-50%) translateY(-4px)}
+}
+
+/* ========== SECTION ========== */
+.section{padding:48px 16px;max-width:680px;margin:0 auto;position:relative}
+.section-header{
+  text-align:center;margin-bottom:32px;
+}
+.section-header .label{
+  display:inline-block;font-size:10px;font-weight:500;letter-spacing:3px;
+  color:var(--cangshan-green);margin-bottom:6px;
+  background:rgba(91,140,90,0.06);padding:2px 12px;border-radius:4px;
+}
+.section-header h2{
+  font-family:"Georgia","Noto Serif SC","STSong",serif;font-weight:700;
+  font-size:clamp(22px,4.5vw,28px);
+  color:var(--ink);line-height:1.3;letter-spacing:1px;
+}
+.section-header p{
+  font-size:13px;color:var(--ink-lighter);margin-top:4px;
+}
+
+/* ========== DIVIDER ========== */
+.divider{
+  text-align:center;padding:24px 0;position:relative;
+}
+.divider::before{
+  content:'';position:absolute;top:50%;left:15%;right:15%;height:1px;
+  background:linear-gradient(to right,transparent,var(--terracotta-light),transparent);
+}
+.divider span{
+  position:relative;z-index:1;background:var(--warm-cream);
+  padding:0 12px;font-size:16px;color:var(--terracotta);opacity:0.6;
+}
+
+/* ========== ROUTE INTRO ========== */
+.route-intro{
+  background:var(--warm-white);border-radius:var(--card-radius);padding:24px 20px;
+  margin-bottom:32px;border:1px solid rgba(196,149,106,0.1);
+  position:relative;overflow:hidden;
+}
+.route-intro::before{
+  content:'';position:absolute;top:0;right:0;width:100px;height:100px;
+  background:radial-gradient(circle,var(--terracotta-light),transparent 70%);opacity:0.06;
+}
+.route-intro h3{
+  font-weight:600;font-size:15px;color:var(--cangshan-green);margin-bottom:8px;
+}
+.route-intro p{
+  font-size:13px;color:var(--ink-light);line-height:1.9;
+}
+.route-tags{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;
+}
+.route-tag{
+  display:flex;align-items:center;gap:4px;
+  padding:4px 12px;border-radius:16px;font-size:12px;font-weight:500;
+  background:rgba(91,140,90,0.08);color:var(--cangshan-green);
+  border:1px solid rgba(91,140,90,0.15);
+}
+.route-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--cangshan-green);flex-shrink:0}
+
+/* ========== QUICK STATS ========== */
+.quick-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:32px;
+}
+.quick-stat{
+  background:var(--warm-white);border-radius:12px;padding:16px 12px;text-align:center;
+  border:1px solid rgba(196,149,106,0.08);
+}
+.quick-stat .qs-icon{font-size:22px;margin-bottom:4px}
+.quick-stat .qs-val{font-size:16px;font-weight:700;color:var(--ink)}
+.quick-stat .qs-label{font-size:11px;color:var(--ink-lighter);margin-top:2px}
+
+/* ========== AREA HEADER ========== */
+.area-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;
+  padding:16px 18px;border-radius:14px;color:var(--warm-white);
+  position:relative;overflow:hidden;
+}
+.area-header.west{background:linear-gradient(135deg,var(--rice-green),var(--rice-green-dark))}
+.area-header.east{background:linear-gradient(135deg,var(--east-accent),var(--east-accent-dark))}
+.area-header .icon{font-size:28px;line-height:1;position:relative;z-index:1;flex-shrink:0}
+.area-header .info{position:relative;z-index:1}
+.area-header .info h2{font-size:18px;font-weight:700;letter-spacing:1px}
+.area-header .info p{font-size:12px;opacity:0.85;margin-top:1px;font-weight:400}
+.area-header .count{
+  margin-left:auto;background:rgba(255,255,255,0.18);
+  padding:3px 12px;border-radius:16px;font-size:12px;position:relative;z-index:1;white-space:nowrap;flex-shrink:0;
+}
+
+/* ===== ROUTE MAP SVG ===== */
+.route-map-wrap{
+  background:var(--warm-white);border-radius:var(--card-radius);
+  margin-bottom:20px;padding:16px 12px 12px;
+  border:1px solid rgba(196,149,106,0.1);
+  box-shadow:0 2px 16px rgba(61,50,40,0.04);
+  position:relative;overflow:hidden;
+  cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;
+}
+.route-map-wrap:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(61,50,40,0.07)}
+.route-map-wrap .rm-title{
+  text-align:center;font-size:13px;font-weight:600;
+  color:var(--ink-light);letter-spacing:1px;margin-bottom:6px;
+}
+.route-map-wrap .rm-title .rm-icon{margin-right:4px}
+.route-map-wrap svg{width:100%;height:auto;display:block;margin:0 auto;max-width:420px}
+.rm-legend{display:flex;justify-content:center;gap:16px;margin-top:8px;flex-wrap:wrap}
+.rm-legend span{font-size:10px;color:var(--ink-lighter);display:flex;align-items:center;gap:4px}
+.rm-legend .ld{width:10px;height:2px;border-radius:2px;display:inline-block}
+.rm-expand-hint{
+  position:absolute;top:10px;right:10px;z-index:2;
+  font-size:10px;color:var(--ink-lighter);opacity:0.4;
+  background:rgba(255,255,255,0.6);padding:2px 8px;border-radius:8px;
+  pointer-events:none;
+}
+
+/* ===== MAP FULLSCREEN MODAL ===== */
+.map-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;opacity:0;transition:opacity 0.3s ease;
+}
+.map-overlay.active{display:flex;opacity:1}
+.map-overlay .map-close{
+  position:fixed;top:16px;right:16px;z-index:10000;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.15);border:none;
+  color:#fff;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;
+}
+.map-overlay .map-close:hover{background:rgba(255,255,255,0.25)}
+.map-overlay .map-content{
+  width:100%;max-width:95vw;max-height:95vh;
+  overflow:hidden;text-align:center;
+  transform:scale(0.9);transition:transform 0.3s ease;
+  display:flex;flex-direction:column;align-items:center;
+  touch-action:none;
+  position:relative;
+}
+.map-overlay.active .map-content{transform:scale(1)}
+.map-overlay .map-content svg{
+  width:auto;height:85vh;max-width:none;
+  background:var(--warm-white);border-radius:8px;
+  padding:8px;box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  flex-shrink:1;
+}
+.map-overlay .map-content .map-svg-zoom-wrap{
+  overflow:visible;
+  transform-origin:0 0;
+  will-change:transform;
+  touch-action:none;
+  display:inline-block;
+  line-height:0;
+}
+.map-overlay .map-title{
+  color:#fff;font-size:16px;font-weight:600;
+  margin-bottom:6px;letter-spacing:1px;
+  text-align:center;flex-shrink:0;
+}
+.map-overlay .map-content .rm-legend{
+  margin-top:8px;flex-shrink:0;
+}
+.map-overlay .map-content .rm-legend span{
+  font-size:12px;color:#ccc;
+}
+.map-overlay .map-content .rm-legend .ld{
+  width:14px;height:3px;
+}
+
+/* ========== CARD ========== */
+.card{
+  background:var(--warm-white);border-radius:var(--card-radius);
+  margin-bottom:20px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(61,50,40,0.05);
+  position:relative;transition:transform 0.25s,box-shadow 0.25s;
+  border:1px solid rgba(196,149,106,0.05);
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(61,50,40,0.08)}
+.card-accent{
+  height:4px;width:100%;
+}
+.card-accent.west{background:linear-gradient(90deg,var(--rice-green),var(--rice-green-dark))}
+.card-accent.east{background:linear-gradient(90deg,var(--east-accent),var(--east-accent-dark))}
+.card-header{
+  padding:18px 18px 0;display:flex;align-items:flex-start;gap:10px;
+}
+.card-number{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:var(--warm-white);
+  font-family:"Georgia",serif;font-style:italic;
+}
+.card-number.west{background:linear-gradient(135deg,var(--rice-green),var(--rice-green-dark))}
+.card-number.east{background:linear-gradient(135deg,var(--east-accent),var(--east-accent-dark))}
+.card-header-text{flex:1}
+.card-header-text h3{
+  font-family:"Georgia","Noto Serif SC","STSong",serif;
+  font-size:17px;font-weight:700;color:var(--ink);letter-spacing:0.5px;
+}
+.card-header-text .subtitle{
+  font-size:11px;color:var(--ink-lighter);margin-top:1px;letter-spacing:0.3px;
+}
+.card-tag{
+  font-size:10px;color:var(--terracotta);background:rgba(196,149,106,0.08);
+  padding:2px 10px;border-radius:10px;font-weight:500;white-space:nowrap;
+  border:1px solid rgba(196,149,106,0.12);flex-shrink:0;margin-top:2px;
+}
+.card-meta{
+  display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 0;
+}
+.card-meta span{
+  font-size:11px;color:var(--ink-light);
+  background:rgba(247,242,234,0.6);padding:2px 10px;border-radius:6px;
+  display:flex;align-items:center;gap:2px;
+}
+.card-meta .meta-ticket{background:rgba(91,140,90,0.08);color:var(--cangshan-green)}
+.card-meta .meta-time{background:rgba(196,149,106,0.08);color:var(--terracotta-dark)}
+.card-meta .meta-loc{background:rgba(74,138,164,0.08);color:var(--east-accent)}
+.card-body{padding:12px 18px 18px}
+.card-body p{
+  font-size:13px;color:var(--ink-light);line-height:1.9;margin-bottom:8px;
+}
+.card-body p strong{color:var(--ink);font-weight:600}
+.card-body .highlight-list{
+  list-style:none;padding:0;margin:6px 0 0;
+}
+.card-body .highlight-list li{
+  font-size:13px;color:var(--ink-light);
+  padding:3px 0 3px 16px;position:relative;line-height:1.8;
+}
+.card-body .highlight-list li::before{
+  content:'✦';position:absolute;left:0;color:var(--terracotta-light);
+  font-size:10px;top:5px;
+}
+.card-body .highlight-list li strong{color:var(--terracotta-dark);font-weight:600}
+.photo-tip{
+  margin:12px -2px 0;padding:14px 16px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(232,244,248,0.6),rgba(167,195,160,0.08));
+  border:1px dashed rgba(196,149,106,0.2);
+  position:relative;overflow:hidden;
+}
+.photo-tip-header{
+  display:flex;align-items:center;gap:6px;margin-bottom:6px;
+}
+.photo-tip-header .icon{font-size:15px;}
+.photo-tip-header .label{
+  font-size:12px;font-weight:600;color:var(--terracotta-dark);letter-spacing:0.3px;
+}
+.photo-tip ul{list-style:none;padding:0;margin:0}
+.photo-tip ul li{
+  font-size:12px;color:var(--ink-light);padding:2px 0 2px 14px;
+  position:relative;line-height:1.7;
+}
+.photo-tip ul li::before{content:'▸';position:absolute;left:0;color:var(--terracotta-light);font-size:11px}
+
+/* ========== SUB SECTIONS ========== */
+.sub-section{
+  margin-top:10px;padding:10px 14px;background:var(--paper);
+  border-radius:10px;font-size:12px;line-height:1.8;color:var(--ink-light);
+  border-left:3px solid var(--terracotta-light);
+}
+.sub-section .sub-title{font-weight:600;color:var(--ink);font-size:12px;margin-bottom:3px}
+.sub-section .sub-title::before{content:'▸ ';color:var(--terracotta-light)}
+.sub-section strong{color:var(--ink);font-weight:600}
+
+/* ========== ROUTE PLAN ========== */
+.route-plan{
+  display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px;
+}
+.route-card{
+  border-radius:var(--card-radius);padding:20px;position:relative;overflow:hidden;
+  border:1px solid rgba(196,149,106,0.08);
+}
+.route-card.day1{background:linear-gradient(135deg,rgba(167,195,160,0.08),rgba(167,195,160,0.02))}
+.route-card.day2{background:linear-gradient(135deg,rgba(123,168,184,0.08),rgba(123,168,184,0.02))}
+.route-card.full{background:linear-gradient(135deg,rgba(196,149,106,0.08),rgba(196,149,106,0.02))}
+.route-card .rc-label{
+  font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:4px;
+}
+.route-card.day1 .rc-label{color:var(--cangshan-green)}
+.route-card.day2 .rc-label{color:var(--east-accent)}
+.route-card.full .rc-label{color:var(--terracotta-dark)}
+.route-card .rc-title{
+  font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;
+}
+.route-card .rc-desc{
+  font-size:12px;color:var(--ink-light);line-height:1.7;
+}
+.route-card .rc-dots{
+  display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;
+}
+.route-card .rc-dot{
+  display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;
+  font-weight:500;
+}
+.route-card.day1 .rc-dot{background:rgba(91,140,90,0.1);color:var(--cangshan-green)}
+.route-card.day2 .rc-dot{background:rgba(74,138,164,0.1);color:var(--east-accent)}
+.route-card.full .rc-dot{background:rgba(196,149,106,0.15);color:var(--terracotta-dark)}
+
+/* ========== TIPS SECTION ========== */
+.tips-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;
+}
+.tips-card{
+  background:var(--warm-white);border-radius:12px;padding:18px 16px;
+  border:1px solid rgba(196,149,106,0.06);
+}
+.tips-card.full{grid-column:1/-1}
+.tips-card h3{
+  font-weight:600;font-size:14px;color:var(--ink);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(196,149,106,0.08);
+  padding-bottom:8px;
+}
+.tips-card h3 .emoji{font-size:16px}
+.tips-content{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.tips-content .ti{
+  font-size:12px;color:var(--ink-light);padding:4px 10px;
+  background:var(--paper);border-radius:6px;line-height:1.5;
+}
+.tips-content .ti .ti-label{font-weight:600;color:var(--ink)}
+.tips-list{
+  list-style:none;padding:0;margin:0;
+}
+.tips-list li{
+  font-size:12px;color:var(--ink-light);padding:3px 0 3px 14px;
+  position:relative;line-height:1.7;
+}
+.tips-list li::before{content:'•';position:absolute;left:0;color:var(--terracotta-light);font-weight:700}
+.tips-list li strong{color:var(--ink);font-weight:600}
+
+/* ========== FOOD SECTION ========== */
+.food-grid{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;
+}
+.food-item{
+  display:flex;align-items:center;gap:6px;padding:8px 14px;
+  border-radius:10px;font-size:12px;font-weight:500;
+  background:rgba(196,149,106,0.06);color:var(--terracotta-dark);
+  border:1px solid rgba(196,149,106,0.1);
+}
+.food-item .fi-icon{font-size:16px}
+
+/* ========== FOOTER ========== */
+.footer{
+  text-align:center;padding:40px 20px 32px;position:relative;
+  border-top:1px solid rgba(196,149,106,0.08);
+}
+.footer-mtn{font-size:28px;opacity:0.2;margin-bottom:6px;letter-spacing:4px}
+.footer p{font-size:12px;color:var(--ink-lighter);line-height:1.8}
+.footer .quote{
+  margin-top:10px;padding-top:10px;
+  border-top:1px solid rgba(91,140,90,0.1);
+  font-family:"Georgia","Noto Serif SC","STSong",serif;
+  font-size:13px;color:var(--cangshan-green);font-style:italic;letter-spacing:1px;
+  opacity:0.8;
+}
+
+/* ========== SCROLL ANIMATIONS ========== */
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ========== REDUCED MOTION ========== */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fade-up{opacity:1;transform:none;transition:none}
+  .hero-scroll{animation:none}
+  .card:hover{transform:none}
+}
+
+/* ========== RESPONSIVE ========== */
+@media(min-width:480px){
+  .nav{padding:0 20px}
+  .nav-links a{font-size:12px;padding:6px 10px}
+  .section{padding:56px 24px}
+  .card-header{padding:20px 20px 0}
+  .card-body{padding:12px 20px 20px}
+  .card-meta{padding:10px 20px 0}
+  .route-plan{grid-template-columns:1fr 1fr}
+  .route-plan .full{grid-column:1/-1}
+  .tips-grid{grid-template-columns:1fr 1fr}
+  .quick-stats{gap:12px}
+  .quick-stat{padding:20px 16px}
+}
+@media(min-width:640px){
+  .section{max-width:720px;padding:64px 32px}
+  .nav{padding:0 32px}
+  .nav-brand{font-size:18px}
+  .nav-links a{padding:8px 12px;font-size:12px}
+  .card-header{padding:24px 24px 0}
+  .card-body{padding:14px 24px 24px}
+  .card-meta{padding:12px 24px 0;gap:8px}
+  .card-meta span{font-size:12px;padding:3px 12px}
+  .card-number{width:36px;height:36px;font-size:16px}
+  .card-header-text h3{font-size:18px}
+  .route-plan{gap:20px}
+  .route-card{padding:24px}
+  .tips-card{padding:20px 24px}
+  .food-item{font-size:13px;padding:10px 18px}
+}
+@media(min-width:1024px){
+  .section{max-width:800px;padding:80px 40px}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">🌊 洱海<span>·环湖</span></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#overview"><span class="num">✦</span>速览</a>
+    <a href="#west-line"><span class="num">Ⅰ</span>海西</a>
+    <a href="#east-line"><span class="num">Ⅱ</span>海东</a>
+    <a href="#routes"><span class="num">✦</span>路线</a>
+    <a href="#tips-food"><span class="num">✦</span>贴士</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-bg">
+    <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+      <path d="M0 280 Q100 180 200 220 Q300 150 420 200 Q500 130 600 180 Q700 150 800 190 L800 600 L0 600Z" fill="#5B8C5A" opacity="0.2"/>
+      <path d="M0 320 Q120 240 240 270 Q360 220 480 260 Q580 210 680 250 Q750 230 800 250 L800 600 L0 600Z" fill="#4A7B4A" opacity="0.12"/>
+      <ellipse cx="400" cy="420" rx="300" ry="60" fill="#B8D4DE" opacity="0.2"/>
+      <ellipse cx="400" cy="430" rx="260" ry="40" fill="#C8E0E8" opacity="0.15"/>
+      <circle cx="620" cy="80" r="45" fill="#D4A15A" opacity="0.15"/>
+      <circle cx="620" cy="80" r="30" fill="#D4A15A" opacity="0.1"/>
+      <g opacity="0.35" style="animation: cloudDrift 8s ease-in-out infinite">
+        <ellipse cx="140" cy="70" rx="60" ry="20" fill="#fff"/>
+        <ellipse cx="120" cy="60" rx="35" ry="16" fill="#fff"/>
+        <ellipse cx="165" cy="58" rx="40" ry="18" fill="#fff"/>
+      </g>
+      <g opacity="0.25" style="animation: cloudDrift 10s ease-in-out infinite 2s">
+        <ellipse cx="450" cy="45" rx="50" ry="16" fill="#fff"/>
+        <ellipse cx="430" cy="38" rx="30" ry="12" fill="#fff"/>
+        <ellipse cx="470" cy="36" rx="35" ry="14" fill="#fff"/>
+      </g>
+      <g fill="none" stroke="#5B8C5A" stroke-width="1.5" stroke-linecap="round" opacity="0.4" style="animation: birdFly 6s ease-in-out infinite">
+        <path d="M260 120 Q266 114 272 120 Q278 114 284 120"/>
+        <path d="M300 100 Q305 95 310 100 Q315 95 320 100" style="animation-delay:0.5s"/>
+        <path d="M230 140 Q234 135 238 140 Q242 135 246 140" style="animation-delay:1s"/>
+      </g>
+      <g opacity="0.12">
+        <ellipse cx="250" cy="460" rx="100" ry="3" fill="none" stroke="#4A8BA4" stroke-width="1.2" style="animation: waveMove 4s ease-in-out infinite"/>
+        <ellipse cx="500" cy="470" rx="90" ry="2.5" fill="none" stroke="#4A8BA4" stroke-width="1.2" style="animation: waveMove 5s ease-in-out infinite 1s"/>
+      </g>
+      <g opacity="0.25">
+        <line x1="50" y1="400" x2="50" y2="370" stroke="#5B8C5A" stroke-width="1.5"/>
+        <circle cx="50" cy="368" r="3" fill="#D4A15A"/>
+        <line x1="65" y1="405" x2="65" y2="380" stroke="#5B8C5A" stroke-width="1.5"/>
+        <circle cx="65" cy="378" r="2.5" fill="#C4956A"/>
+        <line x1="40" y1="410" x2="40" y2="385" stroke="#5B8C5A" stroke-width="1.5"/>
+        <circle cx="40" cy="383" r="2" fill="#D4A15A"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">苍山为伴 · 洱海为邻</div>
+    <h1>大理洱海<br><span>环湖攻略</span></h1>
+    <div class="hero-sub">海西线 · 海东线 · 全十三景</div>
+    <p class="hero-desc">
+      从田园到湖光，从日出到日落，<br>
+      沿着 120 公里的环湖路，邂逅大理最美的风景。
+    </p>
+    <div class="hero-stats">
+      <span class="hero-stat"><span class="stat-icon">🌊</span> 环湖 130km</span>
+      <span class="hero-stat"><span class="stat-icon">⛰️</span> 海拔 1972m</span>
+      <span class="hero-stat"><span class="stat-icon">🌸</span> 3-5月 / 9-11月</span>
+    </div>
+    <a href="#overview" class="hero-cta">
+      开始探索 <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="hero-scroll">
+    <span>向下漫游</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<main>
+
+<!-- ========== OVERVIEW ========== -->
+<section class="section" id="overview">
+  <div class="section-header fade-up">
+    <div class="label">Erhai Overview</div>
+    <h2>洱海速览</h2>
+    <p>环湖之前，先了解这片高原明珠</p>
+  </div>
+
+  <div class="quick-stats fade-up">
+    <div class="quick-stat">
+      <div class="qs-icon">🌊</div>
+      <div class="qs-val">120-130km</div>
+      <div class="qs-label">环湖总里程</div>
+    </div>
+    <div class="quick-stat">
+      <div class="qs-icon">⛰️</div>
+      <div class="qs-val">1972m</div>
+      <div class="qs-label">湖面海拔</div>
+    </div>
+    <div class="quick-stat">
+      <div class="qs-icon">🚲</div>
+      <div class="qs-val">46km</div>
+      <div class="qs-label">海西生态廊道</div>
+    </div>
+  </div>
+
+  <div class="route-intro fade-up">
+    <h3>🌿 关于洱海</h3>
+    <p>
+      云南省第二大高原淡水湖，形如人耳，故名「洱海」。环湖一周约 120–130 公里，
+      从南到北串联起海西的田园牧歌与海东的壮阔湖光。<strong>海西生态廊道 46 公里</strong>
+      仅限行人和自行车通行，是最适合慢骑的亲水路段。最佳旅行季节为
+      <strong>3–5 月</strong>（春暖花开）和 <strong>9–11 月</strong>（秋高气爽）。
+    </p>
+    <div class="route-tags">
+      <span class="route-tag"><span class="dot"></span>高原淡水湖</span>
+      <span class="route-tag"><span class="dot"></span>形如人耳</span>
+      <span class="route-tag"><span class="dot"></span>海西骑行</span>
+      <span class="route-tag"><span class="dot"></span>海东自驾</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span>✦ ✦ ✦</span></div>
+
+<!-- ========== 海西线 ========== -->
+<section class="section" id="west-line">
+  <div class="section-header fade-up">
+    <div class="label">West Line · 6 Spots</div>
+    <h2>海西线 · 田园风光</h2>
+    <p>沿生态廊道骑行，从南到北穿行白族村落与稻田麦浪</p>
+  </div>
+
+  <div class="area-header west fade-up">
+    <span class="icon">🌿</span>
+    <div class="info">
+      <h2>海西线</h2>
+      <p>田园风光 · 白族古韵 · 骑行天堂</p>
+    </div>
+    <span class="count">6 个景点</span>
+  </div>
+
+  <!-- 海西线手绘路线图 SVG -->
+  <div class="route-map-wrap fade-up" data-map="west">
+    <div class="rm-title"><span class="rm-icon">🚲</span>海西线 · 骑行路线图（南→北）</div>
+    <span class="rm-expand-hint">⛶ 点击放大</span>
+    <svg viewBox="0 0 340 440" xmlns="http://www.w3.org/2000/svg" font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+      <defs>
+        <marker id="arrowWest" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0 0 L8 3 L0 6Z" fill="#5B8C5A"/>
+        </marker>
+      </defs>
+      <!-- 湖水背景 -->
+      <ellipse cx="170" cy="220" rx="140" ry="210" fill="#E8F4F8" opacity="0.3"/>
+      <!-- 苍山淡影 -->
+      <path d="M0 420 Q50 330 100 370 Q150 310 200 340 Q250 290 300 320 Q330 280 340 300 L340 440 L0 440Z" fill="#5B8C5A" opacity="0.08"/>
+      <!-- 骑行路线（蜿蜒向上） -->
+      <path d="M165 415 Q170 400 160 380 Q150 360 155 340 Q162 320 158 300 Q152 280 156 260 Q162 240 158 220 Q152 200 156 180 Q162 160 158 140 Q152 120 156 100 Q162 80 158 60 Q152 40 158 20"
+        fill="none" stroke="#5B8C5A" stroke-width="2.5" stroke-dasharray="6 2" opacity="0.7" marker-end="url(#arrowWest)"/>
+      <!-- 生态廊道标注 -->
+      <text x="200" y="220" font-size="8" fill="#5B8C5A" opacity="0.4" transform="rotate(-90,200,220)" font-style="italic">生态廊道 46km</text>
+
+      <!-- ① 龙龛古渡 0km -->
+      <circle cx="157" cy="390" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="157" y="390" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">1</text>
+      <text x="112" y="388" font-size="10" fill="#3D3228" font-weight="600">龙龛古渡</text>
+      <text x="112" y="400" font-size="7" fill="#6B6058">⏱ 40min · 🌅日出</text>
+      <text x="82" y="412" font-size="7" fill="#C4956A" font-weight="600">0km</text>
+
+      <!-- ② 才村 3km -->
+      <circle cx="160" cy="330" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="160" y="330" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">2</text>
+      <text x="115" y="328" font-size="10" fill="#3D3228" font-weight="600">才村</text>
+      <text x="115" y="340" font-size="7" fill="#6B6058">⏱ 1h · 🌄日出</text>
+      <text x="82" y="352" font-size="7" fill="#C4956A" font-weight="600">3km</text>
+      <line x1="96" y1="390" x2="96" y2="330" stroke="#C4956A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+
+      <!-- ③ 磻溪村S湾 14km -->
+      <circle cx="154" cy="270" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="154" y="270" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">3</text>
+      <text x="104" y="268" font-size="10" fill="#3D3228" font-weight="600">磻溪村 S 湾</text>
+      <text x="104" y="280" font-size="7" fill="#6B6058">⏱ 40min · 🏆网红</text>
+      <text x="82" y="292" font-size="7" fill="#C4956A" font-weight="600">14km</text>
+      <line x1="96" y1="330" x2="96" y2="270" stroke="#C4956A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+
+      <!-- S弯装饰 -->
+      <path d="M154 270 Q170 260 160 250 Q150 240 165 230" fill="none" stroke="#5B8C5A" stroke-width="1" stroke-dasharray="3 2" opacity="0.3"/>
+
+      <!-- ④ 廊桥 19km -->
+      <circle cx="158" cy="210" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="158" y="210" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">4</text>
+      <text x="120" y="208" font-size="10" fill="#3D3228" font-weight="600">廊桥</text>
+      <text x="120" y="220" font-size="7" fill="#6B6058">⏱ 30min · 📸光影</text>
+      <text x="82" y="232" font-size="7" fill="#C4956A" font-weight="600">19km</text>
+      <line x1="96" y1="270" x2="96" y2="210" stroke="#C4956A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+
+      <!-- ⑤ 海舌半岛 22km -->
+      <circle cx="156" cy="150" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="156" y="150" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">5</text>
+      <text x="112" y="148" font-size="10" fill="#3D3228" font-weight="600">海舌半岛</text>
+      <text x="112" y="160" font-size="7" fill="#6B6058">⏱ 1-1.5h · 🌿秘境</text>
+      <text x="82" y="172" font-size="7" fill="#C4956A" font-weight="600">22km</text>
+      <line x1="96" y1="210" x2="96" y2="150" stroke="#C4956A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+      <!-- 半岛伸入洱海示意 -->
+      <path d="M156 150 Q180 145 200 155" fill="none" stroke="#5B8C5A" stroke-width="1" stroke-dasharray="3 2" opacity="0.4"/>
+      <text x="202" y="153" font-size="7" fill="#5B8C5A" opacity="0.5">→ 1km伸入洱海</text>
+
+      <!-- ⑥ 喜洲古镇 26km -->
+      <circle cx="160" cy="75" r="8" fill="#5B8C5A" stroke="#fff" stroke-width="2.5"/>
+      <text x="160" y="75" font-size="9" fill="#fff" text-anchor="middle" dy="3" font-weight="700">6</text>
+      <text x="118" y="73" font-size="10" fill="#3D3228" font-weight="600">喜洲古镇</text>
+      <text x="118" y="85" font-size="7" fill="#6B6058">⏱ 2-3h · 🥟美食</text>
+      <text x="82" y="97" font-size="7" fill="#C4956A" font-weight="600">26km</text>
+      <line x1="96" y1="150" x2="96" y2="75" stroke="#C4956A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+
+      <!-- 里程纵线 -->
+      <line x1="100" y1="390" x2="100" y2="75" stroke="#C4956A" stroke-width="1" opacity="0.12"/>
+
+      <!-- 大理古城起点标注 -->
+      <g opacity="0.35">
+        <text x="15" y="425" font-size="9" fill="#5B8C5A" font-style="italic">大理古城</text>
+        <circle cx="17" cy="416" r="2.5" fill="#5B8C5A"/>
+        <line x1="17" y1="416" x2="157" y2="390" stroke="#5B8C5A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+      </g>
+
+      <!-- 骑行小图标 -->
+      <g transform="translate(270,370)" opacity="0.2">
+        <circle cx="0" cy="0" r="15" fill="none" stroke="#5B8C5A" stroke-width="1.2"/>
+        <path d="M-6 4 L0 -9 L6 4" fill="none" stroke="#5B8C5A" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="0" cy="6" r="3" fill="#5B8C5A"/>
+      </g>
+      <g transform="translate(270,150)" opacity="0.15">
+        <circle cx="0" cy="0" r="12" fill="none" stroke="#5B8C5A" stroke-width="1"/>
+        <path d="M-5 3 L0 -7 L5 3" fill="none" stroke="#5B8C5A" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="0" cy="5" r="2.5" fill="#5B8C5A"/>
+      </g>
+    </svg>
+    <div class="rm-legend">
+      <span><span class="ld" style="background:#5B8C5A"></span> 骑行路线</span>
+      <span><span class="ld" style="background:#C4956A"></span> 累计里程 km</span>
+      <span style="color:#5B8C5A;font-size:10px">⬇ 南 ↗ 北</span>
+    </div>
+  </div>
+
+  <!-- ① 龙龛古渡 -->
+  <div class="card fade-up" id="spot-1">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">①</span>
+      <div class="card-header-text">
+        <h3>龙龛古渡</h3>
+        <div class="subtitle">环海西路东 300m · 0km起点</div>
+      </div>
+      <span class="card-tag">🌅 日出绝美</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费 · 24h</span>
+      <span class="meta-time">⏳ 40min–1h</span>
+      <span class="meta-loc">📍 距古城 4km</span>
+    </div>
+    <div class="card-body">
+      <p>
+        茶马古道保存较完整的古渡口，被誉为大理<strong>最美日出观赏地</strong>。斑驳石阶、沧桑古榕，
+        有<strong>「爱情石阶」</strong>和白族照壁。<strong>日出时分</strong>阳光洒在湖面波光粼粼，
+        晨雾中渔人收网，光影与红杉树交织，随手一拍都是大片。11月–12月红杉与海鸥同框，画面绝美。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>日出必看</strong> — 日出前 30 分钟到达，抢占最佳机位</li>
+        <li><strong>红杉与海鸥</strong> — 冬季红杉+海鸥+日出，三要素集齐最出片</li>
+        <li><strong>甲马版画</strong> — 可体验白族传统甲马版画拓印</li>
+        <li><strong>观鸟</strong> — 退水期可观紫水鸡、白骨顶等水鸟</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>日出前 30 分钟到，红杉树+海鸥+晨雾是绝配</li>
+          <li>夏季浅水区可踩泥体验，甲马版画拓印别错过</li>
+          <li>冬季（11-12月）红杉变色，画面最有层次感</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        从大理古城骑行约 20min，或打车 10min。旺季人满为患，建议早出。
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 才村 -->
+  <div class="card fade-up" id="spot-2">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">②</span>
+      <div class="card-header-text">
+        <h3>才村</h3>
+        <div class="subtitle">古城东北侧 · 骑行 3km</div>
+      </div>
+      <span class="card-tag">🌄 日出观景</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费</span>
+      <span class="meta-time">⏳ 1h</span>
+      <span class="meta-loc">📍 距大理古城 4km</span>
+    </div>
+    <div class="card-body">
+      <p>
+        距离大理古城最近的洱海村落（仅 4km），安静优美，紧邻洱海。<strong>日出观景台</strong>——
+        天空被染成渐变色，倒映在洱海中，美如画。村内白族古建筑保存完好，每逢节日仍保持舞龙、祭祀等传统习俗。
+        冬季海鸥也很多，没有过度商业化的喧嚣，只有洱海最本真的宁静。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>最近洱海村</strong> — 距古城仅 4km，骑行 15min 即达</li>
+        <li><strong>日出观景台</strong> — 与龙龛齐名的日出观景点，建议提前占位</li>
+        <li><strong>水花庄园</strong> — 2.6km外绣球花海（5-11月），门票以平台为准</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>日出观景台是核心机位，建议提前占位</li>
+          <li>租小电驴沿洱海骑行，随停随拍最自由</li>
+          <li>夜晚湖边散步看星星，远离城市光污染</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">🍽️ 美食推荐</div>
+        菌汤火锅 · 烤乳扇 · 白族家常菜
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        从大理古城骑行约 15min。龙龛→才村 3km，骑行约 10min
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 磻溪村S湾 -->
+  <div class="card fade-up" id="spot-3">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">③</span>
+      <div class="card-header-text">
+        <h3>磻溪村 S 湾</h3>
+        <div class="subtitle">银桥镇 · 磻溪村 · 骑行 14km</div>
+      </div>
+      <span class="card-tag">🏆 网红打卡</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费 · 24h</span>
+      <span class="meta-time">⏳ 40min–1h</span>
+      <span class="meta-loc">📍 距龙龛 14km</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>「大理第一 S 弯」</strong>——蜿蜒的临海公路画出一道优美弧线，
+        一侧是碧波荡漾的洱海，一侧是青瓦白墙的白族民居。日出日落时分，
+        光影洒落湖面，如诗如画，是环洱海最出片的网红打卡地之一。很多大理婚纱旅拍
+        都将这里作为首选取景地。其实整个生态廊道有很多大小 S 弯，磻溪这一段最出名。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>大理第一 S 弯</strong> — 磻溪村是最出名的S弯，旅拍必去</li>
+        <li><strong>人少备选</strong> — 不想人挤人，可留心沿途其他小 S 弯</li>
+        <li><strong>生态廊道中间点</strong> — 从才村骑到磻溪约 11km，体力适中</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>清晨人少时去最佳，或傍晚拍金色光影</li>
+          <li>穿浅色衣服更出片，白色长裙或棉麻最搭</li>
+          <li>旺季 S 湾拥堵约 2km，建议错峰出行</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        从龙龛/才村骑行约 11km（1h），或打车/包车直达磻溪村入口
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 廊桥 -->
+  <div class="card fade-up" id="spot-4">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">④</span>
+      <div class="card-header-text">
+        <h3>廊桥</h3>
+        <div class="subtitle">湾桥镇 · 向阳溪村 · 骑行 19km</div>
+      </div>
+      <span class="card-tag">📸 光影圣地</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费</span>
+      <span class="meta-time">⏳ 30min</span>
+      <span class="meta-loc">📍 距磻溪 5km</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>9 个半圆桥洞</strong>构成的拱桥形抽水渠，延伸至洱海中。
+        原为灌溉设施，如今化身光影圣地，也是《去有风的地方》中谢之遥表白许红豆的取景地。
+        站在桥上、桥下或透过桥洞，都能看到截然不同的洱海风景。附近还有<strong>「孤独的树」</strong>
+        和防波堤，都是婚纱摄影的热门取景点。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>桥洞取景</strong> — 透过桥洞拍洱海是经典机位，光影层次丰富</li>
+        <li><strong>孤独的树</strong> — 廊桥右边穿过小树林步行 200m 即到，两棵水边孤树超上镜</li>
+        <li><strong>防波堤</strong> — 延伸入海的堤坝，适合拍海景人像</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>透过桥洞拍洱海是经典机位，强烈日光下光影反差最惊艳</li>
+          <li>桥洞空间有限，拍摄时注意安全</li>
+          <li>孤独的树分左右两棵，一棵适合全景，一棵适合长焦近景</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        从磻溪村骑行约 5km（20min），或从喜洲古镇向南骑行约 8km
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 海舌半岛 -->
+  <div class="card fade-up" id="spot-5">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">⑤</span>
+      <div class="card-header-text">
+        <h3>海舌半岛</h3>
+        <div class="subtitle">喜洲东 3km · 骑行 22km</div>
+      </div>
+      <span class="card-tag">🌿 秘境</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费（需预约）</span>
+      <span class="meta-time">⏳ 1–1.5h</span>
+      <span class="meta-loc">📍 08:30–17:00</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>1km 长</strong>的狭窄半岛伸入洱海，三面环水，如白玉簪插入湖中。
+        由苍山万花溪泥沙冲积形成。游客稀少，蓝天白云绿树清波，水鸟出没，
+        安静如世外桃源，被许多人称为环洱海中最亲近洱海的地方。
+        入口处有<strong>「夫妻树」</strong>——两棵同根而生的大树，相传在树下拍照的夫妻会白头偕老。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>夫妻树</strong> — 海舌入口处，两棵大树同根而生，拍照打卡必去</li>
+        <li><strong>三面环水</strong> — 沿半岛走到最深处视野极佳，适合海景人像</li>
+        <li><strong>需提前预约</strong> — 注意开放时间 08:30–17:00，提前一天预约</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>沿半岛走到最深处，三面环水，视野极佳</li>
+          <li>适合拍摄海景人像，清晨人少光线最好</li>
+          <li>夫妻树是入口标志性打卡点，别错过</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        从廊桥骑行约 3km（10min），或从喜洲古镇步行约 40min / 骑行 10min
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 喜洲古镇 -->
+  <div class="card fade-up" id="spot-6">
+    <div class="card-accent west"></div>
+    <div class="card-header">
+      <span class="card-number west">⑥</span>
+      <div class="card-header-text">
+        <h3>喜洲古镇</h3>
+        <div class="subtitle">古城北 18km · 骑行 26km终点</div>
+      </div>
+      <span class="card-tag">🥟 美食古镇</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 古镇免费</span>
+      <span class="meta-time">⏳ 2–3h</span>
+      <span class="meta-loc">📍 距海舌 3km</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>「活着的白族古建博物馆」</strong>——西靠苍山，东临洱海。
+        老舍先生在《滇行短记》中写道：「喜洲却是个奇迹，我想不起在国内什么偏僻的地方，见过这么体面的小镇。」
+        保存大量白族民居，<strong>「三坊一照壁」「四合五天井」</strong>格局。
+        喜洲粑粑发源地，被《舌尖上的中国》收录。5–7月可看风吹麦浪，是海西线的完美终点。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>严家大院博物馆</strong> — 喜洲「四大家族」之首，可欣赏白族歌舞、品尝三道茶</li>
+        <li><strong>转角楼</strong> — 白族与西方建筑融合，外圆内方的独特建筑</li>
+        <li><strong>正义门</strong> — 西门，500 年大榕树为古镇标志</li>
+        <li><strong>麦田风光</strong> — 5–7月绿油油如宫崎骏世界，秋日金黄麦浪翻滚</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>春夏绿油油如宫崎骏世界，秋日金黄麦浪翻滚</li>
+          <li>稻田小火车 ¥35/人，是喜洲的标志性打卡项目</li>
+          <li>转角楼是古镇最具代表性的建筑机位，大榕树也必拍</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">🍽️ 必吃美食</div>
+        喜洲粑粑 · 烤乳扇 · 豌豆粉 · 清凉小屋鲜奶 · 生皮
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">🚗 交通 &amp; 贴士</div>
+        从海舌半岛骑行约 10min 即达。古镇内 tuk-tuk 游览约 ¥20/人不限时。<br>
+        注意：海舌→喜洲这一段不在生态廊道上，需走村道。想继续往北可去周城体验扎染。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span>✦ ✦ ✦</span></div>
+
+<!-- ========== 海东线 ========== -->
+<section class="section" id="east-line">
+  <div class="section-header fade-up">
+    <div class="label">East Line · 7 Spots</div>
+    <h2>海东线 · 湖光山色</h2>
+    <p>自驾环海东路，俯瞰洱海全景，邂逅秘境风光</p>
+  </div>
+
+  <div class="area-header east fade-up">
+    <span class="icon">🌊</span>
+    <div class="info">
+      <h2>海东线</h2>
+      <p>湖光山色 · 悬崖公路 · 网红打卡</p>
+    </div>
+    <span class="count">7 个景点</span>
+  </div>
+
+  <!-- 海东线手绘路线图 SVG -->
+  <div class="route-map-wrap fade-up" data-map="east">
+    <div class="rm-title"><span class="rm-icon">🚗</span>海东线 · 自驾路线图</div>
+    <span class="rm-expand-hint">⛶ 点击放大</span>
+    <svg viewBox="0 0 340 460" xmlns="http://www.w3.org/2000/svg" font-family="'PingFang SC','Microsoft YaHei',sans-serif">
+      <defs>
+        <marker id="arrowEast" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0 0 L8 3 L0 6Z" fill="#4A8BA4"/>
+        </marker>
+      </defs>
+      <!-- 湖水背景 -->
+      <ellipse cx="170" cy="230" rx="155" ry="225" fill="#E8F4F8" opacity="0.3"/>
+      <!-- 苍山远景 -->
+      <path d="M0 440 Q60 340 120 390 Q180 330 240 360 Q290 310 340 340 L340 460 L0 460Z" fill="#4A8BA4" opacity="0.06"/>
+      <!-- 环海东路 -->
+      <path d="M170 25 Q180 45 175 65 Q168 85 165 105 Q162 125 160 145 Q155 165 152 185 Q148 205 150 225 Q155 245 158 265 Q162 285 155 305 Q148 325 152 345 Q156 365 158 385 Q162 405 160 430"
+        fill="none" stroke="#4A8BA4" stroke-width="2.5" opacity="0.7" marker-end="url(#arrowEast)"/>
+
+      <!-- 环海东路标注 -->
+      <text x="195" y="120" font-size="8" fill="#4A8BA4" opacity="0.5" transform="rotate(-10,195,120)" font-style="italic">环海东路 · 精华段</text>
+      <text x="195" y="130" font-size="7" fill="#4A8BA4" opacity="0.35" transform="rotate(-10,195,130)" font-style="italic">双廊→天镜阁</text>
+
+      <!-- ⑦ 双廊古镇 -->
+      <circle cx="168" cy="45" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="168" y="45" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">7</text>
+      <text x="130" y="43" font-size="10" fill="#3D3228" font-weight="600">双廊古镇</text>
+      <text x="130" y="55" font-size="7" fill="#6B6058">⏱ 2-3h · 🏆必去</text>
+
+      <!-- ⑧ 鹿卧山遗址 -->
+      <circle cx="165" cy="100" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="165" y="100" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">8</text>
+      <text x="124" y="98" font-size="10" fill="#3D3228" font-weight="600">鹿卧山遗址</text>
+      <text x="124" y="110" font-size="7" fill="#6B6058">⏱ 40min · 📸婚纱</text>
+
+      <!-- ⑨ 挖色码头 -->
+      <circle cx="160" cy="155" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="160" y="155" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">9</text>
+      <text x="120" y="153" font-size="10" fill="#3D3228" font-weight="600">挖色码头</text>
+      <text x="120" y="165" font-size="7" fill="#6B6058">⏱ 30min · 🌊倒影</text>
+
+      <!-- 双廊→挖色精华段 -->
+      <path d="M168 45 Q185 70 188 100 Q190 125 162 155" fill="none" stroke="#D4A15A" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.35"/>
+      <text x="192" y="100" font-size="7" fill="#D4A15A" opacity="0.45" transform="rotate(80,192,100)">双廊→挖色精华路段</text>
+
+      <!-- ⑩ 小普陀 -->
+      <circle cx="158" cy="210" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="158" y="210" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">10</text>
+      <text x="117" y="208" font-size="10" fill="#3D3228" font-weight="600">小普陀</text>
+      <text x="117" y="220" font-size="7" fill="#6B6058">⏱ 20min · 🕊️海鸥</text>
+
+      <!-- ⑪ 文笔村 -->
+      <circle cx="156" cy="265" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="156" y="265" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">11</text>
+      <text x="115" y="263" font-size="10" fill="#3D3228" font-weight="600">文笔村</text>
+      <text x="115" y="275" font-size="7" fill="#6B6058">⏱ 1h · 🌈彩虹</text>
+
+      <!-- ⑫ 理想邦 -->
+      <circle cx="155" cy="320" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="155" y="320" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">12</text>
+      <text x="114" y="318" font-size="10" fill="#3D3228" font-weight="600">理想邦</text>
+      <text x="114" y="330" font-size="7" fill="#6B6058">⏱ 1-1.5h · 🏛️圣托里尼</text>
+
+      <!-- ⑬ 天镜阁 -->
+      <circle cx="158" cy="375" r="7" fill="#4A8BA4" stroke="#fff" stroke-width="2"/>
+      <text x="158" y="375" font-size="9" fill="#fff" text-anchor="middle" dy="2.5" font-weight="700">13</text>
+      <text x="117" y="373" font-size="10" fill="#3D3228" font-weight="600">天镜阁</text>
+      <text x="117" y="385" font-size="7" fill="#6B6058">⏱ 1-1.5h · 🏯佛阁</text>
+
+      <!-- 日落标注 -->
+      <g opacity="0.35">
+        <circle cx="290" cy="380" r="18" fill="#D4A15A" opacity="0.15"/>
+        <circle cx="290" cy="380" r="12" fill="#D4A15A" opacity="0.12"/>
+        <circle cx="290" cy="380" r="6" fill="#D4A15A" opacity="0.1"/>
+        <text x="290" y="408" font-size="8" fill="#D4A15A" text-anchor="middle">🌅 日落方向</text>
+        <line x1="290" y1="390" x2="250" y2="395" stroke="#D4A15A" stroke-width="0.8" stroke-dasharray="2 2" opacity="0.3"/>
+      </g>
+
+      <!-- 自驾小图标 -->
+      <g transform="translate(280,420)" opacity="0.2">
+        <rect x="-10" y="-6" width="20" height="12" rx="3" fill="none" stroke="#4A8BA4" stroke-width="1.2"/>
+        <circle cx="-5" cy="6" r="3" fill="none" stroke="#4A8BA4" stroke-width="1"/>
+        <circle cx="5" cy="6" r="3" fill="none" stroke="#4A8BA4" stroke-width="1"/>
+      </g>
+      <g transform="translate(280,60)" opacity="0.15">
+        <rect x="-8" y="-5" width="16" height="10" rx="2.5" fill="none" stroke="#4A8BA4" stroke-width="1"/>
+        <circle cx="-4" cy="5" r="2.5" fill="none" stroke="#4A8BA4" stroke-width="0.8"/>
+        <circle cx="4" cy="5" r="2.5" fill="none" stroke="#4A8BA4" stroke-width="0.8"/>
+      </g>
+    </svg>
+    <div class="rm-legend">
+      <span><span class="ld" style="background:#4A8BA4"></span> 自驾路线</span>
+      <span><span class="ld" style="background:#D4A15A;opacity:0.3"></span> 双廊→挖色精华段</span>
+      <span style="color:#4A8BA4;font-size:10px">⬆ 北 → 南</span>
+    </div>
+  </div>
+
+  <!-- ⑦ 双廊古镇 -->
+  <div class="card fade-up" id="spot-7">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑦</span>
+      <div class="card-header-text">
+        <h3>双廊古镇</h3>
+        <div class="subtitle">洱海东北岸</div>
+      </div>
+      <span class="card-tag">🏆 必去榜首</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 古镇免费</span>
+      <span class="meta-time">⏳ 2–3h</span>
+      <span class="meta-loc">📍 洱海东北岸</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>「苍海风光第一镇」</strong>——紧靠洱海，远眺苍山十九峰。
+        核心地标<strong>玉几岛</strong>上，有杨丽萍的<strong>太阳宫</strong>——
+        与自然共生的艺术建筑，全玻璃落地窗，面朝洱海，听着浪花、看着苍山，安逸至极。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>太阳宫</strong> — 杨丽萍私宅改建，免费预约（每天限号）或 ¥128 下午茶（推荐）</li>
+        <li><strong>南诏风情岛</strong> — 需乘船上岛，有太湖石群落、本主广场、南诏行宫</li>
+        <li><strong>玉几岛</strong> — 紧邻双廊古镇，步行即可到达</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>强烈推荐住一晚，傍晚和清晨的双廊最迷人</li>
+          <li>太阳宫下午茶时间不限，可慢慢拍</li>
+          <li>从玉几岛望苍山洱海，取景绝佳</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">🍽️ 美食推荐</div>
+        白族石板烧 · 柠檬香草鸡 · 包浆豆腐
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">🚗 交通</div>
+        从大理古城包车约 1h，建议上午出发
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ 鹿卧山遗址 -->
+  <div class="card fade-up" id="spot-8">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑧</span>
+      <div class="card-header-text">
+        <h3>鹿卧山遗址</h3>
+        <div class="subtitle">环海东路</div>
+      </div>
+      <span class="card-tag">📸 婚纱胜地</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费 · 24h</span>
+      <span class="meta-time">⏳ 40min–1h</span>
+      <span class="meta-loc">📍 环海东路</span>
+    </div>
+    <div class="card-body">
+      <p>
+        新石器时代至汉代古文化遗址，视野辽阔，被称为<strong>「洱海之窗」</strong>——
+        俯瞰洱海全景的绝佳位置。婚纱摄影胜地，众多新人来此拍摄。
+        沿陡峭小路下山，发现藏在山洞和废弃门窗中的意外之喜。
+      </p>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>沿陡峭小路下山，有山洞和废弃门窗，文艺感十足</li>
+          <li>以洱海为背景，站在窗边，分分钟出大片</li>
+          <li>建议下午前往，光线斜照更出片</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        自驾或包车沿环海东路，路边停车即可
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑨ 挖色码头 -->
+  <div class="card fade-up" id="spot-9">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑨</span>
+      <div class="card-header-text">
+        <h3>挖色码头</h3>
+        <div class="subtitle">挖色镇</div>
+      </div>
+      <span class="card-tag">🌊 水面倒影</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费 · 24h</span>
+      <span class="meta-time">⏳ 30min</span>
+      <span class="meta-loc">📍 挖色镇</span>
+    </div>
+    <div class="card-body">
+      <p>
+        海水上涨时会漫过码头，形成独特的水面倒影效果。从双廊到挖色这段海景是
+        环海东路的<strong>精华路段</strong>，沿途风光绝美，婚纱摄影热门取景地。
+        天气变化无常时，天空会漏下"耶稣光"，非常神奇。
+      </p>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>水面倒影是最大看点，建议风平浪静的时段前往</li>
+          <li>双廊到挖色这段是精华，建议租敞篷车随停随拍</li>
+          <li>"耶稣光"可遇不可求，雨后初晴概率最大</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        沿环海东路自驾，双廊以南约 15min 车程
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑩ 小普陀 -->
+  <div class="card fade-up" id="spot-10">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑩</span>
+      <div class="card-header-text">
+        <h3>小普陀</h3>
+        <div class="subtitle">挖色镇海印村</div>
+      </div>
+      <span class="card-tag">🕊️ 冬季海鸥</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费（岸边）</span>
+      <span class="meta-time">⏳ 20–30min</span>
+      <span class="meta-loc">📍 挖色镇海印村</span>
+    </div>
+    <div class="card-body">
+      <p>
+        洱海八景之一<strong>「岚霭普陀」</strong>。袖珍小岛周长仅 <strong>200m</strong>，
+        岛上建观音阁。传说观音开辟大理坝子时丢下镇海大印即为小岛。
+        <strong>冬季</strong>成群红嘴鸥飞至湖面，喂海鸥极有趣，是洱海最上镜的景点之一。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>「岚霭普陀」</strong> — 洱海八景之一，晨雾中的小岛如蓬莱仙境</li>
+        <li><strong>冬季限定</strong> — 成群红嘴鸥聚集，喂海鸥是最大乐趣</li>
+        <li><strong>登岛</strong> — 乘船上岛 ¥15–20，岛上观音阁可参观</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>最佳机位在岸边，以苍山洱海为背景，不用登岛</li>
+          <li>黄昏时分，夕阳下的洱海和小普陀岛金光粼粼</li>
+          <li>冬季海鸥聚集时，画面更加灵动动人</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        沿环海东路自驾，挖色镇以南，路边有停车位 ¥10/次
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑪ 文笔村 -->
+  <div class="card fade-up" id="spot-11">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑪</span>
+      <div class="card-header-text">
+        <h3>文笔村</h3>
+        <div class="subtitle">海东镇</div>
+      </div>
+      <span class="card-tag">🌈 彩虹公路</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 免费 · 24h</span>
+      <span class="meta-time">⏳ 1h</span>
+      <span class="meta-loc">📍 海东镇</span>
+    </div>
+    <div class="card-body">
+      <p>
+        以自然风光和白族文化著称的村落。<strong>彩虹公路</strong>火爆全网——
+        从高处蜿蜒而下直通洱海，是文笔村最出片的打卡点。<strong>海之礼堂</strong>
+        是网红婚纱拍摄基地，近 20 个拍照场景。文笔塔可登塔俯瞰田园风光，
+        白族民居白墙灰瓦、雕梁画栋，处处透着大理的慢生活气息。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>彩虹公路</strong> — 从高处往下拍，彩虹路面蜿蜒通向洱海，超出片</li>
+        <li><strong>海之礼堂</strong> — 网红婚纱拍摄基地，近 20 个拍照场景</li>
+        <li><strong>文笔塔</strong> — 登塔俯瞰村庄和田园风光，视野开阔</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>彩虹公路从高处往下拍，路面蜿蜒通向洱海最出片</li>
+          <li>往上走还有彩虹墙和彩虹石，可以一并打卡</li>
+          <li>半山悦旅拍花园有多个拍照场景，适合爱拍照的你</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        沿环海东路自驾，海东镇以南，路边可停车
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑫ 理想邦·圣托里尼 -->
+  <div class="card fade-up" id="spot-12">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑫</span>
+      <div class="card-header-text">
+        <h3>理想邦 · 圣托里尼</h3>
+        <div class="subtitle">环海东路崖壁</div>
+      </div>
+      <span class="card-tag">🏛️ 大理圣托里尼</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 园区免费</span>
+      <span class="meta-time">⏳ 1–1.5h</span>
+      <span class="meta-loc">📍 10:00–17:30</span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>「大理版圣托里尼」</strong>——以"山海剧场"为设计概念的地中海风格
+        纯白阶梯式建筑群。纯白建筑沿山势层叠错落，拱形门廊与多肉植物景观相映成趣。
+        十二座主题庭院各具巧思：摩洛哥风陶土花器、土耳其洞穴风茶室、波西米亚织物工坊。
+        入夜后崖壁灯光亮起，星空酒廊与洱海浪声交织。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>十二座主题庭院</strong> — 摩洛哥、土耳其、波西米亚等异域风情</li>
+        <li><strong>理想花园</strong> — 主要出片区域，需购票 ¥100</li>
+        <li><strong>入夜灯光秀</strong> — 崖壁灯光渐亮，星空酒廊与洱海浪声交织</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>路线一：进园区左转上楼梯→理想桥→大陡坡→白色建筑群</li>
+          <li>路线二：观光车 ¥10→花园广场→时空长廊→极光巷→到底</li>
+          <li>建议下午 4 点后进场，阳光柔和，拍照顺光还不热</li>
+          <li>穿搭建议：白裙配草帽，出片神器</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">贴士</div>
+        对面停车场 ¥10/次。上午 10 点开门，去早了可沿河边逛逛。<br>
+        理想花园需购票 ¥100，是主要出片区域。每月举办"在地灵感"市集。
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑬ 天镜阁 -->
+  <div class="card fade-up" id="spot-13">
+    <div class="card-accent east"></div>
+    <div class="card-header">
+      <span class="card-number east">⑬</span>
+      <div class="card-header-text">
+        <h3>天镜阁</h3>
+        <div class="subtitle">罗荃半岛</div>
+      </div>
+      <span class="card-tag">🏯 佛教圣地</span>
+    </div>
+    <div class="card-meta">
+      <span class="meta-ticket">🎫 约 ¥30</span>
+      <span class="meta-time">⏳ 1–1.5h</span>
+      <span class="meta-loc">📍 08:30–18:00</span>
+    </div>
+    <div class="card-body">
+      <p>
+        四层八面阁楼高耸山巅，三面临水，悬崖壁立，呈<strong>「山环吞海，澄海如镜」</strong>之势。
+        南诏、大理国时期是重要的佛教圣地，传说《望夫云》——白族最动人的爱情故事
+        发生于此。景区内还有观音阁、太子阁、八仙楼、罗荃寺、罗荃塔遗址等。
+      </p>
+      <ul class="highlight-list">
+        <li><strong>景区群组</strong> — 天镜阁、观音阁、太子阁、八仙楼、罗荃寺、罗荃塔遗址</li>
+        <li><strong>白族「大本曲」</strong> — 可聆听到白族传统曲艺演唱</li>
+        <li><strong>「海八碗」</strong> — 品尝以洱海水煮洱海鱼为特色的白族宴席</li>
+      </ul>
+      <div class="photo-tip">
+        <div class="photo-tip-header">
+          <span class="icon">📸</span>
+          <span class="label">拍照攻略</span>
+        </div>
+        <ul>
+          <li>夏秋季看「望夫云」——云朵从苍山翻涌而来，最是壮观</li>
+          <li>春天看「上帝之光」——阳光穿透云层洒向洱海，光影层次绝美</li>
+          <li>一年四季遥看洱海，景色各不同，每一季都有惊喜</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">交通</div>
+        沿环海东路自驾，距大理火车站约 25km，有中巴交通车经过
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span>✦ ✦ ✦</span></div>
+
+<!-- ========== 经典路线 ========== -->
+<section class="section" id="routes">
+  <div class="section-header fade-up">
+    <div class="label">Planned Routes</div>
+    <h2>经典路线推荐</h2>
+    <p>根据你的时间，选择最适合的环湖方式</p>
+  </div>
+
+  <div class="route-plan">
+    <div class="route-card day1 fade-up">
+      <div class="rc-label">推荐 · 2日精华游</div>
+      <div class="rc-title">🌿 Day 1 · 海西线</div>
+      <div class="rc-desc">
+        从大理古城出发，骑行或包车走海西生态廊道，依次打卡磻溪 S 湾 → 廊桥 →
+        喜洲古镇（午餐）→ 海舌半岛 → 龙龛古渡 → 才村，感受田园牧歌的慢生活。
+      </div>
+      <div class="rc-dots">
+        <span class="rc-dot">磻溪S湾</span>
+        <span class="rc-dot">廊桥</span>
+        <span class="rc-dot">喜洲古镇</span>
+        <span class="rc-dot">海舌半岛</span>
+        <span class="rc-dot">龙龛古渡</span>
+        <span class="rc-dot">才村</span>
+      </div>
+    </div>
+
+    <div class="route-card day2 fade-up">
+      <div class="rc-label">推荐 · 2日精华游</div>
+      <div class="rc-title">🌊 Day 2 · 海东线</div>
+      <div class="rc-desc">
+        上午出发前往双廊古镇（逛玉几岛/太阳宫），沿环海东路一路向南：鹿卧山遗址 →
+        挖色码头 → 小普陀 → 文笔村 → 理想邦 → 天镜阁，在日落前抵达终点。
+      </div>
+      <div class="rc-dots">
+        <span class="rc-dot">双廊古镇</span>
+        <span class="rc-dot">鹿卧山</span>
+        <span class="rc-dot">挖色码头</span>
+        <span class="rc-dot">小普陀</span>
+        <span class="rc-dot">文笔村</span>
+        <span class="rc-dot">理想邦</span>
+        <span class="rc-dot">天镜阁</span>
+      </div>
+    </div>
+
+    <div class="route-card full fade-up">
+      <div class="rc-label">紧凑 · 1日环湖游</div>
+      <div class="rc-title">🚗 1 日环湖</div>
+      <div class="rc-desc">
+        <strong>08:30</strong> 出发 → 磻溪 S 湾 → 喜洲古镇（午餐）→ 双廊古镇 →
+        鹿卧山遗址 → 小普陀 → 理想邦 → 返回古城。全程约 130km，
+        建议自驾或包车，早出晚归，节奏紧凑。
+      </div>
+      <div class="rc-dots">
+        <span class="rc-dot">08:30 出发</span>
+        <span class="rc-dot">磻溪S湾</span>
+        <span class="rc-dot">喜洲</span>
+        <span class="rc-dot">双廊</span>
+        <span class="rc-dot">鹿卧山</span>
+        <span class="rc-dot">理想邦</span>
+        <span class="rc-dot">返回</span>
+      </div>
+    </div>
+
+    <div class="route-card full fade-up" style="margin-top:0">
+      <div class="rc-label">骑行 · 2日环湖</div>
+      <div class="rc-title">🚲 骑行环湖 126km</div>
+      <div class="rc-desc">
+        <strong>顺时针骑行</strong>更安全（靠海一侧）。分 2 天完成，海西 46km 生态廊道
+        骑行体验极佳，海东路段注意车辆。<strong>自行车租赁 ¥20/天</strong>，
+        电动车 ¥40–60/天，建议租电动车更轻松。
+      </div>
+      <div class="rc-dots">
+        <span class="rc-dot">🚲 自行车 ¥20/天</span>
+        <span class="rc-dot">⚡ 电动车 ¥40-60/天</span>
+        <span class="rc-dot">↻ 顺时针骑行</span>
+        <span class="rc-dot">📏 126km 分 2 天</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span>✦ ✦ ✦</span></div>
+
+<!-- ========== 交通·美食·贴士 ========== -->
+<section class="section" id="tips-food">
+  <div class="section-header fade-up">
+    <div class="label">Travel Tips</div>
+    <h2>交通 · 美食 · 贴士</h2>
+    <p>让环湖之旅更从容更尽兴</p>
+  </div>
+
+  <!-- 交通 -->
+  <div class="tips-card fade-up">
+    <h3><span class="emoji">🚗</span> 交通方式</h3>
+    <div class="tips-content">
+      <span class="ti"><span class="ti-label">🚗 包车/自驾</span> 150–300元/天</span>
+      <span class="ti"><span class="ti-label">⚡ 电动车</span> 40–60元/天</span>
+      <span class="ti"><span class="ti-label">🚲 自行车</span> 20元/天</span>
+      <span class="ti"><span class="ti-label">🚌 观光巴士</span> 8:30–19:30</span>
+    </div>
+  </div>
+
+  <!-- 美食 -->
+  <div class="tips-card fade-up">
+    <h3><span class="emoji">🍜</span> 大理必吃美食</h3>
+    <div class="food-grid">
+      <span class="food-item"><span class="fi-icon">🥟</span> 喜洲粑粑</span>
+      <span class="food-item"><span class="fi-icon">🐟</span> 白族酸辣鱼</span>
+      <span class="food-item"><span class="fi-icon">🍗</span> 黄焖鸡</span>
+      <span class="food-item"><span class="fi-icon">🥔</span> 老奶洋芋</span>
+      <span class="food-item"><span class="fi-icon">🧀</span> 包浆豆腐</span>
+      <span class="food-item"><span class="fi-icon">🥛</span> 烤乳扇</span>
+      <span class="food-item"><span class="fi-icon">🥮</span> 饵块</span>
+    </div>
+  </div>
+
+  <!-- 贴士 -->
+  <div class="tips-grid">
+    <div class="tips-card fade-up">
+      <h3><span class="emoji">☀️</span> 防晒必备</h3>
+      <ul class="tips-list">
+        <li>海拔近 <strong>2000m</strong>，紫外线强烈</li>
+        <li>帽子、墨镜、防晒霜一个不能少</li>
+        <li>即使阴天也需防晒</li>
+      </ul>
+    </div>
+    <div class="tips-card fade-up">
+      <h3><span class="emoji">🌬️</span> 风季提醒</h3>
+      <ul class="tips-list">
+        <li>风季 <strong>12–4 月</strong>，下午风力更强</li>
+        <li>骑行注意横风，海东段尤甚</li>
+        <li>建议上午骑行，下午自驾</li>
+      </ul>
+    </div>
+    <div class="tips-card fade-up">
+      <h3><span class="emoji">👥</span> 避峰指南</h3>
+      <ul class="tips-list">
+        <li>旺季（暑期/国庆/春节）人山人海</li>
+        <li>建议早晨 8 点前出门，避开人流</li>
+        <li>选择 3-5 月或 9-11 月出行最佳</li>
+      </ul>
+    </div>
+    <div class="tips-card fade-up">
+      <h3><span class="emoji">🚲</span> 骑行安全</h3>
+      <ul class="tips-list">
+        <li><strong>顺时针骑行</strong>更安全可靠</li>
+        <li>始终靠海一侧骑行</li>
+        <li>海东段车多路窄，注意避让</li>
+      </ul>
+    </div>
+    <div class="tips-card full fade-up">
+      <h3><span class="emoji">💡</span> 温馨提示</h3>
+      <ul class="tips-list">
+        <li><strong>穿搭</strong>：早晚温差大（10–25°C），建议洋葱式穿衣，备一件外套</li>
+        <li><strong>高原反应</strong>：1972m 一般不会高反，但避免剧烈运动，多喝水</li>
+        <li><strong>停车</strong>：各景点对面或路边均有停车场，统一价约 ¥10/次</li>
+        <li><strong>支付</strong>：微信/支付宝全覆盖，无需换现金</li>
+        <li><strong>住宿</strong>：建议海西住大理古城/喜洲，海东住双廊，体验不同风情</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-mtn">⛰️  🌊</div>
+  <p>大理洱海 · 环湖攻略完整版</p>
+  <p>海西线 6 景 · 海东线 7 景 · 共 13 景 · 收藏备用</p>
+  <p class="quote">苍山不墨千秋画 · 洱海无弦万古琴</p>
+</footer>
+
+<!-- ========== MAP FULLSCREEN MODAL ========== -->
+<div class="map-overlay" id="mapOverlay">
+  <button class="map-close" id="mapClose">✕</button>
+  <div class="map-content">
+    <div class="map-title" id="mapTitle"></div>
+    <div id="mapSvgContainer"></div>
+  </div>
+</div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// Nav scroll shadow
+const nav = document.getElementById('nav');
+const navObserver = new IntersectionObserver(([entry]) => {
+  nav.classList.toggle('scrolled', !entry.isIntersecting);
+}, {threshold:0,rootMargin:'-1px 0px 0px 0px'});
+navObserver.observe(document.querySelector('.hero'));
+
+// Scroll fade-up animations
+const fadeEls = document.querySelectorAll('.fade-up');
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+fadeEls.forEach(el => fadeObserver.observe(el));
+
+// Active nav link highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, {threshold:0.2,rootMargin:'-56px 0px -40% 0px'});
+sections.forEach(s => sectionObserver.observe(s));
+
+// Smooth scroll for nav links
+navLinks.forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target){
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+});
+
+// ===== Map Fullscreen with Pinch-to-Zoom & Pan =====
+const mapOverlay = document.getElementById('mapOverlay');
+const mapTitle = document.getElementById('mapTitle');
+const mapSvgContainer = document.getElementById('mapSvgContainer');
+const mapClose = document.getElementById('mapClose');
+
+// ----- Zoom/Pan state -----
+let zoomState = { scale: 1, tx: 0, ty: 0 };
+let zoomWrap = null;
+
+function resetZoom() {
+  zoomState = { scale: 1, tx: 0, ty: 0 };
+  if (zoomWrap) zoomWrap.style.transform = 'translate(0,0) scale(1)';
+}
+
+function applyZoom() {
+  if (!zoomWrap) return;
+  const { scale, tx, ty } = zoomState;
+  zoomWrap.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+}
+
+function clampZoom(s) {
+  return Math.min(5, Math.max(0.5, s));
+}
+
+// ----- Touch handlers (pinch-to-zoom + single-finger pan) -----
+let isPanning = false;
+let panStart = null;
+let lastTouchDist = 0;
+let lastTouchCenter = null;
+let lastTouchTime = 0;
+
+function touchDist(e) {
+  const t = e.touches;
+  if (t.length < 2) return 0;
+  const dx = t[0].clientX - t[1].clientX;
+  const dy = t[0].clientY - t[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function touchCenter(e) {
+  const t = e.touches;
+  if (t.length < 2) return null;
+  return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 };
+}
+
+mapOverlay.addEventListener('touchstart', function(e) {
+  if (e.target.closest('.map-close')) return;
+  const now = Date.now();
+
+  if (e.touches.length === 1) {
+    isPanning = true;
+    panStart = { x: e.touches[0].clientX - zoomState.tx, y: e.touches[0].clientY - zoomState.ty };
+    lastTouchDist = 0;
+    lastTouchCenter = null;
+
+    // Double-tap → reset
+    if (now - lastTouchTime < 300) {
+      resetZoom();
+      isPanning = false;
+      panStart = null;
+      e.preventDefault();
+      return;
+    }
+    lastTouchTime = now;
+  } else if (e.touches.length === 2) {
+    isPanning = false;
+    panStart = null;
+    lastTouchDist = touchDist(e);
+    lastTouchCenter = touchCenter(e);
+    e.preventDefault();
+  }
+}, { passive: false });
+
+mapOverlay.addEventListener('touchmove', function(e) {
+  if (e.target.closest('.map-close')) return;
+
+  if (e.touches.length === 1 && isPanning && panStart) {
+    zoomState.tx = e.touches[0].clientX - panStart.x;
+    zoomState.ty = e.touches[0].clientY - panStart.y;
+    applyZoom();
+    e.preventDefault();
+  } else if (e.touches.length === 2 && lastTouchDist > 0 && lastTouchCenter) {
+    const newDist = touchDist(e);
+    const newCenter = touchCenter(e);
+    if (newDist > 0 && newCenter) {
+      const factor = newDist / lastTouchDist;
+      const oldS = zoomState.scale;
+      const newS = clampZoom(oldS * factor);
+      // Keep the midpoint of the two fingers stationary on screen
+      const cx = lastTouchCenter.x;
+      const cy = lastTouchCenter.y;
+      zoomState.tx = cx - (cx - zoomState.tx) * newS / oldS;
+      zoomState.ty = cy - (cy - zoomState.ty) * newS / oldS;
+      zoomState.scale = newS;
+      applyZoom();
+      lastTouchDist = newDist;
+      lastTouchCenter = newCenter;
+    }
+    e.preventDefault();
+  }
+}, { passive: false });
+
+mapOverlay.addEventListener('touchend', function(e) {
+  if (e.target.closest('.map-close')) return;
+  if (e.touches.length < 2) { lastTouchDist = 0; lastTouchCenter = null; }
+  if (e.touches.length === 0) { isPanning = false; panStart = null; }
+});
+
+// ----- Mouse wheel zoom -----
+mapOverlay.addEventListener('wheel', function(e) {
+  if (e.target.closest('.map-close')) return;
+  e.preventDefault();
+  const rect = mapOverlay.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  const delta = -e.deltaY * 0.001;
+  const oldS = zoomState.scale;
+  const newS = clampZoom(oldS * (1 + delta));
+  zoomState.tx = cx - (cx - zoomState.tx) * newS / oldS;
+  zoomState.ty = cy - (cy - zoomState.ty) * newS / oldS;
+  zoomState.scale = newS;
+  applyZoom();
+}, { passive: false });
+
+// ----- Double-click reset -----
+mapOverlay.addEventListener('dblclick', function(e) {
+  if (e.target.closest('.map-close')) return;
+  e.preventDefault();
+  resetZoom();
+});
+
+// ----- Open map -----
+document.querySelectorAll('.route-map-wrap').forEach(wrap => {
+  wrap.addEventListener('click', function() {
+    const title = this.querySelector('.rm-title').textContent;
+    const svg = this.querySelector('svg').cloneNode(true);
+    const legend = this.querySelector('.rm-legend').cloneNode(true);
+    // Enlarge text in the fullscreen SVG
+    svg.querySelectorAll('text').forEach(t => {
+      const oldSize = parseFloat(t.getAttribute('font-size') || '8');
+      t.setAttribute('font-size', Math.round(oldSize * 1.3));
+    });
+    svg.querySelectorAll('circle').forEach(c => {
+      const oldR = parseFloat(c.getAttribute('r') || '6');
+      c.setAttribute('r', oldR * 1.2);
+    });
+    svg.style.maxWidth = '100%';
+    svg.style.width = '100%';
+    svg.style.height = 'auto';
+    mapTitle.textContent = title;
+
+    // Wrap SVG in zoom container
+    zoomWrap = document.createElement('div');
+    zoomWrap.className = 'map-svg-zoom-wrap';
+    zoomWrap.appendChild(svg);
+
+    mapSvgContainer.innerHTML = '';
+    mapSvgContainer.appendChild(zoomWrap);
+    mapSvgContainer.appendChild(legend);
+
+    resetZoom();
+    mapOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+function closeMap() {
+  mapOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+  resetZoom();
+}
+mapClose.addEventListener('click', closeMap);
+mapOverlay.addEventListener('click', function(e) {
+  if(e.target === this) closeMap();
+});
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Escape') closeMap();
+});
+</script>
+</body>
+</html>
