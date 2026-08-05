@@ -353,88 +353,144 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
       <defs>
         <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#6B9B7A"/>
-          <stop offset=".35" stop-color="#4A7A8C"/>
-          <stop offset=".7" stop-color="#C4704F"/>
+          <stop offset=".25" stop-color="#4A7A8C"/>
+          <stop offset=".55" stop-color="#C9A227"/>
+          <stop offset=".8" stop-color="#C4704F"/>
           <stop offset="1" stop-color="#8E4A2F"/>
         </linearGradient>
-        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2"/>
+        <linearGradient id="roadShadow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#DDD5C7" stop-opacity="0"/>
+          <stop offset="1" stop-color="#DDD5C7" stop-opacity=".5"/>
+        </linearGradient>
+        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2.5"/>
         </filter>
+        <radialGradient id="nodeGlow" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#F5DE81"/><stop offset="1" stop-color="#F5DE81" stop-opacity="0"/>
+        </radialGradient>
       </defs>
 
-      <!-- 背景秦岭山形 -->
-      <g class="mtn" fill="none" stroke="#DDD5C7" stroke-width="2">
-        <path d="M60 250 L140 160 L210 240 L290 140 L370 235 L450 155 L530 240 L610 145 L690 235 L770 160 L850 245 L930 170"/>
-        <path d="M100 265 L180 195 L260 260 L340 185 L420 258 L500 195 L580 262 L660 190 L740 260 L820 200 L900 258" opacity=".5"/>
+      <!-- 背景秦岭山形（三层，远近叠） -->
+      <g class="mtn" fill="none" stroke="#E8DCCB" stroke-width="2" stroke-linecap="round">
+        <path d="M40 260 L 110 170 L 180 250 L 260 150 L 340 245 L 420 165 L 500 250 L 580 155 L 660 245 L 740 170 L 820 255 L 900 180 L 960 250" opacity=".4"/>
       </g>
-      <text x="500" y="118" text-anchor="middle" font-size="13" fill="#B9AE9C" letter-spacing="6" font-family="serif">秦 岭 腹 地</text>
+      <g class="mtn" fill="none" stroke="#DDD5C7" stroke-width="2.2" stroke-linecap="round">
+        <path d="M60 275 L 140 200 L 220 270 L 300 190 L 380 268 L 460 200 L 540 272 L 620 195 L 700 270 L 780 210 L 860 272 L 940 205"/>
+      </g>
+      <g class="mtn" fill="none" stroke="#D4C8B5" stroke-width="1.8" stroke-linecap="round" opacity=".7">
+        <path d="M80 285 L 160 230 L 240 282 L 320 225 L 400 280 L 480 230 L 560 284 L 640 228 L 720 282 L 800 235 L 880 282 L 930 240"/>
+      </g>
 
-      <!-- 主路线 -->
-      <path id="routePath" d="M90 260 C 180 250, 220 220, 300 205 S 430 185, 500 170 S 640 140, 710 128 S 850 95, 915 82"
+      <!-- 标题 -->
+      <text x="500" y="60" text-anchor="middle" font-size="13" fill="#B9AE9C" letter-spacing="8" font-family="Noto Serif SC, Songti SC, serif">秦 岭 腹 地 · 自 驾 穿 越</text>
+      <line x1="400" y1="74" x2="600" y2="74" stroke="#E8DCCB" stroke-width="1"/>
+
+      <!-- 主路线（底色阴影） -->
+      <path d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
+            fill="none" stroke="#E8DCCB" stroke-width="9" stroke-linecap="round" opacity=".6"/>
+      <!-- 主路线（描边动画） -->
+      <path id="routePath" d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
             fill="none" stroke="url(#roadGrad)" stroke-width="5" stroke-linecap="round"/>
+      <!-- 路线中线虚线 -->
+      <path d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
+            fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 8" stroke-linecap="round" opacity=".5"/>
 
       <!-- 汽车（SMIL 沿路径移动） -->
-      <g id="car">
+      <g id="car" filter="url(#softGlow)">
         <g>
-          <rect x="-14" y="-8" width="28" height="13" rx="4" fill="#2A2A2A"/>
-          <rect x="-9" y="-13" width="16" height="8" rx="3" fill="#2A2A2A"/>
-          <rect x="-7" y="-12" width="5" height="6" rx="1" fill="#BCD3E0"/>
-          <rect x="0" y="-12" width="5" height="6" rx="1" fill="#BCD3E0"/>
-          <circle cx="-7" cy="6" r="3.4" fill="#2A2A2A"/><circle cx="-7" cy="6" r="1.4" fill="#F8F5F0"/>
-          <circle cx="8" cy="6" r="3.4" fill="#2A2A2A"/><circle cx="8" cy="6" r="1.4" fill="#F8F5F0"/>
-          <animateMotion dur="9s" begin="1.2s" repeatCount="indefinite" rotate="auto"
-            path="M90 260 C 180 250, 220 220, 300 205 S 430 185, 500 170 S 640 140, 710 128 S 850 95, 915 82"/>
+          <!-- 车身 -->
+          <rect x="-15" y="-9" width="30" height="14" rx="5" fill="#2A2A2A"/>
+          <!-- 车顶 -->
+          <path d="M-10 -9 L -7 -17 L 8 -17 L 12 -9 Z" fill="#2A2A2A"/>
+          <!-- 车窗 -->
+          <rect x="-6" y="-15" width="5" height="7" rx="1" fill="#BCD3E0"/>
+          <rect x="1" y="-15" width="6" height="7" rx="1" fill="#BCD3E0"/>
+          <!-- 车灯 -->
+          <circle cx="14" cy="-3" r="2.5" fill="#FFE9A8"/>
+          <circle cx="14" cy="3" r="2" fill="#FFE9A8" opacity=".7"/>
+          <!-- 车尾灯 -->
+          <circle cx="-14" cy="-2" r="1.8" fill="#E85A4F"/>
+          <!-- 车轮 -->
+          <circle cx="-8" cy="6" r="4" fill="#2A2A2A"/>
+          <circle cx="-8" cy="6" r="1.8" fill="#F8F5F0"/>
+          <circle cx="9" cy="6" r="4" fill="#2A2A2A"/>
+          <circle cx="9" cy="6" r="1.8" fill="#F8F5F0"/>
+          <animateMotion dur="10s" begin="1.5s" repeatCount="indefinite" rotate="auto"
+            path="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"/>
         </g>
       </g>
 
-      <!-- 节点：起点十堰 -->
+      <!-- 节点：起点 十堰 -->
       <g class="node" style="animation-delay:.5s">
-        <circle cx="90" cy="260" r="9" fill="#6B9B7A" class="dot"/>
-        <circle cx="90" cy="260" r="4" fill="#F8F5F0"/>
-        <text x="90" y="292" text-anchor="middle" class="node-label">十堰</text>
-        <text x="90" y="308" text-anchor="middle" class="node-sub">起点 · 武当山下</text>
+        <circle cx="80" cy="270" r="16" fill="url(#nodeGlow)" opacity=".6"/>
+        <circle cx="80" cy="270" r="10" fill="#6B9B7A" class="dot"/>
+        <circle cx="80" cy="270" r="4.5" fill="#F8F5F0"/>
+        <text x="80" y="305" text-anchor="middle" class="node-label" font-size="14" font-weight="700">十堰</text>
+        <text x="80" y="322" text-anchor="middle" class="node-sub">起点 · 武当山下</text>
       </g>
       <!-- 郧西 -->
       <g class="node" style="animation-delay:1.3s">
-        <circle cx="300" cy="205" r="7" fill="#4A7A8C" class="dot"/>
-        <circle cx="300" cy="205" r="3" fill="#F8F5F0"/>
-        <text x="300" y="237" text-anchor="middle" class="node-label">郧西</text>
-        <text x="300" y="253" text-anchor="middle" class="node-sub">樱花 · 五龙河</text>
+        <circle cx="290" cy="220" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="290" cy="220" r="3.5" fill="#F8F5F0"/>
+        <text x="290" y="252" text-anchor="middle" class="node-label" font-size="13">郧西</text>
+        <text x="290" y="268" text-anchor="middle" class="node-sub">樱花 · 五龙河</text>
       </g>
       <!-- 漫川关 -->
       <g class="node" style="animation-delay:2s">
-        <circle cx="410" cy="182" r="7" fill="#C9A227" class="dot"/>
-        <circle cx="410" cy="182" r="3" fill="#F8F5F0"/>
-        <text x="410" y="152" text-anchor="middle" class="node-label">漫川关</text>
-        <text x="410" y="168" text-anchor="middle" class="node-sub">陕鄂界 · 朝秦暮楚</text>
+        <circle cx="410" cy="198" r="14" fill="url(#nodeGlow)" opacity=".5"/>
+        <circle cx="410" cy="198" r="8.5" fill="#C9A227" class="dot"/>
+        <circle cx="410" cy="198" r="3.5" fill="#F8F5F0"/>
+        <text x="410" y="168" text-anchor="middle" class="node-label" font-size="13" font-weight="600">漫川关</text>
+        <text x="410" y="184" text-anchor="middle" class="node-sub">陕鄂界 · 朝秦暮楚</text>
       </g>
       <!-- 山阳 -->
-      <g class="node" style="animation-delay:2.6s">
-        <circle cx="520" cy="163" r="7" fill="#4A7A8C" class="dot"/>
-        <circle cx="520" cy="163" r="3" fill="#F8F5F0"/>
-        <text x="520" y="197" text-anchor="middle" class="node-label">山阳</text>
-        <text x="520" y="213" text-anchor="middle" class="node-sub">天竺山</text>
+      <g class="node" style="animation-delay:2.7s">
+        <circle cx="520" cy="178" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="520" cy="178" r="3.5" fill="#F8F5F0"/>
+        <text x="520" y="210" text-anchor="middle" class="node-label" font-size="13">山阳</text>
+        <text x="520" y="226" text-anchor="middle" class="node-sub">天竺山</text>
       </g>
       <!-- 商洛 -->
-      <g class="node" style="animation-delay:3.2s">
-        <circle cx="655" cy="137" r="7" fill="#4A7A8C" class="dot"/>
-        <circle cx="655" cy="137" r="3" fill="#F8F5F0"/>
-        <text x="655" y="108" text-anchor="middle" class="node-label">商洛</text>
-        <text x="655" y="124" text-anchor="middle" class="node-sub">红叶大道</text>
+      <g class="node" style="animation-delay:3.4s">
+        <circle cx="655" cy="152" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="655" cy="152" r="3.5" fill="#F8F5F0"/>
+        <text x="655" y="122" text-anchor="middle" class="node-label" font-size="13">商洛</text>
+        <text x="655" y="138" text-anchor="middle" class="node-sub">红叶大道</text>
       </g>
       <!-- 蓝田 -->
-      <g class="node" style="animation-delay:3.8s">
-        <circle cx="770" cy="112" r="7" fill="#4A7A8C" class="dot"/>
-        <circle cx="770" cy="112" r="3" fill="#F8F5F0"/>
-        <text x="770" y="146" text-anchor="middle" class="node-label">蓝田</text>
-        <text x="770" y="162" text-anchor="middle" class="node-sub">汤峪 · 王顺山</text>
+      <g class="node" style="animation-delay:4.1s">
+        <circle cx="770" cy="125" r="8" fill="#C4704F" class="dot"/>
+        <circle cx="770" cy="125" r="3.5" fill="#F8F5F0"/>
+        <text x="770" y="158" text-anchor="middle" class="node-label" font-size="13">蓝田</text>
+        <text x="770" y="174" text-anchor="middle" class="node-sub">汤峪 · 王顺山</text>
       </g>
-      <!-- 终点西安 -->
-      <g class="node" style="animation-delay:4.4s">
-        <circle cx="915" cy="82" r="11" fill="#C4704F" class="dot"/>
-        <circle cx="915" cy="82" r="5" fill="#F8F5F0"/>
-        <text x="915" y="58" text-anchor="middle" class="node-label" font-size="15">西安</text>
-        <text x="915" y="42" text-anchor="middle" class="node-sub">终点 · 十三朝古都</text>
+      <!-- 终点 西安 -->
+      <g class="node" style="animation-delay:4.8s">
+        <circle cx="910" cy="95" r="20" fill="url(#nodeGlow)" opacity=".5"/>
+        <circle cx="910" cy="95" r="13" fill="#8E4A2F" class="dot"/>
+        <circle cx="910" cy="95" r="5.5" fill="#F8F5F0"/>
+        <text x="910" y="65" text-anchor="middle" class="node-label" font-size="16" font-weight="700">西安</text>
+        <text x="910" y="48" text-anchor="middle" class="node-sub">终点 · 十三朝古都</text>
+      </g>
+
+      <!-- 装饰：飞鸟 -->
+      <g stroke="#B9AE9C" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7">
+        <path d="M200 100 q 5 -5 10 0 q 5 -5 10 0"/>
+        <path d="M225 110 q 4 -4 8 0 q 4 -4 8 0"/>
+        <path d="M700 90 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+
+      <!-- 装饰：小红叶点缀 -->
+      <g fill="#C4704F" opacity=".3">
+        <path d="M150 140 l 1.5 3.5 4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z"/>
+        <path d="M800 70 l 1.5 3.5 4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z" transform="scale(.8) translate(800, 70)"/>
+      </g>
+
+      <!-- 里程标注 -->
+      <g>
+        <text x="495" y="295" text-anchor="middle" font-size="11" fill="#8E4A2F" letter-spacing="2" font-family="serif">
+          全程约 297 km · 4.5 小时车程
+        </text>
       </g>
     </svg>
     <div class="route-caption">G70 福银高速主线 · 十堰 → 郧西 → 漫川关 → 山阳 → 商洛 → 蓝田 → 西安</div>
@@ -445,17 +501,48 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 <nav class="season-nav">
   <div class="season-nav-inner">
     <a class="snav home" href="#overview">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>总览</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 L 12 4 L 21 11.5 V 19.5 A 1.5 1.5 0 0 1 19.5 21 H 15 v -6 h -6 v 6 H 4.5 A 1.5 1.5 0 0 1 3 19.5 Z"/>
+        <path d="M10 15 h 4 v 6 h -4 z" fill="currentColor" opacity=".15"/>
+      </svg>总览</a>
     <a class="snav spr" href="#spring">
-      <svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 8 3 3 3c0 5 4 9 9 9zm0 0c0-5 4-9 9-9 0 5-4 9-9 9z" fill="#6B9B7A"/></svg>春 · 花海</a>
+      <svg viewBox="0 0 24 24">
+        <path d="M12 22 V 13" stroke="#3F6B4E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M12 13 C 12 8 7.5 3 3 3 C 3 7.5 7 12 12 13 Z" fill="#8FB89A"/>
+        <path d="M12 13 C 12 8 16.5 3 21 3 C 21 7.5 17 12 12 13 Z" fill="#6B9B7A"/>
+        <circle cx="5" cy="6" r="1.5" fill="#F4C7D4"/>
+        <circle cx="19" cy="6" r="1.5" fill="#F8D7E0"/>
+      </svg>春 · 花海</a>
     <a class="snav sum" href="#summer">
-      <svg viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6l2.1 2.1m0-12.8l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="#4A7A8C" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="4" fill="#4A7A8C"/></svg>夏 · 避暑</a>
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.5" fill="#4A7A8C"/>
+        <g stroke="#4A7A8C" stroke-width="1.8" stroke-linecap="round" fill="none">
+          <path d="M12 3 v 2.5 M 12 18.5 v 2.5 M 3 12 h 2.5 M 18.5 12 h 2.5"/>
+          <path d="M5.5 5.5 l 1.8 1.8 M 16.7 16.7 l 1.8 1.8 M 18.5 5.5 l -1.8 1.8 M 7.3 16.7 l -1.8 1.8"/>
+        </g>
+        <path d="M12 15.5 Q 15 14 17 15.5 Q 15 17 12 15.5 Z" fill="#fff" opacity=".5"/>
+      </svg>夏 · 避暑</a>
     <a class="snav aut" href="#autumn">
-      <svg viewBox="0 0 24 24"><path d="M12 2C7 7 4 11 4 15a8 8 0 0 0 16 0c0-4-3-8-8-13zm0 20v-8" fill="#C4704F" stroke="#8E4A2F" stroke-width="1"/></svg>秋 · 红叶</a>
+      <svg viewBox="0 0 24 24" fill="#C4704F">
+        <path d="M12 2 l 2.2 4.2 4.8 -1.2 -1 4.8 4 3 -3.5 2.8 1.8 4.2 -4.5 -1 -1.8 4 -1.8 -4 -4.5 1 1.8 -4.2 -3.5 -2.8 4 -3 -1 -4.8 4.8 1.2 L 12 2 Z"/>
+        <path d="M12 2 l 1 2.5 2.8 -.7 -.6 2.5 2.2 1.7 -2 1.5 .8 2.2 -2.8 -.5 -1 2.2 -1 -2.2 -2.8 .5 .8 -2.2 -2 -1.5 2.2 -1.7 -.6 -2.5 2.8 .7 L 12 2 Z" fill="#E89A3C" opacity=".5"/>
+        <path d="M12 15 v 7" stroke="#8E4A2F" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      </svg>秋 · 红叶</a>
     <a class="snav win" href="#winter">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#5A7A94" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4 6l16 12M20 6L4 18M2 12h20"/></svg>冬 · 温泉滑雪</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5A7A94" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 2 v 20 M 12 2 v 20"/>
+        <path d="M4 7 l 16 10 M 20 7 L 4 17"/>
+        <path d="M2 12 h 20"/>
+        <path d="M9 5 L 12 8 L 15 5" stroke-width="1.2"/>
+        <path d="M9 19 L 12 16 L 15 19" stroke-width="1.2"/>
+        <circle cx="12" cy="12" r="2.5" fill="#fff" stroke="#5A7A94" stroke-width="1.5"/>
+      </svg>冬 · 温泉滑雪</a>
     <a class="snav home" href="#gear">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l1 13H5L6 7zm3 0a3 3 0 0 1 6 0"/></svg>装备清单</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5.5 8 h 13 l 1.2 11.5 h -15.4 Z"/>
+        <path d="M8.5 8 a 3.5 3.5 0 0 1 7 0" />
+        <path d="M7 13 h 10 M 7 16.5 h 10" stroke-width="1.4" opacity=".7"/>
+      </svg>装备清单</a>
   </div>
 </nav>
 
@@ -485,57 +572,160 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
     <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="tunSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#C8DCE4"/><stop offset="1" stop-color="#EAF1F4"/>
+          <stop offset="0" stop-color="#C8DCE5"/><stop offset=".6" stop-color="#DCE8EE"/><stop offset="1" stop-color="#EAF1F4"/>
+        </linearGradient>
+        <linearGradient id="tunMtnFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7A96A5"/><stop offset="1" stop-color="#5A7A8C"/>
         </linearGradient>
         <linearGradient id="tunMtn" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#4A5F68"/><stop offset="1" stop-color="#2E3F46"/>
+          <stop offset="0" stop-color="#4A6A5C"/><stop offset="1" stop-color="#2E4A3A"/>
+        </linearGradient>
+        <linearGradient id="tunMtnDeep" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3A5A48"/><stop offset="1" stop-color="#1E3A2C"/>
         </linearGradient>
         <linearGradient id="tunRoad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#5C564E"/><stop offset="1" stop-color="#3A3733"/>
         </linearGradient>
         <linearGradient id="tunInner" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#1A1A1A"/><stop offset=".5" stop-color="#2E2E2E"/><stop offset="1" stop-color="#1A1A1A"/>
+          <stop offset="0" stop-color="#1A1A1A"/><stop offset=".5" stop-color="#2A2A2A"/><stop offset="1" stop-color="#1A1A1A"/>
+        </linearGradient>
+        <linearGradient id="tunPortal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8B7355"/><stop offset=".5" stop-color="#6B5540"/><stop offset="1" stop-color="#4A3A2A"/>
         </linearGradient>
         <radialGradient id="tunLight" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/>
+          <stop offset="0" stop-color="#FFE9A8"/><stop offset=".7" stop-color="#FFD87A" stop-opacity=".6"/><stop offset="1" stop-color="#FFD87A" stop-opacity="0"/>
         </radialGradient>
+        <radialGradient id="tunSun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFF8E0"/><stop offset=".6" stop-color="#F5E6B8"/><stop offset="1" stop-color="#F5E6B8" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="tunGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3"/>
+        </filter>
       </defs>
       <rect width="1000" height="280" fill="url(#tunSky)"/>
-      <!-- 山形 -->
-      <path d="M0 220 L 200 60 L 400 220 Z" fill="url(#tunMtn)"/>
-      <path d="M300 220 L 500 40 L 700 220 Z" fill="url(#tunMtn)" opacity=".9"/>
-      <path d="M600 220 L 800 80 L 1000 220 Z" fill="url(#tunMtn)"/>
-      <!-- 隧道口（嵌在山体中） -->
-      <ellipse cx="500" cy="220" rx="140" ry="80" fill="url(#tunInner)"/>
-      <ellipse cx="500" cy="220" rx="130" ry="70" fill="#0A0A0A"/>
-      <!-- 隧道内灯光带 -->
-      <ellipse class="tunnel-light"    cx="440" cy="195" rx="24" ry="6" fill="url(#tunLight)"/>
-      <ellipse class="tunnel-light l2" cx="500" cy="185" rx="28" ry="7" fill="url(#tunLight)"/>
-      <ellipse class="tunnel-light l3" cx="560" cy="195" rx="24" ry="6" fill="url(#tunLight)"/>
-      <!-- 公路 -->
-      <path d="M0 240 L 380 220 L 620 220 L 1000 240 L 1000 280 L 0 280 Z" fill="url(#tunRoad)"/>
-      <!-- 中央虚线 -->
-      <g stroke="#F5DE81" stroke-width="2" stroke-dasharray="12 10">
-        <line x1="0" y1="252" x2="380" y2="238"/>
-        <line x1="620" y1="238" x2="1000" y2="252"/>
+
+      <!-- 太阳 -->
+      <circle cx="180" cy="50" r="35" fill="url(#tunSun)"/>
+      <circle cx="180" cy="50" r="18" fill="#FDE9A8" opacity=".7"/>
+
+      <!-- 远山（青灰色） -->
+      <path d="M0 160 L 150 70 L 280 160 L 420 60 L 560 160 L 700 80 L 840 160 L 1000 90 L 1000 280 L 0 280 Z" fill="url(#tunMtnFar)" opacity=".55"/>
+
+      <!-- 左山体（深绿） -->
+      <path d="M0 50 L 180 30 L 240 80 L 280 60 L 320 140 L 380 220 L 420 240 L 400 280 L 0 280 Z" fill="url(#tunMtn)"/>
+      <!-- 左山植被层 -->
+      <path d="M0 50 L 180 30 L 240 80 L 280 60 L 300 100 L 260 110 L 200 90 L 120 100 L 60 85 L 0 95 Z" fill="#3F6B4E" opacity=".6"/>
+      <!-- 左山岩石纹理 -->
+      <g stroke="#2A3F32" stroke-width="1" fill="none" opacity=".35">
+        <path d="M60 120 L 80 180 L 55 240"/>
+        <path d="M140 140 L 160 200 L 135 260"/>
       </g>
-      <!-- 驶入隧道的车辆 -->
+
+      <!-- 右山体（深绿，更高） -->
+      <path d="M1000 30 L 800 20 L 740 80 L 700 50 L 660 140 L 620 220 L 580 245 L 600 280 L 1000 280 Z" fill="url(#tunMtnDeep)"/>
+      <!-- 右山植被层 -->
+      <path d="M1000 30 L 800 20 L 740 80 L 700 50 L 680 90 L 740 100 L 820 80 L 900 90 L 1000 75 Z" fill="#2E5540" opacity=".6"/>
+      <!-- 右山岩石纹理 -->
+      <g stroke="#1A2E24" stroke-width="1" fill="none" opacity=".3">
+        <path d="M920 100 L 895 170 L 930 240"/>
+        <path d="M820 120 L 795 190 L 830 250"/>
+      </g>
+
+      <!-- 隧道洞口（嵌在两山之间） -->
+      <!-- 外框（石材） -->
+      <ellipse cx="500" cy="225" rx="150" ry="90" fill="url(#tunPortal)"/>
+      <!-- 洞口阴影装饰 -->
+      <path d="M350 225 Q 360 160 500 145 Q 640 160 650 225" stroke="#8B7355" stroke-width="6" fill="none" opacity=".4"/>
+      <!-- 内洞口（黑暗） -->
+      <ellipse cx="500" cy="228" rx="130" ry="72" fill="url(#tunInner)"/>
+      <ellipse cx="500" cy="228" rx="120" ry="65" fill="#0A0A0A"/>
+
+      <!-- 隧道内灯光带（特殊灯光段，彩色的） -->
+      <g>
+        <!-- 蓝色灯光带 -->
+        <ellipse class="tunnel-light" cx="445" cy="200" rx="28" ry="7" fill="#7FB3FF" opacity=".8" filter="url(#tunGlow)"/>
+        <ellipse class="tunnel-light" cx="445" cy="200" rx="18" ry="4" fill="#A8D0FF" opacity=".9"/>
+        <!-- 黄色灯光带 -->
+        <ellipse class="tunnel-light l2" cx="500" cy="190" rx="32" ry="8" fill="url(#tunLight)" filter="url(#tunGlow)"/>
+        <ellipse class="tunnel-light l2" cx="500" cy="190" rx="22" ry="5" fill="#FFE9A8" opacity=".9"/>
+        <!-- 绿色灯光带 -->
+        <ellipse class="tunnel-light l3" cx="555" cy="200" rx="28" ry="7" fill="#7FD4A0" opacity=".8" filter="url(#tunGlow)"/>
+        <ellipse class="tunnel-light l3" cx="555" cy="200" rx="18" ry="4" fill="#A8E8C0" opacity=".9"/>
+      </g>
+
+      <!-- 隧道顶部照明灯（成排小亮点） -->
+      <g fill="#FFE9A8" opacity=".6">
+        <circle cx="460" cy="170" r="2.5"/>
+        <circle cx="480" cy="165" r="3"/>
+        <circle cx="500" cy="162" r="3.5"/>
+        <circle cx="520" cy="165" r="3"/>
+        <circle cx="540" cy="170" r="2.5"/>
+      </g>
+
+      <!-- 公路（前景） -->
+      <path d="M0 235 L 370 225 L 630 225 L 1000 235 L 1000 280 L 0 280 Z" fill="url(#tunRoad)"/>
+      <!-- 路面纹理 -->
+      <path d="M0 245 L 370 236 L 630 236 L 1000 245" stroke="#4A4540" stroke-width="1" fill="none" opacity=".5"/>
+
+      <!-- 中央分隔线 -->
+      <g stroke="#F5DE81" stroke-width="2.5" stroke-dasharray="14 12" stroke-linecap="round">
+        <line x1="0" y1="256" x2="370" y2="248"/>
+        <line x1="630" y1="248" x2="1000" y2="256"/>
+      </g>
+
+      <!-- 右侧白色边线 -->
+      <line x1="0" y1="272" x2="370" y2="265" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+      <line x1="630" y1="265" x2="1000" y2="272" stroke="#fff" stroke-width="1.5" opacity=".7"/>
+
+      <!-- 驶入隧道的汽车（从右往左） -->
       <g class="tunnel-car">
-        <rect x="640" y="218" width="30" height="13" rx="3" fill="#C4704F"/>
-        <rect x="646" y="212" width="18" height="7" rx="2" fill="#8E4A2F"/>
-        <circle cx="648" cy="232" r="3" fill="#1A1A1A"/>
-        <circle cx="664" cy="232" r="3" fill="#1A1A1A"/>
-        <ellipse cx="636" cy="228" rx="6" ry="2" fill="#FFE9A8" opacity=".7"/>
+        <!-- 车身 -->
+        <rect x="650" y="215" width="42" height="18" rx="5" fill="#C4704F"/>
+        <!-- 车顶 -->
+        <path d="M660 215 L 666 202 L 690 202 L 696 215 Z" fill="#8E4A2F"/>
+        <!-- 前挡风 -->
+        <path d="M688 205 L 694 215 L 680 215 Z" fill="#BCD3E0" opacity=".8"/>
+        <!-- 后挡风 -->
+        <path d="M662 205 L 667 215 L 674 215 Z" fill="#BCD3E0" opacity=".8"/>
+        <!-- 前大灯 -->
+        <ellipse cx="693" cy="225" rx="7" ry="3" fill="#FFE9A8" opacity=".85"/>
+        <ellipse cx="691" cy="224" rx="3" ry="1.5" fill="#fff"/>
+        <!-- 后尾灯 -->
+        <circle cx="651" cy="222" r="2" fill="#E85A4F"/>
+        <!-- 车轮 -->
+        <circle cx="662" cy="233" r="4.5" fill="#1A1A1A"/>
+        <circle cx="662" cy="233" r="2" fill="#5C564E"/>
+        <circle cx="680" cy="233" r="4.5" fill="#1A1A1A"/>
+        <circle cx="680" cy="233" r="2" fill="#5C564E"/>
+        <!-- 车灯光晕投射在路上 -->
+        <path d="M693 225 L 730 230 L 730 240 L 693 235 Z" fill="#FFE9A8" opacity=".25"/>
       </g>
+
       <!-- 隧道名牌 -->
       <g>
-        <rect x="440" y="128" width="120" height="18" rx="3" fill="#2A2A2A" opacity=".85"/>
-        <text x="500" y="141" text-anchor="middle" font-size="11" fill="#F8F5F0" letter-spacing="2" font-family="serif">终南山隧道 · 18.04 km</text>
+        <rect x="420" y="118" width="160" height="22" rx="4" fill="#2A2A2A" opacity=".88"/>
+        <rect x="423" y="121" width="154" height="16" rx="2" fill="none" stroke="#8E4A2F" stroke-width="1" opacity=".6"/>
+        <text x="500" y="134" text-anchor="middle" font-size="11.5" fill="#F8F5F0" letter-spacing="3" font-family="Noto Serif SC, serif" font-weight="600">终南山隧道 · 18.04 km</text>
       </g>
+
       <!-- 限速牌 -->
       <g>
-        <circle cx="880" cy="200" r="14" fill="#fff" stroke="#C0392B" stroke-width="3"/>
-        <text x="880" y="206" text-anchor="middle" font-size="14" font-weight="700" fill="#2A2A2A" font-family="sans-serif">80</text>
+        <circle cx="880" cy="185" r="16" fill="#fff" stroke="#C0392B" stroke-width="3.5"/>
+        <circle cx="880" cy="185" r="12" fill="none" stroke="#C0392B" stroke-width="1" opacity=".5"/>
+        <text x="880" y="191" text-anchor="middle" font-size="15" font-weight="800" fill="#2A2A2A" font-family="sans-serif">80</text>
+      </g>
+
+      <!-- 飞鸟 -->
+      <g stroke="#3A4A52" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".7">
+        <path d="M300 60 q 5 -5 10 0 q 5 -5 10 0"/>
+        <path d="M720 45 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+
+      <!-- 里程标注 -->
+      <g>
+        <text x="500" y="42" text-anchor="middle" font-size="10.5" fill="#5A7A8C" letter-spacing="3" font-family="serif">
+          世界最长双洞公路越岭隧道
+        </text>
       </g>
     </svg>
     <figcaption class="cap">秦岭终南山公路隧道 · 世界最长双洞公路越岭隧道</figcaption>
@@ -556,7 +746,12 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
   <div class="card warn">
     <div class="warn-title">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 20h20L12 3zm0 7v4m0 3v.5"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2.5 L 1.5 21 h 21 Z" fill="currentColor" fill-opacity=".12"/>
+        <path d="M12 2.5 L 1.5 21 h 21 Z"/>
+        <path d="M12 9 v 5" stroke-width="2"/>
+        <circle cx="12" cy="17.5" r="1.3" fill="currentColor" stroke="none"/>
+      </svg>
       重要时效信息：2026 年 G70 施工管制
     </div>
     <p><strong>2026 年 6 月 6 日至 9 月 30 日</strong>，G70 福银高速实施"安全韧性提升工程"，以下路段<strong>双向全幅封闭</strong>：</p>
@@ -601,59 +796,92 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
   <!-- 春季主题插画：樱花河谷 -->
   <figure class="season-illust" role="img" aria-label="春季秦岭插画：樱花飘落、油菜花沿河谷铺开、远山返青">
-    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="sprSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#EAF3EC"/><stop offset="1" stop-color="#F8F5F0"/>
+          <stop offset="0" stop-color="#F5EDE5"/><stop offset=".5" stop-color="#EAF3EC"/><stop offset="1" stop-color="#F8F5F0"/>
         </linearGradient>
-        <linearGradient id="sprHill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#8FB89A"/><stop offset="1" stop-color="#6B9B7A"/>
+        <linearGradient id="sprFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A8C8B4"/><stop offset="1" stop-color="#8FB89A"/>
+        </linearGradient>
+        <linearGradient id="sprMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#6B9B7A"/><stop offset="1" stop-color="#3F6B4E"/>
+        </linearGradient>
+        <linearGradient id="sprNear" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3F6B4E"/><stop offset="1" stop-color="#2A4A34"/>
         </linearGradient>
         <linearGradient id="sprField" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#F5DE81"/><stop offset="1" stop-color="#E9C84A"/>
         </linearGradient>
-        <linearGradient id="sprStream" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="sprRiver" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stop-color="#B8D8E0"/><stop offset=".5" stop-color="#8FBCC8"/><stop offset="1" stop-color="#B8D8E0"/>
         </linearGradient>
+        <radialGradient id="sprSun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFF5E0"/><stop offset=".5" stop-color="#FDE9C8"/><stop offset="1" stop-color="#FDE9C8" stop-opacity="0"/>
+        </radialGradient>
       </defs>
-      <rect width="1000" height="320" fill="url(#sprSky)"/>
-      <!-- 远山 -->
-      <path d="M0 160 Q 140 90 280 130 T 560 120 T 830 140 T 1000 110 L 1000 320 L 0 320 Z" fill="#A8C8B4" opacity=".55"/>
-      <!-- 近山 -->
-      <path d="M0 220 Q 160 150 340 190 T 680 180 T 1000 200 L 1000 320 L 0 320 Z" fill="url(#sprHill)" opacity=".8"/>
-      <!-- 油菜花田 -->
-      <path d="M0 260 Q 200 230 420 250 T 850 245 T 1000 260 L 1000 320 L 0 320 Z" fill="url(#sprField)" opacity=".85"/>
-      <!-- 溪流 -->
-      <path d="M60 320 Q 200 290 340 295 T 640 290 T 940 300 L 1000 295 L 1000 320 Z" fill="url(#sprStream)" opacity=".85"/>
-      <path class="stream-glint" d="M120 305 Q 240 295 380 298" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <path class="stream-glint g2" d="M540 295 Q 660 290 780 295" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- 樱花树 1（左） -->
+      <rect width="1000" height="340" fill="url(#sprSky)"/>
+      <!-- 春阳 -->
+      <circle cx="200" cy="80" r="50" fill="url(#sprSun)"/>
+      <circle cx="200" cy="80" r="26" fill="#FDE4B8" opacity=".8"/>
+      <!-- 远山（淡青） -->
+      <path d="M0 180 Q 120 110 260 150 T 540 138 T 820 160 T 1000 140 L 1000 340 L 0 340 Z" fill="url(#sprFar)" opacity=".6"/>
+      <!-- 中山（嫩绿） -->
+      <path d="M0 240 Q 160 170 340 200 T 680 192 T 1000 218 L 1000 340 L 0 340 Z" fill="url(#sprMid)" opacity=".78"/>
+      <!-- 油菜花田（中前景） -->
+      <path d="M0 280 Q 180 255 380 270 T 760 262 T 1000 282 L 1000 340 L 0 340 Z" fill="url(#sprField)" opacity=".72"/>
+      <!-- 蜿蜒河流 -->
+      <path d="M80 340 Q 220 310 380 318 T 700 308 T 960 322 L 1000 318 L 1000 340 Z" fill="url(#sprRiver)" opacity=".88"/>
+      <!-- 河面波光 -->
+      <path class="stream-glint" d="M160 325 Q 280 318 400 320" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>
+      <path class="stream-glint g2" d="M560 315 Q 680 310 820 316" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>
+      <!-- 近山（深绿，右下小丘） -->
+      <path d="M700 300 Q 820 270 920 288 T 1000 296 L 1000 340 L 700 340 Z" fill="url(#sprNear)"/>
+      <!-- 樱花树（左） -->
       <g>
-        <path d="M170 270 L 175 220 L 180 270 Z" fill="#5A4535"/>
-        <circle cx="160" cy="205" r="22" fill="#F4C7D4"/>
-        <circle cx="185" cy="200" r="26" fill="#F8D7E0"/>
-        <circle cx="200" cy="215" r="20" fill="#F4C7D4"/>
-        <circle cx="172" cy="218" r="18" fill="#FBE4EA"/>
+        <path d="M150 310 L 156 250 L 162 310 Z" fill="#4A3A2A"/>
+        <path d="M156 285 L 130 260 M 156 275 L 184 252 M 156 265 L 156 232" stroke="#4A3A2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- 花朵层次 -->
+        <circle cx="120" cy="248" r="16" fill="#F4C7D4" opacity=".9"/>
+        <circle cx="148" cy="228" r="22" fill="#F8D7E0" opacity=".95"/>
+        <circle cx="178" cy="245" r="18" fill="#F4C7D4" opacity=".9"/>
+        <circle cx="160" cy="255" r="13" fill="#FBE4EA"/>
+        <circle cx="135" cy="238" r="12" fill="#FBE4EA"/>
+        <!-- 花瓣细节 -->
+        <circle cx="145" cy="220" r="5" fill="#fff" opacity=".6"/>
+        <circle cx="170" cy="240" r="4" fill="#fff" opacity=".5"/>
       </g>
-      <!-- 樱花树 2（右） -->
+      <!-- 樱花树（右） -->
       <g>
-        <path d="M770 268 L 776 218 L 782 268 Z" fill="#5A4535"/>
-        <circle cx="762" cy="208" r="20" fill="#F4C7D4"/>
-        <circle cx="788" cy="200" r="24" fill="#FBE4EA"/>
-        <circle cx="800" cy="218" r="18" fill="#F4C7D4"/>
+        <path d="M830 305 L 836 248 L 842 305 Z" fill="#4A3A2A"/>
+        <path d="M836 282 L 810 258 M 836 272 L 864 250 M 836 262 L 836 230" stroke="#4A3A2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="802" cy="246" r="15" fill="#F4C7D4" opacity=".9"/>
+        <circle cx="836" cy="226" r="20" fill="#F8D7E0" opacity=".95"/>
+        <circle cx="862" cy="242" r="16" fill="#F4C7D4" opacity=".9"/>
+        <circle cx="846" cy="252" r="11" fill="#FBE4EA"/>
       </g>
-      <!-- 飘落花瓣 -->
-      <g fill="#F4C7D4">
-        <ellipse class="petal"    cx="220" cy="80"  rx="4.5" ry="2.8"/>
-        <ellipse class="petal p2" cx="420" cy="60"  rx="4"   ry="2.5" fill="#F8D7E0"/>
-        <ellipse class="petal p3" cx="620" cy="90"  rx="4.5" ry="2.8"/>
-        <ellipse class="petal p4" cx="780" cy="55"  rx="4"   ry="2.5" fill="#FBE4EA"/>
-        <ellipse class="petal p5" cx="900" cy="100" rx="4.5" ry="2.8"/>
+      <!-- 飘落的樱花花瓣 -->
+      <g fill="#F8D7E0">
+        <ellipse class="petal"    cx="220" cy="70"  rx="5" ry="3"/>
+        <ellipse class="petal p2" cx="380" cy="50"  rx="4.5" ry="2.8" fill="#FBE4EA"/>
+        <ellipse class="petal p3" cx="520" cy="85"  rx="5" ry="3" fill="#F4C7D4"/>
+        <ellipse class="petal p4" cx="680" cy="60"  rx="4.5" ry="2.8" fill="#FBE4EA"/>
+        <ellipse class="petal p5" cx="820" cy="45"  rx="5" ry="3" fill="#F4C7D4"/>
+        <ellipse class="petal p6" cx="920" cy="90"  rx="4" ry="2.5" fill="#FBE4EA"/>
+        <ellipse class="petal p7" cx="300" cy="110" rx="4" ry="2.5" fill="#F8D7E0"/>
+        <ellipse class="petal p8" cx="600" cy="120" rx="4.5" ry="2.8" fill="#F4C7D4"/>
       </g>
-      <!-- 几只小鸟 -->
-      <g stroke="#5C564E" stroke-width="1.6" fill="none" stroke-linecap="round">
-        <path d="M340 70 q 6 -6 12 0 q 6 -6 12 0"/>
-        <path d="M520 50 q 5 -5 10 0 q 5 -5 10 0"/>
+      <!-- 燕子 -->
+      <g stroke="#2A3A2E" stroke-width="1.8" fill="none" stroke-linecap="round">
+        <path d="M320 90 q 8 -8 16 0 q 8 -8 16 0"/>
+        <path d="M358 102 q 6 -6 12 0 q 6 -6 12 0"/>
+        <path d="M560 72 q 7 -7 14 0 q 7 -7 14 0"/>
+      </g>
+      <!-- 田埂小草点缀 -->
+      <g stroke="#3F6B4E" stroke-width="1.5" fill="none" stroke-linecap="round">
+        <path d="M260 300 l 1 -6 l 2 4 M 268 302 l 1 -5 l 2 3"/>
+        <path d="M480 308 l 1 -5 l 2 4 M 488 310 l 1 -4 l 2 3"/>
+        <path d="M720 298 l 1 -6 l 2 4 M 728 300 l 1 -5 l 2 3"/>
       </g>
     </svg>
     <figcaption class="cap">春 · 樱花河谷与油菜花田</figcaption>
@@ -706,59 +934,126 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
   <!-- 夏季主题插画：峡谷漂流 -->
   <figure class="season-illust" role="img" aria-label="夏季秦岭插画：峡谷间溪流奔涌、皮划艇顺流而下、白云飘过青山">
-    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="sumSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#C8E0EA"/><stop offset="1" stop-color="#EAF1F4"/>
+          <stop offset="0" stop-color="#C8DCE5"/><stop offset=".6" stop-color="#DCE8EE"/><stop offset="1" stop-color="#EAF1F4"/>
         </linearGradient>
-        <linearGradient id="sumRock" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7A8B94"/><stop offset="1" stop-color="#4A5F68"/>
+        <linearGradient id="sumFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7A96A5"/><stop offset="1" stop-color="#5A7A8C"/>
+        </linearGradient>
+        <linearGradient id="sumCliffL" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5A7A8C"/><stop offset="1" stop-color="#3A5468"/>
+        </linearGradient>
+        <linearGradient id="sumCliffR" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#6B8A9A"/><stop offset="1" stop-color="#4A6A7C"/>
         </linearGradient>
         <linearGradient id="sumWater" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7FB3C4"/><stop offset="1" stop-color="#4A7A8C"/>
+          <stop offset="0" stop-color="#7FBBCD"/><stop offset="1" stop-color="#4A7A8C"/>
         </linearGradient>
-        <linearGradient id="sumLeaf" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="sumFoam" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#C8DCE4"/>
+        </linearGradient>
+        <linearGradient id="sumCanopy" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#4F7A5C"/><stop offset="1" stop-color="#2E5540"/>
         </linearGradient>
+        <radialGradient id="sumSun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFF8E0"/><stop offset=".6" stop-color="#F5E6B8"/><stop offset="1" stop-color="#F5E6B8" stop-opacity="0"/>
+        </radialGradient>
       </defs>
-      <rect width="1000" height="320" fill="url(#sumSky)"/>
+      <rect width="1000" height="340" fill="url(#sumSky)"/>
+      <!-- 夏日阳光 -->
+      <circle cx="780" cy="60" r="45" fill="url(#sumSun)"/>
+      <circle cx="780" cy="60" r="22" fill="#FDE9A8" opacity=".7"/>
+      <!-- 远山（淡蓝灰） -->
+      <path d="M0 160 Q 130 90 260 130 T 540 118 T 820 140 T 1000 120 L 1000 340 L 0 340 Z" fill="url(#sumFar)" opacity=".5"/>
+      <!-- 左侧峡壁 -->
+      <path d="M0 40 L 80 60 L 60 140 L 110 200 L 70 340 L 0 340 Z" fill="url(#sumCliffL)"/>
+      <!-- 左侧岩壁纹理 -->
+      <g stroke="#2E4050" stroke-width="1" fill="none" opacity=".4">
+        <path d="M20 80 L 40 120 L 25 180"/>
+        <path d="M50 140 L 65 200 L 45 260"/>
+        <path d="M35 220 L 50 280"/>
+      </g>
+      <!-- 左侧崖顶绿丛 -->
+      <ellipse cx="30" cy="42" rx="30" ry="12" fill="url(#sumCanopy)"/>
+      <ellipse cx="70" cy="55" rx="22" ry="9" fill="url(#sumCanopy)"/>
+      <!-- 右侧峡壁 -->
+      <path d="M1000 30 L 910 70 L 940 150 L 890 230 L 930 340 L 1000 340 Z" fill="url(#sumCliffR)"/>
+      <!-- 右侧岩壁纹理 -->
+      <g stroke="#2E4050" stroke-width="1" fill="none" opacity=".35">
+        <path d="M970 70 L 955 130 L 975 190"/>
+        <path d="M940 150 L 920 210 L 945 270"/>
+      </g>
+      <!-- 右侧崖顶绿树 -->
+      <ellipse cx="965" cy="32" rx="28" ry="11" fill="url(#sumCanopy)"/>
+      <ellipse cx="920" cy="65" rx="25" ry="10" fill="url(#sumCanopy)"/>
+      <ellipse cx="900" cy="58" rx="18" ry="8" fill="url(#sumCanopy)"/>
+      <!-- 峡谷上方藤蔓/树木剪影 -->
+      <g fill="#2E5540" opacity=".7">
+        <circle cx="55" cy="38" r="12"/>
+        <circle cx="75" cy="32" r="10"/>
+        <circle cx="945" cy="28" r="11"/>
+        <circle cx="925" cy="52" r="9"/>
+      </g>
+      <!-- 溪流主河道 -->
+      <path d="M70 340 Q 220 280 380 290 T 660 275 T 940 295 L 1000 288 L 1000 340 Z" fill="url(#sumWater)"/>
+      <!-- 水流浪花层 -->
+      <path d="M120 315 Q 260 295 380 300 T 640 292 T 900 308" stroke="url(#sumFoam)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>
+      <!-- 水波纹 -->
+      <path class="ripple"    d="M150 325 Q 280 312 400 318" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/>
+      <path class="ripple r2" d="M440 308 Q 580 298 700 304" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/>
+      <path class="ripple r3" d="M740 298 Q 840 292 920 298" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/>
+      <!-- 皮划艇（橙红色，两人） -->
+      <g class="raft">
+        <!-- 船体 -->
+        <ellipse cx="500" cy="275" rx="36" ry="11" fill="#E89A3C"/>
+        <ellipse cx="500" cy="273" rx="32" ry="8" fill="#C4704F"/>
+        <!-- 船舷高光 -->
+        <ellipse cx="495" cy="270" rx="20" ry="3" fill="#F5D080" opacity=".6"/>
+        <!-- 人 1 -->
+        <circle cx="488" cy="268" r="5" fill="#2A2A2A"/>
+        <path d="M483 263 L 478 252" stroke="#8E4A2F" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- 人 2 -->
+        <circle cx="512" cy="268" r="5" fill="#2A2A2A"/>
+        <path d="M517 263 L 522 252" stroke="#8E4A2F" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- 船桨 -->
+        <path d="M476 260 L 460 248" stroke="#5C3A28" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M524 260 L 540 248" stroke="#5C3A28" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- 桨叶 -->
+        <ellipse cx="458" cy="246" rx="5" ry="3" fill="#5C3A28" transform="rotate(-25 458 246)"/>
+        <ellipse cx="542" cy="246" rx="5" ry="3" fill="#5C3A28" transform="rotate(25 542 246)"/>
+      </g>
+      <!-- 皮划艇后的尾波 -->
+      <path d="M540 278 Q 580 272 610 275" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/>
+      <path d="M550 284 Q 590 280 620 282" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/>
+      <!-- 漂流的水花 -->
+      <g fill="#fff" opacity=".7">
+        <circle cx="460" cy="282" r="3"/>
+        <circle cx="472" cy="285" r="2"/>
+        <circle cx="540" cy="282" r="2.5"/>
+      </g>
       <!-- 云 -->
       <g class="cloud-drift" fill="#fff" opacity=".85">
-        <ellipse cx="180" cy="60" rx="38" ry="14"/>
-        <ellipse cx="215" cy="55" rx="28" ry="11"/>
-        <ellipse cx="150" cy="55" rx="22" ry="10"/>
+        <ellipse cx="200" cy="55" rx="40" ry="14"/>
+        <ellipse cx="235" cy="50" rx="28" ry="11"/>
+        <ellipse cx="170" cy="50" rx="22" ry="10"/>
       </g>
-      <g class="cloud-drift c2" fill="#fff" opacity=".7">
-        <ellipse cx="720" cy="80" rx="34" ry="12"/>
-        <ellipse cx="750" cy="75" rx="24" ry="9"/>
-      </g>
-      <!-- 左峡壁 -->
-      <path d="M0 60 L 120 90 L 90 160 L 140 220 L 100 320 L 0 320 Z" fill="url(#sumRock)"/>
-      <path d="M30 90 L 90 110 L 70 160 L 100 200 L 80 280 L 30 300 Z" fill="#3A4A52" opacity=".4"/>
-      <!-- 右峡壁 -->
-      <path d="M1000 50 L 880 90 L 920 160 L 870 230 L 920 320 L 1000 320 Z" fill="url(#sumRock)"/>
-      <path d="M960 100 L 900 120 L 920 170 L 890 220 L 910 290 L 960 300 Z" fill="#3A4A52" opacity=".4"/>
-      <!-- 峡壁顶植被 -->
-      <path d="M0 60 L 130 90 L 110 105 L 60 95 L 0 85 Z" fill="url(#sumLeaf)"/>
-      <path d="M1000 50 L 870 90 L 895 105 L 950 90 L 1000 80 Z" fill="url(#sumLeaf)"/>
-      <!-- 溪流主河道 -->
-      <path d="M100 320 Q 240 250 380 260 T 640 240 T 920 260 L 1000 250 L 1000 320 Z" fill="url(#sumWater)"/>
-      <!-- 水波 -->
-      <path class="ripple"    d="M180 300 Q 280 285 380 290"/>
-      <path class="ripple r2" d="M420 280 Q 520 268 620 273"/>
-      <path class="ripple r3" d="M680 268 Q 780 258 880 263"/>
-      <!-- 皮划艇 -->
-      <g class="raft">
-        <ellipse cx="500" cy="245" rx="34" ry="10" fill="#E89A3C"/>
-        <ellipse cx="500" cy="243" rx="30" ry="7.5" fill="#C4704F"/>
-        <circle cx="492" cy="238" r="4.5" fill="#2A2A2A"/>
-        <circle cx="510" cy="238" r="4.5" fill="#2A2A2A"/>
-        <path d="M488 236 L 478 226 M 512 236 L 522 226" stroke="#8E4A2F" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="cloud-drift c2" fill="#fff" opacity=".72">
+        <ellipse cx="600" cy="75" rx="32" ry="12"/>
+        <ellipse cx="630" cy="70" rx="22" ry="9"/>
       </g>
       <!-- 飞鸟 -->
-      <g stroke="#3A4A52" stroke-width="1.6" fill="none" stroke-linecap="round">
-        <path d="M380 100 q 6 -6 12 0 q 6 -6 12 0"/>
-        <path d="M600 70 q 5 -5 10 0 q 5 -5 10 0"/>
+      <g stroke="#2E4A58" stroke-width="1.6" fill="none" stroke-linecap="round">
+        <path d="M350 80 q 6 -6 12 0 q 6 -6 12 0"/>
+        <path d="M380 92 q 5 -5 10 0 q 5 -5 10 0"/>
+        <path d="M550 60 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+      <!-- 峡谷光影斑驳 -->
+      <g opacity=".12">
+        <rect x="80" y="100" width="6" height="80" fill="#fff" transform="rotate(8 83 140)"/>
+        <rect x="200" y="80" width="5" height="100" fill="#fff" transform="rotate(5 202 130)"/>
+        <rect x="820" y="100" width="6" height="70" fill="#fff" transform="rotate(-8 823 135)"/>
       </g>
     </svg>
     <figcaption class="cap">夏 · 峡谷漂流与 20℃ 溪水</figcaption>
@@ -935,8 +1230,10 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   <div class="autumn-deep">
     <div class="autumn-deep-title">
       <svg class="maple" viewBox="0 0 24 24" fill="#C4704F" aria-hidden="true">
-        <path d="M12 2l1.6 3.2L17 4.4l-.6 3.6 3 2-2.8 2.2 1.4 3.4-3.6-.6-1.4 3.4-1.4-3.4-3.6.6 1.4-3.4L6.6 10l3-2-.6-3.6 3.4.8L12 2z" opacity=".95"/>
-        <path d="M12 14v8" stroke="#8E4A2F" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <path d="M12 1.5l2 4 4.5-1.2-.8 4.5 3.8 2.8-3.5 2.8 1.8 4.2-4.5-.8-1.8 4.2-1.8-4.2-4.5.8 1.8-4.2-3.5-2.8 3.8-2.8-.8-4.5 4.5 1.2L12 1.5z" fill="#C4704F"/>
+        <path d="M12 4l1 2.5 2.5-.6-.5 2.2 2 1.5-1.8 1.5.8 2.5-2.5-.5-1 2.5-1-2.5-2.5.5.8-2.5-1.8-1.5 2-1.5-.5-2.2L11 6.5 12 4z" fill="#E89A3C" opacity=".55"/>
+        <path d="M12 15v7.5" stroke="#8E4A2F" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        <path d="M12 18l-2.5 1M12 20l2.5 1" stroke="#8E4A2F" stroke-width="1.2" stroke-linecap="round" fill="none"/>
       </svg>
       秦岭赏秋详细攻略（深度版）
     </div>
@@ -950,71 +1247,159 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
       <svg viewBox="0 0 1000 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="altSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#FCF4EC"/><stop offset="1" stop-color="#F8F5F0"/>
+            <stop offset="0" stop-color="#F9E4D0"/><stop offset=".5" stop-color="#FCF4EC"/><stop offset="1" stop-color="#F8F5F0"/>
           </linearGradient>
-          <linearGradient id="altMtnHigh" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#8E4A2F"/><stop offset="1" stop-color="#5A2E1B"/>
+          <radialGradient id="altSun" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFF2CC"/><stop offset=".6" stop-color="#F5C86B"/><stop offset="1" stop-color="#F5C86B" stop-opacity="0"/>
+          </radialGradient>
+          <!-- 高三座峰渐变色 -->
+          <linearGradient id="altHigh" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8E4A2F"/><stop offset=".5" stop-color="#7A3D26"/><stop offset="1" stop-color="#5A2E1B"/>
           </linearGradient>
-          <linearGradient id="altMtnMid" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#C4704F"/><stop offset="1" stop-color="#8E4A2F"/>
+          <linearGradient id="altMid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C4704F"/><stop offset=".5" stop-color="#A85A38"/><stop offset="1" stop-color="#8E4A2F"/>
           </linearGradient>
-          <linearGradient id="altMtnLow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#D89B6F"/><stop offset="1" stop-color="#B87A50"/>
+          <linearGradient id="altLow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D89B6F"/><stop offset=".5" stop-color="#C48555"/><stop offset="1" stop-color="#B87A50"/>
           </linearGradient>
-          <linearGradient id="altBandHigh" x1="0" y1="0" x2="1" y2="0">
+          <!-- 红叶色带 -->
+          <linearGradient id="bandHigh" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#B85A35"/><stop offset="1" stop-color="#8E4A2F"/>
           </linearGradient>
-          <linearGradient id="altBandMid" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="bandMid" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#E89A3C"/><stop offset="1" stop-color="#C4704F"/>
           </linearGradient>
-          <linearGradient id="altBandLow" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="bandLow" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#F5C86B"/><stop offset="1" stop-color="#E89A3C"/>
           </linearGradient>
-        </defs>
-        <rect width="1000" height="380" fill="url(#altSky)"/>
-        <!-- 海拔参考线 -->
-        <g stroke="#DDD5C7" stroke-width="1" stroke-dasharray="4 4" fill="none">
-          <line x1="60" y1="90" x2="940" y2="90"/>
-          <line x1="60" y1="180" x2="940" y2="180"/>
-          <line x1="60" y1="270" x2="940" y2="270"/>
-        </g>
-        <g font-family="serif" font-size="11" fill="#8E4A2F" letter-spacing="1">
-          <text x="70" y="85">2000m+</text>
-          <text x="70" y="175">1000–2000m</text>
-          <text x="70" y="265">河谷浅山</text>
-        </g>
-        <!-- 高山（左） -->
-        <g>
-          <path d="M80 320 L 220 90 L 360 320 Z" fill="url(#altMtnHigh)"/>
-          <!-- 红叶色带：山顶向下蔓延 -->
-          <path class="red-band" d="M220 90 L 260 138 L 248 145 L 220 118 L 192 145 L 180 138 Z" fill="url(#altBandHigh)"/>
-          <text x="220" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">太白山 · 紫柏山</text>
-          <text x="220" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">9月底—10月中旬</text>
-        </g>
-        <!-- 中山（中） -->
-        <g>
-          <path d="M340 320 L 500 180 L 660 320 Z" fill="url(#altMtnMid)"/>
-          <path class="red-band b2" d="M500 180 L 555 232 L 540 240 L 500 208 L 460 240 L 445 232 Z" fill="url(#altBandMid)"/>
-          <text x="500" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">金丝峡 · 牛背梁 · 木王山</text>
-          <text x="500" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">10月中旬—11月上旬（黄金档）</text>
-        </g>
-        <!-- 低山/河谷（右） -->
-        <g>
-          <path d="M620 320 L 760 250 L 900 320 Z" fill="url(#altMtnLow)"/>
-          <path class="red-band b3" d="M760 250 L 800 282 L 790 290 L 760 268 L 730 290 L 720 282 Z" fill="url(#altBandLow)"/>
-          <text x="760" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">古观音禅寺 · 漫川关</text>
-          <text x="760" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">10月下旬—11月中下旬</text>
-        </g>
-        <!-- 接力箭头 -->
-        <g stroke="#C4704F" stroke-width="2" fill="none" marker-end="url(#altArrow)">
-          <path d="M280 140 Q 360 130 440 165"/>
-          <path d="M580 220 Q 650 230 720 260"/>
-        </g>
-        <defs>
+          <!-- 雪顶 -->
+          <linearGradient id="altSnow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F8FAFC"/><stop offset="1" stop-color="#E8DDD0"/>
+          </linearGradient>
+          <!-- 箭头 marker -->
           <marker id="altArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
             <path d="M0 0 L 8 3 L 0 6 Z" fill="#C4704F"/>
           </marker>
         </defs>
+        <rect width="1000" height="380" fill="url(#altSky)"/>
+
+        <!-- 秋阳 -->
+        <circle cx="120" cy="60" r="45" fill="url(#altSun)"/>
+        <circle cx="120" cy="60" r="22" fill="#F5D08C" opacity=".7"/>
+
+        <!-- 装饰远山（淡橙） -->
+        <path d="M40 200 Q 120 150 200 180 T 360 170 T 520 185 T 680 175 T 840 190 T 960 175 L 960 210 Q 800 230 640 220 T 320 225 T 40 215 Z" fill="#EBD4C2" opacity=".5"/>
+
+        <!-- 海拔参考刻度 -->
+        <g stroke="#D8C4B0" stroke-width="1" stroke-dasharray="4 6" fill="none">
+          <line x1="50" y1="80" x2="950" y2="80"/>
+          <line x1="50" y1="170" x2="950" y2="170"/>
+          <line x1="50" y1="265" x2="950" y2="265"/>
+        </g>
+        <g font-family="Noto Serif SC, Songti SC, serif" font-size="11.5" fill="#8E4A2F" letter-spacing="1.5" font-weight="600">
+          <text x="60" y="72">2000m+  高海拔</text>
+          <text x="60" y="162">1000–2000m  中山带</text>
+          <text x="60" y="257">河谷浅山  低海拔</text>
+        </g>
+
+        <!-- ===== 左峰：高山（太白山·紫柏山）===== -->
+        <g>
+          <!-- 山体 -->
+          <path d="M60 330 L 220 60 L 380 330 Z" fill="url(#altHigh)"/>
+          <!-- 雪顶 -->
+          <path d="M220 60 L 255 105 L 240 108 L 220 85 L 200 108 L 185 105 Z" fill="url(#altSnow)" opacity=".9"/>
+          <!-- 红叶色带（上部，已经红了） -->
+          <path class="red-band" d="M220 85 L 270 150 L 252 160 L 220 130 L 188 160 L 170 150 Z" fill="url(#bandHigh)"/>
+          <!-- 色带纹理（点状红叶） -->
+          <g fill="#E89A3C" opacity=".6">
+            <circle cx="200" cy="120" r="2.5"/>
+            <circle cx="215" cy="110" r="2"/>
+            <circle cx="230" cy="115" r="2.5"/>
+            <circle cx="245" cy="128" r="2"/>
+            <circle cx="225" cy="130" r="2"/>
+          </g>
+          <!-- 山体暗部阴影 -->
+          <path d="M220 60 L 60 330 L 120 330 Z" fill="#5A2E1B" opacity=".2"/>
+          <!-- 山名 + 时间 -->
+          <text x="220" y="350" text-anchor="middle" font-size="13" fill="#5C3A28" font-weight="700" font-family="Noto Serif SC, serif">太白山 · 紫柏山 · 黄柏塬</text>
+          <text x="220" y="368" text-anchor="middle" font-size="11.5" fill="#8E4A2F" letter-spacing="1">9 月底 — 10 月中旬 · 第一波</text>
+          <!-- 序号 -->
+          <circle cx="80" cy="100" r="14" fill="#B85A35" opacity=".9"/>
+          <text x="80" y="104" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">1</text>
+        </g>
+
+        <!-- ===== 中峰：中山（金丝峡·牛背梁·木王山）===== -->
+        <g>
+          <path d="M320 330 L 500 150 L 680 330 Z" fill="url(#altMid)"/>
+          <!-- 红叶色带（正盛） -->
+          <path class="red-band b2" d="M500 150 L 570 230 L 548 242 L 500 200 L 452 242 L 430 230 Z" fill="url(#bandMid)"/>
+          <!-- 色带纹理 -->
+          <g fill="#F5DE81" opacity=".6">
+            <circle cx="470" cy="195" r="2.5"/>
+            <circle cx="490" cy="180" r="2"/>
+            <circle cx="510" cy="185" r="3"/>
+            <circle cx="530" cy="198" r="2.5"/>
+            <circle cx="500" cy="205" r="2"/>
+            <circle cx="545" cy="215" r="2.5"/>
+            <circle cx="460" cy="210" r="2"/>
+          </g>
+          <!-- 山体阴影 -->
+          <path d="M500 150 L 320 330 L 390 330 Z" fill="#8E4A2F" opacity=".18"/>
+          <text x="500" y="350" text-anchor="middle" font-size="13" fill="#5C3A28" font-weight="700" font-family="Noto Serif SC, serif">金丝峡 · 牛背梁 · 木王山 · 天竺山</text>
+          <text x="500" y="368" text-anchor="middle" font-size="11.5" fill="#C4704F" letter-spacing="1" font-weight="600">10 月中旬 — 11 月上旬 · 黄金档 ★</text>
+          <circle cx="350" cy="185" r="14" fill="#E89A3C" opacity=".9"/>
+          <text x="350" y="189" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">2</text>
+        </g>
+
+        <!-- ===== 右峰：低山/河谷（古观音禅寺·漫川关）===== -->
+        <g>
+          <path d="M620 330 L 780 220 L 940 330 Z" fill="url(#altLow)"/>
+          <!-- 银杏/柿子色带（刚开始变色） -->
+          <path class="red-band b3" d="M780 220 L 825 270 L 812 280 L 780 250 L 748 280 L 735 270 Z" fill="url(#bandLow)"/>
+          <!-- 色带纹理（金黄叶） -->
+          <g fill="#F5DE81" opacity=".7">
+            <circle cx="760" cy="255" r="2.5"/>
+            <circle cx="780" cy="240" r="3"/>
+            <circle cx="800" cy="250" r="2.5"/>
+            <circle cx="770" cy="262" r="2"/>
+            <circle cx="790" cy="265" r="2"/>
+          </g>
+          <!-- 山体阴影 -->
+          <path d="M780 220 L 620 330 L 680 330 Z" fill="#B87A50" opacity=".2"/>
+          <text x="780" y="350" text-anchor="middle" font-size="13" fill="#5C3A28" font-weight="700" font-family="Noto Serif SC, serif">古观音禅寺银杏 · 漫川关柿子 · 翠华山</text>
+          <text x="780" y="368" text-anchor="middle" font-size="11.5" fill="#B87A50" letter-spacing="1">10 月下旬 — 11 月中下旬 · 尾声</text>
+          <circle cx="650" cy="250" r="14" fill="#F5C86B" opacity=".95"/>
+          <text x="650" y="254" text-anchor="middle" font-size="13" fill="#5C3A28" font-weight="700">3</text>
+        </g>
+
+        <!-- 接力箭头 1→2 -->
+        <g stroke="#C4704F" stroke-width="2.2" fill="none" stroke-linecap="round" marker-end="url(#altArrow)">
+          <path d="M300 155 Q 360 150 420 180"/>
+        </g>
+        <text x="360" y="140" text-anchor="middle" font-size="10.5" fill="#8E4A2F" letter-spacing="1.5" font-family="serif">接力向下</text>
+
+        <!-- 接力箭头 2→3 -->
+        <g stroke="#E89A3C" stroke-width="2.2" fill="none" stroke-linecap="round" marker-end="url(#altArrow)">
+          <path d="M600 230 Q 660 240 710 265"/>
+        </g>
+        <text x="660" y="228" text-anchor="middle" font-size="10.5" fill="#B85A35" letter-spacing="1.5" font-family="serif">河谷接棒</text>
+
+        <!-- 飘落的枫叶点缀 -->
+        <g>
+          <path d="M80 40 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#C4704F" transform="translate(80,40) scale(.9)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E89A3C" transform="translate(900,35)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#F5DE81" transform="translate(450,30) scale(.8)"/>
+        </g>
+
+        <!-- 底部时间轴 -->
+        <g stroke="#DDD5C7" stroke-width="1" fill="none">
+          <line x1="120" y1="372" x2="880" y2="372"/>
+        </g>
+        <g font-size="10" fill="#8E4A2F" text-anchor="middle" font-family="serif">
+          <text x="220" y="378">9月底</text>
+          <text x="500" y="378">10月中</text>
+          <text x="780" y="378">11月中</text>
+        </g>
       </svg>
       <figcaption class="cap">秦岭红叶海拔时序图 · 先高后低的天然接力</figcaption>
     </figure>
@@ -1043,9 +1428,12 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
     <div class="spot-group">
       <span class="spot-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#B85A35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 18 L 9 8 L 13 13 L 17 6 L 21 18 Z" fill="#F9EEE8"/>
-          <circle cx="12" cy="20" r="1.4" fill="#B85A35" stroke="none"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#B85A35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 19 Q 6 12 8 14 Q 11 8 14 11 Q 17 6 20 10 Q 22 16 22 19 Z" fill="#F9EEE8" stroke="#B85A35"/>
+          <path d="M7 16 Q 9 14 11 15" stroke-width="1.2" opacity=".6"/>
+          <path d="M14 14 Q 16 12 18 13" stroke-width="1.2" opacity=".6"/>
+          <circle cx="12" cy="21" r="1.4" fill="#B85A35" stroke="none"/>
+          <path d="M10 21 h 4" stroke="#B85A35" stroke-width="1.5"/>
         </svg>
       </span>
       A 组｜G70 主线沿线（商洛方向）——本线"主战场"
@@ -1064,9 +1452,13 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
     <div class="spot-group">
       <span class="spot-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#C4704F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 21 C 7 16 4 12 4 9 a 8 8 0 0 1 16 0 c 0 3 -3 7 -8 12 z" fill="#F9EEE8"/>
-          <circle cx="12" cy="9" r="2.4" fill="#C4704F" stroke="none"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C4704F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22 C 6.5 16.5 3.5 12.5 3.5 9 A 8.5 8.5 0 0 1 20.5 9 C 20.5 12.5 17.5 16.5 12 22 Z" fill="#F9EEE8"/>
+          <path d="M7.5 11 Q 9 9.5 10.5 11" stroke-width="1.2" opacity=".5"/>
+          <path d="M13.5 10 Q 15 8.5 16.5 10" stroke-width="1.2" opacity=".5"/>
+          <path d="M12 13 v 4" stroke-width="1.4" opacity=".7"/>
+          <circle cx="12" cy="9" r="2.2" fill="#C4704F" stroke="none"/>
+          <circle cx="12" cy="8.5" r="0.8" fill="#F9EEE8" opacity=".8"/>
         </svg>
       </span>
       B 组｜秦岭北麓（西安方向）——到西安后的延伸玩法
@@ -1085,9 +1477,11 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
     <div class="spot-group">
       <span class="spot-ico" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#5C3A28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2l1.6 3.2L17 4.4l-.6 3.6 3 2-2.8 2.2 1.4 3.4-3.6-.6-1.4 3.4-1.4-3.4-3.6.6 1.4-3.4L6.6 10l3-2-.6-3.6 3.4.8L12 2z" fill="#C4704F" stroke="none"/>
-          <path d="M12 15v6" stroke="#8E4A2F"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5C3A28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1.5 l 2.2 4.2 4.8 -1.2 -1 4.8 4 3 -3.5 2.8 1.8 4.2 -4.5 -1 -1.8 4 -1.8 -4 -4.5 1 1.8 -4.2 -3.5 -2.8 4 -3 -1 -4.8 4.8 1.2 L 12 1.5 Z" fill="#C4704F" stroke="none"/>
+          <path d="M12 4 l 1 2.5 2.8 -.7 -.6 2.5 2.2 1.7 -2 1.5 .8 2.2 -2.8 -.5 -1 2.2 -1 -2.2 -2.8 .5 .8 -2.2 -2 -1.5 2.2 -1.7 -.6 -2.5 2.8 .7 L 12 4 Z" fill="#E89A3C" opacity=".45"/>
+          <path d="M12 15 v 7.5" stroke="#8E4A2F" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M12 18.5 l -2.5 1 M 12 20.5 l 2.5 1" stroke="#8E4A2F" stroke-width="1.3" stroke-linecap="round"/>
         </svg>
       </span>
       C 组｜秦岭西段秘境（进阶选项）——陕西秋色的天花板
@@ -1106,76 +1500,161 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
           <linearGradient id="rmBg" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#FCF4EC"/><stop offset="1" stop-color="#FBF9F5"/>
           </linearGradient>
+          <linearGradient id="rmLineA" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#B85A35"/><stop offset="1" stop-color="#8E4A2F"/>
+          </linearGradient>
+          <linearGradient id="rmLineB" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#E89A3C"/><stop offset="1" stop-color="#C4704F"/>
+          </linearGradient>
+          <linearGradient id="rmLineC" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#5C3A28"/><stop offset=".5" stop-color="#8E4A2F"/><stop offset="1" stop-color="#5C3A28"/>
+          </linearGradient>
+          <radialGradient id="rmGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#F5DE81"/><stop offset="1" stop-color="#F5DE81" stop-opacity="0"/>
+          </radialGradient>
         </defs>
         <rect width="1000" height="360" fill="url(#rmBg)"/>
-        <!-- 淡山形背景 -->
-        <g fill="none" stroke="#EBD4C2" stroke-width="1.6" opacity=".55">
-          <path d="M40 200 L 130 130 L 220 200 L 310 140 L 400 200 L 490 130 L 580 200 L 670 145 L 760 200 L 850 135 L 940 200"/>
+
+        <!-- 标题 -->
+        <text x="500" y="30" text-anchor="middle" font-size="14" fill="#5C3A28" letter-spacing="6" font-family="Noto Serif SC, Songti SC, serif" font-weight="700">秦 岭 赏 秋 · 三 条 串 联 路 线</text>
+        <line x1="410" y1="42" x2="590" y2="42" stroke="#D8C4B0" stroke-width="1"/>
+
+        <!-- 淡山形背景（多层叠） -->
+        <g fill="none" stroke="#EBD4C2" stroke-width="1.6" opacity=".5">
+          <path d="M40 190 L 120 120 L 200 190 L 280 130 L 360 190 L 440 125 L 520 190 L 600 135 L 680 190 L 760 125 L 840 190 L 920 130 L 960 185"/>
         </g>
-        <text x="500" y="32" text-anchor="middle" font-size="12" fill="#8E4A2F" letter-spacing="4" font-family="serif">秦 岭 赏 秋 · 三 条 串 联 路 线</text>
+        <g fill="none" stroke="#EAD0BA" stroke-width="1.2" opacity=".35">
+          <path d="M40 220 L 120 170 L 200 220 L 280 160 L 360 220 L 440 175 L 520 220 L 600 165 L 680 220 L 760 170 L 840 220 L 920 165 L 960 215"/>
+        </g>
 
         <!-- ===== 路线 A（橙红，2 日）: 十堰 → 金丝峡 → 漫川关 → 西安 ===== -->
-        <path class="route-line" stroke="#B85A35" d="M110 290 Q 220 250 310 240 Q 420 230 510 205 Q 640 170 740 130 Q 830 95 900 78"/>
+        <path class="route-line" stroke="url(#rmLineA)" stroke-width="4.5" fill="none" stroke-linecap="round"
+              d="M100 305 Q 220 270 310 255 Q 420 242 510 215 Q 640 175 760 130 Q 840 100 900 75"/>
+        <!-- 路线 A 虚线装饰 -->
+        <path stroke="#fff" stroke-width="1.5" stroke-dasharray="6 8" fill="none" stroke-linecap="round" opacity=".6"
+              d="M100 305 Q 220 270 310 255 Q 420 242 510 215 Q 640 175 760 130 Q 840 100 900 75"/>
+
+        <!-- 节点：十堰（起点） -->
         <g class="rm-node">
-          <circle cx="110" cy="290" r="8" fill="#B85A35"/><circle cx="110" cy="290" r="3.4" fill="#FCF4EC"/>
-          <text x="110" y="315" text-anchor="middle" class="rm-label">十堰</text>
-          <text x="110" y="328" text-anchor="middle" class="rm-day">D1 出发</text>
+          <circle cx="100" cy="305" r="11" fill="#B85A35"/>
+          <circle cx="100" cy="305" r="4.5" fill="#FCF4EC"/>
+          <circle cx="100" cy="305" r="18" fill="url(#rmGlow)" opacity=".5"/>
+          <text x="100" y="332" text-anchor="middle" class="rm-label" font-size="13" font-weight="700" fill="#5C3A28">十堰</text>
+          <text x="100" y="347" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 出发</text>
         </g>
+        <!-- 节点：金丝峡 -->
         <g class="rm-node n2">
-          <circle cx="310" cy="240" r="7" fill="#B85A35"/><circle cx="310" cy="240" r="3" fill="#FCF4EC"/>
-          <text x="310" y="222" text-anchor="middle" class="rm-label">金丝峡</text>
-          <text x="310" y="262" text-anchor="middle" class="rm-day">D1 全天</text>
+          <circle cx="310" cy="255" r="8.5" fill="#B85A35"/>
+          <circle cx="310" cy="255" r="3.5" fill="#FCF4EC"/>
+          <text x="310" y="235" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">金丝峡</text>
+          <text x="310" y="278" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 全天</text>
         </g>
+        <!-- 节点：漫川关 -->
         <g class="rm-node n3">
-          <circle cx="510" cy="205" r="7" fill="#B85A35"/><circle cx="510" cy="205" r="3" fill="#FCF4EC"/>
-          <text x="510" y="187" text-anchor="middle" class="rm-label">漫川关</text>
-          <text x="510" y="227" text-anchor="middle" class="rm-day">D2 上午</text>
+          <circle cx="510" cy="215" r="8.5" fill="#B85A35"/>
+          <circle cx="510" cy="215" r="3.5" fill="#FCF4EC"/>
+          <text x="510" y="195" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">漫川关</text>
+          <text x="510" y="238" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 上午</text>
         </g>
+        <!-- 节点：西安（终点A线） -->
         <g class="rm-node n4">
-          <circle cx="900" cy="78" r="9" fill="#8E4A2F"/><circle cx="900" cy="78" r="4" fill="#FCF4EC"/>
-          <text x="900" y="60" text-anchor="middle" class="rm-label">西安</text>
-          <text x="900" y="100" text-anchor="middle" class="rm-day">D2 下午抵达</text>
+          <circle cx="900" cy="75" r="13" fill="#5C3A28"/>
+          <circle cx="900" cy="75" r="5.5" fill="#FCF4EC"/>
+          <circle cx="900" cy="75" r="20" fill="url(#rmGlow)" opacity=".4"/>
+          <text x="900" y="52" text-anchor="middle" class="rm-label" font-size="14" font-weight="700" fill="#5C3A28">西 安</text>
+          <text x="900" y="98" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 下午抵达</text>
+        </g>
+
+        <!-- A 线标签 -->
+        <g transform="translate(70, 60)">
+          <rect x="0" y="0" width="160" height="26" rx="13" fill="#fff" stroke="#B85A35" stroke-width="1.5"/>
+          <text x="80" y="17" text-anchor="middle" font-size="12" fill="#B85A35" font-weight="700" letter-spacing="1">A 线 · 商洛红叶经典（2 日）</text>
         </g>
 
         <!-- ===== 路线 B（金黄，1—2 日）: 西安 → 圭峰山 → 太平/翠华山 ===== -->
-        <path class="route-line" stroke="#E89A3C" d="M860 118 Q 800 160 760 180 Q 720 200 690 210 Q 660 218 630 224"/>
+        <path class="route-line" stroke="url(#rmLineB)" stroke-width="4" fill="none" stroke-linecap="round"
+              d="M855 115 Q 790 155 755 178 Q 715 198 685 210 Q 655 220 625 228"/>
+        <path stroke="#fff" stroke-width="1.2" stroke-dasharray="5 7" fill="none" stroke-linecap="round" opacity=".55"
+              d="M855 115 Q 790 155 755 178 Q 715 198 685 210 Q 655 220 625 228"/>
+
         <g class="rm-node n2">
-          <circle cx="860" cy="118" r="6" fill="#E89A3C"/><circle cx="860" cy="118" r="2.6" fill="#FCF4EC"/>
-          <text x="860" y="140" text-anchor="middle" class="rm-label">西安</text>
+          <circle cx="855" cy="115" r="7" fill="#E89A3C"/>
+          <circle cx="855" cy="115" r="3" fill="#FCF4EC"/>
+          <text x="855" y="138" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">西安</text>
         </g>
         <g class="rm-node n3">
-          <circle cx="760" cy="180" r="6" fill="#E89A3C"/><circle cx="760" cy="180" r="2.6" fill="#FCF4EC"/>
-          <text x="760" y="162" text-anchor="middle" class="rm-label">圭峰山</text>
+          <circle cx="755" cy="178" r="7" fill="#E89A3C"/>
+          <circle cx="755" cy="178" r="3" fill="#FCF4EC"/>
+          <text x="755" y="158" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">圭峰山</text>
         </g>
         <g class="rm-node n4">
-          <circle cx="630" cy="224" r="6" fill="#E89A3C"/><circle cx="630" cy="224" r="2.6" fill="#FCF4EC"/>
-          <text x="630" y="246" text-anchor="middle" class="rm-label">太平 / 翠华山</text>
+          <circle cx="625" cy="228" r="7" fill="#E89A3C"/>
+          <circle cx="625" cy="228" r="3" fill="#FCF4EC"/>
+          <text x="625" y="252" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">太平 / 翠华山</text>
+        </g>
+
+        <!-- B 线标签 -->
+        <g transform="translate(740, 60)">
+          <rect x="0" y="0" width="180" height="26" rx="13" fill="#fff" stroke="#E89A3C" stroke-width="1.5"/>
+          <text x="90" y="17" text-anchor="middle" font-size="12" fill="#C4704F" font-weight="700" letter-spacing="1">B 线 · 终南山秋色（1—2 日）</text>
         </g>
 
         <!-- ===== 路线 C（深棕，3—4 日环线）: 西安 → 太白 → 黄柏塬 → 留坝 → 汉中 → 十堰 ===== -->
-        <path class="route-line" stroke="#5C3A28" d="M840 100 Q 760 60 690 70 Q 600 82 540 118 Q 470 160 400 190 Q 320 224 240 268 Q 170 296 124 306"/>
+        <path class="route-line" stroke="url(#rmLineC)" stroke-width="3.5" fill="none" stroke-linecap="round"
+              d="M830 95 Q 740 55 670 65 Q 580 78 520 115 Q 455 155 390 188 Q 310 225 240 270 Q 175 300 115 312"/>
+        <path stroke="#fff" stroke-width="1" stroke-dasharray="4 6" fill="none" stroke-linecap="round" opacity=".45"
+              d="M830 95 Q 740 55 670 65 Q 580 78 520 115 Q 455 155 390 188 Q 310 225 240 270 Q 175 300 115 312"/>
+
         <g class="rm-node n3">
-          <circle cx="690" cy="70" r="6" fill="#5C3A28"/><circle cx="690" cy="70" r="2.6" fill="#FCF4EC"/>
-          <text x="690" y="52" text-anchor="middle" class="rm-label">太白 / 黄柏塬</text>
+          <circle cx="670" cy="65" r="7" fill="#5C3A28"/>
+          <circle cx="670" cy="65" r="3" fill="#FCF4EC"/>
+          <text x="670" y="47" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">太白·黄柏塬</text>
         </g>
         <g class="rm-node n4">
-          <circle cx="540" cy="118" r="6" fill="#5C3A28"/><circle cx="540" cy="118" r="2.6" fill="#FCF4EC"/>
-          <text x="540" y="100" text-anchor="middle" class="rm-label">留坝 · 紫柏山</text>
+          <circle cx="520" cy="115" r="7" fill="#5C3A28"/>
+          <circle cx="520" cy="115" r="3" fill="#FCF4EC"/>
+          <text x="520" y="97" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">留坝·紫柏山</text>
         </g>
         <g class="rm-node n5">
-          <circle cx="400" cy="190" r="6" fill="#5C3A28"/><circle cx="400" cy="190" r="2.6" fill="#FCF4EC"/>
-          <text x="400" y="212" text-anchor="middle" class="rm-label">汉中</text>
+          <circle cx="390" cy="188" r="7" fill="#5C3A28"/>
+          <circle cx="390" cy="188" r="3" fill="#FCF4EC"/>
+          <text x="390" y="210" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">汉中</text>
         </g>
         <g class="rm-node n6">
-          <circle cx="240" cy="268" r="6" fill="#5C3A28"/><circle cx="240" cy="268" r="2.6" fill="#FCF4EC"/>
-          <text x="240" y="290" text-anchor="middle" class="rm-label">安康方向</text>
+          <circle cx="240" cy="270" r="7" fill="#5C3A28"/>
+          <circle cx="240" cy="270" r="3" fill="#FCF4EC"/>
+          <text x="240" y="292" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">安康方向</text>
+        </g>
+
+        <!-- C 线标签 -->
+        <g transform="translate(380, 55)">
+          <rect x="0" y="0" width="200" height="26" rx="13" fill="#fff" stroke="#5C3A28" stroke-width="1.5"/>
+          <text x="100" y="17" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="700" letter-spacing="1">C 线 · 秦岭西段深度环线（3—4 日）</text>
+        </g>
+
+        <!-- 装饰枫叶 -->
+        <g>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#C4704F" opacity=".4" transform="translate(30,300) scale(.8)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E89A3C" opacity=".35" transform="translate(960,320) scale(.7)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#F5DE81" opacity=".3" transform="translate(500,60) scale(.6)"/>
+        </g>
+
+        <!-- 图例（底部） -->
+        <g transform="translate(500, 340)">
+          <g transform="translate(-200, 0)">
+            <circle cx="-10" cy="0" r="5" fill="#B85A35"/>
+            <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">A 线 2 日 · 商洛方向</text>
+          </g>
+          <g>
+            <circle cx="-10" cy="0" r="5" fill="#E89A3C"/>
+            <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">B 线 1—2 日 · 终南山</text>
+          </g>
+          <g transform="translate(220, 0)">
+            <circle cx="-10" cy="0" r="5" fill="#5C3A28"/>
+            <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">C 线 3—4 日 · 西段大环线</text>
+          </g>
         </g>
       </svg>
-      <div class="legend">
-        <span><i style="background:#B85A35"></i>路线 A · 商洛红叶经典线（2 日）</span>
-        <span><i style="background:#E89A3C"></i>路线 B · 终南山秋色补充线（1—2 日）</span>
-        <span><i style="background:#5C3A28"></i>路线 C · 秦岭西段深度环线（3—4 日）</span>
-      </div>
       <figcaption class="cap">三条路线分别对应 2 日 / 1—2 日 / 3—4 日玩法 · 虚线为自驾路径示意</figcaption>
     </figure>
 
@@ -1242,10 +1721,10 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
   <!-- 冬季主题插画：雪山温泉 -->
   <figure class="season-illust" role="img" aria-label="冬季秦岭插画：雪覆山脊、温泉热气升腾、雪花飘落">
-    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
         <linearGradient id="winSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#DCE6EE"/><stop offset="1" stop-color="#F0EBE2"/>
+          <stop offset="0" stop-color="#D4DCE6"/><stop offset=".5" stop-color="#E0E8EF"/><stop offset="1" stop-color="#F0EBE2"/>
         </linearGradient>
         <linearGradient id="winFar" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#B4C8D8"/><stop offset="1" stop-color="#8FA8BC"/>
@@ -1253,48 +1732,101 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
         <linearGradient id="winMid" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#7A96AC"/><stop offset="1" stop-color="#5A7A94"/>
         </linearGradient>
+        <linearGradient id="winNear" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5A7A94"/><stop offset="1" stop-color="#3A5468"/>
+        </linearGradient>
+        <linearGradient id="winSnow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F8FAFC"/><stop offset="1" stop-color="#E8EEF4"/>
+        </linearGradient>
         <linearGradient id="winPool" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#A8CBD8"/><stop offset="1" stop-color="#7FA8B8"/>
         </linearGradient>
+        <radialGradient id="winSun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFF2D8"/><stop offset=".5" stop-color="#F5D8A8"/><stop offset="1" stop-color="#F5D8A8" stop-opacity="0"/>
+        </radialGradient>
       </defs>
-      <rect width="1000" height="320" fill="url(#winSky)"/>
-      <!-- 远山（雪覆） -->
-      <path d="M0 170 L 110 90 L 190 140 L 280 70 L 380 145 L 480 90 L 580 150 L 680 80 L 780 140 L 880 100 L 1000 150 L 1000 320 L 0 320 Z" fill="url(#winFar)"/>
-      <!-- 雪顶高光 -->
-      <path d="M110 90 L 145 116 L 122 118 Z M 280 70 L 320 100 L 268 102 Z M 480 90 L 520 118 L 468 120 Z M 680 80 L 722 110 L 666 112 Z" fill="#F8FAFC" opacity=".9"/>
-      <!-- 近山（针叶林） -->
-      <path d="M0 260 Q 180 200 360 235 T 720 225 T 1000 250 L 1000 320 L 0 320 Z" fill="url(#winMid)"/>
-      <!-- 松树 -->
-      <g fill="#2E4A3A">
-        <path d="M120 280 L 132 250 L 144 280 Z M 124 268 L 132 246 L 140 268 Z"/>
-        <path d="M180 285 L 192 255 L 204 285 Z M 184 273 L 192 251 L 200 273 Z"/>
-        <path d="M820 282 L 832 252 L 844 282 Z M 824 270 L 832 248 L 840 270 Z"/>
-        <path d="M880 288 L 892 258 L 904 288 Z M 884 276 L 892 254 L 900 276 Z"/>
+      <rect width="1000" height="340" fill="url(#winSky)"/>
+      <!-- 冬日暖阳 -->
+      <circle cx="180" cy="70" r="40" fill="url(#winSun)"/>
+      <circle cx="180" cy="70" r="20" fill="#F5D8A8" opacity=".6"/>
+      <!-- 远山（雪覆锯齿峰） -->
+      <path d="M0 160 L 60 100 L 100 140 L 150 80 L 200 135 L 260 70 L 320 140 L 380 90 L 440 150 L 500 85 L 560 145 L 620 75 L 680 140 L 740 95 L 800 150 L 860 80 L 920 140 L 1000 100 L 1000 340 L 0 340 Z" fill="url(#winFar)" opacity=".65"/>
+      <!-- 远山雪顶 -->
+      <path d="M60 100 L 75 118 L 48 118 Z M 150 80 L 170 104 L 132 104 Z M 260 70 L 285 98 L 238 98 Z M 380 90 L 400 114 L 360 114 Z M 500 85 L 520 108 L 480 108 Z M 620 75 L 645 103 L 598 103 Z M 740 95 L 760 118 L 720 118 Z M 860 80 L 885 108 L 838 108 Z" fill="url(#winSnow)" opacity=".85"/>
+      <!-- 中山 -->
+      <path d="M0 230 Q 140 160 280 200 T 560 185 T 840 210 T 1000 195 L 1000 340 L 0 340 Z" fill="url(#winMid)" opacity=".78"/>
+      <!-- 中山雪顶 -->
+      <path d="M80 200 Q 140 160 200 195" stroke="#F8FAFC" stroke-width="4" fill="none" stroke-linecap="round" opacity=".75"/>
+      <path d="M320 190 Q 400 165 480 188" stroke="#F8FAFC" stroke-width="4" fill="none" stroke-linecap="round" opacity=".75"/>
+      <path d="M600 185 Q 680 168 760 192" stroke="#F8FAFC" stroke-width="4" fill="none" stroke-linecap="round" opacity=".75"/>
+      <!-- 针叶林带（中山上） -->
+      <g fill="#2E4A3A" opacity=".7">
+        <!-- 左群 -->
+        <path d="M180 235 L 188 218 L 196 235 Z M 183 228 L 188 216 L 193 228 Z"/>
+        <path d="M210 240 L 218 222 L 226 240 Z M 213 233 L 218 220 L 223 233 Z"/>
+        <path d="M240 238 L 248 220 L 256 238 Z M 243 231 L 248 218 L 253 231 Z"/>
+        <!-- 中群 -->
+        <path d="M520 235 L 528 218 L 536 235 Z M 523 228 L 528 216 L 533 228 Z"/>
+        <path d="M555 240 L 563 222 L 571 240 Z M 558 233 L 563 220 L 568 233 Z"/>
+        <!-- 右群 -->
+        <path d="M820 242 L 828 225 L 836 242 Z M 823 235 L 828 223 L 833 235 Z"/>
+        <path d="M855 245 L 863 228 L 871 245 Z M 858 238 L 863 226 L 868 238 Z"/>
       </g>
-      <!-- 雪盖松尖 -->
-      <g fill="#F8FAFC">
-        <path d="M132 246 L 138 258 L 126 258 Z"/>
-        <path d="M192 251 L 198 263 L 186 263 Z"/>
-        <path d="M832 248 L 838 260 L 826 260 Z"/>
-        <path d="M892 254 L 898 266 L 886 266 Z"/>
+      <!-- 松针雪帽 -->
+      <g fill="#F8FAFC" opacity=".9">
+        <path d="M188 216 L 193 226 L 183 226 Z"/>
+        <path d="M218 220 L 223 230 L 213 230 Z"/>
+        <path d="M248 218 L 253 228 L 243 228 Z"/>
+        <path d="M528 216 L 533 226 L 523 226 Z"/>
+        <path d="M563 220 L 568 230 L 558 230 Z"/>
+        <path d="M828 223 L 833 233 L 823 233 Z"/>
+        <path d="M863 226 L 868 236 L 858 236 Z"/>
       </g>
-      <!-- 温泉池 -->
-      <ellipse cx="500" cy="295" rx="160" ry="22" fill="url(#winPool)"/>
-      <ellipse cx="500" cy="292" rx="150" ry="18" fill="#C8DCE4" opacity=".7"/>
-      <!-- 温泉热气 -->
-      <path class="steam-puff"     d="M420 275 q 4 -8 0 -14 q -4 -6 0 -12"/>
-      <path class="steam-puff st2" d="M500 272 q 4 -8 0 -14 q -4 -6 0 -12"/>
-      <path class="steam-puff st3" d="M580 275 q 4 -8 0 -14 q -4 -6 0 -12"/>
-      <!-- 雪花 -->
+      <!-- 近山（前景雪坡） -->
+      <path d="M0 290 Q 180 260 380 278 T 760 270 T 1000 290 L 1000 340 L 0 340 Z" fill="url(#winNear)"/>
+      <!-- 前景雪地 -->
+      <path d="M0 308 Q 180 288 400 300 T 800 295 T 1000 308 L 1000 340 L 0 340 Z" fill="url(#winSnow)" opacity=".88"/>
+      <!-- 温泉池（右下方） -->
+      <ellipse cx="700" cy="310" rx="130" ry="18" fill="url(#winPool)"/>
+      <ellipse cx="700" cy="308" rx="120" ry="14" fill="#C8DCE4" opacity=".6"/>
+      <!-- 温泉水面反光 -->
+      <ellipse cx="690" cy="306" rx="40" ry="3" fill="#fff" opacity=".5"/>
+      <!-- 温泉热气（袅袅上升） -->
+      <g stroke="#F8FAFC" stroke-width="3" fill="none" stroke-linecap="round" opacity=".65">
+        <path class="steam-puff"     d="M640 295 q 5 -10 0 -20 q -6 -10 2 -20 q 6 -8 -2 -18"/>
+        <path class="steam-puff st2" d="M695 290 q 6 -12 0 -22 q -6 -10 2 -20 q 6 -9 -2 -18"/>
+        <path class="steam-puff st3" d="M750 293 q 5 -11 0 -20 q -6 -9 2 -18 q 6 -8 -2 -16"/>
+      </g>
+      <!-- 雪花（多种形态） -->
       <g fill="#F8FAFC">
-        <circle class="snow-flake"    cx="100" cy="40"  r="2.5"/>
-        <circle class="snow-flake s2" cx="240" cy="70"  r="2"/>
-        <circle class="snow-flake s3" cx="380" cy="35"  r="2.5"/>
-        <circle class="snow-flake s4" cx="520" cy="65"  r="2"/>
-        <circle class="snow-flake s5" cx="660" cy="30"  r="2.5"/>
-        <circle class="snow-flake s6" cx="800" cy="55"  r="2"/>
-        <circle class="snow-flake s7" cx="920" cy="40"  r="2.5"/>
-        <circle class="snow-flake s8" cx="180" cy="100" r="2"/>
+        <circle class="snow-flake"    cx="80"  cy="40"  r="2.8"/>
+        <circle class="snow-flake s2" cx="220" cy="70"  r="2.2"/>
+        <circle class="snow-flake s3" cx="360" cy="35"  r="3"/>
+        <circle class="snow-flake s4" cx="500" cy="65"  r="2.2"/>
+        <circle class="snow-flake s5" cx="640" cy="30"  r="2.8"/>
+        <circle class="snow-flake s6" cx="780" cy="55"  r="2.2"/>
+        <circle class="snow-flake s7" cx="920" cy="45"  r="3"/>
+        <circle class="snow-flake s8" cx="150" cy="100" r="2.2"/>
+        <circle class="snow-flake s9" cx="420" cy="110" r="2.5"/>
+        <circle class="snow-flake s10" cx="700" cy="100" r="2"/>
+        <circle class="snow-flake s11" cx="880" cy="120" r="2.5"/>
+        <circle class="snow-flake s12" cx="300" cy="140" r="2"/>
+      </g>
+      <!-- 六角星雪花点缀 -->
+      <g stroke="#F8FAFC" stroke-width="1.2" fill="none" opacity=".8">
+        <path class="snow-flake s13" d="M260 50 l 0 -6 m -3 3 l 6 0 M 260 50 l -4 -4 m 4 4 l 4 4"/>
+        <path class="snow-flake s14" d="M580 75 l 0 -5 m -2.5 2.5 l 5 0 M 580 75 l -3.5 -3.5 m 3.5 3.5 l 3.5 3.5"/>
+        <path class="snow-flake s15" d="M850 85 l 0 -6 m -3 3 l 6 0 M 850 85 l -4 -4 m 4 4 l 4 4"/>
+      </g>
+      <!-- 冬鸟（寒鸦） -->
+      <g stroke="#2A3038" stroke-width="1.6" fill="none" stroke-linecap="round">
+        <path d="M400 100 q 6 -6 12 0 q 6 -6 12 0"/>
+        <path d="M430 112 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+      <!-- 雪地上的树影 -->
+      <g fill="#5A7A94" opacity=".25">
+        <ellipse cx="120" cy="318" rx="25" ry="4"/>
+        <ellipse cx="880" cy="320" rx="20" ry="3"/>
       </g>
     </svg>
     <figcaption class="cap">冬 · 雪覆山脊与温泉热气</figcaption>
