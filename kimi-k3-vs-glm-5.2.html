@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kimi K3 vs GLM 5.2 — 国产开源大模型巅峰对决</title>
+<style>
+  :root{
+    --bg:#05070f;
+    --bg2:#0a0d1c;
+    --panel:rgba(16,20,38,.55);
+    --panel-solid:#0d1124;
+    --line:rgba(120,140,220,.14);
+    --ink:#e8ecff;
+    --muted:#8b93b8;
+    --dim:#5c6288;
+    --k3:#38e8ff;      /* 青 */
+    --k3-2:#a855f7;    /* 紫 */
+    --glm:#4f8bff;     /* 蓝 */
+    --glm-2:#2ee6a8;   /* 绿 */
+    --k3-grad:linear-gradient(135deg,#38e8ff,#a855f7);
+    --glm-grad:linear-gradient(135deg,#4f8bff,#2ee6a8);
+    --radius:20px;
+    --font:'Segoe UI','PingFang SC','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif;
+    --mono:'JetBrains Mono','SF Mono','Cascadia Code','Consolas',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font);color:var(--ink);background:var(--bg);
+    overflow-x:hidden;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(56,232,255,.28);color:#fff}
+  a{color:inherit}
+  /* ---------- 背景 ---------- */
+  .bg-fixed{position:fixed;inset:0;z-index:-2;overflow:hidden;
+    background:
+      radial-gradient(1200px 800px at 12% -10%,#1a1f4a -20%,transparent 55%),
+      radial-gradient(1100px 750px at 90% 8%,#0f2a3a -10%,transparent 55%),
+      radial-gradient(1000px 700px at 50% 110%,#2a1240 -20%,transparent 55%),
+      linear-gradient(180deg,#05070f,#070a18 45%,#05070f);
+  }
+  /* 网格线 SVG 背景 */
+  .bg-grid{position:fixed;inset:0;z-index:-1;opacity:.5;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M60 0H0V60' fill='none' stroke='%23223366' stroke-opacity='.18'/%3E%3C/svg%3E");
+    background-size:60px 60px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 35%,#000 30%,transparent 75%);
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 35%,#000 30%,transparent 75%);
+  }
+  /* 粒子画布 */
+  #particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  /* 漂浮光晕 */
+  .glow{position:fixed;border-radius:50%;filter:blur(90px);z-index:-1;pointer-events:none;opacity:.5;animation:drift 22s ease-in-out infinite alternate}
+  .glow.g1{width:520px;height:520px;background:radial-gradient(circle,rgba(56,232,255,.28),transparent 70%);top:-140px;left:-120px}
+  .glow.g2{width:460px;height:460px;background:radial-gradient(circle,rgba(168,85,247,.24),transparent 70%);top:30%;right:-140px;animation-delay:-8s}
+  .glow.g3{width:600px;height:600px;background:radial-gradient(circle,rgba(47,230,168,.16),transparent 70%);bottom:-220px;left:22%;animation-delay:-14s}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,40px) scale(1.15)}}
+
+  /* ---------- 布局容器 ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  section{position:relative;padding:84px 0}
+  .sec-head{text-align:center;margin-bottom:48px}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.32em;color:var(--muted);
+    text-transform:uppercase;margin-bottom:16px}
+  .eyebrow::before,.eyebrow::after{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,#56608f)}
+  .eyebrow::after{background:linear-gradient(90deg,#56608f,transparent)}
+  .sec-title{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,#fff,#aeb6e8);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sec-sub{color:var(--muted);margin-top:12px;font-size:15px}
+
+  /* ---------- 玻璃拟态卡片 ---------- */
+  .glass{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05)}
+  /* 角落装饰 */
+  .corner::before,.corner::after{content:"";position:absolute;width:26px;height:26px;pointer-events:none;opacity:.7}
+  .corner::before{top:10px;left:10px;border-top:2px solid var(--c,#56608f);border-left:2px solid var(--c,#56608f);border-radius:6px 0 0 0}
+  .corner::after{bottom:10px;right:10px;border-bottom:2px solid var(--c,#56608f);border-right:2px solid var(--c,#56608f);border-radius:0 0 6px 0}
+
+  /* ---------- 入场动画 ---------- */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}
+
+  /* ---------- HERO ---------- */
+  .hero{min-height:96vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 0 70px;position:relative}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:#c9d2ff;padding:7px 16px;border-radius:999px;
+    border:1px solid rgba(120,140,220,.3);background:rgba(20,26,52,.5);letter-spacing:.14em;margin-bottom:26px;animation:badgeIn 1s .1s both}
+  @keyframes badgeIn{from{opacity:0;transform:translateY(-12px) scale(.95)}to{opacity:1;transform:none}}
+  .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--k3);box-shadow:0 0 12px var(--k3);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .vs-title{font-size:clamp(44px,9vw,104px);font-weight:900;letter-spacing:.01em;line-height:.98;animation:heroUp 1s .25s both}
+  .vs-title .k{background:var(--k3-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 26px rgba(56,232,255,.35))}
+  .vs-title .g{background:var(--glm-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 26px rgba(79,139,255,.35))}
+  .vs-title .v{background:linear-gradient(180deg,#cfd6ff,#6b7299);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    font-size:.62em;vertical-align:middle;margin:0 .12em;letter-spacing:.08em}
+  @keyframes heroUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+  .hero-sub{max-width:640px;color:var(--muted);font-size:clamp(15px,2vw,18px);margin-top:26px;animation:heroUp 1s .45s both}
+  .hero-sub b{color:#dfe6ff;font-weight:600}
+  .hero-meta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;justify-content:center;animation:heroUp 1s .6s both}
+  .hero-meta span{font-size:13px;color:#aeb6e8;padding:8px 18px;border-radius:999px;border:1px solid rgba(120,140,220,.22);background:rgba(14,18,38,.6)}
+  .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--dim);font-size:12px;letter-spacing:.22em;display:flex;flex-direction:column;align-items:center;gap:8px;animation:heroUp 1s .9s both}
+  .scroll-hint .line{width:1px;height:44px;background:linear-gradient(180deg,var(--k3),transparent);animation:scrollLine 1.8s ease-in-out infinite}
+  @keyframes scrollLine{0%,100%{transform:scaleY(.3);opacity:.4}50%{transform:scaleY(1);opacity:1}}
+
+  /* ---------- 对战徽章 ---------- */
+  .arena{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;margin-top:44px;animation:heroUp 1s .7s both}
+  .fighter{position:relative;padding:26px 26px 22px;text-align:left;overflow:hidden;transition:transform .35s}
+  .fighter:hover{transform:translateY(-6px)}
+  .fighter.k3{--c:#38e8ff;border-color:rgba(56,232,255,.28)}
+  .fighter.glm{--c:#4f8bff;border-color:rgba(79,139,255,.3)}
+  .fighter .strip{position:absolute;top:0;left:0;right:0;height:3px}
+  .fighter.k3 .strip{background:var(--k3-grad)}
+  .fighter.glm .strip{background:var(--glm-grad)}
+  .fighter .f-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .f-logo{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;color:#fff;flex:none}
+  .k3 .f-logo{background:var(--k3-grad);box-shadow:0 0 24px rgba(56,232,255,.4)}
+  .glm .f-logo{background:var(--glm-grad);box-shadow:0 0 24px rgba(79,139,255,.4)}
+  .f-name{font-size:22px;font-weight:800;letter-spacing:.02em}
+  .k3 .f-name{background:var(--k3-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .glm .f-name{background:var(--glm-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .f-org{font-size:12px;color:var(--muted);margin-top:2px;letter-spacing:.06em}
+  .f-tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid var(--c);color:var(--c);margin-top:10px;letter-spacing:.08em}
+  .f-desc{font-size:13.5px;color:var(--muted);margin-top:12px}
+  .versus{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 6px}
+  .vs-orb{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
+    background:conic-gradient(from 0deg,#38e8ff,#a855f7,#4f8bff,#2ee6a8,#38e8ff);
+    box-shadow:0 0 40px rgba(120,140,255,.45);position:relative;animation:spin 8s linear infinite}
+  .vs-orb::before{content:"VS";position:absolute;inset:5px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1a2140,#0a0d1c);display:grid;place-items:center;letter-spacing:.04em}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vs-cap{color:var(--dim);font-size:11px;letter-spacing:.14em;margin-top:12px}
+
+  /* ---------- 计数徽章（hero 顶部浮动） ---------- */
+  .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:52px;width:100%;animation:heroUp 1s .8s both}
+  .stat-chip{text-align:center;padding:16px 10px;border-radius:16px;background:rgba(12,16,34,.5);border:1px solid var(--line)}
+  .stat-chip .n{font-family:var(--mono);font-size:26px;font-weight:800;background:linear-gradient(180deg,#fff,#9fb0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat-chip .l{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.05em}
+
+  /* ---------- 核心事实对比 ---------- */
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .fact-card{overflow:hidden}
+  .fact-card .fc-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px dashed rgba(120,140,220,.12)}
+  .fc-name{font-size:17px;font-weight:700}
+  .k3 .fc-name{color:var(--k3)}.glm .fc-name{color:var(--glm)}
+  .fc-meta{font-size:11.5px;color:var(--dim);letter-spacing:.06em}
+  .fact-list{padding:6px 22px 18px}
+  .fact-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(120,140,220,.08)}
+  .fact-row:last-child{border-bottom:none}
+  .fr-label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:9px;flex:none}
+  .fr-label svg{flex:none;opacity:.85}
+  .fr-value{font-family:var(--mono);font-size:14.5px;font-weight:600;text-align:right;line-height:1.4}
+  .k3 .fr-value{color:#c9f4ff}.glm .fr-value{color:#cfe0ff}
+  .fr-value small{display:block;font-family:var(--font);font-size:11px;color:var(--dim);font-weight:400}
+
+  /* ---------- 雷达图 ---------- */
+  .radar-wrap{display:grid;grid-template-columns:1.15fr 1fr;gap:30px;align-items:center}
+  .radar-box{position:relative;padding:20px}
+  .radar-box svg{width:100%;height:auto;display:block}
+  .radar-legend{display:flex;gap:22px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+  .rg{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .rg i{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .rg.k3 i{background:var(--k3-grad);box-shadow:0 0 10px rgba(56,232,255,.5)}
+  .rg.glm i{background:var(--glm-grad);box-shadow:0 0 10px rgba(79,139,255,.5)}
+  .radar-side .score-pill{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-radius:14px;margin-bottom:12px;background:rgba(12,16,34,.5);border:1px solid var(--line)}
+  .score-pill .sp-name{font-size:14px;font-weight:600}
+  .score-pill .sp-val{font-family:var(--mono);font-size:20px;font-weight:800}
+  .score-pill.k3 .sp-val{color:var(--k3)}.score-pill.glm .sp-val{color:var(--glm)}
+  .who-wins{font-size:13px;color:var(--muted)}
+
+  /* ---------- 条形图 ---------- */
+  .bars{display:flex;flex-direction:column;gap:22px}
+  .bar-row .br-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .br-name{font-size:14px;color:#cfd6ff;font-weight:600}
+  .br-score{font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+  .br-track{position:relative;height:26px;border-radius:8px;background:rgba(10,14,30,.7);border:1px solid rgba(120,140,220,.12);overflow:hidden}
+  .br-fill{position:absolute;top:0;bottom:0;left:0;border-radius:8px;width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+  .br-fill.k3{background:var(--k3-grad);box-shadow:0 0 16px rgba(56,232,255,.4)}
+  .br-fill.glm{background:var(--glm-grad);box-shadow:0 0 16px rgba(79,139,255,.4)}
+  .bar-row .br-head .one{display:flex;gap:14px;align-items:center}
+  .bar-row .br-head .one .tag{font-size:11px;color:var(--dim);font-family:var(--mono)}
+  /* 双条并排 */
+  .bar-duo{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .bar-duo .bar-row .br-track{height:20px}
+  .bar-duo .br-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .bar-duo .br-name{font-size:16px;font-weight:700;color:#dfe6ff}
+  .bar-duo .br-val{font-family:var(--mono);font-weight:800;font-size:15px}
+  .bar-duo .k3 .br-val{color:var(--k3)}.bar-duo .glm .br-val{color:var(--glm)}
+
+  /* ---------- 优势对比 ---------- */
+  .pros{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .pro-card{padding:26px}
+  .pro-card .pc-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .pc-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .k3 .pc-icon{background:rgba(56,232,255,.12);border:1px solid rgba(56,232,255,.35)}
+  .glm .pc-icon{background:rgba(79,139,255,.12);border:1px solid rgba(79,139,255,.35)}
+  .pc-title{font-size:19px;font-weight:800}
+  .k3 .pc-title{background:var(--k3-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .glm .pc-title{background:var(--glm-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .pc-sub{font-size:12.5px;color:var(--muted)}
+  .pros-list{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .pros-list li{display:flex;gap:11px;font-size:14px;color:#c8d0f2;align-items:flex-start;line-height:1.55}
+  .pros-list li svg{flex:none;margin-top:3px}
+  .k3 .pros-list svg{color:var(--k3)}.glm .pros-list svg{color:var(--glm-2)}
+  .pros-list .neg b{color:#ff9db0}
+  /* 短板 */
+  .weak-marker{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim);letter-spacing:.1em;margin-top:18px;padding-top:16px;border-top:1px dashed rgba(120,140,220,.14)}
+  .weak-marker svg{color:#c96}
+  .weak-list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+  .weak-list span{font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+  .weak-list span::before{content:"—";position:absolute;left:0;color:var(--dim)}
+
+  /* ---------- Benchmark 表 ---------- */
+  .bench-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(18px)}
+  table{width:100%;border-collapse:collapse;min-width:760px}
+  thead th{font-size:12px;letter-spacing:.14em;color:var(--muted);text-align:left;padding:16px 20px;font-weight:600;
+    border-bottom:1px solid rgba(120,140,220,.16);white-space:nowrap}
+  tbody td{padding:15px 20px;font-size:14px;border-bottom:1px solid rgba(120,140,220,.07);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(56,232,255,.04)}
+  td.metric{color:#cbd4ff;font-weight:600;white-space:nowrap}
+  td.metric .m-sub{display:block;font-size:11px;color:var(--dim);font-weight:400;white-space:normal;max-width:340px}
+  td.k3v{color:var(--k3);font-family:var(--mono);font-weight:700}
+  td.glmv{color:var(--glm);font-family:var(--mono);font-weight:700}
+  td.k3v small,td.glmv small{display:block;font-family:var(--font);font-size:11px;color:var(--dim);font-weight:400}
+  th.k3h{color:var(--k3)}th.glmh{color:var(--glm)}
+  .better{position:relative}
+  .better::after{content:"★ 领先";position:absolute;left:20px;bottom:-13px;font-size:10px;color:#ffd166;letter-spacing:.06em;font-family:var(--mono)}
+  .win-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:1px;letter-spacing:.04em}
+  .win-tag.k3{color:var(--k3);border:1px solid rgba(56,232,255,.4)}
+  .win-tag.glm{color:var(--glm-2);border:1px solid rgba(47,230,168,.4)}
+
+  /* ---------- 结论 ---------- */
+  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .rec-card{padding:28px;position:relative;overflow:hidden}
+  .rec-card .rc-tag{font-size:11px;letter-spacing:.2em;color:var(--dim);margin-bottom:10px}
+  .rec-card h3{font-size:22px;font-weight:800;margin-bottom:8px}
+  .rec-card.k3 h3{color:var(--k3)}.rec-card.glm h3{color:var(--glm-2)}
+  .rec-card p{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .rec-card .rc-use{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .rec-card .rc-use li{font-size:13.5px;color:#c8d0f2;display:flex;gap:10px;align-items:flex-start}
+  .rec-card.k3 .rc-use li::before{content:"▸";color:var(--k3);font-weight:700}
+  .rec-card.glm .rc-use li::before{content:"▸";color:var(--glm-2);font-weight:700}
+  .rec-card .rc-foot{margin-top:18px;padding-top:16px;border-top:1px dashed rgba(120,140,220,.14);font-size:12.5px;color:var(--dim)}
+  .verdict-bar{grid-column:1/-1;text-align:center;padding:26px;border-radius:var(--radius);border:1px solid rgba(120,140,220,.16);
+    background:linear-gradient(135deg,rgba(20,30,70,.5),rgba(10,14,30,.5));display:flex;flex-direction:column;align-items:center;gap:12px}
+  .verdict-bar .vb-title{font-size:15px;color:#cfd6ff;letter-spacing:.06em}
+  .verdict-bar .vb-text{max-width:760px;font-size:14px;color:var(--muted);line-height:1.8}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid rgba(120,140,220,.12);padding:44px 0 40px;margin-top:20px}
+  .foot-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+  .foot-title{font-size:12px;letter-spacing:.18em;color:var(--muted);margin-bottom:16px}
+  .src-list{display:flex;flex-direction:column;gap:9px}
+  .src-list a{font-size:13px;color:#aeb6e8;text-decoration:none;transition:color .3s;display:inline-block}
+  .src-list a:hover{color:var(--k3)}
+  .foot-note{font-size:12.5px;color:var(--dim);line-height:1.8;margin-top:6px}
+  .foot-bottom{margin-top:30px;padding-top:22px;border-top:1px solid rgba(120,140,220,.1);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .foot-bottom .b1{font-size:12.5px;color:var(--dim)}
+  .foot-bottom .b2{font-size:12px;color:#5c6288;letter-spacing:.1em}
+
+  /* ---------- 装饰 SVG 浮动几何体 ---------- */
+  .geo{position:absolute;pointer-events:none;opacity:.5;z-index:0}
+  .geo-hero{position:absolute;pointer-events:none;opacity:.4;z-index:0;animation:float 9s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-22px) rotate(8deg)}}
+
+  /* ---------- 响应式 ---------- */
+  @media(max-width:900px){
+    .arena{grid-template-columns:1fr}.versus{flex-direction:row;gap:14px;padding:12px 0}
+    .vs-cap{margin:0}
+    .facts,.radar-wrap,.pros,.verdict{grid-template-columns:1fr}
+    .bar-duo{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr}
+    section{padding:60px 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    .br-fill{transition:none}
+  }
+</style>
+</head>
+<body>
+  <div class="bg-fixed"></div>
+  <div class="bg-grid"></div>
+  <canvas id="particles"></canvas>
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+
+  <!-- 装饰浮动几何体 -->
+  <svg class="geo-hero" style="top:12%;left:6%" width="120" height="120" viewBox="0 0 100 100">
+    <polygon points="50,6 92,73 8,73" fill="none" stroke="#38e8ff" stroke-opacity=".5" stroke-width="1.2"/>
+    <polygon points="50,22 78,68 22,68" fill="none" stroke="#a855f7" stroke-opacity=".35" stroke-width="1"/>
+  </svg>
+  <svg class="geo-hero" style="top:22%;right:7%;animation-delay:-3s" width="90" height="90" viewBox="0 0 100 100">
+    <rect x="12" y="12" width="76" height="76" rx="18" fill="none" stroke="#4f8bff" stroke-opacity=".5" stroke-width="1.2"/>
+    <rect x="26" y="26" width="48" height="48" rx="10" fill="none" stroke="#2ee6a8" stroke-opacity=".35" stroke-width="1"/>
+  </svg>
+  <svg class="geo-hero" style="bottom:16%;left:12%;animation-delay:-6s" width="70" height="70" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#38e8ff" stroke-opacity=".4" stroke-width="1.2"/>
+    <circle cx="50" cy="50" r="26" fill="none" stroke="#a855f7" stroke-opacity=".3" stroke-width="1"/>
+  </svg>
+
+  <!-- ============ 1. HERO ============ -->
+  <header class="hero">
+    <div class="wrap" style="position:relative;z-index:1">
+      <span class="hero-badge"><span class="dot"></span>国产开源大模型 · 巅峰对决</span>
+      <h1 class="vs-title"><span class="k">Kimi K3</span><span class="v">VS</span><span class="g">GLM 5.2</span></h1>
+      <p class="hero-sub">万亿级潜伏 MoE 推理巨兽 <b>Kimi K3</b>，对垒全平台开源速度王者 <b>GLM 5.2</b>。
+        一场关于<b>智力、多模态、速度与成本</b>的全面较量，数据来自 Artificial Analysis 与 OpenRouter 实测。</p>
+      <div class="hero-meta">
+        <span>🧠 智力指数 57 · 51</span>
+        <span>⚡ 速度 172.8 vs 35 tok/s</span>
+        <span>💰 价格 $2.31 vs $0.90 /M</span>
+        <span>📦 均开源 · 上下文 1M</span>
+      </div>
+
+      <!-- 对战徽章 -->
+      <div class="arena">
+        <div class="fighter glass corner k3 reveal in">
+          <div class="strip"></div>
+          <div class="f-head">
+            <div class="f-logo">K3</div>
+            <div>
+              <div class="f-name">Kimi K3</div>
+              <div class="f-org">月之暗面 · Moonshot AI</div>
+            </div>
+          </div>
+          <span class="f-tag">全球首个开源 3 万亿级</span>
+          <p class="f-desc">2.8 万亿总参数 · Stable LatentMoE · 原生多模态 · 百万级上下文 · 智力全球第三</p>
+        </div>
+        <div class="versus">
+          <div class="vs-orb"></div>
+          <div class="vs-cap">TRILN-T VS MOE</div>
+        </div>
+        <div class="fighter glass corner glm reveal in d1">
+          <div class="strip"></div>
+          <div class="f-head">
+            <div class="f-logo">GLM</div>
+            <div>
+              <div class="f-name">GLM 5.2</div>
+              <div class="f-org">智谱 · Z.ai</div>
+            </div>
+          </div>
+          <span class="f-tag">MIT 全开源 · 8 大国产算力</span>
+          <p class="f-desc">744B 总参数 · MoE 稀疏激活 · 开源最强代码 · 172.8 tok/s 极速 · 开源模型第一</p>
+        </div>
+      </div>
+
+      <!-- 计数徽章 -->
+      <div class="stat-strip">
+        <div class="stat-chip"><div class="n" data-count="2800" data-suffix="B">0</div><div class="l">K3 总参数</div></div>
+        <div class="stat-chip"><div class="n" data-count="744" data-suffix="B">0</div><div class="l">GLM 总参数</div></div>
+        <div class="stat-chip"><div class="n" data-count="100" data-suffix="万">0</div><div class="l">上下文长度</div></div>
+        <div class="stat-chip"><div class="n" data-count="896" data-suffix="">0</div><div class="l">K3 混合专家</div></div>
+        <div class="stat-chip"><div class="n" data-count="172" data-prec="1" data-suffix=" tok/s">0</div><div class="l">GLM 峰值输出</div></div>
+        <div class="stat-chip"><div class="n" data-count="57" data-suffix="">0</div><div class="l">K3 智力指数</div></div>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>向下探索</span><div class="line"></div></div>
+  </header>
+
+  <!-- ============ 2. 核心事实 ============ -->
+  <section id="facts">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Core Specs</div>
+        <h2 class="sec-title">核心事实一览</h2>
+        <p class="sec-sub">从参数规模到首发时间，两大模型的关键画像并排呈现</p>
+      </div>
+      <div class="facts">
+        <div class="fact-card glass corner k3 reveal">
+          <div class="fc-head">
+            <div class="fc-l"><div class="fc-name">Kimi K3</div><div class="fc-meta">月之暗面 · 2026-07-16 发布</div></div>
+          </div>
+          <div class="fact-list">
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>总参数</span><span class="fr-value">2.8 万亿 <small>全球首个开源 3 万亿级</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 3l2 4M16 3l-2 4"/></svg>架构</span><span class="fr-value">Stable LatentMoE <small>896 专家 · 每次激活 16 个</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="3"/></svg>上下文</span><span class="fr-value">1.05M token <small>100 万上下文</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 11l3 3 5-6"/></svg>多模态</span><span class="fr-value">原生多模态 <small>图片 · 视频 · 视觉推理</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg>开源协议</span><span class="fr-value">开源 <small>3 万亿级开源</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><path d="M12 2l2 6h6l-5 4 2 7-5-4-5 4 2-7-5-4h6z"/></svg>智力指数</span><span class="fr-value">57 <small>全球第三 · AA</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>综合成本</span><span class="fr-value">$2.31 /M <small>AA 综合百万 token</small></span></div>
+          </div>
+        </div>
+        <div class="fact-card glass corner glm reveal d1">
+          <div class="fc-head">
+            <div class="fc-l"><div class="fc-name">GLM 5.2</div><div class="fc-meta">智谱 · 2026-06-13 发布</div></div>
+          </div>
+          <div class="fact-list">
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>总参数</span><span class="fr-value">744B <small>激活参数约 40B</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 3l2 4M16 3l-2 4"/></svg>架构</span><span class="fr-value">MoE 稀疏专家 <small>动态稀疏注意力</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="3"/></svg>上下文</span><span class="fr-value">1M token <small>100 万上下文</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 11l3 3 5-6"/></svg>多模态</span><span class="fr-value">不支持 <small>纯文本与代码模态</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><path d="M12 3l7 4v5c0 4-3 7-7 9-4-2-7-5-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg>开源协议</span><span class="fr-value">MIT 全开源 <small>8 大国产算力首日适配</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><path d="M12 2l2 6h6l-5 4 2 7-5-4-5 4 2-7-5-4h6z"/></svg>智力指数</span><span class="fr-value">51 <small>开源模型第一 · AA</small></span></div>
+            <div class="fact-row"><span class="fr-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>综合成本</span><span class="fr-value">$0.90 /M <small>AA 综合百万 token</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. 雷达图 ============ -->
+  <section id="radar">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Capability Radar</div>
+        <h2 class="sec-title">七维能力雷达</h2>
+        <p class="sec-sub">综合智力 · 代码 · 多模态 · 长上下文 · 推理 · 速度 · 性价比（0–100）</p>
+      </div>
+      <div class="radar-wrap">
+        <div class="radar-box glass corner reveal">
+          <svg id="radarSvg" viewBox="0 0 560 560" role="img" aria-label="Kimi K3 与 GLM 5.2 七维能力雷达图"></svg>
+          <div class="radar-legend">
+            <span class="rg k3"><i></i>Kimi K3</span>
+            <span class="rg glm"><i></i>GLM 5.2</span>
+          </div>
+        </div>
+        <div class="radar-side">
+          <div class="score-pill k3 reveal"><span class="sp-name">Kimi K3 · 综合智力 57</span><span class="sp-val">全球第 3</span></div>
+          <div class="score-pill glm reveal d1"><span class="sp-name">GLM 5.2 · 综合智力 51</span><span class="sp-val">开源第 1</span></div>
+          <div class="who-wins reveal d2" style="margin-top:16px;line-height:1.8">
+            K3 在多模态、长上下文、推理深度维度全面领先，整体智力高出 6 分；
+            而 <b style="color:var(--glm-2)">GLM 5.2</b> 在<b style="color:var(--glm-2)">速度与性价比</b>两个维度大幅碾压，代码能力也略胜一筹。
+            这是一次「极致能力」与「极致效率」的典型对决。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. 能力条形图 ============ -->
+  <section id="bars">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Dimension Bars</div>
+        <h2 class="sec-title">能力维度对比</h2>
+        <p class="sec-sub">滚动进入后条形图将动态填充至对应数值</p>
+      </div>
+      <div class="bar-duo">
+        <div class="bar-row k3 reveal">
+          <div class="br-row-head"><span class="br-name">Kimi K3</span></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">综合智力</span></span><span class="br-score">57</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="57"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">代码能力</span></span><span class="br-score">55</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="55"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">多模态</span></span><span class="br-score">92</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="92"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">长上下文</span></span><span class="br-score">92</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="92"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">推理深度</span></span><span class="br-score">88</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="88"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">运行速度</span></span><span class="br-score">40</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="40"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">性价比</span></span><span class="br-score">45</span></div>
+            <div class="br-track"><div class="br-fill k3" data-w="45"></div></div></div>
+        </div>
+        <div class="bar-row glm reveal d1">
+          <div class="br-row-head"><span class="br-name">GLM 5.2</span></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">综合智力</span></span><span class="br-score">51</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="51"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">代码能力</span></span><span class="br-score">65</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="65"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">多模态</span></span><span class="br-score">18</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="18"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">长上下文</span></span><span class="br-score">85</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="85"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">推理深度</span></span><span class="br-score">75</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="75"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">运行速度</span></span><span class="br-score">88</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="88"></div></div></div>
+          <div class="bar-row"><div class="br-head"><span class="one"><span class="br-name">性价比</span></span><span class="br-score">82</span></div>
+            <div class="br-track"><div class="br-fill glm" data-w="82"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. 优势对比 ============ -->
+  <section id="pros">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Strengths</div>
+        <h2 class="sec-title">核心优势与短板</h2>
+        <p class="sec-sub">各自的强项与其短板，公平呈现</p>
+      </div>
+      <div class="pros">
+        <div class="pro-card glass corner k3 reveal">
+          <div class="pc-head">
+            <div class="pc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38e8ff" stroke-width="1.8"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.6-6.3 4.6L8 13.8 2 9.2h7.6z"/></svg></div>
+            <div><div class="pc-title">Kimi K3 强项</div><div class="pc-sub">能力天花板 · 多模态 · 长上下文</div></div>
+          </div>
+          <ul class="pros-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>原生多模态，图片、视频、视觉推理一体化</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>百万级上下文解码加速 6.3 倍（KDA 混合线性注意力）</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>整体智力更强，全球第三（AA 指数 57）</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>长程编码 / Agent / 视觉反馈闭环能力强</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>BrowseComp 长程检索 91.2，推理深度突出</li>
+          </ul>
+          <div class="weak-marker"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>短板</div>
+          <div class="weak-list">
+            <span>输出速度较慢（约 35 tok/s）、成本较高（$2.31/M）</span>
+            <span>简单日常任务过度主动，训练偏向长程高难任务</span>
+            <span>人机体验与最强闭源模型仍有差距</span>
+          </div>
+        </div>
+        <div class="pro-card glass corner glm reveal d1">
+          <div class="pc-head">
+            <div class="pc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f8bff" stroke-width="1.8"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
+            <div><div class="pc-title">GLM 5.2 强项</div><div class="pc-sub">速度 · 成本 · 代码 · 开源</div></div>
+          </div>
+          <ul class="pros-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>输出速度约 172.8 tok/s，明显更快（约 5 倍）</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>综合成本约 $0.90/M，价格更便宜（约 2.6 倍差距）</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>MIT 协议全开源，上线首日 8 大国产算力平台全适配</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>代码能力突出，Code V3 综合排名第三，可用性持平 Opus 4.8</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Agent 可靠性 / 工具调用正确率高，单次处理 74 万条日志根因分析</li>
+          </ul>
+          <div class="weak-marker"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>短板</div>
+          <div class="weak-list">
+            <span>不支持多模态，仅纯文本与代码（多模态评分 18）</span>
+            <span>复杂推理与顶尖模型仍差约 5%</span>
+            <span>指令遵循偶尔分化，部分任务推理速度存在争议</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. Benchmark 表 ============ -->
+  <section id="bench">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Benchmarks</div>
+        <h2 class="sec-title">实测数据表</h2>
+        <p class="sec-sub">Artificial Analysis / OpenRouter / LLM Benchmark 等权威评测（★ 领先一方）</p>
+      </div>
+      <div class="bench-wrap glass reveal">
+        <table>
+          <thead>
+            <tr>
+              <th>指标</th>
+              <th class="k3h">Kimi K3</th>
+              <th class="glmh">GLM 5.2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="metric">首发时间<span class="m-sub">两大模型的发布时间差异</span></td>
+              <td class="k3v">2026-07-16</td>
+              <td class="glmv">2026-06-13 <span class="win-tag glm">更早</span></td>
+            </tr>
+            <tr>
+              <td class="metric">AA 智力指数<span class="m-sub">Artificial Analysis Intelligence Index</span></td>
+              <td class="k3v better">57 <small>全球第 3</small></td>
+              <td class="glmv">51 <small>开源第 1</small></td>
+            </tr>
+            <tr>
+              <td class="metric">LLM Benchmark Code V3<span class="m-sub">综合代码能力排名</span></td>
+              <td class="k3v">—</td>
+              <td class="glmv better">第 3 名 <small>可用性持平 Claude Opus 4.8</small></td>
+            </tr>
+            <tr>
+              <td class="metric">Terminal-Bench 2.1<span class="m-sub">终端 / Agent 任务评估</span></td>
+              <td class="k3v">—</td>
+              <td class="glmv better">81.0</td>
+            </tr>
+            <tr>
+              <td class="metric">SWE-bench Pro<span class="m-sub">真实软件工程任务</span></td>
+              <td class="k3v">—</td>
+              <td class="glmv better">62.1</td>
+            </tr>
+            <tr>
+              <td class="metric">BrowseComp 长程检索<span class="m-sub">长程信息检索能力</span></td>
+              <td class="k3v better">91.2</td>
+              <td class="glmv">—</td>
+            </tr>
+            <tr>
+              <td class="metric">输出速度 (AA)<span class="m-sub">Artificial Analysis 实测输出速率</span></td>
+              <td class="k3v">约 35 token/s</td>
+              <td class="glmv better">约 172.8 token/s</td>
+            </tr>
+            <tr>
+              <td class="metric">首字延迟 TTFT (AA)<span class="m-sub">首字生成时间，越低越好</span></td>
+              <td class="k3v">2.82s</td>
+              <td class="glmv better">1.50s</td>
+            </tr>
+            <tr>
+              <td class="metric">OpenRouter 吞吐 / 延迟<span class="m-sub">第三方路由实测</span></td>
+              <td class="k3v">41 tok/s · 1.44s</td>
+              <td class="glmv">—</td>
+            </tr>
+            <tr>
+              <td class="metric">综合价格 (AA)<span class="m-sub">每百万 token 综合成本</span></td>
+              <td class="k3v">约 $2.31</td>
+              <td class="glmv better">约 $0.90</td>
+            </tr>
+            <tr>
+              <td class="metric">OpenRouter 输入 / 输出价格<span class="m-sub">第三方路由每百万 token 报价</span></td>
+              <td class="k3v">$2.90 / $14.00</td>
+              <td class="glmv better">$0.581 / $1.826</td>
+            </tr>
+            <tr>
+              <td class="metric">上下文长度<span class="m-sub">单次对话可处理的最大 token</span></td>
+              <td class="k3v better">1.05M</td>
+              <td class="glmv">1M</td>
+            </tr>
+            <tr>
+              <td class="metric">多模态支持<span class="m-sub">图像 / 视频 / 视觉推理</span></td>
+              <td class="k3v better">原生支持</td>
+              <td class="glmv">不支持</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. 结论 ============ -->
+  <section id="verdict">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow">Verdict</div>
+        <h2 class="sec-title">如何选择</h2>
+        <p class="sec-sub">根据你的使用场景，找到最适合的模型</p>
+      </div>
+      <div class="verdict">
+        <div class="rec-card glass corner k3 reveal">
+          <div class="rc-tag">QUALITY-FIRST</div>
+          <h3>选 Kimi K3</h3>
+          <p>当「输出质量」比「速度与成本」更重要时，K3 是天花板。</p>
+          <ul class="rc-use">
+            <li>多模态理解与视觉推理任务</li>
+            <li>超长文档 / 长上下文保真阅读</li>
+            <li>深度推理、复杂长程 Agent 任务</li>
+            <li>对单次成本不敏感的质量优先场景</li>
+          </ul>
+          <div class="rc-foot">适合研究机构、内容创作、多模态产品与深度推理工作流。</div>
+        </div>
+        <div class="rec-card glass corner glm reveal d1">
+          <div class="rc-tag">EFFICIENCY-FIRST</div>
+          <h3>选 GLM 5.2</h3>
+          <p>当「速度、成本与代码」优先级最高时，GLM 是效率之王。</p>
+          <ul class="rc-use">
+            <li>大规模代码生成与软件开发</li>
+            <li>高并发、高吞吐生产环境</li>
+            <li>Agent 工具调用与日志根因分析</li>
+            <li>成本敏感的自部署与国产算力适配</li>
+          </ul>
+          <div class="rc-foot">适合开发者、运维团队、创业公司与高性价比生产部署。</div>
+        </div>
+        <div class="verdict-bar reveal d2">
+          <div class="vb-title">综合结论</div>
+          <div class="vb-text">
+            <b style="color:var(--k3)">K3</b> 以 57 分智力、原生多模态与 1.05M 上下文问鼎能力之巅，是「质量优先」的不二之选；
+            而 <b style="color:var(--glm-2)">GLM 5.2</b> 凭 172.8 tok/s 极速、$0.90/M 低成本、MIT 全开源与国产算力全适配，
+            在「速度 / 成本 / 代码」场景全面胜出。两者并非替代关系，而是面向不同用户的两条最优路径。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. Footer ============ -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-title">数据来源</div>
+          <div class="src-list">
+            <a href="#" onclick="return false">Artificial Analysis — 智力指数 / 输出速度 / TTFT / 综合价格</a>
+            <a href="#" onclick="return false">OpenRouter — 吞吐与延迟 / 输入输出每百万 token 报价</a>
+            <a href="#" onclick="return false">LLM Benchmark Code V3 — 代码能力综合排名</a>
+            <a href="#" onclick="return false">Terminal-Bench 2.1 · SWE-bench Pro — Agent 与软件工程评估</a>
+            <a href="#" onclick="return false">月之暗面 Moonshot AI 官方文档 — Kimi K3 架构与特性</a>
+            <a href="#" onclick="return false">智谱 Z.ai 官方发布 — GLM 5.2 开源与算力适配</a>
+          </div>
+        </div>
+        <div>
+          <div class="foot-title">免责声明</div>
+          <div class="foot-note">本页面为信息可视化演示，所有数据均来自上述公开来源并经人工核实，评测数值可能因环境、版本与更新而变动。能力维度评分（0–100）为基于公开信息的综合量化参考，非官方标准。请以官方发布与最新评测为准。</div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div class="b1">Kimi K3 vs GLM 5.2 · 国产开源大模型对比</div>
+        <div class="b2">© 2026 · ARTIFACT — 深色科技风 · 单文件 · 无外部依赖</div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== 粒子背景 ===== */
+  (function(){
+    var cv=document.getElementById('particles'),ctx=cv.getContext('2d');
+    var W,H,parts=[],links=[];
+    function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+    resize();addEventListener('resize',resize);
+    var N=Math.min(110,Math.floor(innerWidth/14));
+    var colors=['38,232,255','168,85,247','79,139,255','47,230,168'];
+    function make(i){return {x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45,r:Math.random()*1.8+.6,c:colors[i%4],tw:Math.random()*Math.PI*2};}
+    for(var i=0;i<N;i++)parts.push(make(i));
+    var fps=reduce?1:0;
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      for(var a=0;a<parts.length;a++){
+        var p=parts[a];
+        p.x+=p.vx;p.y+=p.vy;p.tw+=.02;
+        if(p.x<0||p.x>W)p.vx*=-1;
+        if(p.y<0||p.y>H)p.vy*=-1;
+        var al=.35+Math.sin(p.tw)*.2;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);
+        ctx.fillStyle='rgba('+p.c+','+al+')';ctx.fill();
+        for(var b=a+1;b<parts.length;b++){
+          var q=parts[b],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<110){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+            ctx.strokeStyle='rgba('+p.c+','+(0.14*(1-d/110))+')';ctx.lineWidth=1;ctx.stroke();}
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  /* ===== 滚动渐显 ===== */
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  /* ===== 数字计数器 ===== */
+  function animateCount(el){
+    var target=parseFloat(el.dataset.count),suffix=el.dataset.suffix||'',prec=parseInt(el.dataset.prec||'0',10);
+    var dur=1600,t0=null;
+    function step(t){
+      if(!t0)t0=t;
+      var p=Math.min(1,(t-t0)/dur);p=1-Math.pow(1-p,3);
+      var v=(target*p).toFixed(prec);
+      el.textContent=v.replace(/(\.\d+?)0+$/,'$1').replace(/\.$/,'')+suffix;
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var cio=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){animateCount(e.target);cio.unobserve(e.target);}});
+  },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){cio.observe(el);});
+
+  /* ===== 条形图滚动填充 ===== */
+  var bio=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        var fills=e.target.querySelectorAll('.br-fill.k3, .br-fill.glm');
+        fills.forEach(function(f){f.style.width=(f.dataset.w||0)+'%';});
+        bio.unobserve(e.target);
+      }
+    });
+  },{threshold:.25});
+  document.querySelectorAll('.bar-duo .bar-row').forEach(function(el){bio.observe(el);});
+
+  /* ===== 雷达图动态绘制 ===== */
+  (function(){
+    var dims=['综合智力','代码','多模态','长上下文','推理深度','运行速度','性价比'];
+    var k3=[57,55,92,92,88,40,45];
+    var glm=[51,65,18,85,75,88,82];
+    var cx=280,cy=285,R=180;
+    var svg=document.getElementById('radarSvg');
+    var NS='http://www.w3.org/2000/svg';
+    function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+    var n=dims.length;
+    var allEls=[];
+
+    // 网格多边形（外圈到内圈）
+    for(var ring=5;ring>=1;ring--){
+      var pts=[];
+      for(var i=0;i<n;i++){
+        var ang=-Math.PI/2+i*2*Math.PI/n;
+        pts.push((cx+R*ring/5*Math.cos(ang)).toFixed(1)+','+(cy+R*ring/5*Math.sin(ang)).toFixed(1));
+      }
+      var poly=el('polygon',{points:pts.join(' '),fill:'none',stroke:'rgba(120,140,220,.16)','stroke-width':1});
+      svg.appendChild(poly);allEls.push(poly);
+    }
+    // 轴线
+    for(var i=0;i<n;i++){
+      var ang=-Math.PI/2+i*2*Math.PI/n;
+      var line=el('line',{x1:cx,y1:cy,x2:cx+R*Math.cos(ang),y2:cy+R*Math.sin(ang),stroke:'rgba(120,140,220,.18)','stroke-width':1});
+      svg.appendChild(line);allEls.push(line);
+      var lx=cx+(R+26)*Math.cos(ang),ly=cy+(R+26)*Math.sin(ang);
+      var txt=el('text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle','font-size':'14','fill':'#aeb6e8','font-family':'var(--font)'});
+      txt.textContent=dims[i];svg.appendChild(txt);allEls.push(txt);
+    }
+    // 刻度值
+    allEls.forEach(function(e){
+      if(e.tagName==='polygon'&&e.getAttribute('points')&&e.getAttribute('points').split(' ').length>2){
+        // 仅最外圈标注
+        if(e.getAttribute('stroke')==='rgba(120,140,220,.16)'){
+          var pts=e.getAttribute('points').split(' ');
+          var cx0=0,cy0=0;
+          pts.forEach(function(p){var c=p.split(',');cx0+=+c[0];cy0+=+c[1];});
+          cx0/=pts.length;cy0/=pts.length;
+          if(cy0<cy-100){ // 顶部
+            var l=el('text',{x:cx0,y:cy0-14,'text-anchor':'middle','font-size':'11','fill':'#5c6288','font-family':'monospace'});
+            l.textContent='100';svg.appendChild(l);
+          }
+        }
+      }
+    });
+
+    // 数据多边形 fade-in
+    function addData(values,type,fill,stroke,glow,opacity){
+      var pts=[];
+      for(var i=0;i<n;i++){
+        var ang=-Math.PI/2+i*2*Math.PI/n;
+        var r=R*values[i]/100;
+        pts.push((cx+r*Math.cos(ang)).toFixed(1)+','+(cy+r*Math.sin(ang)).toFixed(1));
+      }
+      var poly=el('polygon',{points:pts.join(' '),fill:fill,'fill-opacity':opacity,stroke:stroke,'stroke-width':2.4,'stroke-linejoin':'round'});
+      poly.style.filter='url(#'+glow+')';
+      // 顶点光点
+      var dots=[];
+      for(var i=0;i<n;i++){
+        var ang=-Math.PI/2+i*2*Math.PI/n;
+        var r=R*values[i]/100;
+        var d=el('circle',{cx:cx+r*Math.cos(ang),cy:cy+r*Math.sin(ang),r:4.5,fill:'#fff',stroke:stroke,'stroke-width':2});
+        svg.appendChild(d);dots.push(d);allEls.push(d);
+      }
+      svg.appendChild(poly);allEls.push(poly);
+      return {poly:poly,dots:dots};
+    }
+
+    // defs 辉光
+    function defs(){
+      var d=el('defs',{});svg.appendChild(d);
+      var k=el('filter',{id:'kglow',x:'-30%',y:'-30%',width:'160%',height:'160%'});
+      var kg=el('feGaussianBlur',{stdDeviation:'6'});k.appendChild(kg);d.appendChild(k);
+      var g=el('filter',{id:'gglow',x:'-30%',y:'-30%',width:'160%',height:'160%'});
+      var gg=el('feGaussianBlur',{stdDeviation:'6'});g.appendChild(gg);d.appendChild(g);
+    }
+    defs();
+
+    var kObj=addData(k3,'k3','rgba(56,232,255,.14)','#38e8ff','kglow',.16);
+    var gObj=addData(glm,'glm','rgba(79,139,255,.14)','#4f8bff','gglow',.16);
+
+    // 动画
+    var animStarted=false;
+    function draw(p){
+      for(var i=0;i<n;i++){
+        var ang=-Math.PI/2+i*2*Math.PI/n;
+        var rk=R*k3[i]/100*p, rg0=R*glm[i]/100*p;
+        var ptsK=[],ptsG=[],xK=cx+rk*Math.cos(ang),yK=cy+rk*Math.sin(ang);
+        var xG=cx+rg0*Math.cos(ang),yG=cy+rg0*Math.sin(ang);
+        // 累加所有顶点
+        for(var j=0;j<n;j++){
+          var a2=-Math.PI/2+j*2*Math.PI/n;
+          ptsK.push((cx+R*k3[j]/100*p*Math.cos(a2)).toFixed(1)+','+(cy+R*k3[j]/100*p*Math.sin(a2)).toFixed(1));
+          ptsG.push((cx+R*glm[j]/100*p*Math.cos(a2)).toFixed(1)+','+(cy+R*glm[j]/100*p*Math.sin(a2)).toFixed(1));
+        }
+        kObj.poly.setAttribute('points',ptsK.join(' '));
+        gObj.poly.setAttribute('points',ptsG.join(' '));
+        kObj.dots[i].setAttribute('cx',xK);kObj.dots[i].setAttribute('cy',yK);
+        gObj.dots[i].setAttribute('cx',xG);gObj.dots[i].setAttribute('cy',yG);
+      }
+    }
+    function start(){
+      if(animStarted)return;animStarted=true;
+      if(reduce){draw(1);return;}
+      var t0=null,dur=1400;
+      function step(t){
+        if(!t0)t0=t;
+        var p=Math.min(1,(t-t0)/dur);
+        draw(1-Math.pow(1-p,3));
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    var rio=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){start();rio.unobserve(e.target);}});
+    },{threshold:.3});
+    rio.observe(document.getElementById('radar'));
+  })();
+
+})();
+</script>
+</body>
+</html>
