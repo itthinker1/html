@@ -157,8 +157,7 @@ blockquote{border-left:3px solid var(--gold);background:#FBF7EC;padding:12px 18p
 .route-block li{font-size:13.8px;margin:4px 0}
 
 /* 赏秋点位分组小标签 */
-.spot-group{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--autumn-deep);margin:16px 0 6px;display:flex;align-items:center;gap:8px}
-.spot-group::before{content:"●";color:var(--autumn);font-size:10px}
+.spot-group{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--autumn-deep);margin:16px 0 6px}
 
 @media(max-width:640px){
   .autumn-deep{padding:20px 14px}
@@ -195,7 +194,141 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   .node{opacity:1;animation:none}
   .reveal,.js .reveal{opacity:1!important;transform:none!important}
   html{scroll-behavior:auto}
+  .petal,.snow-flake,.steam-puff,.ripple,.maple-fall,.red-band,.tunnel-light,.tunnel-car,.raft,.cloud-drift,.stream-glint,.route-line,.rm-node{animation:none!important}
+  /* reduced-motion 下让动画装饰元素以静态可见形态呈现（关键帧 0% 通常是透明的） */
+  .petal,.maple-fall,.snow-flake{opacity:.55!important;transform:none!important}
+  .steam-puff{opacity:.45!important;transform:none!important}
+  .ripple{opacity:.4!important}
+  .tunnel-car{transform:translate(-160px,42px) scale(.95)!important;opacity:1!important}
+  .rm-node{opacity:1!important;transform:none!important}
+  .route-line{stroke-dashoffset:0!important}
 }
+
+/* ============ 四季主题插画（大幅 SVG） ============ */
+.season-illust{margin:20px 0 6px;background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(60,45,30,.06)}
+.season-illust svg{display:block;width:100%;height:auto}
+.season-illust .cap{font-size:12px;color:var(--ink-soft);text-align:center;padding:8px 12px 12px;letter-spacing:.08em;border-top:1px dashed var(--rule)}
+
+/* 春：花瓣飘落 */
+.petal{animation:petal-fall 9s linear infinite;transform-box:fill-box;transform-origin:center}
+.petal.p2{animation-delay:-3s;animation-duration:11s}
+.petal.p3{animation-delay:-6s;animation-duration:10s}
+.petal.p4{animation-delay:-1.5s;animation-duration:12s}
+.petal.p5{animation-delay:-7.5s;animation-duration:9.5s}
+@keyframes petal-fall{
+  0%{transform:translate(0,-30px) rotate(0deg);opacity:0}
+  8%{opacity:.9}
+  50%{transform:translate(28px,140px) rotate(160deg)}
+  100%{transform:translate(-20px,300px) rotate(340deg);opacity:0}
+}
+/* 春：溪水波光 */
+.stream-glint{animation:glint-slide 5s ease-in-out infinite}
+.stream-glint.g2{animation-delay:-2.5s}
+@keyframes glint-slide{0%,100%{opacity:.15}50%{opacity:.7}}
+
+/* 夏：溪水涟漪 */
+.ripple{fill:none;stroke:#7FB3C4;stroke-width:1.6;opacity:.55;animation:ripple-flow 4s linear infinite}
+.ripple.r2{animation-delay:-1.3s}
+.ripple.r3{animation-delay:-2.6s}
+@keyframes ripple-flow{
+  0%{stroke-dasharray:1 14;stroke-dashoffset:0;opacity:.55}
+  100%{stroke-dasharray:1 14;stroke-dashoffset:-30;opacity:.15}
+}
+/* 夏：皮划艇 */
+.raft{animation:raft-bob 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes raft-bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+/* 夏：云朵漂移 */
+.cloud-drift{animation:cloud-x 26s ease-in-out infinite alternate}
+.cloud-drift.c2{animation-duration:34s;animation-delay:-12s}
+@keyframes cloud-x{from{transform:translateX(0)}to{transform:translateX(38px)}}
+
+/* 秋：红叶飘落 */
+.maple-fall{animation:maple-drop 11s linear infinite;transform-box:fill-box;transform-origin:center}
+.maple-fall.m2{animation-delay:-3.5s;animation-duration:13s}
+.maple-fall.m3{animation-delay:-7s;animation-duration:10s}
+.maple-fall.m4{animation-delay:-1.8s;animation-duration:12s}
+.maple-fall.m5{animation-delay:-9s;animation-duration:14s}
+.maple-fall.m6{animation-delay:-5.5s;animation-duration:11s}
+@keyframes maple-drop{
+  0%{transform:translate(0,-30px) rotate(0deg);opacity:0}
+  10%{opacity:.95}
+  35%{transform:translate(-24px,120px) rotate(-120deg)}
+  65%{transform:translate(20px,230px) rotate(80deg)}
+  100%{transform:translate(-14px,340px) rotate(220deg);opacity:0}
+}
+
+/* 冬：雪花飘落 */
+.snow-flake{animation:snow-fall 10s linear infinite;transform-box:fill-box;transform-origin:center}
+.snow-flake.s2{animation-delay:-2s;animation-duration:12s}
+.snow-flake.s3{animation-delay:-4s;animation-duration:9s}
+.snow-flake.s4{animation-delay:-6s;animation-duration:13s}
+.snow-flake.s5{animation-delay:-1s;animation-duration:11s}
+.snow-flake.s6{animation-delay:-8s;animation-duration:10s}
+.snow-flake.s7{animation-delay:-3s;animation-duration:14s}
+.snow-flake.s8{animation-delay:-9.5s;animation-duration:9.5s}
+@keyframes snow-fall{
+  0%{transform:translate(0,-20px);opacity:0}
+  8%{opacity:.95}
+  50%{transform:translate(14px,150px)}
+  100%{transform:translate(-10px,310px);opacity:0}
+}
+/* 冬：温泉热气 */
+.steam-puff{fill:none;stroke:#EAF0F4;stroke-width:3;stroke-linecap:round;opacity:.5;animation:steam-rise 4.5s ease-in-out infinite}
+.steam-puff.st2{animation-delay:-1.5s}
+.steam-puff.st3{animation-delay:-3s}
+@keyframes steam-rise{
+  0%{transform:translateY(0);opacity:.15;stroke-width:2.4}
+  50%{opacity:.7}
+  100%{transform:translateY(-26px);opacity:0;stroke-width:4}
+}
+
+/* ============ 红叶海拔时序图 ============ */
+.altitude-card{background:#fff;border:1px solid #EBD4C2;border-radius:14px;padding:16px 16px 8px;margin:18px 0 10px;box-shadow:0 3px 14px rgba(142,74,47,.07)}
+.altitude-card svg{display:block;width:100%;height:auto}
+.altitude-card .cap{font-size:12px;color:var(--ink-soft);text-align:center;padding:8px 6px 10px;letter-spacing:.06em;border-top:1px dashed #EBD4C2}
+.red-band{animation:band-glow 5s ease-in-out infinite}
+.red-band.b2{animation-delay:-1.6s}
+.red-band.b3{animation-delay:-3.2s}
+@keyframes band-glow{0%,100%{opacity:.92}50%{opacity:.6}}
+
+/* ============ 三条串联路线示意图 ============ */
+.routes-map{background:#fff;border:1px solid #EBD4C2;border-radius:14px;padding:16px 16px 8px;margin:18px 0 14px;box-shadow:0 3px 14px rgba(142,74,47,.07)}
+.routes-map svg{display:block;width:100%;height:auto}
+.routes-map .cap{font-size:12px;color:var(--ink-soft);text-align:center;padding:8px 6px 10px;letter-spacing:.06em;border-top:1px dashed #EBD4C2}
+.routes-map .legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;font-size:12px;color:var(--ink-soft);padding:4px 0 10px}
+.routes-map .legend i{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.rm-node{animation:rm-pop .6s cubic-bezier(.34,1.56,.64,1) both}
+.rm-node.n2{animation-delay:.2s}.rm-node.n3{animation-delay:.4s}.rm-node.n4{animation-delay:.6s}
+.rm-node.n5{animation-delay:.8s}.rm-node.n6{animation-delay:1s}.rm-node.n7{animation-delay:1.2s}
+@keyframes rm-pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.rm-label{font-size:11px;fill:#5C3A28;font-weight:600;font-family:serif}
+.rm-day{font-size:9.5px;fill:#8E4A2F;letter-spacing:.05em}
+.route-line{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:6 5;animation:route-dash 30s linear infinite}
+@keyframes route-dash{to{stroke-dashoffset:-660}}
+
+/* ============ 点位分组小图标 ============ */
+.spot-group{display:flex;align-items:center;gap:10px}
+.spot-group .spot-ico{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:8px;background:#F9EEE8}
+.spot-group .spot-ico svg{display:block;width:18px;height:18px}
+
+/* ============ 隧道场景插画 ============ */
+.tunnel-card{background:#fff;border:1px solid var(--rule);border-radius:16px;overflow:hidden;margin:18px 0;box-shadow:0 4px 16px rgba(60,45,30,.06)}
+.tunnel-card svg{display:block;width:100%;height:auto}
+.tunnel-card .cap{font-size:12px;color:var(--ink-soft);text-align:center;padding:8px 12px 12px;letter-spacing:.08em;border-top:1px dashed var(--rule)}
+.tunnel-light{animation:light-pulse 2.4s ease-in-out infinite}
+.tunnel-light.l2{animation-delay:-.8s}
+.tunnel-light.l3{animation-delay:-1.6s}
+@keyframes light-pulse{0%,100%{opacity:.45}50%{opacity:.95}}
+.tunnel-car{animation:car-approach 6s linear infinite}
+@keyframes car-approach{
+  0%{transform:translate(0,0) scale(.55);opacity:0}
+  10%{opacity:1}
+  100%{transform:translate(-260px,68px) scale(1.25);opacity:1}
+}
+@media(max-width:640px){
+  .season-illust,.altitude-card,.tunnel-card{margin-left:-4px;margin-right:-4px}
+}
+
 </style>
 </head>
 <body>
@@ -347,6 +480,67 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
     <p>十堰 → 安康 → 秦岭终南山隧道 → 西安。全程约 <strong>440 公里，车程 5.5—6 小时</strong>。比主线绕，但它会带你经过<strong>秦岭终南山公路隧道——全长 18.04 公里，世界最长的双洞公路越岭隧道</strong>，隧道内每 5 公里一处特殊灯光段，本身就是一段独特的驾驶体验。</p>
   </div>
 
+  <!-- 终南山隧道小场景 -->
+  <figure class="tunnel-card" role="img" aria-label="秦岭终南山隧道示意：洞口嵌入青山、隧道内三段特殊灯光带、车辆驶入隧道">
+    <svg viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="tunSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#C8DCE4"/><stop offset="1" stop-color="#EAF1F4"/>
+        </linearGradient>
+        <linearGradient id="tunMtn" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4A5F68"/><stop offset="1" stop-color="#2E3F46"/>
+        </linearGradient>
+        <linearGradient id="tunRoad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5C564E"/><stop offset="1" stop-color="#3A3733"/>
+        </linearGradient>
+        <linearGradient id="tunInner" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1A1A1A"/><stop offset=".5" stop-color="#2E2E2E"/><stop offset="1" stop-color="#1A1A1A"/>
+        </linearGradient>
+        <radialGradient id="tunLight" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1000" height="280" fill="url(#tunSky)"/>
+      <!-- 山形 -->
+      <path d="M0 220 L 200 60 L 400 220 Z" fill="url(#tunMtn)"/>
+      <path d="M300 220 L 500 40 L 700 220 Z" fill="url(#tunMtn)" opacity=".9"/>
+      <path d="M600 220 L 800 80 L 1000 220 Z" fill="url(#tunMtn)"/>
+      <!-- 隧道口（嵌在山体中） -->
+      <ellipse cx="500" cy="220" rx="140" ry="80" fill="url(#tunInner)"/>
+      <ellipse cx="500" cy="220" rx="130" ry="70" fill="#0A0A0A"/>
+      <!-- 隧道内灯光带 -->
+      <ellipse class="tunnel-light"    cx="440" cy="195" rx="24" ry="6" fill="url(#tunLight)"/>
+      <ellipse class="tunnel-light l2" cx="500" cy="185" rx="28" ry="7" fill="url(#tunLight)"/>
+      <ellipse class="tunnel-light l3" cx="560" cy="195" rx="24" ry="6" fill="url(#tunLight)"/>
+      <!-- 公路 -->
+      <path d="M0 240 L 380 220 L 620 220 L 1000 240 L 1000 280 L 0 280 Z" fill="url(#tunRoad)"/>
+      <!-- 中央虚线 -->
+      <g stroke="#F5DE81" stroke-width="2" stroke-dasharray="12 10">
+        <line x1="0" y1="252" x2="380" y2="238"/>
+        <line x1="620" y1="238" x2="1000" y2="252"/>
+      </g>
+      <!-- 驶入隧道的车辆 -->
+      <g class="tunnel-car">
+        <rect x="640" y="218" width="30" height="13" rx="3" fill="#C4704F"/>
+        <rect x="646" y="212" width="18" height="7" rx="2" fill="#8E4A2F"/>
+        <circle cx="648" cy="232" r="3" fill="#1A1A1A"/>
+        <circle cx="664" cy="232" r="3" fill="#1A1A1A"/>
+        <ellipse cx="636" cy="228" rx="6" ry="2" fill="#FFE9A8" opacity=".7"/>
+      </g>
+      <!-- 隧道名牌 -->
+      <g>
+        <rect x="440" y="128" width="120" height="18" rx="3" fill="#2A2A2A" opacity=".85"/>
+        <text x="500" y="141" text-anchor="middle" font-size="11" fill="#F8F5F0" letter-spacing="2" font-family="serif">终南山隧道 · 18.04 km</text>
+      </g>
+      <!-- 限速牌 -->
+      <g>
+        <circle cx="880" cy="200" r="14" fill="#fff" stroke="#C0392B" stroke-width="3"/>
+        <text x="880" y="206" text-anchor="middle" font-size="14" font-weight="700" fill="#2A2A2A" font-family="sans-serif">80</text>
+      </g>
+    </svg>
+    <figcaption class="cap">秦岭终南山公路隧道 · 世界最长双洞公路越岭隧道</figcaption>
+  </figure>
+
   <h3>费用参考（5 座小客车）</h3>
   <table>
     <thead><tr><th>项目</th><th>主线 G70</th><th>备线经安康</th></tr></thead>
@@ -405,6 +599,66 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
   <p>3 月的秦巴山区是全年最柔软的时候：十堰周边桃花、樱花开罢，油菜花沿河谷铺开；4 月气温回升到 15—22℃，秦岭里草木返青，溪水涨起来；5 月满山新绿。这个季节人流还没到暑期规模，古镇、峡谷都能安安静静地玩。</p>
 
+  <!-- 春季主题插画：樱花河谷 -->
+  <figure class="season-illust" role="img" aria-label="春季秦岭插画：樱花飘落、油菜花沿河谷铺开、远山返青">
+    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="sprSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#EAF3EC"/><stop offset="1" stop-color="#F8F5F0"/>
+        </linearGradient>
+        <linearGradient id="sprHill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8FB89A"/><stop offset="1" stop-color="#6B9B7A"/>
+        </linearGradient>
+        <linearGradient id="sprField" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F5DE81"/><stop offset="1" stop-color="#E9C84A"/>
+        </linearGradient>
+        <linearGradient id="sprStream" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#B8D8E0"/><stop offset=".5" stop-color="#8FBCC8"/><stop offset="1" stop-color="#B8D8E0"/>
+        </linearGradient>
+      </defs>
+      <rect width="1000" height="320" fill="url(#sprSky)"/>
+      <!-- 远山 -->
+      <path d="M0 160 Q 140 90 280 130 T 560 120 T 830 140 T 1000 110 L 1000 320 L 0 320 Z" fill="#A8C8B4" opacity=".55"/>
+      <!-- 近山 -->
+      <path d="M0 220 Q 160 150 340 190 T 680 180 T 1000 200 L 1000 320 L 0 320 Z" fill="url(#sprHill)" opacity=".8"/>
+      <!-- 油菜花田 -->
+      <path d="M0 260 Q 200 230 420 250 T 850 245 T 1000 260 L 1000 320 L 0 320 Z" fill="url(#sprField)" opacity=".85"/>
+      <!-- 溪流 -->
+      <path d="M60 320 Q 200 290 340 295 T 640 290 T 940 300 L 1000 295 L 1000 320 Z" fill="url(#sprStream)" opacity=".85"/>
+      <path class="stream-glint" d="M120 305 Q 240 295 380 298" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path class="stream-glint g2" d="M540 295 Q 660 290 780 295" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- 樱花树 1（左） -->
+      <g>
+        <path d="M170 270 L 175 220 L 180 270 Z" fill="#5A4535"/>
+        <circle cx="160" cy="205" r="22" fill="#F4C7D4"/>
+        <circle cx="185" cy="200" r="26" fill="#F8D7E0"/>
+        <circle cx="200" cy="215" r="20" fill="#F4C7D4"/>
+        <circle cx="172" cy="218" r="18" fill="#FBE4EA"/>
+      </g>
+      <!-- 樱花树 2（右） -->
+      <g>
+        <path d="M770 268 L 776 218 L 782 268 Z" fill="#5A4535"/>
+        <circle cx="762" cy="208" r="20" fill="#F4C7D4"/>
+        <circle cx="788" cy="200" r="24" fill="#FBE4EA"/>
+        <circle cx="800" cy="218" r="18" fill="#F4C7D4"/>
+      </g>
+      <!-- 飘落花瓣 -->
+      <g fill="#F4C7D4">
+        <ellipse class="petal"    cx="220" cy="80"  rx="4.5" ry="2.8"/>
+        <ellipse class="petal p2" cx="420" cy="60"  rx="4"   ry="2.5" fill="#F8D7E0"/>
+        <ellipse class="petal p3" cx="620" cy="90"  rx="4.5" ry="2.8"/>
+        <ellipse class="petal p4" cx="780" cy="55"  rx="4"   ry="2.5" fill="#FBE4EA"/>
+        <ellipse class="petal p5" cx="900" cy="100" rx="4.5" ry="2.8"/>
+      </g>
+      <!-- 几只小鸟 -->
+      <g stroke="#5C564E" stroke-width="1.6" fill="none" stroke-linecap="round">
+        <path d="M340 70 q 6 -6 12 0 q 6 -6 12 0"/>
+        <path d="M520 50 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+    </svg>
+    <figcaption class="cap">春 · 樱花河谷与油菜花田</figcaption>
+  </figure>
+
   <h3>路线与费用</h3>
   <p>春季无施工管制（2026 年管制从 6 月开始），直接走 <strong>G70 主线</strong>：十堰 → 郧西 → 漫川关 → 商洛 → 蓝田 → 西安，297 km / 约 4.5 h / 过路费约 140 元。建议把节奏放慢，<strong>中途在郧西和山阳各停一次</strong>。</p>
 
@@ -449,6 +703,66 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   </div>
 
   <p>7—8 月西安城区 40℃ 上下，而秦岭腹地（牛背梁、金丝峡一带）白天只有 20—26℃——这条线是陕西人公认的避暑走廊。峡谷里溪水冰凉，漂流正当季。<strong>代价是：2026 年夏季恰逢 G70 大修，路线必须绕。</strong></p>
+
+  <!-- 夏季主题插画：峡谷漂流 -->
+  <figure class="season-illust" role="img" aria-label="夏季秦岭插画：峡谷间溪流奔涌、皮划艇顺流而下、白云飘过青山">
+    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="sumSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#C8E0EA"/><stop offset="1" stop-color="#EAF1F4"/>
+        </linearGradient>
+        <linearGradient id="sumRock" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7A8B94"/><stop offset="1" stop-color="#4A5F68"/>
+        </linearGradient>
+        <linearGradient id="sumWater" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7FB3C4"/><stop offset="1" stop-color="#4A7A8C"/>
+        </linearGradient>
+        <linearGradient id="sumLeaf" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4F7A5C"/><stop offset="1" stop-color="#2E5540"/>
+        </linearGradient>
+      </defs>
+      <rect width="1000" height="320" fill="url(#sumSky)"/>
+      <!-- 云 -->
+      <g class="cloud-drift" fill="#fff" opacity=".85">
+        <ellipse cx="180" cy="60" rx="38" ry="14"/>
+        <ellipse cx="215" cy="55" rx="28" ry="11"/>
+        <ellipse cx="150" cy="55" rx="22" ry="10"/>
+      </g>
+      <g class="cloud-drift c2" fill="#fff" opacity=".7">
+        <ellipse cx="720" cy="80" rx="34" ry="12"/>
+        <ellipse cx="750" cy="75" rx="24" ry="9"/>
+      </g>
+      <!-- 左峡壁 -->
+      <path d="M0 60 L 120 90 L 90 160 L 140 220 L 100 320 L 0 320 Z" fill="url(#sumRock)"/>
+      <path d="M30 90 L 90 110 L 70 160 L 100 200 L 80 280 L 30 300 Z" fill="#3A4A52" opacity=".4"/>
+      <!-- 右峡壁 -->
+      <path d="M1000 50 L 880 90 L 920 160 L 870 230 L 920 320 L 1000 320 Z" fill="url(#sumRock)"/>
+      <path d="M960 100 L 900 120 L 920 170 L 890 220 L 910 290 L 960 300 Z" fill="#3A4A52" opacity=".4"/>
+      <!-- 峡壁顶植被 -->
+      <path d="M0 60 L 130 90 L 110 105 L 60 95 L 0 85 Z" fill="url(#sumLeaf)"/>
+      <path d="M1000 50 L 870 90 L 895 105 L 950 90 L 1000 80 Z" fill="url(#sumLeaf)"/>
+      <!-- 溪流主河道 -->
+      <path d="M100 320 Q 240 250 380 260 T 640 240 T 920 260 L 1000 250 L 1000 320 Z" fill="url(#sumWater)"/>
+      <!-- 水波 -->
+      <path class="ripple"    d="M180 300 Q 280 285 380 290"/>
+      <path class="ripple r2" d="M420 280 Q 520 268 620 273"/>
+      <path class="ripple r3" d="M680 268 Q 780 258 880 263"/>
+      <!-- 皮划艇 -->
+      <g class="raft">
+        <ellipse cx="500" cy="245" rx="34" ry="10" fill="#E89A3C"/>
+        <ellipse cx="500" cy="243" rx="30" ry="7.5" fill="#C4704F"/>
+        <circle cx="492" cy="238" r="4.5" fill="#2A2A2A"/>
+        <circle cx="510" cy="238" r="4.5" fill="#2A2A2A"/>
+        <path d="M488 236 L 478 226 M 512 236 L 522 226" stroke="#8E4A2F" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <!-- 飞鸟 -->
+      <g stroke="#3A4A52" stroke-width="1.6" fill="none" stroke-linecap="round">
+        <path d="M380 100 q 6 -6 12 0 q 6 -6 12 0"/>
+        <path d="M600 70 q 5 -5 10 0 q 5 -5 10 0"/>
+      </g>
+    </svg>
+    <figcaption class="cap">夏 · 峡谷漂流与 20℃ 溪水</figcaption>
+  </figure>
 
   <h3>路线与费用（2026 年夏季特别版）</h3>
   <div class="card">
@@ -509,6 +823,72 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   <p>秦岭的秋天从 9 月底着色，<strong>10 月中下旬至 11 月上旬是红叶盛期</strong>。G70 福银高速秦岭段本身就是观赏线：蓝田至商洛段山脊上黄栌、枫树、漆树层层变色，车窗两侧就是油画。而且 2026 年 9 月 30 日施工管制结束后主线恢复通行，<strong>2026 年红叶季恰好能完整走 G70 主线</strong>，时机完美。</p>
   <p>更关键的是：秦岭是全国秋色层次最丰富的山脉之一——从着色到落叶持续近两个月，且因海拔差异形成"先高后低"的天然时序接力，<strong>10 月到 11 月无论哪一周出发，都有正处盛期的点位</strong>。本章下方附有大幅扩充的《秦岭赏秋详细攻略》，按时序、点位、路线、拍摄、注意事项五个维度拆开讲。</p>
 
+  <!-- 秋季主题插画：层林尽染 -->
+  <figure class="season-illust" role="img" aria-label="秋季秦岭插画：漫山红叶、银杏飘落、夕阳光洒在山脊上">
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="autSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F9E4D0"/><stop offset=".6" stop-color="#F5D0A8"/><stop offset="1" stop-color="#F0EBE2"/>
+        </linearGradient>
+        <linearGradient id="autFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#D89B6F"/><stop offset="1" stop-color="#B87A50"/>
+        </linearGradient>
+        <linearGradient id="autMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#C4704F"/><stop offset="1" stop-color="#8E4A2F"/>
+        </linearGradient>
+        <linearGradient id="autNear" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8E4A2F"/><stop offset="1" stop-color="#5A2E1B"/>
+        </linearGradient>
+        <radialGradient id="autSun" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#FFF2CC"/><stop offset=".6" stop-color="#F5C86B"/><stop offset="1" stop-color="#F5C86B" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1000" height="340" fill="url(#autSky)"/>
+      <!-- 落日 -->
+      <circle cx="720" cy="120" r="60" fill="url(#autSun)"/>
+      <circle cx="720" cy="120" r="30" fill="#F5D08C"/>
+      <!-- 远山（淡黄） -->
+      <path d="M0 200 Q 130 140 260 175 T 540 165 T 820 180 T 1000 160 L 1000 340 L 0 340 Z" fill="url(#autFar)" opacity=".7"/>
+      <!-- 中山（橙红） -->
+      <path d="M0 260 Q 180 190 360 225 T 700 215 T 1000 235 L 1000 340 L 0 340 Z" fill="url(#autMid)" opacity=".85"/>
+      <!-- 近山（深红） -->
+      <path d="M0 310 Q 200 260 420 285 T 800 280 T 1000 295 L 1000 340 L 0 340 Z" fill="url(#autNear)"/>
+      <!-- 银杏树（左下） -->
+      <g>
+        <path d="M130 320 L 138 240 L 146 320 Z" fill="#3A2A1A"/>
+        <path d="M138 270 L 110 240 M 138 260 L 168 232 M 138 250 L 138 218" stroke="#3A2A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="105" cy="230" r="18" fill="#E9C84A"/>
+        <circle cx="135" cy="212" r="24" fill="#F5DE81"/>
+        <circle cx="168" cy="228" r="20" fill="#E9C84A"/>
+        <circle cx="150" cy="240" r="14" fill="#F5DE81"/>
+      </g>
+      <!-- 枫树（右下） -->
+      <g>
+        <path d="M870 322 L 878 250 L 886 322 Z" fill="#3A2A1A"/>
+        <path d="M878 280 L 850 252 M 878 268 L 905 245 M 878 258 L 878 230" stroke="#3A2A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="848" cy="245" r="18" fill="#B85A35"/>
+        <circle cx="880" cy="225" r="24" fill="#C4704F"/>
+        <circle cx="908" cy="240" r="18" fill="#B85A35"/>
+      </g>
+      <!-- 飘落的枫叶 -->
+      <g>
+        <path class="maple-fall"    d="M240 60 l 3 6 7 -2 -1 7 6 4 -6 4 3 7 -7 -1 -3 7 -3 -7 -7 1 3 -7 -6 -4 6 -4 -1 -7 7 2 z" fill="#C4704F" transform="translate(240,60) scale(1.2) translate(-240,-60)"/>
+        <path class="maple-fall m2" d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E89A3C" transform="translate(430,50)"/>
+        <path class="maple-fall m3" d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#B85A35" transform="translate(600,80)"/>
+        <path class="maple-fall m4" d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E9C84A" transform="translate(150,90)"/>
+        <path class="maple-fall m5" d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#C4704F" transform="translate(820,70)"/>
+        <path class="maple-fall m6" d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#F5DE81" transform="translate(720,45)"/>
+      </g>
+      <!-- 一行雁 -->
+      <g stroke="#5C3A28" stroke-width="1.8" fill="none" stroke-linecap="round">
+        <path d="M320 80 q 6 -7 12 0 q 6 -7 12 0"/>
+        <path d="M348 92 q 5 -6 10 0 q 5 -6 10 0"/>
+        <path d="M376 105 q 5 -6 10 0 q 5 -6 10 0"/>
+      </g>
+    </svg>
+    <figcaption class="cap">秋 · 层林尽染与银杏落金</figcaption>
+  </figure>
+
   <h3>路线与费用</h3>
   <p><strong>G70 主线</strong>：十堰 → 郧西 → 漫川关 → 山阳 → 商洛 → 蓝田 → 西安，297 km / 约 4.5 h / 过路费约 140 元。建议<strong>返程（西安→十堰方向）安排在上午</strong>，逆光少、红叶通透。</p>
   <p>2026 年赏秋季特别提示：主线全幅封闭 9 月 30 日结束、国庆前后恢复通行；但按施工通告，湖北方向陕鄂界至高坝南枢纽段及漫川关、天竺山收费站湖北方向匝道管制持续到 12 月 31 日，从十堰方向直接进出漫川关、天竺山可能仍受影响，<strong>出发前务必复核最新通告</strong>（详见文末注意事项）。</p>
@@ -565,6 +945,80 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
     <h4>1. 何时去：一张秦岭红叶时序地图</h4>
     <p>秦岭红叶的规律是<strong>"高海拔先红、低海拔后红"</strong>：9 月底 2000 米以上高山率先着色，10 月中旬 1000—2000 米中山进入盛期，10 月底至 11 月轮到河谷与关中浅山。整季近两个月，但<strong>单个点位的盛期只有 2—3 周</strong>，按时间选点位是赏秋的第一课。</p>
 
+    <!-- 红叶海拔时序图 -->
+    <figure class="altitude-card" role="img" aria-label="秦岭红叶海拔时序图：三座山峰自高海拔向低海拔接力染色，9月底高山先红、10月中旬中山盛期、10月底河谷接棒">
+      <svg viewBox="0 0 1000 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="altSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FCF4EC"/><stop offset="1" stop-color="#F8F5F0"/>
+          </linearGradient>
+          <linearGradient id="altMtnHigh" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8E4A2F"/><stop offset="1" stop-color="#5A2E1B"/>
+          </linearGradient>
+          <linearGradient id="altMtnMid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C4704F"/><stop offset="1" stop-color="#8E4A2F"/>
+          </linearGradient>
+          <linearGradient id="altMtnLow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D89B6F"/><stop offset="1" stop-color="#B87A50"/>
+          </linearGradient>
+          <linearGradient id="altBandHigh" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#B85A35"/><stop offset="1" stop-color="#8E4A2F"/>
+          </linearGradient>
+          <linearGradient id="altBandMid" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#E89A3C"/><stop offset="1" stop-color="#C4704F"/>
+          </linearGradient>
+          <linearGradient id="altBandLow" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#F5C86B"/><stop offset="1" stop-color="#E89A3C"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="380" fill="url(#altSky)"/>
+        <!-- 海拔参考线 -->
+        <g stroke="#DDD5C7" stroke-width="1" stroke-dasharray="4 4" fill="none">
+          <line x1="60" y1="90" x2="940" y2="90"/>
+          <line x1="60" y1="180" x2="940" y2="180"/>
+          <line x1="60" y1="270" x2="940" y2="270"/>
+        </g>
+        <g font-family="serif" font-size="11" fill="#8E4A2F" letter-spacing="1">
+          <text x="70" y="85">2000m+</text>
+          <text x="70" y="175">1000–2000m</text>
+          <text x="70" y="265">河谷浅山</text>
+        </g>
+        <!-- 高山（左） -->
+        <g>
+          <path d="M80 320 L 220 90 L 360 320 Z" fill="url(#altMtnHigh)"/>
+          <!-- 红叶色带：山顶向下蔓延 -->
+          <path class="red-band" d="M220 90 L 260 138 L 248 145 L 220 118 L 192 145 L 180 138 Z" fill="url(#altBandHigh)"/>
+          <text x="220" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">太白山 · 紫柏山</text>
+          <text x="220" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">9月底—10月中旬</text>
+        </g>
+        <!-- 中山（中） -->
+        <g>
+          <path d="M340 320 L 500 180 L 660 320 Z" fill="url(#altMtnMid)"/>
+          <path class="red-band b2" d="M500 180 L 555 232 L 540 240 L 500 208 L 460 240 L 445 232 Z" fill="url(#altBandMid)"/>
+          <text x="500" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">金丝峡 · 牛背梁 · 木王山</text>
+          <text x="500" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">10月中旬—11月上旬（黄金档）</text>
+        </g>
+        <!-- 低山/河谷（右） -->
+        <g>
+          <path d="M620 320 L 760 250 L 900 320 Z" fill="url(#altMtnLow)"/>
+          <path class="red-band b3" d="M760 250 L 800 282 L 790 290 L 760 268 L 730 290 L 720 282 Z" fill="url(#altBandLow)"/>
+          <text x="760" y="345" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="600">古观音禅寺 · 漫川关</text>
+          <text x="760" y="362" text-anchor="middle" font-size="11" fill="#8E4A2F">10月下旬—11月中下旬</text>
+        </g>
+        <!-- 接力箭头 -->
+        <g stroke="#C4704F" stroke-width="2" fill="none" marker-end="url(#altArrow)">
+          <path d="M280 140 Q 360 130 440 165"/>
+          <path d="M580 220 Q 650 230 720 260"/>
+        </g>
+        <defs>
+          <marker id="altArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0 0 L 8 3 L 0 6 Z" fill="#C4704F"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption class="cap">秦岭红叶海拔时序图 · 先高后低的天然接力</figcaption>
+    </figure>
+
     <div class="timeline-3">
       <div class="tl-card tl-1">
         <span class="tl-time">9 月底 — 10 月中旬</span>
@@ -587,7 +1041,15 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
     <h4>2. 核心赏秋点位清单</h4>
 
-    <div class="spot-group">A 组｜G70 主线沿线（商洛方向）——本线"主战场"</div>
+    <div class="spot-group">
+      <span class="spot-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#B85A35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 18 L 9 8 L 13 13 L 17 6 L 21 18 Z" fill="#F9EEE8"/>
+          <circle cx="12" cy="20" r="1.4" fill="#B85A35" stroke="none"/>
+        </svg>
+      </span>
+      A 组｜G70 主线沿线（商洛方向）——本线"主战场"
+    </div>
     <table>
       <thead><tr><th>点位</th><th>最佳红叶期</th><th>红叶看点</th><th>门票（参考）</th><th>与主线的关系</th></tr></thead>
       <tbody>
@@ -600,7 +1062,15 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
       </tbody>
     </table>
 
-    <div class="spot-group">B 组｜秦岭北麓（西安方向）——到西安后的延伸玩法</div>
+    <div class="spot-group">
+      <span class="spot-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C4704F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21 C 7 16 4 12 4 9 a 8 8 0 0 1 16 0 c 0 3 -3 7 -8 12 z" fill="#F9EEE8"/>
+          <circle cx="12" cy="9" r="2.4" fill="#C4704F" stroke="none"/>
+        </svg>
+      </span>
+      B 组｜秦岭北麓（西安方向）——到西安后的延伸玩法
+    </div>
     <table>
       <thead><tr><th>点位</th><th>最佳红叶期</th><th>看点</th><th>门票</th></tr></thead>
       <tbody>
@@ -613,13 +1083,101 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
       </tbody>
     </table>
 
-    <div class="spot-group">C 组｜秦岭西段秘境（进阶选项）——陕西秋色的天花板</div>
+    <div class="spot-group">
+      <span class="spot-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5C3A28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l1.6 3.2L17 4.4l-.6 3.6 3 2-2.8 2.2 1.4 3.4-3.6-.6-1.4 3.4-1.4-3.4-3.6.6 1.4-3.4L6.6 10l3-2-.6-3.6 3.4.8L12 2z" fill="#C4704F" stroke="none"/>
+          <path d="M12 15v6" stroke="#8E4A2F"/>
+        </svg>
+      </span>
+      C 组｜秦岭西段秘境（进阶选项）——陕西秋色的天花板
+    </div>
     <ul>
       <li><strong>留坝（汉中）</strong>：官方认证的"秦岭最美廊道"，红叶<strong>由高至低、自西向东</strong>接力，从 10 月上旬持续到 11 月中旬，绵延六百余里。核心点位：紫柏山（门票 40 元、索道 80 元，落叶松金黄+云雾，最佳 10 月 16—30 日）、情人谷（免费，五百亩落叶松，停车免费）、狮子沟牧场（免费高山草甸，最佳 10 月 10—30 日）、高江路"最美乡村公路"（石门子为最佳摄影位，沿途高大枫树）、张良庙（旺季 50 元）。红叶季有官方套票：紫柏山+张良庙+栈道博物馆+球幕影院原价 221 元、红叶季 98 元/套，自驾游客凭高速过路费凭证购景区票还有补贴（2025 年政策执行期为 9 月—11 月 30 日，次年以官方发布为准）。</li>
       <li><strong>黄柏塬（宝鸡太白县）</strong>：896 平方公里、森林覆盖率 96% 的秦岭腹地秘境，门票约 63 元。大箭沟号称"小九寨"，彩色河床+红叶是看秋最佳处，最佳时段 10 月中下旬。进山必经的<strong>太洋公路（太白—华阳）</strong>本身就是陕西顶级秋色自驾线。</li>
     </ul>
 
     <h4>3. 推荐串联路线（2—4 日玩法）</h4>
+
+    <!-- 三条串联路线示意图 -->
+    <figure class="routes-map" role="img" aria-label="秦岭赏秋三条串联路线示意：A线十堰-金丝峡-漫川关-西安，B线西安-圭峰山-太平-翠华山，C线西安-黄柏塬-留坝-紫柏山-汉中-十堰环线">
+      <svg viewBox="0 0 1000 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="rmBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FCF4EC"/><stop offset="1" stop-color="#FBF9F5"/>
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="360" fill="url(#rmBg)"/>
+        <!-- 淡山形背景 -->
+        <g fill="none" stroke="#EBD4C2" stroke-width="1.6" opacity=".55">
+          <path d="M40 200 L 130 130 L 220 200 L 310 140 L 400 200 L 490 130 L 580 200 L 670 145 L 760 200 L 850 135 L 940 200"/>
+        </g>
+        <text x="500" y="32" text-anchor="middle" font-size="12" fill="#8E4A2F" letter-spacing="4" font-family="serif">秦 岭 赏 秋 · 三 条 串 联 路 线</text>
+
+        <!-- ===== 路线 A（橙红，2 日）: 十堰 → 金丝峡 → 漫川关 → 西安 ===== -->
+        <path class="route-line" stroke="#B85A35" d="M110 290 Q 220 250 310 240 Q 420 230 510 205 Q 640 170 740 130 Q 830 95 900 78"/>
+        <g class="rm-node">
+          <circle cx="110" cy="290" r="8" fill="#B85A35"/><circle cx="110" cy="290" r="3.4" fill="#FCF4EC"/>
+          <text x="110" y="315" text-anchor="middle" class="rm-label">十堰</text>
+          <text x="110" y="328" text-anchor="middle" class="rm-day">D1 出发</text>
+        </g>
+        <g class="rm-node n2">
+          <circle cx="310" cy="240" r="7" fill="#B85A35"/><circle cx="310" cy="240" r="3" fill="#FCF4EC"/>
+          <text x="310" y="222" text-anchor="middle" class="rm-label">金丝峡</text>
+          <text x="310" y="262" text-anchor="middle" class="rm-day">D1 全天</text>
+        </g>
+        <g class="rm-node n3">
+          <circle cx="510" cy="205" r="7" fill="#B85A35"/><circle cx="510" cy="205" r="3" fill="#FCF4EC"/>
+          <text x="510" y="187" text-anchor="middle" class="rm-label">漫川关</text>
+          <text x="510" y="227" text-anchor="middle" class="rm-day">D2 上午</text>
+        </g>
+        <g class="rm-node n4">
+          <circle cx="900" cy="78" r="9" fill="#8E4A2F"/><circle cx="900" cy="78" r="4" fill="#FCF4EC"/>
+          <text x="900" y="60" text-anchor="middle" class="rm-label">西安</text>
+          <text x="900" y="100" text-anchor="middle" class="rm-day">D2 下午抵达</text>
+        </g>
+
+        <!-- ===== 路线 B（金黄，1—2 日）: 西安 → 圭峰山 → 太平/翠华山 ===== -->
+        <path class="route-line" stroke="#E89A3C" d="M860 118 Q 800 160 760 180 Q 720 200 690 210 Q 660 218 630 224"/>
+        <g class="rm-node n2">
+          <circle cx="860" cy="118" r="6" fill="#E89A3C"/><circle cx="860" cy="118" r="2.6" fill="#FCF4EC"/>
+          <text x="860" y="140" text-anchor="middle" class="rm-label">西安</text>
+        </g>
+        <g class="rm-node n3">
+          <circle cx="760" cy="180" r="6" fill="#E89A3C"/><circle cx="760" cy="180" r="2.6" fill="#FCF4EC"/>
+          <text x="760" y="162" text-anchor="middle" class="rm-label">圭峰山</text>
+        </g>
+        <g class="rm-node n4">
+          <circle cx="630" cy="224" r="6" fill="#E89A3C"/><circle cx="630" cy="224" r="2.6" fill="#FCF4EC"/>
+          <text x="630" y="246" text-anchor="middle" class="rm-label">太平 / 翠华山</text>
+        </g>
+
+        <!-- ===== 路线 C（深棕，3—4 日环线）: 西安 → 太白 → 黄柏塬 → 留坝 → 汉中 → 十堰 ===== -->
+        <path class="route-line" stroke="#5C3A28" d="M840 100 Q 760 60 690 70 Q 600 82 540 118 Q 470 160 400 190 Q 320 224 240 268 Q 170 296 124 306"/>
+        <g class="rm-node n3">
+          <circle cx="690" cy="70" r="6" fill="#5C3A28"/><circle cx="690" cy="70" r="2.6" fill="#FCF4EC"/>
+          <text x="690" y="52" text-anchor="middle" class="rm-label">太白 / 黄柏塬</text>
+        </g>
+        <g class="rm-node n4">
+          <circle cx="540" cy="118" r="6" fill="#5C3A28"/><circle cx="540" cy="118" r="2.6" fill="#FCF4EC"/>
+          <text x="540" y="100" text-anchor="middle" class="rm-label">留坝 · 紫柏山</text>
+        </g>
+        <g class="rm-node n5">
+          <circle cx="400" cy="190" r="6" fill="#5C3A28"/><circle cx="400" cy="190" r="2.6" fill="#FCF4EC"/>
+          <text x="400" y="212" text-anchor="middle" class="rm-label">汉中</text>
+        </g>
+        <g class="rm-node n6">
+          <circle cx="240" cy="268" r="6" fill="#5C3A28"/><circle cx="240" cy="268" r="2.6" fill="#FCF4EC"/>
+          <text x="240" y="290" text-anchor="middle" class="rm-label">安康方向</text>
+        </g>
+      </svg>
+      <div class="legend">
+        <span><i style="background:#B85A35"></i>路线 A · 商洛红叶经典线（2 日）</span>
+        <span><i style="background:#E89A3C"></i>路线 B · 终南山秋色补充线（1—2 日）</span>
+        <span><i style="background:#5C3A28"></i>路线 C · 秦岭西段深度环线（3—4 日）</span>
+      </div>
+      <figcaption class="cap">三条路线分别对应 2 日 / 1—2 日 / 3—4 日玩法 · 虚线为自驾路径示意</figcaption>
+    </figure>
 
     <div class="route-block">
       <span class="rb-tag">路线 A · 2 日</span>
@@ -681,6 +1239,66 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   </div>
 
   <p>冬天的秦岭是另一种气质：隧道这边十堰湿冷，隧道那边关中干冷，雪后山脊银白一片。这个季节自驾的核心逻辑不是"看景"，而是<strong>把西安周边的温泉和雪场串起来</strong>——白天滑雪、晚上泡汤，是全年舒适度最高的玩法组合。</p>
+
+  <!-- 冬季主题插画：雪山温泉 -->
+  <figure class="season-illust" role="img" aria-label="冬季秦岭插画：雪覆山脊、温泉热气升腾、雪花飘落">
+    <svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="winSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#DCE6EE"/><stop offset="1" stop-color="#F0EBE2"/>
+        </linearGradient>
+        <linearGradient id="winFar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#B4C8D8"/><stop offset="1" stop-color="#8FA8BC"/>
+        </linearGradient>
+        <linearGradient id="winMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7A96AC"/><stop offset="1" stop-color="#5A7A94"/>
+        </linearGradient>
+        <linearGradient id="winPool" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A8CBD8"/><stop offset="1" stop-color="#7FA8B8"/>
+        </linearGradient>
+      </defs>
+      <rect width="1000" height="320" fill="url(#winSky)"/>
+      <!-- 远山（雪覆） -->
+      <path d="M0 170 L 110 90 L 190 140 L 280 70 L 380 145 L 480 90 L 580 150 L 680 80 L 780 140 L 880 100 L 1000 150 L 1000 320 L 0 320 Z" fill="url(#winFar)"/>
+      <!-- 雪顶高光 -->
+      <path d="M110 90 L 145 116 L 122 118 Z M 280 70 L 320 100 L 268 102 Z M 480 90 L 520 118 L 468 120 Z M 680 80 L 722 110 L 666 112 Z" fill="#F8FAFC" opacity=".9"/>
+      <!-- 近山（针叶林） -->
+      <path d="M0 260 Q 180 200 360 235 T 720 225 T 1000 250 L 1000 320 L 0 320 Z" fill="url(#winMid)"/>
+      <!-- 松树 -->
+      <g fill="#2E4A3A">
+        <path d="M120 280 L 132 250 L 144 280 Z M 124 268 L 132 246 L 140 268 Z"/>
+        <path d="M180 285 L 192 255 L 204 285 Z M 184 273 L 192 251 L 200 273 Z"/>
+        <path d="M820 282 L 832 252 L 844 282 Z M 824 270 L 832 248 L 840 270 Z"/>
+        <path d="M880 288 L 892 258 L 904 288 Z M 884 276 L 892 254 L 900 276 Z"/>
+      </g>
+      <!-- 雪盖松尖 -->
+      <g fill="#F8FAFC">
+        <path d="M132 246 L 138 258 L 126 258 Z"/>
+        <path d="M192 251 L 198 263 L 186 263 Z"/>
+        <path d="M832 248 L 838 260 L 826 260 Z"/>
+        <path d="M892 254 L 898 266 L 886 266 Z"/>
+      </g>
+      <!-- 温泉池 -->
+      <ellipse cx="500" cy="295" rx="160" ry="22" fill="url(#winPool)"/>
+      <ellipse cx="500" cy="292" rx="150" ry="18" fill="#C8DCE4" opacity=".7"/>
+      <!-- 温泉热气 -->
+      <path class="steam-puff"     d="M420 275 q 4 -8 0 -14 q -4 -6 0 -12"/>
+      <path class="steam-puff st2" d="M500 272 q 4 -8 0 -14 q -4 -6 0 -12"/>
+      <path class="steam-puff st3" d="M580 275 q 4 -8 0 -14 q -4 -6 0 -12"/>
+      <!-- 雪花 -->
+      <g fill="#F8FAFC">
+        <circle class="snow-flake"    cx="100" cy="40"  r="2.5"/>
+        <circle class="snow-flake s2" cx="240" cy="70"  r="2"/>
+        <circle class="snow-flake s3" cx="380" cy="35"  r="2.5"/>
+        <circle class="snow-flake s4" cx="520" cy="65"  r="2"/>
+        <circle class="snow-flake s5" cx="660" cy="30"  r="2.5"/>
+        <circle class="snow-flake s6" cx="800" cy="55"  r="2"/>
+        <circle class="snow-flake s7" cx="920" cy="40"  r="2.5"/>
+        <circle class="snow-flake s8" cx="180" cy="100" r="2"/>
+      </g>
+    </svg>
+    <figcaption class="cap">冬 · 雪覆山脊与温泉热气</figcaption>
+  </figure>
 
   <h3>路线与费用</h3>
   <p>主线 G70 冬季正常通行，但<strong>遇降雪秦岭段会临时管制</strong>（封闭或限速带道通行），出发前必查实时路况；若主线管制，改走 G65 包茂高速经安康方向（终南山隧道受天气影响小）。费用同总览表。</p>
