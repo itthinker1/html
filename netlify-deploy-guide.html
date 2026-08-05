@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netlify 三种部署模式完全指南</title>
+<style>
+  :root{
+    --bg:#0a0e14;
+    --bg-2:#0e141e;
+    --surface:#111822;
+    --surface-2:#151f2c;
+    --border:#1e2837;
+    --border-2:#26334a;
+    --text:#e7ecf4;
+    --muted:#9aa7ba;
+    --dim:#6b788e;
+    --accent:#5eead4;
+    --accent-2:#38bdf8;
+    --amber:#fbbf24;
+    --green:#34d399;
+    --red:#fb7185;
+    --violet:#a78bfa;
+    --code-bg:#0b1119;
+    --radius:14px;
+    --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Fira Code","Consolas","Source Code Pro",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font);
+    line-height:1.75;
+    font-size:15.5px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(94,234,212,.25)}
+  a{color:var(--accent-2);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;height:60px;
+    background:rgba(10,14,20,.82);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 22px;gap:14px;
+  }
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:.2px}
+  .logo-mark{
+    width:26px;height:26px;border-radius:7px;flex:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid;place-items:center;color:#05131a;font-weight:800;font-size:14px;
+  }
+  .topbar .spacer{flex:1}
+  .topbar .badge-free{
+    font-size:12px;color:var(--green);border:1px solid rgba(52,211,153,.4);
+    background:rgba(52,211,153,.08);padding:4px 10px;border-radius:999px;white-space:nowrap;
+  }
+  .menu-btn{
+    display:none;background:var(--surface);border:1px solid var(--border-2);color:var(--text);
+    width:36px;height:36px;border-radius:9px;cursor:pointer;font-size:16px;align-items:center;justify-content:center;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout{display:flex;max-width:1280px;margin:0 auto;padding:60px 0 0}
+  .sidebar{
+    width:250px;flex:none;position:sticky;top:60px;height:calc(100vh - 60px);
+    padding:26px 12px 40px 26px;overflow-y:auto;display:block;
+  }
+  .sidebar::-webkit-scrollbar{width:6px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:3px}
+  .toc-title{font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:14px;font-weight:600}
+  .toc a{
+    display:block;padding:7px 12px;border-radius:8px;color:var(--muted);font-size:13.5px;
+    border-left:2px solid transparent;margin-bottom:2px;transition:.15s;
+  }
+  .toc a:hover{color:var(--text);background:var(--surface);text-decoration:none}
+  .toc a.active{color:var(--accent);background:rgba(94,234,212,.08);border-left-color:var(--accent)}
+  .toc .sub{padding-left:22px;font-size:12.5px}
+
+  .content{flex:1;min-width:0;padding:34px 44px 80px}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:36px 0 30px;position:relative;
+    border-bottom:1px solid var(--border);margin-bottom:40px;
+  }
+  .hero::before{
+    content:"";position:absolute;top:-60px;right:-40px;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle,rgba(94,234,212,.12),transparent 65%);pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--accent);
+    border:1px solid rgba(94,234,212,.3);background:rgba(94,234,212,.06);
+    padding:5px 12px;border-radius:999px;margin-bottom:20px;font-weight:600;letter-spacing:.5px;
+  }
+  .hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.15;font-weight:800;letter-spacing:-.5px;margin-bottom:16px}
+  .hero h1 .grad{
+    background:linear-gradient(100deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{font-size:16px;color:var(--muted);max-width:720px;margin-bottom:26px}
+  .hero .lead code{color:var(--accent);background:var(--surface);padding:2px 7px;border-radius:6px;font-family:var(--mono);font-size:.9em}
+  .badges{display:flex;flex-wrap:wrap;gap:10px}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+    padding:8px 14px;border-radius:10px;border:1px solid var(--border-2);background:var(--surface);
+  }
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+  .pill .dot.dim{background:var(--amber)}
+  .pill .dot.red{background:var(--red);box-shadow:0 0 0 3px rgba(251,113,133,.15)}
+  .pill b{color:var(--text)}
+
+  /* ---------- Sections ---------- */
+  section{margin-bottom:56px}
+  .sec-head{margin-bottom:22px}
+  .sec-no{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:1px;margin-bottom:6px;font-weight:600}
+  .sec-head h2{font-size:clamp(21px,3vw,28px);font-weight:800;letter-spacing:-.3px;margin-bottom:10px}
+  .sec-head p{color:var(--muted);font-size:14.5px;max-width:760px}
+  h3{font-size:18px;font-weight:700;margin:26px 0 12px;letter-spacing:-.2px}
+  h4{font-size:15.5px;font-weight:700;margin:20px 0 8px;color:var(--accent)}
+  p{margin-bottom:12px}
+  .muted{color:var(--muted)}
+  .dim{color:var(--dim)}
+
+  /* ---------- Mode cards ---------- */
+  .mode-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:26px 26px 22px;margin-bottom:26px;position:relative;overflow:hidden;
+  }
+  .mode-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  }
+  .mode-card.accent-amber::before{background:linear-gradient(90deg,var(--amber),var(--violet))}
+  .mode-card.accent-blue::before{background:linear-gradient(90deg,var(--accent-2),var(--violet))}
+  .mode-tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--accent);
+    border:1px solid rgba(94,234,212,.35);padding:3px 9px;border-radius:6px;margin-bottom:12px;
+  }
+  .mode-card.accent-amber .mode-tag{color:var(--amber);border-color:rgba(251,191,36,.35)}
+  .mode-card.accent-blue .mode-tag{color:var(--accent-2);border-color:rgba(56,189,248,.35)}
+  .mode-card h3{margin-top:0}
+  .mode-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}
+  .meta-chip{font-size:12px;color:var(--muted);background:var(--bg-2);border:1px solid var(--border);padding:4px 10px;border-radius:7px}
+  .def{color:var(--muted);font-size:14.5px;margin-bottom:18px}
+  .def b{color:var(--text)}
+
+  .sub-block{margin:18px 0}
+  .sub-label{font-size:12px;font-weight:700;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .sub-label::before{content:"";width:14px;height:2px;background:var(--accent);border-radius:2px}
+
+  .list{list-style:none;padding:0}
+  .list li{position:relative;padding-left:24px;margin-bottom:9px;font-size:14.5px}
+  .list li::before{content:"✓";position:absolute;left:2px;top:0;color:var(--green);font-weight:700}
+  .list li.warn::before{content:"!";color:var(--amber);font-weight:800}
+  .list li.bad::before{content:"✕";color:var(--red);font-weight:800}
+  .list li code{background:var(--bg-2);border:1px solid var(--border);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:.85em}
+
+  .callout{
+    background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:9px;padding:13px 16px;margin:16px 0;font-size:14px;color:var(--muted);
+  }
+  .callout.amber{border-left-color:var(--amber)}
+  .callout.green{border-left-color:var(--green)}
+  .callout b{color:var(--text)}
+
+  /* ---------- Code blocks ---------- */
+  .codeblock{
+    background:var(--code-bg);border:1px solid var(--border-2);border-radius:11px;
+    margin:14px 0 20px;overflow:hidden;position:relative;
+  }
+  .cb-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);
+  }
+  .cb-title{font-size:11.5px;color:var(--dim);font-family:var(--mono);letter-spacing:.5px}
+  .cb-dots{display:flex;gap:6px}
+  .cb-dots i{width:10px;height:10px;border-radius:50%;display:block}
+  .cb-dots i:nth-child(1){background:#ff5f57}.cb-dots i:nth-child(2){background:#febc2e}.cb-dots i:nth-child(3){background:#28c840}
+  .copy-btn{
+    background:var(--surface);border:1px solid var(--border-2);color:var(--muted);
+    font-size:11.5px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:var(--font);
+    transition:.15s;display:inline-flex;align-items:center;gap:5px;
+  }
+  .copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+  .copy-btn.copied{color:var(--green);border-color:var(--green)}
+  .codeblock pre{overflow-x:auto;padding:16px 18px;font-size:13px;line-height:1.7}
+  .codeblock code{font-family:var(--mono);color:#d7e0ec;white-space:pre}
+  .tok-c{color:#5eead4}.tok-v{color:#7dd3fc}.tok-s{color:#a5d6a7}.tok-k{color:#fbbf24}.tok-n{color:#f9a8d4}.tok-g{color:#6b7280}
+
+  /* ---------- Tables ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin:18px 0}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+  thead th{
+    background:var(--surface-2);text-align:left;padding:12px 14px;font-weight:700;color:var(--text);
+    border-bottom:1px solid var(--border-2);white-space:nowrap;font-size:13px;
+  }
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(94,234,212,.03)}
+  td b{color:var(--text)}
+  .ok{color:var(--green);font-weight:600}
+  .no{color:var(--red);font-weight:600}
+  .zero{color:var(--green);font-weight:700}
+  .cred{color:var(--amber);font-weight:700}
+  .col-prod{background:rgba(251,191,36,.05)}
+  .col-prod th{color:var(--amber)}
+
+  /* ---------- Decision tree ---------- */
+  .tree{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:24px;font-family:var(--mono);font-size:13.5px;line-height:1.9;overflow-x:auto;
+  }
+  .tree .q{color:var(--accent);font-weight:700}
+  .tree .a{color:var(--text)}
+  .tree .cmd{color:var(--amber)}
+  .tree .free{color:var(--green);font-weight:700}
+  .mantra{
+    margin-top:22px;padding:22px 24px;border-radius:var(--radius);text-align:center;
+    background:linear-gradient(120deg,rgba(94,234,212,.1),rgba(56,189,248,.08));
+    border:1px solid rgba(94,234,212,.3);
+  }
+  .mantra .label{font-size:12px;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .mantra p{font-size:clamp(16px,2.6vw,21px);font-weight:800;line-height:1.5}
+  .mantra .free{color:var(--green)}
+  .mantra .used{color:var(--amber)}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--border);margin-top:20px;padding:30px 0 40px;
+    color:var(--dim);font-size:13px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;
+  }
+  footer .tag{color:var(--muted)}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .sidebar{display:none}
+    .menu-btn{display:inline-flex}
+    .content{padding:26px 20px 60px}
+    .topbar{padding:0 14px}
+  }
+  @media (max-width:560px){
+    .hero h1{font-size:27px}
+    .mode-card{padding:20px 18px}
+    .codeblock pre{font-size:12px;padding:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><span class="logo-mark">N</span> 三种部署模式</div>
+  <div class="spacer"></div>
+  <span class="badge-free">✓ 匿名 / Draft / Preview 全部免费</span>
+  <button class="menu-btn" id="menuBtn" aria-label="打开目录">☰</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="toc-title">目录 · Contents</div>
+    <nav class="toc" id="toc">
+      <a href="#overview">一、概述与前置准备</a>
+      <a href="#mode1" class="sub">模式一 · 匿名部署</a>
+      <a href="#mode2" class="sub">模式二 · Draft 草稿</a>
+      <a href="#mode3" class="sub">模式三 · Deploy Preview</a>
+      <a href="#compare">三、三模式对比表</a>
+      <a href="#production">四、生产部署与积分</a>
+      <a href="#automation">五、AI 自动化流程</a>
+      <a href="#faq">六、常见问题与坑</a>
+      <a href="#decision">附 · 快速决策树</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <span class="eyebrow">NETLIFY DEPLOY PLAYBOOK</span>
+      <h1>Netlify <span class="grad">三种部署模式</span><br>完全指南</h1>
+      <p class="lead">
+        面向「想用 AI 助手自动把 HTML 页面托管到 Netlify」的开发者：本文带你吃透
+        <code>匿名部署</code>、<code>Draft 草稿部署</code>、<code>Deploy Preview 部署预览</code>
+        三种部署模式，并把 <code>生产部署（--prod）</code> 作为对比参照，帮你分辨
+        「什么时候该用哪种、哪些免费、哪些扣积分」。
+      </p>
+      <div class="badges">
+        <span class="pill"><span class="dot"></span>匿名部署：<b>免费</b></span>
+        <span class="pill"><span class="dot"></span>Draft 草稿：<b>免费</b></span>
+        <span class="pill"><span class="dot"></span>Deploy Preview：<b>免费</b></span>
+        <span class="pill"><span class="dot red"></span>生产部署：<b>每次 15 credits</b></span>
+      </div>
+    </div>
+
+    <!-- 一、概述 -->
+    <section id="overview">
+      <div class="sec-head">
+        <div class="sec-no">01 · 概述与前置准备</div>
+        <h2>三种模式一句话速览</h2>
+        <p>先建立全局认知，再逐步深入。这张表是整篇文档的心智地图。</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>模式</th><th>触发方式</th><th>是否需要账号</th><th>是否扣积分</th><th>URL 形态</th></tr></thead>
+          <tbody>
+            <tr><td><b>匿名部署</b></td><td>CLI 手动</td><td class="no">❌ 不需要</td><td class="zero">❌ 免费</td><td>随机临时 URL</td></tr>
+            <tr><td><b>Draft 草稿</b></td><td>CLI 手动</td><td class="ok">✅ 需要</td><td class="zero">❌ 免费</td><td>随机独立 URL（可固定）</td></tr>
+            <tr><td><b>Deploy Preview</b></td><td>Git 集成自动</td><td class="ok">✅ 需要</td><td class="zero">❌ 免费</td><td>每个 PR 独立 URL</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout amber">
+        <b>⚠️ 注意：</b>三种模式<strong>都不扣积分</strong>。只有「生产部署（--prod）」才消耗积分。
+        这是选择「临时预览」套路时最爽的一点。
+      </div>
+
+      <h3>1.2 安装 Netlify CLI</h3>
+      <p class="muted">本机已装 Node.js / npx，二选一即可：</p>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">安装 Netlify CLI</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code># 方式一：全局安装（推荐）
+<span class="tok-k">npm</span> i -g <span class="tok-v">netlify-cli</span>
+
+# 方式二：不全局安装，直接用 npx 调用
+npx <span class="tok-v">netlify-cli</span> deploy ...</code></pre>
+      </div>
+      <p class="muted">验证安装：</p>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">验证安装</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code><span class="tok-c">netlify</span> --version</code></pre>
+      </div>
+
+      <h3>1.3 认证：无需浏览器，用 Personal Access Token</h3>
+      <p class="muted">AI 自动化场景下，<b>不要</b>走 <code>netlify login</code> 的浏览器交互登录（会卡住）。改用 API Token：</p>
+      <div class="list">
+        <li>登录 Netlify 后台 → <b>User settings</b> → <b>Applications</b> → <b>New access token</b>，生成一个 Personal Access Token。</li>
+        <li>导出到环境变量：</li>
+      </div>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">导出 Token</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code><span class="tok-k">export</span> <span class="tok-c">NETLIFY_AUTH_TOKEN</span>=你的token</code></pre>
+      </div>
+      <p class="muted">之后所有命令即可自动读取该 token；也可以逐条显式传：</p>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">显式传 Token</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code><span class="tok-c">netlify</span> deploy --auth $NETLIFY_AUTH_TOKEN ...</code></pre>
+      </div>
+      <div class="callout">
+        <b>💡 关于 <code>--json</code>：</b>所有命令都建议加 <code>--json</code>，让输出变成 JSON 而不是人类可读的横幅（banner），
+        这样 AI/脚本能稳定地解析出 <code>deploy_url</code>、<code>url</code>、<code>site_id</code> 等字段。
+        <b>不要解析 stdout 打印的横幅</b>，格式不可靠。
+      </div>
+    </section>
+
+    <!-- 二、三种部署模式 -->
+    <section id="modes">
+      <div class="sec-head">
+        <div class="sec-no">02 · 三种部署模式详解</div>
+        <h2>三种部署模式</h2>
+        <p>下面对三种模式逐一拆解：是什么、步骤命令、特点、适用场景、注意事项。</p>
+      </div>
+
+      <!-- 模式一 -->
+      <div class="mode-card" id="mode1">
+        <span class="mode-tag">模式一 · 无需账号</span>
+        <h3>匿名部署（Anonymous Deploy）</h3>
+        <div class="mode-meta">
+          <span class="meta-chip">触发：CLI 手动</span>
+          <span class="meta-chip">账号：不要</span>
+          <span class="meta-chip">积分：免费</span>
+          <span class="meta-chip">URL：随机临时</span>
+        </div>
+        <div class="def"><b>是什么</b> —— <b>无需登录、无需账号</b>即可部署的模式。命令会生成一个<strong>临时实时 URL</strong>，适合一次性分享、AI 测试、临时预览。</div>
+
+        <div class="sub-block">
+          <div class="sub-label">步骤命令</div>
+          <div class="codeblock">
+            <div class="cb-head"><span class="cb-title">匿名部署</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+            <pre><code><span class="tok-c">netlify</span> deploy --dir=输出目录 --no-build --allow-anonymous --json</code></pre>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">特点</div>
+          <div class="list">
+            <li><b>零门槛</b>：不需要任何账号、不登录，一条命令直接出 URL。</li>
+            <li><b>临时性</b>：生成的临时 URL <b>1 小时内有效</b>，1 小时内可认领，超时未认领的站点会被删除。</li>
+            <li><b>可认领</b>：1 小时内通过 <code>netlify claim --site&lt;site-id&gt; --token&lt;drop-token&gt;</code> 认领，或登录 Netlify 认领。</li>
+            <li><b>防滥用限制</b>：每个 IP 最多创建 <b>3 个匿名站点</b>。</li>
+            <li><b>默认密码保护</b>：匿名站点默认受密码保护，<b>直到有人认领并绑定身份后才公开</b>。</li>
+            <li><b>不消耗积分</b>：无账号，走匿名 Drop 通道，实时 URL 免费。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">适用场景</div>
+          <div class="list">
+            <li>一次性分享给朋友/客户看效果。</li>
+            <li>AI 测试环境、快速验证输出。</li>
+            <li>临时预览、演示。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">注意事项</div>
+          <div class="list">
+            <li class="warn"><b>仅 1 小时有效</b>，不要把它当长期托管用。</li>
+            <li class="warn"><b>含敏感信息的内容不要用匿名部署</b>（临时且默认不公开，但仍不建议）。</li>
+            <li class="bad">不适合长期保留、不适合正式发布。</li>
+          </div>
+        </div>
+      </div>
+
+      <!-- 模式二 -->
+      <div class="mode-card accent-amber" id="mode2">
+        <span class="mode-tag">模式二 · CLI 手动</span>
+        <h3>Draft 草稿部署（CLI 手动）</h3>
+        <div class="mode-meta">
+          <span class="meta-chip">触发：CLI 手动</span>
+          <span class="meta-chip">账号：需要</span>
+          <span class="meta-chip">积分：免费</span>
+          <span class="meta-chip">URL：随机独立（可固定）</span>
+        </div>
+        <div class="def"><b>是什么</b> —— <b>纯 CLI 手动产物</b>：不带 <code>--prod</code> 的部署，生成一个<strong>随机独立临时 URL</strong>，不占用主站 URL、不影响生产站点。</div>
+
+        <div class="sub-block">
+          <div class="sub-label">步骤命令</div>
+          <div class="codeblock">
+            <div class="cb-head"><span class="cb-title">Draft 草稿部署</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+            <pre><code><span class="tok-c">netlify</span> deploy --dir=输出目录 --no-build --json</code></pre>
+          </div>
+          <div class="callout amber"><b>关键：</b>不带 <code>--prod</code>，就是 Draft 草稿部署。</div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">特点</div>
+          <div class="list">
+            <li><b>独立随机 URL</b>：每次生成一个全新随机 URL（JSON 里的 <code>deploy_url</code> 字段）。</li>
+            <li><b>不影响生产</b>：不占用主站 URL、不碰生产站点。</li>
+            <li><b>可固定地址</b>：加 <code>--alias=xxx</code> 可固定子域名（最多 <b>37 字符</b>），反复部署更新同一地址：</li>
+          </div>
+          <div class="codeblock">
+            <div class="cb-head"><span class="cb-title">固定别名地址</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+            <pre><code><span class="tok-c">netlify</span> deploy --dir=输出目录 --no-build --alias=my-staging --json</code></pre>
+          </div>
+          <div class="list">
+            <li><b>不消耗积分</b>：Draft 免费。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">适用场景</div>
+          <div class="list">
+            <li>本地快速验证、看效果、迭代。</li>
+            <li>用 <code>--alias</code> 固定地址时，可反复更新同一预览地址，方便持续迭代。</li>
+            <li>想先看效果、不想污染生产站点的场景。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">注意事项</div>
+          <div class="list">
+            <li class="warn"><code>--dir</code> 必须指向<strong>成品输出目录</strong>（<code>dist</code> / <code>build</code> / <code>out</code>），<b>不是项目根目录</b>。</li>
+            <li class="warn"><code>--no-build</code> 跳过构建——如果你已经构建好，就加上它，避免 Netlify 再跑一次构建。</li>
+          </div>
+        </div>
+      </div>
+
+      <!-- 模式三 -->
+      <div class="mode-card accent-blue" id="mode3">
+        <span class="mode-tag">模式三 · Git 自动</span>
+        <h3>Deploy Preview 部署预览（Git 集成自动）</h3>
+        <div class="mode-meta">
+          <span class="meta-chip">触发：Git 自动</span>
+          <span class="meta-chip">账号：需要</span>
+          <span class="meta-chip">积分：免费·无限</span>
+          <span class="meta-chip">URL：每个 PR 独立</span>
+        </div>
+        <div class="def"><b>是什么</b> —— <b>Git 工作流（GitHub / GitLab / Bitbucket）的自动产物</b>：每当你打开 Pull Request（PR）或 Merge Request（MR）时自动触发，为每个 PR 生成独立预览 URL，供团队评审。</div>
+
+        <div class="sub-block">
+          <div class="sub-label">触发方式</div>
+          <div class="list">
+            <li>打开 PR / MR 时<strong>自动触发</strong>，无需手动命令。</li>
+            <li>需要先 <code>netlify init</code> 或完成 Git 集成连接设置。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">特点</div>
+          <div class="list">
+            <li><b>独立预览 URL</b>：每个 PR/MR 有独立 URL，形如 <code>&lt;pr号&gt;--&lt;site&gt;.netlify.app</code>。</li>
+            <li><b>与 PR 绑定</b>：预览 URL 与对应 PR 关联，PR 关闭后预览随之失效（随分支机构生命周期）。</li>
+            <li><b>团队评审友好</b>：让评审者在真实 URL 上看改动效果。</li>
+            <li><b>免费、无限</b>：官方文档明确 <b>Deploy Previews or branch deploys = 0 credits</b>（免费、无限量）。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">适用场景</div>
+          <div class="list">
+            <li>团队协作、Code Review 场景。</li>
+            <li>想给每个 PR 一个「真实可点」的预览地址。</li>
+            <li>需要 Git 工作流驱动、自动化的场景。</li>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="sub-label">注意事项</div>
+          <div class="list">
+            <li class="warn">必须<strong>配合 Git 连接</strong>使用，需先 <code>netlify init</code> 或完成 Git 集成设置。</li>
+            <li class="warn">这是「自动化产物」，不是通过一条 CLI 命令直接生成的——它依赖 Git 远端集成。</li>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 三、对比表 -->
+    <section id="compare">
+      <div class="sec-head">
+        <div class="sec-no">03 · 三模式对比表</div>
+        <h2>三模式对比表</h2>
+        <p>7 个关键维度横向对比三种模式，并把「生产部署」作为参照列。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>维度</th><th>匿名部署</th><th>Draft 草稿</th><th>Deploy Preview</th><th class="col-prod">生产部署（参照）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>触发方式</b></td><td>CLI 手动</td><td>CLI 手动</td><td>Git 集成自动（PR/MR）</td><td class="col-prod">CLI 手动</td></tr>
+            <tr><td><b>是否需要账号</b></td><td class="no">❌ 否</td><td class="ok">✅ 是</td><td class="ok">✅ 是</td><td class="col-prod ok">✅ 是</td></tr>
+            <tr><td><b>场景</b></td><td>一次性分享 / AI 测试</td><td>本地快速验证 / 迭代</td><td>团队评审 / Code Review</td><td class="col-prod">正式发布</td></tr>
+            <tr><td><b>URL</b></td><td>随机临时 URL</td><td>随机独立 URL（可 <code>--alias</code> 固定）</td><td><code>&lt;pr号&gt;--&lt;site&gt;.netlify.app</code></td><td class="col-prod">稳定生产 URL（<code>site.netlify.app</code> 或自定义域名）</td></tr>
+            <tr><td><b>是否绑定 Git</b></td><td class="no">❌ 否</td><td class="no">❌ 否</td><td class="ok">✅ 是（与 PR 绑定）</td><td class="col-prod">视情况</td></tr>
+            <tr><td><b>影响生产站点</b></td><td class="no">❌ 否</td><td class="no">❌ 否</td><td class="no">❌ 否</td><td class="col-prod ok">✅ 是（发布到主站）</td></tr>
+            <tr><td><b>消耗积分</b></td><td class="zero">❌ 0</td><td class="zero">❌ 0</td><td class="zero">❌ 0（免费、无限）</td><td class="col-prod cred">✅ 每次 15 credits</td></tr>
+            <tr><td><b>生命周期</b></td><td>1 小时（可认领，超时删除）</td><td>独立临时，可反复更新</td><td>随 PR 生命周期</td><td class="col-prod">长期保留</td></tr>
+            <tr><td><b>适合</b></td><td>一次性、临时、匿名</td><td>本地迭代、看效果</td><td>团队协作、自动评审</td><td class="col-prod">正式对外发布</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 四、生产部署与积分 -->
+    <section id="production">
+      <div class="sec-head">
+        <div class="sec-no">04 · 生产部署与积分说明</div>
+        <h2>生产部署与积分</h2>
+        <p>唯一会消耗积分的模式。理解它，才能合理地「省着用」。</p>
+      </div>
+
+      <h3>4.1 生产部署命令</h3>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">生产部署</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code><span class="tok-c">netlify</span> deploy --dir=输出目录 --no-build --prod --json</code></pre>
+      </div>
+      <p class="muted">把内容发布到<strong>稳定生产 URL</strong>（<code>site.netlify.app</code> 或自定义域名）。</p>
+
+      <h3>4.2 积分规则（重点）</h3>
+      <div class="list">
+        <li><b>只有生产部署才扣积分</b>：每次 <span class="cred" style="color:var(--amber)">15 credits</span>。</li>
+        <li><b>Free 计划每月 300 credits</b> ≈ 约 <b>20 次生产部署</b>。</li>
+        <li><b>失败部署、回滚不扣积分</b>。</li>
+        <li>匿名、Draft、Deploy Preview 都<strong>不消耗积分</strong>。</li>
+      </div>
+
+      <h3>4.3 省钱建议</h3>
+      <div class="callout green">
+        <b>迭代期用 <code>Draft</code>（免费）</b>反复看效果，确认就绪后再用 <code>--prod</code> 正式推送。
+        这样既能频繁迭代，又不浪费宝贵的生产积分。
+      </div>
+    </section>
+
+    <!-- 五、AI 自动化 -->
+    <section id="automation">
+      <div class="sec-head">
+        <div class="sec-no">05 · AI 自动化完整流程示例</div>
+        <h2>AI 自动化完整流程示例</h2>
+        <p>下面三种套路，覆盖从「一次性匿名」到「有状态持久化」到「无状态容器」的典型场景。</p>
+      </div>
+
+      <h3>5.1 一次性匿名部署（零账号、有手就行）</h3>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">一次性匿名部署</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code><span class="tok-c">netlify</span> deploy --dir=dist --no-build --allow-anonymous --json</code></pre>
+      </div>
+      <p class="muted">一条命令拿到临时 URL，适合 AI 快速验证/分享。</p>
+
+      <h3>5.2 创建站点并部署（有状态，初期一次建站）</h3>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">有状态 · 建站 + 生产部署</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code># 第一次：创建站点（一次即可）
+<span class="tok-c">netlify</span> sites:create --name my-project --account-slug 你的团队slug
+
+# 关联当前目录到该站点
+<span class="tok-c">netlify</span> link --name my-project
+
+# 之后每次：生产部署
+<span class="tok-c">netlify</span> deploy --dir=dist --no-build --prod --json | jq -r '.url'</code></pre>
+      </div>
+      <p class="muted">用 <code>jq -r '.url'</code> 从 JSON 里精准取出生产 URL。</p>
+
+      <h3>5.3 无状态环境（每次全新容器，不依赖 link）</h3>
+      <p class="muted">如果每次部署都在<strong>全新容器</strong>里跑（AI 自动化 agent 常如此），<b>不要依赖 <code>netlify link</code></b>（它是本地状态，新容器里不存在）：</p>
+      <div class="codeblock">
+        <div class="cb-head"><span class="cb-title">无状态 · 显式传 site-id</span><span class="cb-dots"><i></i><i></i><i></i></span></div>
+        <pre><code># 第一次：创建站点，用 --json 拿到并保存 site_id
+<span class="tok-c">netlify</span> sites:create --json   # 解析出 site_id，存进环境变量/配置文件
+
+# 之后每次部署：显式传 --site &lt;site-id&gt;
+<span class="tok-c">netlify</span> deploy --dir=dist --no-build --prod --json --site=&lt;site-id&gt;</code></pre>
+      </div>
+      <p class="muted">这样每次部署都明确指定站点，不依赖任何本地 <code>.netlify</code> 状态文件，天然适合无状态 CI / AI 容器。</p>
+    </section>
+
+    <!-- 六、常见问题 -->
+    <section id="faq">
+      <div class="sec-head">
+        <div class="sec-no">06 · 常见问题与坑</div>
+        <h2>常见问题与坑</h2>
+        <p>7 个高频踩坑点，逐个给出原因与解法。</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>坑</th><th>原因</th><th>解决</th></tr></thead>
+          <tbody>
+            <tr><td><b>1</b></td><td><b><code>--dir</code> 指向了项目根目录</b></td><td>部署的应是成品目录</td><td>指向 <code>dist</code> / <code>build</code> / <code>out</code> 等输出目录</td></tr>
+            <tr><td><b>2</b></td><td><b>忘记 <code>--no-build</code></b></td><td>会尝试跑构建，慢且可能失败</td><td>已构建好的产物部署时加上 <code>--no-build</code></td></tr>
+            <tr><td><b>3</b></td><td><b>首次 deploy 交互式提问卡住</b></td><td>无关联站点时 CLI 会交互询问</td><td>用 <code>sites:create</code> 先建好站点，或加 <code>--site</code></td></tr>
+            <tr><td><b>4</b></td><td><b>解析 stdout 横幅不可靠</b></td><td>横幅格式会变</td><td>一律用 <code>--json</code>，读 <code>deploy_url</code> / <code>url</code> / <code>site_id</code> 字段</td></tr>
+            <tr><td><b>5</b></td><td><b>缺 <code>NETLIFY_AUTH_TOKEN</code> 时卡住</b></td><td>无 token 会回退到交互登录</td><td>先确认环境变量已设置，或加 <code>--auth</code> 显式传 token</td></tr>
+            <tr><td><b>6</b></td><td><b>匿名站点打不开</b></td><td>匿名站点默认密码保护，未认领不公开</td><td>用 <code>netlify claim --site &lt;site-id&gt; --token &lt;drop-token&gt;</code> 认领</td></tr>
+            <tr><td><b>7</b></td><td><b>匿名 URL 失效</b></td><td>1 小时有效，超时未认领被删除</td><td>匿名部署仅用于临时场景，长期用 Draft/生产</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 附：决策树 -->
+    <section id="decision">
+      <div class="sec-head">
+        <div class="sec-no">07 · 快速决策树 + 核心口诀</div>
+        <h2>快速决策树</h2>
+      </div>
+      <div class="tree">
+        <div>你要部署一个 HTML 页面到 Netlify，问自己：</div>
+        <br>
+        <div class="q">1. 需要账号吗？不想注册</div>
+        <div class="a">　→ <span class="free">匿名部署</span> <span class="cmd">（--allow-anonymous）</span></div>
+        <div class="q">2. 只是本地看效果、迭代？</div>
+        <div class="a">　→ <span class="free">Draft</span> <span class="cmd">（不带 --prod，免费）</span></div>
+        <div class="q">3. 团队要评审 PR？</div>
+        <div class="a">　→ <span class="free">靠 Git 集成的 Deploy Preview</span> <span class="cmd">（免费）</span></div>
+        <div class="q">4. 要正式对外发布？</div>
+        <div class="a">　→ <span class="used">生产部署</span> <span class="cmd">（--prod，每次扣 15 credits）</span></div>
+      </div>
+
+      <div class="mantra">
+        <div class="label">核心口诀</div>
+        <p><span class="free">临时免费随便用</span>（匿名 / Draft / Preview）<br>
+           <span class="used">正式发布才扣分</span>（--prod）</p>
+      </div>
+    </section>
+
+    <footer>
+      <div class="tag">Netlify 三种部署模式完全指南 · 面向 AI 自动部署开发者</div>
+      <div>匿名 / Draft / Preview 免费 · 生产部署 15 credits / 次</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // 目录滚动高亮（scroll spy）
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var sections = tocLinks.map(function(l){ return document.querySelector(l.getAttribute('href')); });
+
+  function spy(){
+    var pos = window.scrollY + 120;
+    var current = sections[0];
+    sections.forEach(function(s){
+      if(s && s.offsetTop <= pos) current = s;
+    });
+    tocLinks.forEach(function(l){
+      l.classList.toggle('active', l.getAttribute('href') === '#' + current.id);
+    });
+  }
+  window.addEventListener('scroll', spy, {passive:true});
+  spy();
+
+  // 移动端目录抽屉
+  var menuBtn = document.getElementById('menuBtn');
+  var sidebar = document.getElementById('sidebar');
+  var menuOpen = false;
+  menuBtn.addEventListener('click', function(){
+    menuOpen = !menuOpen;
+    if(menuOpen){
+      sidebar.style.display = 'block';
+      sidebar.style.position = 'fixed';
+      sidebar.style.top = '60px';
+      sidebar.style.left = '0';
+      sidebar.style.width = '240px';
+      sidebar.style.height = 'calc(100vh - 60px)';
+      sidebar.style.background = 'rgba(14,20,30,.97)';
+      sidebar.style.zIndex = '50';
+      sidebar.style.borderRight = '1px solid var(--border)';
+      sidebar.style.padding = '20px';
+    } else {
+      sidebar.style.display = '';
+      sidebar.style.position = '';
+      sidebar.style.width = '';
+      sidebar.style.height = '';
+      sidebar.style.background = '';
+      sidebar.style.zIndex = '';
+      sidebar.style.borderRight = '';
+      sidebar.style.padding = '';
+    }
+  });
+  // 点击目录后关闭抽屉
+  tocLinks.forEach(function(l){
+    l.addEventListener('click', function(){
+      if(window.innerWidth <= 980){ menuBtn.click(); }
+    });
+  });
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 980 && menuOpen){ menuBtn.click(); }
+  });
+
+  // 代码块复制按钮
+  document.querySelectorAll('.codeblock').forEach(function(block){
+    var head = block.querySelector('.cb-head');
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.type = 'button';
+    head.appendChild(btn);
+    btn.addEventListener('click', function(){
+      var code = block.querySelector('code');
+      var text = code.innerText;
+      var done = function(){
+        btn.textContent = '已复制 ✓';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent = '复制'; btn.classList.remove('copied'); }, 1800);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(); });
+      } else { fallback(); }
+      function fallback(){
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='复制失败'; }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+</script>
+</body>
+</html>
