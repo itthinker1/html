@@ -763,107 +763,85 @@
   },{threshold:.25});
   document.querySelectorAll('.bar-duo .bar-row').forEach(function(el){bio.observe(el);});
 
-  /* ===== 雷达图动态绘制 ===== */
+  /* ===== 雷达图动态绘制（重写：修复标签重叠/溢出、刻度标注、顶点光点与动画） ===== */
   (function(){
     var dims=['综合智力','代码','多模态','长上下文','推理深度','运行速度','性价比'];
     var k3=[57,55,92,92,88,40,45];
     var glm=[51,65,18,85,75,88,82];
     var cx=280,cy=285,R=180;
+    var LBL=R+34; /* 维度标签半径：外圈(R)向外 34px，留出刻度与边距，兼容 560×560 viewBox */
     var svg=document.getElementById('radarSvg');
     var NS='http://www.w3.org/2000/svg';
     function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
     var n=dims.length;
-    var allEls=[];
+    var angs=[];for(var i=0;i<n;i++){angs.push(-Math.PI/2+i*2*Math.PI/n);}
+    // 以半径 radius 计算第 i 个轴顶点坐标
+    function at(radius,i){return [cx+radius*Math.cos(angs[i]),cy+radius*Math.sin(angs[i])];}
+    // 生成某半径(可带 0..1 缩放)的全部顶点字符串
+    function polyPoints(radius,scale){
+      var p=[];
+      for(var i=0;i<n;i++){var q=at(radius*scale,i);p.push(q[0].toFixed(1)+','+q[1].toFixed(1));}
+      return p.join(' ');
+    }
 
-    // 网格多边形（外圈到内圈）
+    // defs 辉光滤镜
+    var defs=el('defs',{});svg.appendChild(defs);
+    var kf=el('filter',{id:'kglow',x:'-40%',y:'-40%',width:'180%',height:'180%'});
+    kf.appendChild(el('feGaussianBlur',{stdDeviation:'6'}));defs.appendChild(kf);
+    var gf=el('filter',{id:'gglow',x:'-40%',y:'-40%',width:'180%',height:'180%'});
+    gf.appendChild(el('feGaussianBlur',{stdDeviation:'6'}));defs.appendChild(gf);
+
+    // 网格多边形（外圈 5 → 内圈 1）
     for(var ring=5;ring>=1;ring--){
-      var pts=[];
-      for(var i=0;i<n;i++){
-        var ang=-Math.PI/2+i*2*Math.PI/n;
-        pts.push((cx+R*ring/5*Math.cos(ang)).toFixed(1)+','+(cy+R*ring/5*Math.sin(ang)).toFixed(1));
-      }
-      var poly=el('polygon',{points:pts.join(' '),fill:'none',stroke:'rgba(120,140,220,.16)','stroke-width':1});
-      svg.appendChild(poly);allEls.push(poly);
+      svg.appendChild(el('polygon',{points:polyPoints(R*ring/5,1),fill:'none',stroke:'rgba(120,140,220,.16)','stroke-width':1}));
     }
     // 轴线
     for(var i=0;i<n;i++){
-      var ang=-Math.PI/2+i*2*Math.PI/n;
-      var line=el('line',{x1:cx,y1:cy,x2:cx+R*Math.cos(ang),y2:cy+R*Math.sin(ang),stroke:'rgba(120,140,220,.18)','stroke-width':1});
-      svg.appendChild(line);allEls.push(line);
-      var lx=cx+(R+26)*Math.cos(ang),ly=cy+(R+26)*Math.sin(ang);
-      var txt=el('text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle','font-size':'14','fill':'#aeb6e8','font-family':'var(--font)'});
-      txt.textContent=dims[i];svg.appendChild(txt);allEls.push(txt);
+      var e=at(R,1);
+      svg.appendChild(el('line',{x1:cx,y1:cy,x2:e[0],y2:e[1],stroke:'rgba(120,140,220,.18)','stroke-width':1}));
     }
-    // 刻度值
-    allEls.forEach(function(e){
-      if(e.tagName==='polygon'&&e.getAttribute('points')&&e.getAttribute('points').split(' ').length>2){
-        // 仅最外圈标注
-        if(e.getAttribute('stroke')==='rgba(120,140,220,.16)'){
-          var pts=e.getAttribute('points').split(' ');
-          var cx0=0,cy0=0;
-          pts.forEach(function(p){var c=p.split(',');cx0+=+c[0];cy0+=+c[1];});
-          cx0/=pts.length;cy0/=pts.length;
-          if(cy0<cy-100){ // 顶部
-            var l=el('text',{x:cx0,y:cy0-14,'text-anchor':'middle','font-size':'11','fill':'#5c6288','font-family':'monospace'});
-            l.textContent='100';svg.appendChild(l);
-          }
-        }
-      }
-    });
+    // 刻度标注：外圈顶点 "100"（置于顶部轴线上、维度标签内侧，避免重叠）
+    var t100=el('text',{x:cx,y:cy-R-10,'text-anchor':'middle','dominant-baseline':'middle','font-size':'11','fill':'#6a7196','font-family':'var(--mono)','font-weight':'600'});
+    t100.textContent='100';svg.appendChild(t100);
+    var t50=el('text',{x:cx+90*Math.cos(angs[5]),y:cy+90*Math.sin(angs[5]),'text-anchor':'middle','dominant-baseline':'middle','font-size':'10','fill':'#555b80','font-family':'var(--mono)'});
+    t50.textContent='50';svg.appendChild(t50);
 
-    // 数据多边形 fade-in
-    function addData(values,type,fill,stroke,glow,opacity){
-      var pts=[];
-      for(var i=0;i<n;i++){
-        var ang=-Math.PI/2+i*2*Math.PI/n;
-        var r=R*values[i]/100;
-        pts.push((cx+r*Math.cos(ang)).toFixed(1)+','+(cy+r*Math.sin(ang)).toFixed(1));
-      }
-      var poly=el('polygon',{points:pts.join(' '),fill:fill,'fill-opacity':opacity,stroke:stroke,'stroke-width':2.4,'stroke-linejoin':'round'});
-      poly.style.filter='url(#'+glow+')';
-      // 顶点光点
+    // 七维标签：按角度象限自适应 text-anchor，均匀分布、不重叠、不溢出
+    for(var i=0;i<n;i++){
+      var cosA=Math.cos(angs[i]),sinA=Math.sin(angs[i]);
+      var anchor='middle';
+      if(cosA>0.25)anchor='start';        // 右侧 → 文字向右延展
+      else if(cosA<-0.25)anchor='end';    // 左侧 → 文字向左延展
+      var q=at(LBL,i);
+      var tx=q[0]+cosA*4, ty=q[1]+sinA*4;
+      var lb=el('text',{x:tx,y:ty,'text-anchor':anchor,'dominant-baseline':'middle','font-size':'13.5','fill':'#aeb6e8','font-family':'var(--font)','font-weight':'600','letter-spacing':'0.5'});
+      lb.textContent=dims[i];svg.appendChild(lb);
+    }
+
+    // 数据多边形（初始收敛于中心，避免动画前闪现完整图形）
+    function buildData(values,strokeCol,fillCol,glowId){
+      var poly=el('polygon',{points:polyPoints(0,1),fill:fillCol,'fill-opacity':1,stroke:strokeCol,'stroke-width':2.4,'stroke-linejoin':'round'});
+      poly.style.filter='url(#'+glowId+')';
+      svg.appendChild(poly);
       var dots=[];
       for(var i=0;i<n;i++){
-        var ang=-Math.PI/2+i*2*Math.PI/n;
-        var r=R*values[i]/100;
-        var d=el('circle',{cx:cx+r*Math.cos(ang),cy:cy+r*Math.sin(ang),r:4.5,fill:'#fff',stroke:stroke,'stroke-width':2});
-        svg.appendChild(d);dots.push(d);allEls.push(d);
+        var d=el('circle',{cx:cx,cy:cy,r:4.5,fill:'#fff',stroke:strokeCol,'stroke-width':2});
+        svg.appendChild(d);dots.push(d);
       }
-      svg.appendChild(poly);allEls.push(poly);
       return {poly:poly,dots:dots};
     }
+    var kObj=buildData(k3,'#38e8ff','rgba(56,232,255,.14)','kglow');
+    var gObj=buildData(glm,'#4f8bff','rgba(79,139,255,.14)','gglow');
 
-    // defs 辉光
-    function defs(){
-      var d=el('defs',{});svg.appendChild(d);
-      var k=el('filter',{id:'kglow',x:'-30%',y:'-30%',width:'160%',height:'160%'});
-      var kg=el('feGaussianBlur',{stdDeviation:'6'});k.appendChild(kg);d.appendChild(k);
-      var g=el('filter',{id:'gglow',x:'-30%',y:'-30%',width:'160%',height:'160%'});
-      var gg=el('feGaussianBlur',{stdDeviation:'6'});g.appendChild(gg);d.appendChild(g);
-    }
-    defs();
-
-    var kObj=addData(k3,'k3','rgba(56,232,255,.14)','#38e8ff','kglow',.16);
-    var gObj=addData(glm,'glm','rgba(79,139,255,.14)','#4f8bff','gglow',.16);
-
-    // 动画
+    // 动画（一次性设置多边形 + 逐顶点更新光点，无冗余循环）
     var animStarted=false;
     function draw(p){
+      kObj.poly.setAttribute('points',polyPoints(R,p));
+      gObj.poly.setAttribute('points',polyPoints(R,p));
       for(var i=0;i<n;i++){
-        var ang=-Math.PI/2+i*2*Math.PI/n;
-        var rk=R*k3[i]/100*p, rg0=R*glm[i]/100*p;
-        var ptsK=[],ptsG=[],xK=cx+rk*Math.cos(ang),yK=cy+rk*Math.sin(ang);
-        var xG=cx+rg0*Math.cos(ang),yG=cy+rg0*Math.sin(ang);
-        // 累加所有顶点
-        for(var j=0;j<n;j++){
-          var a2=-Math.PI/2+j*2*Math.PI/n;
-          ptsK.push((cx+R*k3[j]/100*p*Math.cos(a2)).toFixed(1)+','+(cy+R*k3[j]/100*p*Math.sin(a2)).toFixed(1));
-          ptsG.push((cx+R*glm[j]/100*p*Math.cos(a2)).toFixed(1)+','+(cy+R*glm[j]/100*p*Math.sin(a2)).toFixed(1));
-        }
-        kObj.poly.setAttribute('points',ptsK.join(' '));
-        gObj.poly.setAttribute('points',ptsG.join(' '));
-        kObj.dots[i].setAttribute('cx',xK);kObj.dots[i].setAttribute('cy',yK);
-        gObj.dots[i].setAttribute('cx',xG);gObj.dots[i].setAttribute('cy',yG);
+        var ki=at(R*k3[i]/100*p,1), gi=at(R*glm[i]/100*p,1);
+        kObj.dots[i].setAttribute('cx',ki[0]);kObj.dots[i].setAttribute('cy',ki[1]);
+        gObj.dots[i].setAttribute('cx',gi[0]);gObj.dots[i].setAttribute('cy',gi[1]);
       }
     }
     function start(){
