@@ -3,745 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="随时随地，vibe coding —— 用自然语言描述创意，让 AI 帮你把想法快速变成可运行的东西。">
-<title>随时随地，vibe coding</title>
+<title>随时随地，vibe coding · 成果导航</title>
 <style>
   :root{
-    --bg:#06070f;
-    --bg-2:#0a0d1c;
-    --panel:rgba(18,22,40,.55);
-    --panel-solid:#10132a;
-    --ink:#eaf0ff;
-    --muted:#9aa3c0;
-    --faint:#62698a;
-    --line:rgba(130,150,220,.16);
-    --cyan:#32e6ff;
-    --violet:#8b5cff;
-    --magenta:#ff4fd8;
-    --lime:#b6ff4a;
-    --amber:#ffc46b;
-    --grad:linear-gradient(110deg,var(--cyan),var(--violet) 55%,var(--magenta));
-    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,monospace;
-    --sans:"PingFang SC","Microsoft YaHei","Noto Sans SC","Source Han Sans SC",system-ui,-apple-system,sans-serif;
-    --radius:18px;
-    --shadow:0 20px 60px rgba(0,0,0,.5);
+    --bg:#070a14;
+    --card:rgba(255,255,255,.045);
+    --border:rgba(255,255,255,.09);
+    --text:#e8ecf7;
+    --muted:#8b93ab;
+    --cyan:#22d3ee;
+    --violet:#a78bfa;
+    --pink:#f472b6;
+    --grad:linear-gradient(135deg,#22d3ee,#a78bfa 55%,#f472b6);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    font-family:var(--sans);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     background:var(--bg);
-    color:var(--ink);
-    line-height:1.7;
+    color:var(--text);
+    min-height:100vh;
     overflow-x:hidden;
+    line-height:1.6;
   }
-  ::selection{background:rgba(139,92,255,.4);color:#fff}
-  a{color:inherit;text-decoration:none}
-  img,svg{display:block}
-
-  /* ---------- 背景网格 + 光晕 ---------- */
-  .bg-grid{
-    position:fixed;inset:0;z-index:-3;pointer-events:none;
+  /* 背景：网格 + 光晕 */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-2;
     background-image:
-      linear-gradient(rgba(130,150,220,.05) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(130,150,220,.05) 1px,transparent 1px);
-    background-size:54px 54px;
-    mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 78%);
-    -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 78%);
+      linear-gradient(rgba(120,140,200,.06) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(120,140,200,.06) 1px,transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 100%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 100%);
   }
-  .bg-glow{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
-  .bg-glow span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5}
-  .bg-glow .g1{width:560px;height:560px;left:-120px;top:-120px;background:radial-gradient(circle,#2a1b6e,transparent 70%)}
-  .bg-glow .g2{width:520px;height:520px;right:-140px;top:20%;background:radial-gradient(circle,#0b4a5e,transparent 70%)}
-  .bg-glow .g3{width:480px;height:480px;left:30%;bottom:-160px;background:radial-gradient(circle,#4a0f52,transparent 70%)}
-  #particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .glow{position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none}
+  .glow-1{width:520px;height:520px;background:#144;top:-160px;left:-120px}
+  .glow-2{width:480px;height:480px;background:#413;top:20%;right:-160px}
 
-  /* ---------- 导航 ---------- */
-  nav{
-    position:fixed;top:0;left:0;right:0;z-index:50;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px clamp(18px,4vw,48px);
-    transition:.3s;
-  }
-  nav.scrolled{background:rgba(6,7,15,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px;font-size:15px}
-  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--grad);box-shadow:0 0 12px var(--cyan)}
-  .brand .dot::before{content:"";display:block;width:9px;height:9px;border-radius:50%;background:inherit;animation:pulse 2s infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.6)}}
-  .nav-links{display:flex;gap:26px;align-items:center}
-  .nav-links a{font-size:14px;color:var(--muted);transition:.2s}
-  .nav-links a:hover{color:var(--ink)}
-  .nav-go{
-    font-size:13px;font-weight:600;color:var(--ink);
-    padding:8px 16px;border-radius:999px;
-    border:1px solid var(--line);background:rgba(255,255,255,.03);
-    transition:.25s;
-  }
-  .nav-go:hover{border-color:var(--violet);box-shadow:0 0 18px rgba(139,92,255,.35);transform:translateY(-1px)}
-  .nav-burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:8px 10px;cursor:pointer;font-size:16px}
-  .mobile-menu{
-    display:none;position:fixed;top:60px;left:12px;right:12px;z-index:49;
-    background:rgba(10,13,28,.96);border:1px solid var(--line);border-radius:14px;
-    padding:14px;flex-direction:column;gap:4px;backdrop-filter:blur(14px);
-  }
-  .mobile-menu a{padding:12px 14px;border-radius:10px;color:var(--muted);font-size:15px}
-  .mobile-menu a:hover{background:rgba(139,92,255,.12);color:var(--ink)}
-  .mobile-menu.open{display:flex}
+  .wrap{max-width:1120px;margin:0 auto;padding:64px 24px 96px}
 
-  /* ---------- Hero ---------- */
-  header.hero{
-    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-    align-items:center;text-align:center;position:relative;
-    padding:120px 20px 60px;
-  }
-  .eyebrow{
+  /* 头部 */
+  header{text-align:center;margin-bottom:56px}
+  .badge{
     display:inline-flex;align-items:center;gap:8px;
-    font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--cyan);
-    padding:7px 16px;border-radius:999px;border:1px solid rgba(50,230,255,.28);
-    background:rgba(50,230,255,.06);margin-bottom:28px;
+    padding:6px 16px;border-radius:999px;
+    border:1px solid var(--border);background:var(--card);
+    font-size:13px;color:var(--muted);letter-spacing:.5px;
   }
-  .eyebrow .live{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.6s infinite}
-  h1.hero-title{
-    font-size:clamp(40px,8.5vw,96px);font-weight:900;line-height:1.08;letter-spacing:-1px;
-    max-width:12em;
-  }
-  .hero-title .grad-text{
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--grad)}
+  h1{
+    font-size:clamp(34px,6vw,58px);font-weight:800;letter-spacing:-.5px;
+    margin:22px 0 14px;
     background:var(--grad);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    filter:drop-shadow(0 0 22px rgba(139,92,255,.35));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
   }
-  .hero-sub{
-    margin-top:26px;max-width:640px;font-size:clamp(16px,2.3vw,20px);color:var(--muted);
-  }
-  .hero-sub b{color:var(--ink);font-weight:600}
-  .hero-cta{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;justify-content:center}
-  .btn{
-    display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:999px;
-    font-size:15px;font-weight:700;cursor:pointer;transition:.25s;border:none;
-  }
-  .btn-primary{background:var(--grad);color:#0a0714;box-shadow:0 8px 30px rgba(139,92,255,.4)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,255,.6)}
-  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-  .btn-ghost:hover{border-color:var(--cyan);box-shadow:0 0 20px rgba(50,230,255,.25)}
+  .sub{color:var(--muted);font-size:clamp(15px,2.4vw,18px);max-width:640px;margin:0 auto}
+  .count{color:var(--cyan);font-weight:700}
 
-  /* 终端 */
-  .terminal-wrap{
-    width:min(760px,92vw);margin-top:56px;text-align:left;
-    border-radius:14px;overflow:hidden;background:rgba(8,10,22,.85);
-    border:1px solid var(--line);box-shadow:var(--shadow),0 0 60px rgba(139,92,255,.12);
-    position:relative;
+  /* 卡片网格 */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .card{
+    position:relative;display:block;text-decoration:none;color:inherit;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px 22px 20px;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    opacity:0;transform:translateY(24px);
+    transition:transform .35s ease,opacity .35s ease,border-color .25s,box-shadow .25s;
+    overflow:hidden;
   }
-  .terminal-wrap::before{
-    content:"";position:absolute;inset:-1px;border-radius:14px;padding:1px;
-    background:var(--grad);opacity:.35;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  .card::after{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    background:var(--grad);opacity:0;transition:opacity .3s;
+    pointer-events:none;
   }
-  .term-bar{
-    display:flex;align-items:center;gap:8px;padding:12px 16px;
-    border-bottom:1px solid var(--line);background:rgba(18,22,40,.6);
-  }
-  .term-bar .t{flex:1;font-family:var(--mono);font-size:12px;color:var(--faint);text-align:center}
-  .window-dot{width:11px;height:11px;border-radius:50%}
-  .term-body{padding:20px 22px;font-family:var(--mono);font-size:clamp(12px,2vw,14px);min-height:190px}
-  .term-body .line{color:var(--muted);white-space:pre-wrap;word-break:break-all}
-  .term-body .cmt{color:var(--faint)}
-  .term-body .prompt{color:var(--lime)}
-  .term-body .out{color:var(--ink)}
-  .term-body .ok{color:var(--cyan)}
-  .terminal-wrap .cursor{
-    display:inline-block;width:9px;height:1.15em;background:var(--cyan);
-    vertical-align:text-bottom;margin-left:2px;animation:blink 1s steps(1) infinite;
-  }
-  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.2)}
+  .card:hover::after{opacity:.06}
+  .card:hover{box-shadow:0 18px 40px -18px rgba(34,211,238,.35)}
+  .card.reveal{opacity:1;transform:none}
 
-  .scroll-hint{margin-top:34px;color:var(--faint);font-size:12px;animation:floatY 2.4s ease-in-out infinite}
-  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
-
-  /* 漂浮几何体 */
-  .geo{position:absolute;pointer-events:none;z-index:0;opacity:.5}
-  .geo svg{width:100%;height:100%}
-  .geo-1{width:120px;height:120px;top:16%;left:8%;animation:spin 26s linear infinite}
-  .geo-2{width:90px;height:90px;top:24%;right:10%;animation:spin 20s linear infinite reverse}
-  .geo-3{width:70px;height:70px;bottom:22%;left:12%;animation:bob 7s ease-in-out infinite}
-  .geo-4{width:110px;height:110px;bottom:14%;right:8%;animation:spin 30s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
-  .geo .stroke{stroke:url(#geoGrad);stroke-width:1.4;fill:none}
-
-  /* ---------- 通用区块 ---------- */
-  section{padding:clamp(70px,10vw,120px) clamp(20px,5vw,60px);position:relative}
-  .container{max-width:1120px;margin:0 auto}
-  .sec-head{max-width:720px;margin:0 auto clamp(40px,6vw,64px);text-align:center}
-  .sec-tag{
-    font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--violet);
-    text-transform:uppercase;display:inline-block;margin-bottom:16px;
+  .tag{
+    display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;
+    margin-bottom:12px;letter-spacing:.5px;
   }
-  .sec-title{font-size:clamp(28px,4.6vw,44px);font-weight:800;line-height:1.2}
-  .sec-sub{margin-top:14px;color:var(--muted);font-size:clamp(15px,2vw,17px)}
+  .t-home{color:#7dd3fc;background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.3)}
+  .t-model{color:#c4b5fd;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3)}
+  .t-tool{color:#67e8f9;background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.28)}
+  .t-erhai{color:#6ee7b7;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3)}
+  .t-shaxi{color:#fda4af;background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3)}
 
-  /* 入场动画 */
-  .reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
-  .reveal.in{opacity:1;transform:none}
-  .delay-1{transition-delay:.1s}.delay-2{transition-delay:.22s}.delay-3{transition-delay:.34s}.delay-4{transition-delay:.46s}
+  .card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:14px}
+  .card .path{
+    margin-top:14px;font-size:12px;color:#66708c;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    word-break:break-all;
+  }
+  .card .arrow{
+    position:absolute;top:18px;right:18px;width:26px;height:26px;border-radius:8px;
+    display:grid;place-items:center;color:var(--muted);
+    border:1px solid var(--border);transition:.25s;
+  }
+  .card:hover .arrow{background:var(--grad);color:#08131f;border-color:transparent}
 
-  /* ---------- 是什么 / 理念 ---------- */
-  .what-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,48px);align-items:center}
-  .what-copy p{color:var(--muted);margin-bottom:16px;font-size:16px}
-  .what-copy p strong{color:var(--ink)}
-  .what-copy .hl{color:var(--cyan);font-weight:600}
-  .flow-pill{
-    display:inline-flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:14px;
-    padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
-    margin:4px 4px 4px 0;
-  }
-  .flow-pill .n{color:var(--violet);font-weight:700}
-  .flow-pill:hover{transform:translateY(-2px);border-color:var(--violet)}
+  footer{text-align:center;color:#5a6278;font-size:13px;margin-top:56px}
+  footer code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:6px;color:#9aa3bd}
 
-  .cosmic{
-    position:relative;border-radius:var(--radius);padding:34px;
-    background:var(--panel);border:1px solid var(--line);overflow:hidden;
-  }
-  .cosmic svg{position:absolute;inset:0;width:100%;height:100%;opacity:.85}
-  .cosmic .quote{position:relative;z-index:2;font-size:clamp(17px,2.4vw,21px);font-weight:600;line-height:1.7}
-  .cosmic .quote mark{background:none;color:var(--cyan);font-weight:700}
-  .cosmic .who{margin-top:18px;font-family:var(--mono);font-size:13px;color:var(--faint)}
-
-  /* ---------- 工作流 ---------- */
-  .steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-  .steps::before{
-    content:"";position:absolute;top:34px;left:6%;right:6%;height:2px;
-    background:linear-gradient(90deg,var(--cyan),var(--violet),var(--magenta));
-    opacity:.5;z-index:0;
-  }
-  .step{
-    position:relative;z-index:1;background:var(--panel);border:1px solid var(--line);
-    border-radius:var(--radius);padding:26px 22px;transition:.3s;
-  }
-  .step:hover{transform:translateY(-6px);border-color:var(--violet);box-shadow:0 16px 40px rgba(139,92,255,.18)}
-  .step-num{
-    width:68px;height:68px;border-radius:16px;display:flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:18px;
-    background:rgba(139,92,255,.12);border:1px solid rgba(139,92,255,.4);
-    text-shadow:0 0 14px rgba(139,92,255,.7);
-  }
-  .step:nth-child(2) .step-num{background:rgba(50,230,255,.12);border-color:rgba(50,230,255,.4);text-shadow:0 0 14px rgba(50,230,255,.7)}
-  .step:nth-child(3) .step-num{background:rgba(255,79,216,.12);border-color:rgba(255,79,216,.4);text-shadow:0 0 14px rgba(255,79,216,.7)}
-  .step:nth-child(4) .step-num{background:rgba(182,255,74,.12);border-color:rgba(182,255,74,.4);text-shadow:0 0 14px rgba(182,255,74,.7)}
-  .step h3{font-size:18px;margin-bottom:10px}
-  .step p{color:var(--muted);font-size:14px}
-  .step-phrase{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--faint)}
-  .step-phrase b{color:var(--cyan)}
-
-  /* ---------- 适合谁 ---------- */
-  .personas{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .persona{
-    border-radius:var(--radius);padding:28px;position:relative;overflow:hidden;
-    background:var(--panel);border:1px solid var(--line);transition:.3s;
-  }
-  .persona:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 16px 40px rgba(50,230,255,.12)}
-  .persona .pico{width:52px;height:52px;border-radius:14px;background:rgba(50,230,255,.1);border:1px solid rgba(50,230,255,.3);margin-bottom:18px;filter:drop-shadow(0 0 10px rgba(50,230,255,.4))}
-  .persona:nth-child(2) .pico{background:rgba(139,92,255,.1);border-color:rgba(139,92,255,.3);filter:drop-shadow(0 0 10px rgba(139,92,255,.4))}
-  .persona:nth-child(3) .pico{background:rgba(255,79,216,.1);border-color:rgba(255,79,216,.3);filter:drop-shadow(0 0 10px rgba(255,79,216,.4))}
-  .persona:nth-child(4) .pico{background:rgba(182,255,74,.1);border-color:rgba(182,255,74,.3);filter:drop-shadow(0 0 10px rgba(182,255,74,.4))}
-  .persona:nth-child(5) .pico{background:rgba(255,196,107,.1);border-color:rgba(255,196,107,.3);filter:drop-shadow(0 0 10px rgba(255,196,107,.4))}
-  .persona:nth-child(6) .pico{background:rgba(230,222,255,.08);border-color:rgba(180,160,255,.3);filter:drop-shadow(0 0 10px rgba(180,160,255,.4))}
-  .persona h3{font-size:17px;margin-bottom:8px}
-  .persona p{color:var(--muted);font-size:14px}
-  .persona .tag-line{margin-top:14px;font-size:12px;color:var(--faint);font-family:var(--mono)}
-
-  /* ---------- 优势亮点 ---------- */
-  .advantages{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-  .adv{
-    display:flex;gap:18px;padding:26px;border-radius:var(--radius);
-    background:var(--panel);border:1px solid var(--line);transition:.3s;position:relative;overflow:hidden;
-  }
-  .adv::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad);opacity:0;transition:.3s}
-  .adv:hover{transform:translateY(-4px);border-color:var(--violet)}
-  .adv:hover::after{opacity:1}
-  .adv-ico{flex-shrink:0;width:46px;height:46px;border-radius:12px;background:rgba(139,92,255,.12);border:1px solid rgba(139,92,255,.35);display:flex;align-items:center;justify-content:center}
-  .adv h3{font-size:17px;margin-bottom:6px}
-  .adv p{color:var(--muted);font-size:14px}
-
-  /* 数字滚动 */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:48px}
-  .stat{
-    text-align:center;padding:26px 16px;border-radius:var(--radius);
-    background:var(--panel);border:1px solid var(--line);
-  }
-  .stat .num{font-family:var(--mono);font-size:clamp(30px,4.5vw,44px);font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .stat .label{margin-top:8px;font-size:13px;color:var(--muted)}
-
-  /* ---------- CTA ---------- */
-  .cta{
-    position:relative;text-align:center;border-radius:26px;overflow:hidden;
-    padding:clamp(50px,8vw,90px) clamp(24px,6vw,60px);
-    background:linear-gradient(140deg,rgba(139,92,255,.16),rgba(50,230,255,.08) 55%,rgba(255,79,216,.12));
-    border:1px solid var(--line);
-  }
-  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(139,92,255,.25),transparent 60%);pointer-events:none}
-  .cta h2{position:relative;font-size:clamp(28px,5vw,46px);font-weight:900;line-height:1.2}
-  .cta p{position:relative;color:var(--muted);margin:18px auto 34px;max-width:520px}
-  .cta .btn{position:relative;z-index:2}
-  .cta .orbit{position:absolute;width:320px;height:320px;border:1px dashed rgba(139,92,255,.35);border-radius:50%;animation:spin 40s linear infinite}
-  .cta .orbit.o1{left:-120px;top:-120px}
-  .cta .orbit.o2{right:-120px;bottom:-120px;animation-direction:reverse}
-
-  /* ---------- Footer ---------- */
-  footer{
-    border-top:1px solid var(--line);padding:44px clamp(20px,5vw,60px);
-    text-align:center;color:var(--faint);font-size:13px;
-  }
-  footer .f-row{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;margin-bottom:18px}
-  footer a{color:var(--muted);transition:.2s}
-  footer a:hover{color:var(--cyan)}
-  footer .mono{font-family:var(--mono)}
-
-  /* ---------- 响应式 ---------- */
-  @media (max-width:900px){
-    .steps{grid-template-columns:repeat(2,1fr)}
-    .steps::before{display:none}
-    .what-grid{grid-template-columns:1fr}
-    .personas{grid-template-columns:repeat(2,1fr)}
-    .stats{grid-template-columns:repeat(2,1fr)}
-  }
   @media (max-width:640px){
-    .nav-links{display:none}
-    .nav-burger{display:block}
-    .steps,.personas,.advantages{grid-template-columns:1fr}
-    .geo{opacity:.3}
-    .term-body{padding:16px;min-height:150px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
-    html{scroll-behavior:auto}
-    .reveal{opacity:1;transform:none}
+    .wrap{padding:40px 16px 72px}
+    .grid{grid-template-columns:1fr}
   }
 </style>
 </head>
 <body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
 
-<!-- 背景装饰 -->
-<div class="bg-grid"></div>
-<div class="bg-glow"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
-<canvas id="particles"></canvas>
+  <main class="wrap">
+    <header>
+      <span class="badge"><span class="dot"></span>VIBE CODING 成果导航</span>
+      <h1>随时随地，vibe coding</h1>
+      <p class="sub">我的 vibe coding 成果导航 —— 用 AI 辅助做出来的一个个 HTML 小作品，全部收录在这一页。点击卡片即可跳转。</p>
+    </header>
 
-<!-- SVG 渐变 / 滤镜定义 -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="geoGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#32e6ff"/><stop offset="1" stop-color="#ff4fd8"/>
-    </linearGradient>
-    <linearGradient id="gradH" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#32e6ff"/><stop offset=".5" stop-color="#8b5cff"/><stop offset="1" stop-color="#ff4fd8"/>
-    </linearGradient>
-  </defs>
-</svg>
+    <section class="grid" id="grid">
+      <!-- ===== 新增成果卡片模板 =====
+      复制下面这块，改成你的内容即可：
+      <a class="card" href="你的文件名.html">
+        <span class="tag t-你的分类">分类</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>成果标题</h3>
+        <p>一句话简介</p>
+        <div class="path">相对路径.html</div>
+      </a>
+      ===== 用法：把上面的"你的分类"替换为 t-home / t-model / t-tool / t-erhai / t-shaxi（或自建样式）===== -->
 
-<!-- 导航 -->
-<nav id="nav">
-  <a class="brand" href="#top"><span class="dot"></span>VIBE.DEV</a>
-  <div class="nav-links">
-    <a href="#what">是什么</a>
-    <a href="#flow">工作流</a>
-    <a href="#who">适合谁</a>
-    <a href="#why">为什么</a>
-    <a class="nav-go" href="kimi-k3-vs-glm-5.2.html">模型对比 ↗</a>
-  </div>
-  <button class="nav-burger" id="burger" aria-label="菜单">☰</button>
-</nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#what">是什么</a>
-  <a href="#flow">工作流</a>
-  <a href="#who">适合谁</a>
-  <a href="#why">为什么</a>
-  <a href="kimi-k3-vs-glm-5.2.html">模型对比 ↗</a>
-</div>
+      <a class="card" href="vibe-coding.html">
+        <span class="tag t-home">首页 / 落地页</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>随时随地，vibe coding</h3>
+        <p>我做的 vibe coding 落地页，打开即见。</p>
+        <div class="path">vibe-coding.html</div>
+      </a>
 
-<span id="top"></span>
+      <a class="card" href="kimi-k3-vs-glm-5.2.html">
+        <span class="tag t-model">大模型对比</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>Kimi K3 vs GLM 5.2</h3>
+        <p>国产开源大模型巅峰对决，一文看懂差异。</p>
+        <div class="path">kimi-k3-vs-glm-5.2.html</div>
+      </a>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="geo geo-1">
-    <svg viewBox="0 0 100 100"><rect class="stroke" x="24" y="24" width="52" height="52" rx="10"/><circle class="stroke" cx="50" cy="50" r="30"/></svg>
-  </div>
-  <div class="geo geo-2">
-    <svg viewBox="0 0 100 100"><polygon class="stroke" points="50,12 88,76 12,76"/><circle class="stroke" cx="50" cy="60" r="14"/></svg>
-  </div>
-  <div class="geo geo-3">
-    <svg viewBox="0 0 100 100"><path class="stroke" d="M12 50h30l10-18 14 40 12-22h10"/><circle class="stroke" cx="50" cy="50" r="34"/></svg>
-  </div>
-  <div class="geo geo-4">
-    <svg viewBox="0 0 100 100"><rect class="stroke" x="15" y="15" width="70" height="70" rx="50"/><rect class="stroke" x="30" y="30" width="40" height="40" rx="20"/></svg>
-  </div>
+      <a class="card" href="netlify-deploy-guide.html">
+        <span class="tag t-tool">技术工具</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>Netlify 三种部署模式完全指南</h3>
+        <p>从零到上线，三种部署方式全讲解。</p>
+        <div class="path">netlify-deploy-guide.html</div>
+      </a>
 
-  <span class="eyebrow reveal"><span class="live"></span>NATURAL → CODE → SHIP</span>
-  <h1 class="hero-title reveal delay-1">随时随地，<br><span class="grad-text">vibe coding</span></h1>
-  <p class="hero-sub reveal delay-2">用<b>自然语言</b>描述你的创意，让 AI 帮你快速变成<b>能跑的代码</b>。跟着感觉走，想法即刻落地。</p>
-  <div class="hero-cta reveal delay-3">
-    <a class="btn btn-primary" href="#flow">开始创作 &#9654;</a>
-    <a class="btn btn-ghost" href="#what">怎么玩？</a>
-  </div>
+      <a class="card" href="erhai-full.html">
+        <span class="tag t-erhai">大理洱海</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>环湖攻略 · 完整版</h3>
+        <p>洱海环湖全攻略，路线景点一次到位。</p>
+        <div class="path">erhai-full.html</div>
+      </a>
 
-  <!-- 终端 -->
-  <div class="terminal-wrap reveal delay-3">
-    <div class="term-bar">
-      <span class="window-dot" style="background:#ff5f57"></span>
-      <span class="window-dot" style="background:#febc2e"></span>
-      <span class="window-dot" style="background:#28c840"></span>
-      <span class="t">~ $ vibe</span>
-    </div>
-    <div class="term-body" id="termBody"></div>
-  </div>
+      <a class="card" href="erhai-east.html">
+        <span class="tag t-erhai">大理洱海</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>东线 · 海东秘境攻略</h3>
+        <p>东线海东秘境，避开人潮的小众玩法。</p>
+        <div class="path">erhai-east.html</div>
+      </a>
 
-  <div class="scroll-hint">向下滚动 · 探索 vibe 世界</div>
-</header>
+      <a class="card" href="erhai-detailed-guide.html">
+        <span class="tag t-erhai">大理洱海</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>洱海 · 景点详细攻略</h3>
+        <p>洱海景点详细拆解，深度游必备。</p>
+        <div class="path">erhai-detailed-guide.html</div>
+      </a>
 
-<!-- 是什么 -->
-<section id="what">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">// 01 · 共鸣式编程</div>
-      <h2 class="sec-title">vibe coding 是什么？</h2>
-      <p class="sec-sub">一种「跟着感觉走」的创作方式——把你的想法说清楚，剩下的交给 AI 与你的迭代。</p>
-    </div>
-    <div class="what-grid">
-      <div class="what-copy reveal">
-        <p><strong>vibe coding</strong> 是近期兴起的一种编程方式：用<b class="hl">自然语言</b>描述创意与需求，由 AI 辅助生成代码，通过<b class="hl">直觉与迭代</b>让想法快速变成可运行的东西。</p>
-        <p>它不要求你先把一切想清楚、不要求你记忆所有语法。重点是<b class="hl">降低门槛</b>——把「想」和「做」之间的鸿沟，用对话一点点填平。</p>
-        <p>常见的节奏是：<strong>说出一个点子 → 看它跑起来 → 不满意就接着说</strong>。像聊天一样写代码，像雕刻一样打磨。</p>
-        <div>
-          <span class="flow-pill"><span class="n">01</span> 自然语言描述</span>
-          <span class="flow-pill"><span class="n">02</span> AI 生成代码</span>
-          <span class="flow-pill"><span class="n">03</span> 迭代调试</span>
-          <span class="flow-pill"><span class="n">04</span> 快速上线</span>
-        </div>
-      </div>
-      <div class="cosmic reveal delay-2">
-        <svg viewBox="0 0 400 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <defs>
-            <radialGradient id="core" cx=".5" cy=".5" r=".5">
-              <stop offset="0" stop-color="#32e6ff" stop-opacity=".5"/><stop offset="1" stop-color="#32e6ff" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <circle cx="200" cy="170" r="120" fill="url(#core)"/>
-          <circle cx="200" cy="170" r="90" fill="none" stroke="url(#gradH)" stroke-opacity=".5" stroke-width="1.2" stroke-dasharray="4 6"/>
-          <circle cx="200" cy="170" r="60" fill="none" stroke="url(#gradH)" stroke-opacity=".4" stroke-width="1.2" stroke-dasharray="2 6"/>
-          <g class="orbit-dots">
-            <circle cx="200" cy="80" r="5" fill="#32e6ff"/><circle cx="290" cy="170" r="5" fill="#8b5cff"/><circle cx="200" cy="260" r="5" fill="#ff4fd8"/><circle cx="130" cy="170" r="4" fill="#b6ff4a"/>
-          </g>
-          <g class="orbit-dots2">
-            <circle cx="200" cy="110" r="3.5" fill="#ffc46b"/><circle cx="260" cy="170" r="3.5" fill="#32e6ff"/><circle cx="200" cy="230" r="3.5" fill="#8b5cff"/><circle cx="140" cy="170" r="3" fill="#ff4fd8"/>
-          </g>
-        </svg>
-        <p class="quote">「创意不该被<b>工具的门槛</b>拦住，<br>而该被<b>表达的冲动</b>点燃。」</p>
-        <div class="who">— vibe coding 的信条</div>
-      </div>
-    </div>
-  </div>
-</section>
+      <a class="card" href="shaxi-roadmap-watercolor.html">
+        <span class="tag t-shaxi">沙溪古镇</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>水彩路线图</h3>
+        <p>沙溪古镇水彩风路线图，一眼看懂怎么逛。</p>
+        <div class="path">shaxi-roadmap-watercolor.html</div>
+      </a>
 
-<!-- 工作流 -->
-<section id="flow">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">// 02 · 四步成事</div>
-      <h2 class="sec-title">典型工作流</h2>
-      <p class="sec-sub">从一句话，到能跑的东西，通常只隔着这四个来回。</p>
-    </div>
-    <div class="steps">
-      <div class="step reveal delay-1">
-        <div class="step-num">01</div>
-        <h3>自然语言描述</h3>
-        <p>把脑子里的画面讲出来：一个倒计时小工具、一条会呼吸的曲线、一个记录灵感的便签页。</p>
-        <div class="step-phrase"><b style="color:var(--cyan)">$</b> 我想要一个…</div>
-      </div>
-      <div class="step reveal delay-2">
-        <div class="step-num">02</div>
-        <h3>AI 生成代码</h3>
-        <p>AI 把描述翻译成结构、样式与逻辑，先给你一个「能跑起来」的初版。</p>
-        <div class="step-phrase"><b style="color:var(--violet)">$</b> 生成初版…</div>
-      </div>
-      <div class="step reveal delay-3">
-        <div class="step-num">03</div>
-        <h3>迭代调试</h3>
-        <p>跑一跑、看一看，哪里不对就继续对话：「按钮再大点」「颜色再柔和些」。</p>
-        <div class="step-phrase"><b style="color:var(--magenta)">$</b> 再调一下…</div>
-      </div>
-      <div class="step reveal delay-4">
-        <div class="step-num">04</div>
-        <h3>快速上线</h3>
-        <p>满意了就发布，分享给朋友，收下一句「天哪这个好酷」，然后开始下一个。</p>
-        <div class="step-phrase"><b style="color:var(--lime)">$</b> 上线 ✓</div>
-      </div>
-    </div>
-  </div>
-</section>
+      <a class="card" href="shaxi-dense-morandi.html">
+        <span class="tag t-shaxi">沙溪古镇</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>莫兰迪手账</h3>
+        <p>沙溪古镇莫兰迪色系手账风页面。</p>
+        <div class="path">shaxi-dense-morandi.html</div>
+      </a>
 
-<!-- 适合谁 -->
-<section id="who">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">// 03 · 谁在玩</div>
-      <h2 class="sec-title">适合谁？</h2>
-      <p class="sec-sub">vibe coding 正在把「创作者」和「开发者」这两顶帽子，戴到同一群人的头上。</p>
-    </div>
-    <div class="personas">
-      <div class="persona reveal delay-1">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#32e6ff" stroke-width="2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></div>
-        <h3>独立开发者</h3>
-        <p>一个人也能同时是产品、设计、代码。把想法按最快速度推出，验证后再精修。</p>
-        <div class="tag-line">// ship fast</div>
-      </div>
-      <div class="persona reveal delay-2">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cff" stroke-width="2"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
-        <h3>产品人</h3>
-        <p>不再需要等排期。原型、交互、可点可用的 demo，当天讲完当天出。</p>
-        <div class="tag-line">// prototype now</div>
-      </div>
-      <div class="persona reveal delay-3">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#ff4fd8" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg></div>
-        <h3>设计师</h3>
-        <p>把视觉稿变成可交互的页面，色彩、动效、布局，用对话就能调。</p>
-        <div class="tag-line">// code the vision</div>
-      </div>
-      <div class="persona reveal delay-1">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#b6ff4a" stroke-width="2"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8z"/></svg></div>
-        <h3>创意工作者</h3>
-        <p>写手、博主、音乐人…把脑洞变成一个个能被人「用起来」的小东西。</p>
-        <div class="tag-line">// idea → artifact</div>
-      </div>
-      <div class="persona reveal delay-2">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#ffc46b" stroke-width="2"><path d="M2 12h20M12 2v20M4 4l16 16M20 4L4 20"/></svg></div>
-        <h3>编程新手</h3>
-        <p>不用先啃完语法书。在一次次「改一句、看效果」里，自然学会读代码、改代码。</p>
-        <div class="tag-line">// learn by vibe</div>
-      </div>
-      <div class="persona reveal delay-3">
-        <div class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="#b4a0ff" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v6l4 2"/></svg></div>
-        <h3>急于验证的人</h3>
-        <p>有一个模糊的念头，想 48 小时内看到它长什么样。低成本试错，正是 vibe 的甜区。</p>
-        <div class="tag-line">// validate quick</div>
-      </div>
-    </div>
-  </div>
-</section>
+      <a class="card" href="shaxi-bento-craft.html">
+        <span class="tag t-shaxi">沙溪古镇</span>
+        <span class="arrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </span>
+        <h3>手绘网格</h3>
+        <p>沙溪古镇手绘网格风，手账感十足。</p>
+        <div class="path">shaxi-bento-craft.html</div>
+      </a>
+    </section>
 
-<!-- 为什么 / 优势 -->
-<section id="why">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">// 04 · 为什么是现在</div>
-      <h2 class="sec-title">为什么 vibe coding 让人上瘾</h2>
-      <p class="sec-sub">不是「写代码变得不重要」，而是「动手变得足够便宜」——于是万物皆可造。</p>
-    </div>
-    <div class="advantages">
-      <div class="adv reveal delay-1">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cff" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
-        <div><h3>零门槛上手</h3><p>说出想法就能开始，不用先成为「程序员」。直觉第一，术语靠边。</p></div>
-      </div>
-      <div class="adv reveal delay-2">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#32e6ff" stroke-width="2"><path d="M13 2L3 14h9l-1 8 9-12h-9z"/></svg></div>
-        <div><h3>灵感即时落地</h3><p>趁热打铁。从「一闪而过」到「能跑的东西」，中间不设关卡。</p></div>
-      </div>
-      <div class="adv reveal delay-1">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4fd8" stroke-width="2"><path d="M12 2v8M12 2L9 5M12 2l3 3M12 14a4 4 0 100 8 4 4 0 000-8z"/></svg></div>
-        <div><h3>迭代即乐趣</h3><p>每次「再调一下」都有即时反馈，改着改着，东西就变成了你想要的。</p></div>
-      </div>
-      <div class="adv reveal delay-2">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b6ff4a" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M21 7v5h-5"/></svg></div>
-        <div><h3>低成本试错</h3><p>构想的成本几乎为零。多走几步岔路也没关系，因为每一步都很便宜。</p></div>
-      </div>
-      <div class="adv reveal delay-1">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffc46b" stroke-width="2"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8z"/></svg></div>
-        <div><h3>随时随地</h3><p>通勤路上、深夜客厅、咖啡桌边——只要一个想法，就能开始创作。</p></div>
-      </div>
-      <div class="adv reveal delay-2">
-        <div class="adv-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b4a0ff" stroke-width="2"><path d="M4 19a2 2 0 01-2-2V7a2 2 0 012-2h6l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2z"/></svg></div>
-        <div><h3>边做边学</h3><p>在真实项目里理解代码。看 AI 怎么改，你就在潜移默化中学会了怎么读。</p></div>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat reveal delay-1"><div class="num" data-count="0">0</div><div class="label">个「关掉又打开」的深夜</div></div>
-      <div class="stat reveal delay-2"><div class="num" data-count="0">0</div><div class="label">句「再调一下」</div></div>
-      <div class="stat reveal delay-3"><div class="num" data-count="0">0</div><div class="label">个「居然真的能跑」的瞬间</div></div>
-      <div class="stat reveal delay-4"><div class="num" data-count="0">0</div><div class="label">声「天哪这个好酷」</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section id="cta">
-  <div class="container">
-    <div class="cta reveal">
-      <div class="orbit o1"></div>
-      <div class="orbit o2"></div>
-      <div class="sec-tag">// 开始吧</div>
-      <h2>下一个能跑的东西，<br>就从一句话开始。</h2>
-      <p>别想太多。打开编辑器，说出你的念头，让 vibe 带你走完第一公里。</p>
-      <a class="btn btn-primary" href="#what">现在就试试 &#9654;</a>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer>
-  <div class="f-row">
-    <a href="#what">是什么</a>
-    <a href="#flow">工作流</a>
-    <a href="#who">适合谁</a>
-    <a href="kimi-k3-vs-glm-5.2.html">模型对比 ↗</a>
-  </div>
-  <div>随时随地，<span class="mono" style="color:var(--cyan)">vibe coding</span> · 单文件自包含 · 由 AI 生成</div>
-</footer>
+    <footer>
+      <p>共 <span class="count" id="count">0</span> 个成果 · 随时新增，随时 vibe coding</p>
+      <p style="margin-top:8px">新增一个成果卡片：在下方 <code>&lt;!-- 新增成果卡片模板 --&gt;</code> 注释处复制粘贴一块 <code>&lt;a class="card"&gt;</code> 修改即可</p>
+    </footer>
+  </main>
 
 <script>
-(function(){
-  "use strict";
-  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 统计卡片数量
+  document.getElementById('count').textContent =
+    document.querySelectorAll('#grid .card').length;
 
-  /* ------- 导航滚动状态 ------- */
-  var nav = document.getElementById('nav');
-  var onScroll = function(){
-    if(window.scrollY > 30){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
-  };
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-
-  /* ------- 移动端菜单 ------- */
-  var burger = document.getElementById('burger');
-  var mm = document.getElementById('mobileMenu');
-  burger.addEventListener('click', function(){ mm.classList.toggle('open'); });
-  mm.addEventListener('click', function(e){
-    if(e.target.tagName === 'A'){ mm.classList.remove('open'); }
-  });
-
-  /* ------- 终端打字动画 ------- */
-  var lines = [
-    {t:'cmt', d:'# 一句话，开始 vibe coding'},
-    {t:'prompt', d:'$ 我说：我想要一个能随着节拍跳动的渐变圆点'},
-    {t:'out', d:'AI 已生成 index.html + style.css + app.js'},
-    {t:'ok',  d:'✓ 打开浏览器，它在跳动了'},
-    {t:'prompt', d:'$ 我说：再让它响应触摸，跟着手指走'},
-    {t:'ok',  d:'✓ 已更新，试着摸一下屏幕'},
-    {t:'cmt',  d:'# 像聊天一样写代码'},
-    {t:'lime', d:'▲ 灵感 → 代码 → 上线，随时随地进行中'}
-  ];
-  var term = document.getElementById('termBody');
-  var li = 0, ci = 0, lineEl = null;
-
-  function typeLine(){
-    if(li >= lines.length){ term.appendChild(document.createElement('br')); return; }
-    var L = lines[li];
-    lineEl = document.createElement('div');
-    lineEl.className = 'line ' + (L.t === 'lime' ? 'ok' : L.t);
-    term.appendChild(lineEl);
-    ci = 0;
-    typeChar();
-  }
-  function typeChar(){
-    var L = lines[li];
-    lineEl.textContent = L.d.slice(0, ++ci);
-    if(ci < L.d.length){
-      setTimeout(typeChar, reduceMotion ? 0 : 16);
-    } else {
-      li++;
-      setTimeout(typeLine, reduceMotion ? 20 : 420);
+  // 滚动渐显动画
+  (function(){
+    var cards = document.querySelectorAll('#grid .card');
+    if(!('IntersectionObserver' in window)){
+      cards.forEach(function(c){c.classList.add('reveal')});
+      return;
     }
-  }
-  /* 等 hero 渲染后开始 */
-  setTimeout(typeLine, reduceMotion ? 100 : 900);
-
-  /* ------- IntersectionObserver 滚动渐显 ------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function(entries){
-    entries.forEach(function(en){
-      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
-    });
-  }, {threshold:.12}) : null;
-  revealEls.forEach(function(el){
-    if(io){ io.observe(el); } else { el.classList.add('in'); }
-  });
-
-  /* ------- 数字滚动（不编造数据，滚动到 ∞ 表示“无限/说不清”） ------- */
-  var numEls = document.querySelectorAll('[data-count]');
-  function animateNum(el){
-    el.textContent = '\u221E';
-  }
-  var numIO = 'IntersectionObserver' in window ? new IntersectionObserver(function(entries){
-    entries.forEach(function(en){
-      if(en.isIntersecting){ animateNum(en.target); numIO.unobserve(en.target); }
-    });
-  }, {threshold:.4}) : null;
-  numEls.forEach(function(el){
-    if(numIO){ numIO.observe(el); } else { animateNum(el); }
-  });
-
-  /* ------- 粒子连线背景 ------- */
-  var c = document.getElementById('particles');
-  var ctx = c.getContext('2d');
-  var W, H, pts = [];
-  var COLORS = ['rgba(50,230,255,', 'rgba(139,92,255,', 'rgba(255,79,216,'];
-  var COUNT = reduceMotion ? 0 : 70;
-
-  function resize(){
-    W = c.width = window.innerWidth;
-    H = c.height = window.innerHeight;
-    pts = [];
-    for(var i=0;i<COUNT;i++){
-      pts.push({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.5, vy:(Math.random()-.5)*.5, r:Math.random()*1.8+.6, c:COLORS[Math.floor(Math.random()*COLORS.length)]});
-    }
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    var i, j, p, q, d, dx, dy;
-    for(i=0;i<pts.length;i++){
-      p = pts[i];
-      p.x += p.vx; p.y += p.vy;
-      if(p.x<0||p.x>W) p.vx*=-1;
-      if(p.y<0||p.y>H) p.vy*=-1;
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = p.c + '0.7)';
-      ctx.fill();
-      for(j=i+1;j<pts.length;j++){
-        q = pts[j];
-        dx = p.x-q.x; dy = p.y-q.y; d = dx*dx+dy*dy;
-        if(d < 140*140){
-          ctx.beginPath();
-          ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle = p.c + (0.16*(1-d/(140*140))) + ')';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
-    }
-    if(!reduceMotion){ requestAnimationFrame(draw); }
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-  draw();
-
-  /* ------- 轨道点缓慢公转（CSS 也能做，这里补充 SVG 动画增强） ------- */
-  var orbitDots = document.querySelectorAll('.orbit-dots circle');
-  var orbitDots2 = document.querySelectorAll('.orbit-dots2 circle');
-  function rev(){
-    orbitDots.forEach(function(el, idx){
-      var a = (Date.now()/ (3000 + idx*700)) % (Math.PI*2);
-      el.setAttribute('cx', 200 + 90*Math.cos(a));
-      el.setAttribute('cy', 170 + 90*Math.sin(a));
-    });
-    orbitDots2.forEach(function(el, idx){
-      var a = -(Date.now()/ (2600 + idx*600)) % (Math.PI*2);
-      el.setAttribute('cx', 200 + 60*Math.cos(a));
-      el.setAttribute('cy', 170 + 60*Math.sin(a));
-    });
-    if(!reduceMotion){ requestAnimationFrame(rev); }
-  }
-  rev();
-})();
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('reveal'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.12});
+    cards.forEach(function(c){io.observe(c)});
+  })();
 </script>
 </body>
 </html>
