@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多彩贵州 · 山水人文全指南</title>
+<style>
+/* ============ 设计令牌 ============ */
+:root{
+  --ink:#16302f;          /* 山水墨·深 */
+  --ink-2:#1f4340;        /* 山水墨·中 */
+  --celadon:#7fa8a0;      /* 天青 */
+  --celadon-lt:#b9d2cb;   /* 天青·浅 */
+  --mist:#eef3ef;         /* 烟雨 */
+  --paper:#f6f3ea;        /* 宣纸 */
+  --sour:#b5442c;         /* 酸汤红 */
+  --sour-deep:#8e3120;
+  --jade:#2e7d5b;         /* 翡翠绿 */
+  --silver:#c9d2d4;       /* 银饰银 */
+  --gold:#c9a24b;         /* 鼓楼金 */
+  --text:#2b3836;
+  --text-soft:#5b6b68;
+  --serif:"Noto Serif SC","Songti SC","STSong","STZhongsong","SimSun",serif;
+  --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  color:var(--text);
+  background:var(--paper);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+::selection{background:var(--sour);color:#fff}
+
+/* ============ 通用版式 ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+section{padding:96px 0 72px;position:relative}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:13px;letter-spacing:.35em;color:var(--sour);
+  font-weight:600;margin-bottom:14px;text-transform:uppercase;
+}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--sour)}
+h2.sec-title{
+  font-family:var(--serif);font-size:clamp(28px,4.2vw,44px);
+  font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:10px;
+}
+.sec-sub{color:var(--text-soft);max-width:640px;margin-bottom:44px;font-size:15.5px}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.8,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ 顶部导航 ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  padding:14px 28px;display:flex;justify-content:space-between;align-items:center;
+  transition:background .4s,box-shadow .4s,padding .4s;
+}
+nav.scrolled{background:rgba(246,243,234,.92);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(22,48,47,.1);padding:10px 28px}
+nav .logo{font-family:var(--serif);font-weight:700;font-size:19px;color:#fff;letter-spacing:.15em;transition:color .4s;text-decoration:none}
+nav.scrolled .logo{color:var(--ink)}
+nav .links{display:flex;gap:22px}
+nav .links a{font-size:13.5px;color:rgba(255,255,255,.85);text-decoration:none;letter-spacing:.1em;transition:color .3s}
+nav .links a:hover{color:var(--gold)}
+nav.scrolled .links a{color:var(--text-soft)}
+nav.scrolled .links a:hover{color:var(--sour)}
+@media(max-width:760px){nav .links{display:none}}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#0e2422 0%,#16302f 34%,#2c5550 62%,#7fa8a0 88%,#b9d2cb 100%);
+  overflow:hidden;
+}
+.hero svg.scene{position:absolute;inset:0;width:100%;height:100%}
+.hero-inner{position:relative;z-index:5;text-align:center;padding:120px 24px 80px}
+.hero-kicker{
+  color:var(--celadon-lt);letter-spacing:.6em;font-size:14px;margin-bottom:22px;
+  text-indent:.6em;
+}
+.hero h1{
+  font-family:var(--serif);color:#f4f1e6;
+  font-size:clamp(52px,10vw,116px);font-weight:900;line-height:1.12;
+  letter-spacing:.08em;text-shadow:0 6px 40px rgba(0,0,0,.35);
+}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{
+  margin:26px auto 0;max-width:560px;color:rgba(238,243,239,.82);
+  font-size:15.5px;line-height:2;
+}
+.hero-badges{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-badges span{
+  border:1px solid rgba(201,210,212,.4);color:var(--celadon-lt);
+  padding:6px 18px;border-radius:999px;font-size:13px;letter-spacing:.12em;
+  backdrop-filter:blur(4px);background:rgba(22,48,47,.25);
+}
+.scroll-hint{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:6;
+  color:rgba(238,243,239,.7);font-size:12px;letter-spacing:.3em;text-align:center;
+}
+.scroll-hint svg{display:block;margin:8px auto 0;animation:hintDrop 1.8s ease-in-out infinite}
+@keyframes hintDrop{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(8px);opacity:.4}}
+
+/* ---- HERO SVG 动画 ---- */
+.cloud{animation:cloudDrift linear infinite}
+.cloud.c1{animation-duration:70s}
+.cloud.c2{animation-duration:95s;animation-delay:-30s}
+.cloud.c3{animation-duration:120s;animation-delay:-60s}
+@keyframes cloudDrift{from{transform:translateX(-260px)}to{transform:translateX(1500px)}}
+.mist-band{animation:mistFloat 14s ease-in-out infinite alternate}
+.mist-band.m2{animation-duration:19s;animation-delay:-6s}
+@keyframes mistFloat{from{transform:translateX(-40px);opacity:.35}to{transform:translateX(60px);opacity:.7}}
+.fall-line{stroke-dasharray:14 22;animation:fallFlow 1.15s linear infinite}
+.fall-line.f2{animation-duration:.9s;animation-delay:-.3s}
+.fall-line.f3{animation-duration:1.4s;animation-delay:-.7s}
+@keyframes fallFlow{to{stroke-dashoffset:-36}}
+.foam{animation:foamPulse 2.6s ease-in-out infinite}
+@keyframes foamPulse{0%,100%{opacity:.35}50%{opacity:.85}}
+.bird{animation:birdFly 26s linear infinite}
+.bird.b2{animation-duration:34s;animation-delay:-12s}
+@keyframes birdFly{from{transform:translate(-80px,0)}to{transform:translate(1520px,-70px)}}
+.sun-halo{animation:sunPulse 7s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{opacity:.5;r:52}50%{opacity:.9;r:60}}
+.lantern{animation:lanternFlicker 3.2s ease-in-out infinite}
+.lantern.l2{animation-delay:-.8s}.lantern.l3{animation-delay:-1.6s}
+.lantern.l4{animation-delay:-2.4s}.lantern.l5{animation-delay:-1.1s}
+@keyframes lanternFlicker{0%,100%{opacity:.55}30%{opacity:1}55%{opacity:.7}80%{opacity:.95}}
+
+/* ============ 银饰纹样分隔带 ============ */
+.silver-band{
+  background:var(--ink);padding:0;height:64px;overflow:hidden;position:relative;
+}
+.silver-band svg{position:absolute;top:0;left:0;height:64px;width:200%;animation:bandScroll 40s linear infinite}
+@keyframes bandScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============ 概览 ============ */
+.overview-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:start}
+@media(max-width:860px){.overview-grid{grid-template-columns:1fr}}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}
+.stat{
+  background:#fff;border:1px solid rgba(22,48,47,.08);border-radius:14px;
+  padding:20px 16px;text-align:center;box-shadow:0 4px 18px rgba(22,48,47,.05);
+}
+.stat b{display:block;font-family:var(--serif);font-size:30px;color:var(--sour);line-height:1.2}
+.stat span{font-size:12.5px;color:var(--text-soft);letter-spacing:.08em}
+.ov-list{list-style:none;margin-top:8px}
+.ov-list li{padding:12px 0 12px 30px;position:relative;border-bottom:1px dashed rgba(22,48,47,.14);font-size:15px}
+.ov-list li:last-child{border-bottom:none}
+.ov-list li::before{
+  content:"";position:absolute;left:4px;top:22px;width:8px;height:8px;
+  background:var(--jade);border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+}
+.ov-list b{color:var(--ink)}
+.season-card{
+  background:linear-gradient(160deg,var(--ink) 0%,var(--ink-2) 100%);
+  border-radius:20px;padding:34px 30px;color:var(--mist);
+  box-shadow:0 20px 50px rgba(22,48,47,.25);position:sticky;top:90px;
+}
+.season-card h3{font-family:var(--serif);font-size:22px;color:var(--gold);margin-bottom:6px}
+.season-card .best{font-size:13.5px;color:var(--celadon-lt);margin-bottom:20px;line-height:1.8}
+.season-item{display:flex;gap:14px;padding:13px 0;border-top:1px solid rgba(201,210,212,.16)}
+.season-item .s-icon{flex:0 0 40px}
+.season-item b{color:#f4f1e6;font-size:15px}
+.season-item p{font-size:13px;color:rgba(238,243,239,.72);line-height:1.7}
+.season-item .temp{margin-left:auto;flex:0 0 auto;font-family:var(--serif);color:var(--celadon-lt);font-size:14px;white-space:nowrap}
+
+/* ============ 景点卡片 ============ */
+#spots{background:linear-gradient(180deg,var(--paper) 0%,#eef1e9 100%)}
+.spot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+@media(max-width:820px){.spot-grid{grid-template-columns:1fr}}
+.spot{
+  background:#fff;border-radius:18px;overflow:hidden;position:relative;
+  border:1px solid rgba(22,48,47,.07);
+  box-shadow:0 6px 24px rgba(22,48,47,.06);
+  transition:transform .45s cubic-bezier(.22,.8,.3,1),box-shadow .45s;
+}
+.spot:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(22,48,47,.14)}
+.spot-head{display:flex;align-items:center;gap:16px;padding:24px 24px 0}
+.spot-num{
+  font-family:var(--serif);font-size:15px;color:var(--silver);
+  writing-mode:vertical-rl;letter-spacing:.2em;
+}
+.spot-icon{flex:0 0 54px}
+.spot-head h3{font-family:var(--serif);font-size:21px;color:var(--ink);line-height:1.35}
+.spot-head .tag{display:block;font-size:12px;color:var(--sour);letter-spacing:.1em;margin-top:3px;font-weight:600}
+.spot-body{padding:16px 24px 22px}
+.spot-body p{font-size:14.5px;color:var(--text-soft);margin-bottom:12px}
+.spot-meta{display:flex;flex-wrap:wrap;gap:8px}
+.spot-meta span{
+  font-size:12px;background:var(--mist);color:var(--ink-2);
+  padding:4px 12px;border-radius:6px;letter-spacing:.03em;
+}
+.spot-meta span.tix{background:#f9ece7;color:var(--sour-deep)}
+.spot-tip{
+  margin-top:14px;padding:12px 14px;border-left:3px solid var(--gold);
+  background:#fbf7ec;font-size:13px;color:#6b5a33;border-radius:0 8px 8px 0;line-height:1.75;
+}
+.spot-bonus{
+  grid-column:1/-1;background:linear-gradient(120deg,#fdf8ee,#f7efe0);
+  border:1px dashed var(--gold);
+}
+/* 卡片内夜景小动画（西江） */
+.miao-night{width:100%;height:70px;display:block;border-radius:10px;margin-top:14px}
+
+/* ============ 美食 ============ */
+#food{background:var(--ink);color:var(--mist)}
+#food .sec-title{color:#f4f1e6}
+#food .sec-sub{color:rgba(238,243,239,.65)}
+#food .eyebrow{color:var(--gold)}
+#food .eyebrow::before{background:var(--gold)}
+.food-intro{
+  border-left:3px solid var(--sour);padding:6px 0 6px 20px;margin-bottom:44px;
+  font-size:15px;color:rgba(238,243,239,.85);max-width:720px;
+}
+.food-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.food-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.food-grid{grid-template-columns:1fr}}
+.dish{
+  background:rgba(255,255,255,.045);border:1px solid rgba(201,210,212,.14);
+  border-radius:14px;padding:22px 20px;transition:background .35s,transform .35s;
+}
+.dish:hover{background:rgba(255,255,255,.09);transform:translateY(-4px)}
+.dish h4{font-family:var(--serif);font-size:18px;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.dish p{font-size:13.5px;color:rgba(238,243,239,.75);line-height:1.8}
+.dish .where{margin-top:10px;font-size:12.5px;color:var(--celadon-lt)}
+.dish .where::before{content:"◈ ";color:var(--sour)}
+.food-note{margin-top:34px;font-size:13.5px;color:rgba(238,243,239,.6);line-height:2}
+.food-note b{color:var(--celadon-lt)}
+
+/* ============ 行程时间轴 ============ */
+.route-svg-box{margin:10px 0 50px;background:#fff;border-radius:18px;border:1px solid rgba(22,48,47,.08);padding:26px 18px 10px;box-shadow:0 6px 24px rgba(22,48,47,.05);overflow:hidden}
+.route-svg-box svg{width:100%;height:auto;display:block}
+.route-draw{stroke-dasharray:1200;stroke-dashoffset:1200;transition:stroke-dashoffset 2.6s ease .2s}
+.in .route-draw{stroke-dashoffset:0}
+.itin{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:900px){.itin{grid-template-columns:1fr}}
+.itin-card{background:#fff;border-radius:18px;border:1px solid rgba(22,48,47,.08);overflow:hidden;box-shadow:0 6px 24px rgba(22,48,47,.05)}
+.itin-card header{
+  padding:20px 22px;color:#fff;position:relative;
+  background:linear-gradient(135deg,var(--jade),#256b4d);
+}
+.itin-card:nth-child(2) header{background:linear-gradient(135deg,var(--celadon),#5d8a83)}
+.itin-card:nth-child(3) header{background:linear-gradient(135deg,var(--sour),var(--sour-deep))}
+.itin-card header h3{font-family:var(--serif);font-size:20px}
+.itin-card header span{font-size:12.5px;opacity:.85;letter-spacing:.1em}
+.day{display:flex;gap:14px;padding:13px 22px;border-top:1px solid rgba(22,48,47,.06);font-size:13.5px}
+.day b{flex:0 0 34px;font-family:var(--serif);color:var(--sour);font-size:15px}
+.day p{color:var(--text-soft);line-height:1.7}
+.day p em{font-style:normal;color:var(--ink);font-weight:600}
+.theme-lines{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:820px){.theme-lines{grid-template-columns:1fr}}
+.theme-line{background:var(--mist);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--text-soft)}
+.theme-line b{color:var(--ink);display:block;margin-bottom:4px;font-family:var(--serif);font-size:15px}
+
+/* ============ 交通 & 住宿 ============ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:860px){.two-col{grid-template-columns:1fr}}
+.panel{background:#fff;border-radius:18px;border:1px solid rgba(22,48,47,.08);padding:30px 28px;box-shadow:0 6px 24px rgba(22,48,47,.05)}
+.panel h3{font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.panel h3 svg{flex:0 0 26px}
+.panel ul{list-style:none}
+.panel li{font-size:14px;color:var(--text-soft);padding:9px 0 9px 22px;position:relative;border-bottom:1px dashed rgba(22,48,47,.1);line-height:1.75}
+.panel li:last-child{border-bottom:none}
+.panel li::before{content:"";position:absolute;left:2px;top:18px;width:7px;height:7px;border-radius:50%;background:var(--celadon)}
+.panel li b{color:var(--ink)}
+.rail-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.rail-table th{background:var(--ink);color:var(--mist);padding:9px 10px;text-align:left;font-weight:600;letter-spacing:.05em}
+.rail-table td{padding:8px 10px;border-bottom:1px solid rgba(22,48,47,.08);color:var(--text-soft)}
+.rail-table tr:nth-child(even) td{background:var(--mist)}
+.rail-table td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.lodge-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.lodge-table th{background:var(--jade);color:#fff;padding:10px 12px;text-align:left;font-weight:600}
+.lodge-table td{padding:9px 12px;border-bottom:1px solid rgba(22,48,47,.08);color:var(--text-soft);vertical-align:top;line-height:1.7}
+.lodge-table td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.lodge-table tr:nth-child(even) td{background:#f4f7f3}
+
+/* ============ 小贴士（雨幕） ============ */
+#tips{background:linear-gradient(180deg,#dfe9e4 0%,var(--mist) 30%,var(--paper) 100%);overflow:hidden}
+#tips .rain-svg{position:absolute;top:0;left:0;width:100%;height:190px;pointer-events:none;opacity:.55}
+.drop{animation:rainFall linear infinite}
+@keyframes rainFall{from{transform:translateY(-30px);opacity:0}12%{opacity:.8}to{transform:translateY(190px);opacity:0}}
+.tip-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;position:relative;z-index:2}
+@media(max-width:820px){.tip-grid{grid-template-columns:1fr}}
+.tip-card{background:#fff;border-radius:16px;padding:26px 24px;border:1px solid rgba(22,48,47,.08);box-shadow:0 6px 22px rgba(22,48,47,.05)}
+.tip-card h3{font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:12px;display:flex;gap:10px;align-items:center}
+.tip-card ol{list-style:none;counter-reset:t}
+.tip-card ol li{
+  counter-increment:t;font-size:13.8px;color:var(--text-soft);
+  padding:8px 0 8px 36px;position:relative;line-height:1.75;
+}
+.tip-card ol li::before{
+  content:counter(t);position:absolute;left:0;top:9px;width:24px;height:24px;
+  background:var(--mist);color:var(--jade);font-weight:700;font-size:12px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+.tip-card ol li b{color:var(--ink)}
+.tip-card.warn ol li::before{background:#f9ece7;color:var(--sour)}
+
+/* ============ 文化民俗 ============ */
+#culture{background:var(--ink);color:var(--mist);position:relative;overflow:hidden}
+#culture .sec-title{color:#f4f1e6}
+#culture .sec-sub{color:rgba(238,243,239,.62)}
+#culture .eyebrow{color:var(--silver)}
+#culture .eyebrow::before{background:var(--silver)}
+.culture-ring{position:absolute;right:-140px;top:-140px;width:420px;height:420px;opacity:.14;animation:ringSpin 90s linear infinite}
+.culture-ring.r2{left:-160px;right:auto;top:auto;bottom:-160px;animation-duration:120s;animation-direction:reverse}
+@keyframes ringSpin{to{transform:rotate(360deg)}}
+.culture-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;position:relative;z-index:2}
+@media(max-width:820px){.culture-grid{grid-template-columns:1fr}}
+.tribe{
+  background:rgba(255,255,255,.04);border:1px solid rgba(201,210,212,.14);
+  border-radius:18px;padding:28px 26px;
+}
+.tribe h3{font-family:var(--serif);font-size:21px;color:var(--gold);margin-bottom:4px;display:flex;align-items:center;gap:12px}
+.tribe .where{font-size:12.5px;color:var(--celadon-lt);margin-bottom:14px;letter-spacing:.05em}
+.tribe p{font-size:13.8px;color:rgba(238,243,239,.78);margin-bottom:10px;line-height:1.85}
+.tribe p b{color:#f4f1e6}
+.tribe .fest{
+  margin-top:12px;padding:12px 14px;border-radius:10px;font-size:13px;
+  background:rgba(201,162,75,.1);border:1px solid rgba(201,162,75,.3);color:#e8d9b5;line-height:1.8;
+}
+.tribe .fest b{color:var(--gold)}
+
+/* ============ 速查表 ============ */
+.cheat{
+  background:#fff;border-radius:20px;border:1px solid rgba(22,48,47,.1);
+  box-shadow:0 14px 44px rgba(22,48,47,.1);overflow:hidden;
+}
+.cheat-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid rgba(22,48,47,.08)}
+.cheat-row:last-child{border-bottom:none}
+.cheat-row .k{
+  background:var(--ink);color:var(--celadon-lt);font-family:var(--serif);
+  padding:18px 22px;font-size:15px;display:flex;align-items:center;letter-spacing:.1em;
+}
+.cheat-row .v{padding:18px 24px;font-size:14.5px;color:var(--text-soft);display:flex;align-items:center;line-height:1.8}
+.cheat-row .v b{color:var(--sour)}
+@media(max-width:640px){.cheat-row{grid-template-columns:1fr}.cheat-row .k{padding:12px 22px}}
+
+/* ============ 页脚 ============ */
+footer{background:var(--ink);color:rgba(238,243,239,.6);padding:52px 0 40px;text-align:center}
+footer .f-title{font-family:var(--serif);font-size:24px;color:var(--mist);letter-spacing:.3em;margin-bottom:14px}
+footer p{font-size:12.5px;max-width:640px;margin:0 auto 8px;line-height:1.9}
+footer .f-seal{
+  width:64px;height:64px;margin:0 auto 18px;border:2px solid var(--sour);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);color:var(--sour);font-size:26px;font-weight:900;
+  transform:rotate(-4deg);letter-spacing:0;line-height:1.1;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= 导航 ================= -->
+<nav id="nav">
+  <a class="logo" href="#top">黔 · 行</a>
+  <div class="links">
+    <a href="#overview">概览</a><a href="#spots">景点</a><a href="#food">美食</a>
+    <a href="#routes">行程</a><a href="#transport">交通住宿</a><a href="#tips">贴士</a>
+    <a href="#culture">文化</a><a href="#cheat">速查</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <svg class="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="mFar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3d6a63"/><stop offset="1" stop-color="#2c5550"/>
+      </linearGradient>
+      <linearGradient id="mMid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2a4f4a"/><stop offset="1" stop-color="#1d3c39"/>
+      </linearGradient>
+      <linearGradient id="mNear" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#142e2b"/><stop offset="1" stop-color="#0c1f1d"/>
+      </linearGradient>
+      <linearGradient id="fallG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dff0ec" stop-opacity=".95"/>
+        <stop offset="1" stop-color="#a9cec6" stop-opacity=".55"/>
+      </linearGradient>
+      <radialGradient id="sunG" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#e8c96f"/><stop offset="1" stop-color="#e8c96f" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 日晕 -->
+    <circle class="sun-halo" cx="1090" cy="170" r="52" fill="url(#sunG)"/>
+    <circle cx="1090" cy="170" r="34" fill="#e8c96f" opacity=".92"/>
+
+    <!-- 远山（喀斯特峰丛） -->
+    <path fill="url(#mFar)" opacity=".8" d="M0,520 L60,470 L110,505 L170,430 L215,480 L270,415 L330,490 L390,440 L450,500 L520,425 L575,485 L640,435 L700,495 L770,420 L830,480 L900,440 L960,500 L1030,430 L1090,490 L1160,445 L1220,505 L1290,440 L1350,495 L1440,450 L1440,900 L0,900 Z"/>
+
+    <!-- 云 -->
+    <g class="cloud c1" opacity=".5" fill="#cfe0da">
+      <ellipse cx="200" cy="230" rx="90" ry="20"/><ellipse cx="260" cy="215" rx="60" ry="16"/><ellipse cx="150" cy="218" rx="48" ry="13"/>
+    </g>
+    <g class="cloud c2" opacity=".38" fill="#cfe0da">
+      <ellipse cx="700" cy="150" rx="110" ry="18"/><ellipse cx="770" cy="136" rx="66" ry="14"/>
+    </g>
+    <g class="cloud c3" opacity=".3" fill="#cfe0da">
+      <ellipse cx="1150" cy="300" rx="80" ry="15"/><ellipse cx="1200" cy="288" rx="50" ry="12"/>
+    </g>
+
+    <!-- 飞鸟 -->
+    <g class="bird" stroke="#0c1f1d" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7">
+      <path d="M120,190 q10,-9 20,0 q10,-9 20,0"/>
+      <path d="M170,210 q8,-7 16,0 q8,-7 16,0"/>
+    </g>
+    <g class="bird b2" stroke="#0c1f1d" stroke-width="2" fill="none" stroke-linecap="round" opacity=".5">
+      <path d="M60,140 q9,-8 18,0 q9,-8 18,0"/>
+    </g>
+
+    <!-- 中山 -->
+    <path fill="url(#mMid)" d="M0,640 L80,560 L150,620 L230,520 L300,610 L380,540 L460,630 L540,545 L620,625 L700,560 L780,640 L860,555 L940,635 L1020,565 L1100,645 L1180,575 L1260,650 L1340,585 L1440,650 L1440,900 L0,900 Z"/>
+
+    <!-- 瀑布（黄果树意象） -->
+    <g>
+      <path d="M645,580 L700,560 L755,585 L748,900 L652,900 Z" fill="#0f2725" opacity=".55"/>
+      <line class="fall-line"    x1="668" y1="585" x2="668" y2="880" stroke="url(#fallG)" stroke-width="7" stroke-linecap="round"/>
+      <line class="fall-line f2" x1="688" y1="578" x2="688" y2="880" stroke="url(#fallG)" stroke-width="10" stroke-linecap="round"/>
+      <line class="fall-line f3" x1="710" y1="582" x2="710" y2="880" stroke="url(#fallG)" stroke-width="6" stroke-linecap="round"/>
+      <line class="fall-line f2" x1="728" y1="590" x2="728" y2="880" stroke="url(#fallG)" stroke-width="8" stroke-linecap="round"/>
+      <ellipse class="foam" cx="698" cy="882" rx="72" ry="14" fill="#dff0ec"/>
+      <ellipse class="foam" cx="698" cy="890" rx="110" ry="12" fill="#b9d2cb" style="animation-delay:-1.3s"/>
+    </g>
+
+    <!-- 雾带 -->
+    <ellipse class="mist-band" cx="420" cy="700" rx="340" ry="34" fill="#cfe0da"/>
+    <ellipse class="mist-band m2" cx="1050" cy="760" rx="380" ry="30" fill="#cfe0da"/>
+
+    <!-- 近山 + 苗寨吊脚楼剪影 -->
+    <path fill="url(#mNear)" d="M0,780 L120,700 L240,780 L360,720 L480,800 L620,730 L760,810 L900,740 L1040,815 L1180,750 L1320,820 L1440,770 L1440,900 L0,900 Z"/>
+    <g fill="#0a1b1a">
+      <!-- 吊脚楼群 -->
+      <g transform="translate(150,732)">
+        <rect x="0" y="20" width="46" height="30"/><path d="M-6,20 L23,2 L52,20 Z"/>
+        <rect x="60" y="28" width="38" height="24"/><path d="M55,28 L79,12 L103,28 Z"/>
+        <rect x="18" y="-14" width="34" height="24"/><path d="M13,-14 L35,-28 L57,-14 Z"/>
+      </g>
+      <g transform="translate(1180,760)">
+        <rect x="0" y="16" width="42" height="28"/><path d="M-5,16 L21,0 L47,16 Z"/>
+        <rect x="52" y="24" width="34" height="22"/><path d="M48,24 L69,10 L90,24 Z"/>
+      </g>
+    </g>
+    <!-- 苗寨灯火 -->
+    <g fill="#e8c96f">
+      <circle class="lantern"    cx="172" cy="766" r="3.2"/>
+      <circle class="lantern l2" cx="196" cy="742" r="2.6"/>
+      <circle class="lantern l3" cx="230" cy="770" r="3"/>
+      <circle class="lantern l4" cx="1205" cy="788" r="3"/>
+      <circle class="lantern l5" cx="1248" cy="792" r="2.6"/>
+      <circle class="lantern l2" cx="1222" cy="772" r="2.2"/>
+    </g>
+  </svg>
+
+  <div class="hero-inner">
+    <p class="hero-kicker">八山一水一分田 · 天无三日晴</p>
+    <h1>多彩<span class="accent">贵州</span></h1>
+    <p class="hero-sub">亚洲第一大瀑布的雷霆万钧，地球腰带上的绿宝石，万家灯火的千户苗寨，云端的天空之城——一份山水与人文并重的黔地全指南。</p>
+    <div class="hero-badges">
+      <span>10 大精华景点</span><span>3 / 5 / 7 日路线</span><span>酸辣黔味</span><span>苗侗风情</span>
+    </div>
+  </div>
+  <div class="scroll-hint">向下滚动
+    <svg width="16" height="22" viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2 v14 M3 11 l5 6 5-6"/></svg>
+  </div>
+</header>
+
+<!-- 银饰纹样滚动带 -->
+<div class="silver-band" aria-hidden="true">
+  <svg viewBox="0 0 2880 64" preserveAspectRatio="xMinYMid slice">
+    <defs>
+      <g id="motif">
+        <path d="M20,32 L32,14 L44,32 L32,50 Z" fill="none" stroke="#c9d2d4" stroke-width="1.6"/>
+        <circle cx="32" cy="32" r="4" fill="none" stroke="#c9a24b" stroke-width="1.4"/>
+        <path d="M64,44 L76,20 L88,44 Z" fill="none" stroke="#7fa8a0" stroke-width="1.5"/>
+        <circle cx="112" cy="32" r="9" fill="none" stroke="#c9d2d4" stroke-width="1.4"/>
+        <circle cx="112" cy="32" r="3" fill="#b5442c"/>
+        <path d="M140,32 h24 M152,20 v24" stroke="#c9d2d4" stroke-width="1.4"/>
+      </g>
+    </defs>
+    <!-- 36 组纹样 ×2 保证无缝 -->
+    <g id="bandHalf"></g>
+    <use href="#bandHalf" x="1440"/>
+    <script>/*占位，纹样由JS复制*/</script>
+  </svg>
+</div>
+
+<!-- ================= 一、贵州概览 ================= -->
+<section id="overview">
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 01 · 概览</p>
+    <h2 class="sec-title reveal">云贵高原上的喀斯特王国</h2>
+    <p class="sec-sub reveal">贵州，简称"黔"，地处中国西南云贵高原东部，是西南地区的交通枢纽——东毗湖南、南邻广西、西连云南、北接四川和重庆。</p>
+
+    <div class="overview-grid">
+      <div class="reveal">
+        <div class="stat-row">
+          <div class="stat"><b>92.5%</b><span>山地丘陵占比</span></div>
+          <div class="stat"><b>1100m</b><span>平均海拔</span></div>
+          <div class="stat"><b>15℃</b><span>年均气温</span></div>
+        </div>
+        <ul class="ov-list">
+          <li><b>地貌</b>：世界上喀斯特地貌发育最典型的地区之一，溶洞、瀑布、峰林、峡谷星罗棋布。</li>
+          <li><b>行政</b>：省会贵阳，下辖 9 个市州。安顺（黄果树、龙宫）、黔南（荔波小七孔）、黔东南（西江苗寨、镇远、肇兴侗寨）、铜仁（梵净山）、黔西南（万峰林）、毕节（织金洞、百里杜鹃）。</li>
+          <li><b>气候</b>：亚热带湿润季风气候，冬无严寒、夏无酷暑；贵阳有"中国避暑之都"美誉，六盘水号称"中国凉都"（夏季约 19℃）。多云雾、多夜雨，高原紫外线偏强，晴天务必防晒。</li>
+          <li><b>旺季提醒</b>：暑期（7–8 月）与法定节假日为绝对旺季，黄果树、梵净山等热门景区限流分时预约，务必提前 3–7 天在官方渠道购票。</li>
+        </ul>
+      </div>
+
+      <aside class="season-card reveal">
+        <h3>四季贵州</h3>
+        <p class="best">3–11 月为黄金期，其中 <b style="color:var(--gold)">9–11 月秋季最佳</b>：晴天多、能见度高、气候最舒适。</p>
+        <div class="season-item">
+          <svg class="s-icon" viewBox="0 0 40 40"><circle cx="20" cy="24" r="7" fill="#e8a0b4"/><circle cx="12" cy="18" r="5" fill="#f0becd"/><circle cx="28" cy="18" r="5" fill="#f0becd"/><circle cx="20" cy="14" r="5" fill="#f5d3dd"/><rect x="19" y="30" width="2" height="8" fill="#7fa8a0"/></svg>
+          <div><b>春 · 3–5月</b><p>花海与民族节庆：平坝万亩樱花、百里杜鹃、万峰林油菜花、苗族姊妹节</p></div>
+          <span class="temp">10–22℃</span>
+        </div>
+        <div class="season-item">
+          <svg class="s-icon" viewBox="0 0 40 40"><path d="M14,8 h12 v14 q0,8 -6,8 q-6,0 -6,-8 Z" fill="#7fa8a0"/><path d="M17,12 v12 M23,12 v12" stroke="#eef3ef" stroke-width="2" stroke-linecap="round"/></svg>
+          <div><b>夏 · 6–8月</b><p>避暑 + 瀑布丰水期：黄果树水量最大、小七孔戏水、乌蒙大草原、溶洞避暑</p></div>
+          <span class="temp">18–28℃</span>
+        </div>
+        <div class="season-item">
+          <svg class="s-icon" viewBox="0 0 40 40"><path d="M20,6 q10,10 0,18 q-10,-8 0,-18" fill="#c9a24b"/><path d="M20,24 v10" stroke="#8e6f2e" stroke-width="2"/><path d="M12,30 q8,-6 16,0" stroke="#b5442c" stroke-width="2.4" fill="none"/></svg>
+          <div><b>秋 · 9–11月</b><p>全年最佳：加榜梯田金黄稻浪、梵净山彩林、错峰出游性价比高</p></div>
+          <span class="temp">12–22℃</span>
+        </div>
+        <div class="season-item">
+          <svg class="s-icon" viewBox="0 0 40 40"><path d="M20,6 v28 M8,13 l24,14 M32,13 L8,27 M13,9 l14,22 M27,9 L13,31" stroke="#c9d2d4" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <div><b>冬 · 12–2月</b><p>淡季人少价优：梵净山雪景、石阡/剑河温泉、苗年侗年年节民俗</p></div>
+          <span class="temp">2–12℃</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 二、必打卡景点 ================= -->
+<section id="spots">
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 02 · 景点</p>
+    <h2 class="sec-title reveal">必打卡 · 十大精华</h2>
+    <p class="sec-sub reveal">从雷霆万钧的大瀑布到万家灯火的苗寨，每一处都是贵州递给世界的名片。</p>
+
+    <div class="spot-grid">
+      <!-- 1 黄果树 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零壹</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M15,14 h24 l-3,26 h-18 Z" fill="#7fa8a0"/><path d="M20,17 v20 M27,17 v20 M34,17 v20" stroke="#eef3ef" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="4 5"><animate attributeName="stroke-dashoffset" from="0" to="-9" dur="0.8s" repeatCount="indefinite"/></path><ellipse cx="27" cy="43" rx="12" ry="3" fill="#b9d2cb"/></svg>
+          <div><h3>黄果树瀑布</h3><span class="tag">⭐ 亚洲第一大瀑布 · 安顺</span></div>
+        </div>
+        <div class="spot-body">
+          <p>高 77.8 米、宽 101 米，世界上唯一可从六个方位观赏的大瀑布，86 版《西游记》取景地。由大瀑布（含水帘洞）、陡坡塘、天星桥三大片区组成。</p>
+          <div class="spot-meta"><span class="tix">旺季160元 / 淡季150元</span><span>观光车50元</span><span>门票3天有效</span><span>6–10月最壮观</span></div>
+          <div class="spot-tip">建议早 9 点前入园：陡坡塘(1–2h) → 天星桥下半段(3–4h) → 大瀑布+水帘洞(2–3h)。水帘洞需在"安旅通"小程序预约；水雾极大，必带雨衣、穿防滑鞋。</div>
+        </div>
+      </article>
+
+      <!-- 2 小七孔 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零贰</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M10,34 q8,-14 17,0 q9,-14 17,0" fill="none" stroke="#2e7d5b" stroke-width="3"/><circle cx="27" cy="24" r="6" fill="#5aa98a"/><path d="M12,40 h30" stroke="#7fa8a0" stroke-width="3" stroke-linecap="round"/></svg>
+          <div><h3>荔波小七孔</h3><span class="tag">⭐ 地球腰带上的绿宝石 · 黔南</span></div>
+        </div>
+        <div class="spot-body">
+          <p>世界自然遗产"中国南方喀斯特"核心区：小七孔古桥、碧如宝石的卧龙潭、68 级跌水瀑布、可赤足涉水的水上森林、拉雅瀑布、鸳鸯湖。</p>
+          <div class="spot-meta"><span class="tix">旺季120元 / 淡季100元</span><span>观光车40元</span><span>7日内无限次入园</span><span>全程4–6小时</span></div>
+          <div class="spot-tip">建议从西门（卧龙潭）一路下坡游览至东门（小七孔古桥），省力不走回头路；清晨 8:00–9:00 入园人最少、水质最清透；穿防滑溯溪鞋。</div>
+        </div>
+      </article>
+
+      <!-- 3 西江 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零叁</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#16302f"/><path d="M12,30 L20,20 L28,30 Z M26,32 L34,22 L42,32 Z" fill="#2c5550"/><rect x="15" y="30" width="10" height="10" fill="#1d3c39"/><rect x="29" y="32" width="10" height="8" fill="#1d3c39"/><circle cx="20" cy="35" r="1.8" fill="#e8c96f"><animate attributeName="opacity" values="0.4;1;0.6;1;0.4" dur="3s" repeatCount="indefinite"/></circle><circle cx="34" cy="36" r="1.8" fill="#e8c96f"><animate attributeName="opacity" values="1;0.5;1;0.7;1" dur="2.4s" repeatCount="indefinite"/></circle></svg>
+          <div><h3>西江千户苗寨</h3><span class="tag">⭐ 世界最大苗族聚居村寨 · 黔东南</span></div>
+        </div>
+        <div class="spot-body">
+          <p>全寨 1468 户、6000 余人，99.5% 为苗族，被誉为"中国苗都"。千余栋吊脚楼依山而建，入夜万家灯火点亮山谷，堪称"现实版千与千寻"。</p>
+          <div class="spot-meta"><span class="tix">门票90元</span><span>观光车20元/4程</span><span>48小时有效</span><span>高铁凯里南站+直通车1h</span></div>
+          <svg class="miao-night" viewBox="0 0 600 70" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="600" height="70" fill="#0e2422"/>
+            <path d="M0,55 L60,30 L120,52 L200,24 L280,54 L360,28 L440,56 L520,32 L600,54 L600,70 L0,70Z" fill="#16302f"/>
+            <g fill="#e8c96f">
+              <circle class="lantern" cx="70" cy="48" r="2.4"/><circle class="lantern l2" cx="110" cy="52" r="2"/>
+              <circle class="lantern l3" cx="180" cy="42" r="2.6"/><circle class="lantern l4" cx="230" cy="50" r="2"/>
+              <circle class="lantern l5" cx="300" cy="52" r="2.4"/><circle class="lantern" cx="350" cy="44" r="2"/>
+              <circle class="lantern l3" cx="420" cy="52" r="2.6"/><circle class="lantern l2" cx="480" cy="46" r="2"/>
+              <circle class="lantern l4" cx="540" cy="52" r="2.4"/><circle class="lantern l5" cx="260" cy="38" r="1.8"/>
+            </g>
+          </svg>
+          <div class="spot-tip">务必住一晚看夜景（亮灯约 19:30 后）与晨雾（7:00 前）。可体验拦门酒、长桌宴、"高山流水"敬酒礼；租苗服旅拍约 30–50 元/套起。</div>
+        </div>
+      </article>
+
+      <!-- 4 梵净山 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零肆</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M22,42 L24,18 q3,-8 6,0 l2,24 Z" fill="#5d8a83"/><path d="M25,14 h4 v-4 h-4 Z" fill="#b5442c"/><path d="M12,42 q8,-6 15,0 q7,-6 15,0" stroke="#b9d2cb" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+          <div><h3>梵净山</h3><span class="tag">⭐ 天空之城 · 世界自然遗产 · 铜仁</span></div>
+        </div>
+        <div class="spot-body">
+          <p>武陵山脉主峰，海拔 2572 米，中国五大佛教名山之一。红云金顶一柱擎天，蘑菇石为 10 亿年风化奇观；山中栖息黔金丝猴与植物活化石珙桐。</p>
+          <div class="spot-meta"><span class="tix">门票100元(淡季90)</span><span>观光车58元</span><span>索道往返140元</span><span>雨后初晴易见云海</span></div>
+          <div class="spot-tip">严格分时实名预约，提前 3–7 天在"梵净山旅游区"公众号或"一码游贵州"抢票。红云金顶现场扫码取号；山顶比山下低约 10℃，带防风外套、雨衣、手套。</div>
+        </div>
+      </article>
+
+      <!-- 5 镇远 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零伍</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M27,10 a17,17 0 1,1 -0.01,0" fill="none" stroke="#2e7d5b" stroke-width="2.4"/><path d="M27,10 a8.5,8.5 0 0,1 0,17 a8.5,8.5 0 0,0 0,17" fill="none" stroke="#2e7d5b" stroke-width="2.4"/><circle cx="27" cy="18.5" r="2.4" fill="#b5442c"/><circle cx="27" cy="35.5" r="2.4" fill="#7fa8a0"/></svg>
+          <div><h3>镇远古城</h3><span class="tag">⭐ 太极图上的千年水城 · 黔东南</span></div>
+        </div>
+        <div class="spot-body">
+          <p>2200 多年历史的国家历史文化名城。㵲阳河以"S"形穿城，远观如太极图。必游青龙洞古建筑群、祝圣桥、石屏山；入夜红灯笼倒映河中，夜景更胜白天。</p>
+          <div class="spot-meta"><span class="tix">古城免费</span><span>青龙洞60元</span><span>石屏山30元(早8点前免票)</span><span>夜游㵲阳河约80元</span></div>
+          <div class="spot-tip">火车至镇远站，出站打车约 10 分钟即达。美食：酸汤鱼、豆花烤鱼、道菜扣肉、袁家豆腐圆子。建议安排 1–2 天，一定要看夜景。</div>
+        </div>
+      </article>
+
+      <!-- 6 青岩 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零陆</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M12,40 v-16 h30 v16" fill="none" stroke="#8a8f8c" stroke-width="3"/><path d="M10,24 h34 l-4,-7 h-26 Z" fill="#b5442c"/><rect x="24" y="30" width="6" height="10" fill="#5d8a83"/></svg>
+          <div><h3>青岩古镇</h3><span class="tag">⭐ 600年石头城 · 状元故里 · 贵阳</span></div>
+        </div>
+        <div class="spot-body">
+          <p>始建于明洪武年间（1378 年）的军事屯堡，国家 5A 级景区。石板路、石城墙、石屋构成"石头王国"；背街为电影《寻枪》取景地，赵以炯状元府值得一访。</p>
+          <div class="spot-meta"><span class="tix">大门票10元 / 通票60元</span><span>夜游30元</span><span>公交210/203路直达</span></div>
+          <div class="spot-tip">下午 3 点后入园，避开人流还能赏黄昏亮灯。必吃青岩卤猪脚（状元蹄，推荐王万妈、范老四、金必轩）、糕粑稀饭、玫瑰糖。</div>
+        </div>
+      </article>
+
+      <!-- 7 万峰林 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零柒</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M8,40 L16,22 L24,40 Z M20,40 L29,16 L38,40 Z M32,40 L40,26 L48,40 Z" fill="#2e7d5b" opacity=".85"/><path d="M10,44 q10,-5 17,0 q9,-5 17,0" stroke="#c9a24b" stroke-width="2.4" fill="none"/></svg>
+          <div><h3>万峰林</h3><span class="tag">⭐ 惟有此处峰成林 · 兴义</span></div>
+        </div>
+        <div class="spot-body">
+          <p>中国最美五大峰林之一，成千上万座锥状喀斯特山峰绵延数百里，徐霞客两度游历。核心看点：八卦田、福字田、将军峰、上/中/下纳灰村。</p>
+          <div class="spot-meta"><span class="tix">旺季70元 / 淡季60元</span><span>观光车50元</span><span>2–3月油菜花海</span></div>
+          <div class="spot-tip">可租电动车骑行田园小道，聆听布依族"八音坐唱"。周边联游马岭河峡谷（"地球最美伤疤"）、万峰湖。美食：万峰林蛋炒饭、兴义羊肉粉。</div>
+        </div>
+      </article>
+
+      <!-- 8 甲秀楼 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零捌</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M18,40 v-8 h18 v8 M20,32 l7,-6 7,6 M22,26 l5,-5 5,5 M24,21 l3,-3 3,3" stroke="#b5442c" stroke-width="2.4" fill="none" stroke-linejoin="round"/><path d="M12,44 h30" stroke="#7fa8a0" stroke-width="2.6" stroke-linecap="round"/></svg>
+          <div><h3>甲秀楼</h3><span class="tag">⭐ 贵阳城市地标 · 免费</span></div>
+        </div>
+        <div class="spot-body">
+          <p>始建于明万历二十六年（1598 年），取"科甲挺秀"之意，中国九大名楼之一。与浮玉桥、涵碧亭、翠微园组成"一桥一楼一园"，入夜"镜中景水中楼"堪称一绝。</p>
+          <div class="spot-meta"><span class="tix">免费</span><span>亮灯19:00–22:00</span><span>地铁1号线河滨公园站</span></div>
+          <div class="spot-tip">傍晚蓝调时刻（19:00–19:30）拍夜景最有氛围，最佳机位在浮玉桥头与南明河对岸。步行可达青云市集夜市、贵州省民族博物馆。</div>
+        </div>
+      </article>
+
+      <!-- 9 龙宫 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">零玖</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M12,42 v-14 q15,-16 30,0 v14" fill="none" stroke="#5d8a83" stroke-width="3"/><path d="M24,42 v-8 q3,-4 6,0 v8" fill="#2e7d5b"/><path d="M20,22 q7,-6 14,0" stroke="#c9a24b" stroke-width="2" fill="none"/></svg>
+          <div><h3>龙宫</h3><span class="tag">⭐ 天下喀斯特，尽在龙宫 · 安顺</span></div>
+        </div>
+        <div class="spot-body">
+          <p>首批国家 5A 级景区，拥有中国最长水溶洞（乘船观钟乳石"水晶帘"）、高约 38 米的中国最大洞中瀑布"龙门飞瀑"、昼夜顺时针旋转的天然奇观"漩塘"。</p>
+          <div class="spot-meta"><span class="tix">门票(含船票)约150元</span><span>距黄果树约30公里</span><span>5–9月飞瀑最壮观</span></div>
+          <div class="spot-tip">洞内恒温偏低，备薄外套；可与安顺天龙屯堡（明代屯堡文化、地戏面具）串联一日游。</div>
+        </div>
+      </article>
+
+      <!-- 10 织金洞 -->
+      <article class="spot reveal">
+        <div class="spot-head">
+          <span class="spot-num">壹拾</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#eef3ef"/><path d="M27,12 l3,8 4,-3 -2,9 5,2 -5,3 2,9 -4,-3 -3,8 -3,-8 -4,3 2,-9 -5,-3 5,-2 -2,-9 4,3 Z" fill="#c9d2d4" stroke="#8a9a9c" stroke-width="1.4"/></svg>
+          <div><h3>织金洞</h3><span class="tag">⭐ 中国溶洞之王 · 毕节</span></div>
+        </div>
+        <div class="spot-body">
+          <p>世界地质公园，有"黄山归来不看岳，织金洞外无洞天"之说。40 余种岩溶堆积物形态万千，镇洞之宝"银雨树"（17 米高塔松状石笋）与"霸王盔"举世罕见。</p>
+          <div class="spot-meta"><span class="tix">旺季110元 / 淡季100元</span><span>观光车20元</span><span>洞内恒温10–16℃</span></div>
+          <div class="spot-tip">游览全程约 2–3 小时，务必带一件外套；可联游织金大峡谷、乌江源百里画廊。</div>
+        </div>
+      </article>
+
+      <!-- 加分项 -->
+      <article class="spot spot-bonus reveal">
+        <div class="spot-head">
+          <span class="spot-num">加分</span>
+          <svg class="spot-icon" viewBox="0 0 54 54"><rect x="6" y="6" width="42" height="42" rx="10" fill="#fbf3df"/><path d="M27,12 v30 M18,20 h18 M20,28 h14 M22,36 h10" stroke="#c9a24b" stroke-width="2.6" stroke-linecap="round"/><path d="M15,20 L27,10 L39,20" fill="none" stroke="#8e6f2e" stroke-width="2.6" stroke-linejoin="round"/></svg>
+          <div><h3>肇兴侗寨 <small style="font-size:13px;color:var(--text-soft)">（时间充裕强烈推荐）</small></h3><span class="tag">全国最大侗族村寨之一 · 黎平</span></div>
+        </div>
+        <div class="spot-body">
+          <p>以"仁、义、礼、智、信"五座鼓楼为核心，鼓楼与风雨桥建筑精美绝伦；可听侗族大歌（人类非物质文化遗产）、体验扎染蜡染；后山堂安梯田春灌如镜、秋染金黄。高铁从江站出站乘直通车 10 元 / 15 分钟即达。</p>
+          <div class="spot-meta"><span class="tix">门票约80元(3天有效)</span><span>观光车20元</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 三、美食 ================= -->
+<section id="food">
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 03 · 美食</p>
+    <h2 class="sec-title reveal">酸辣贵州味</h2>
+    <p class="sec-sub reveal">苗族古有"三天不吃酸，走路打蹿蹿"之说。因历史上缺盐，贵州人创制了"以酸代盐"的饮食智慧。</p>
+    <p class="food-intro reveal">酸汤、糟辣椒、糊辣椒、折耳根（鱼腥草）构成了黔味底色——先喝汤、再涮菜，是对一锅好酸汤最基本的尊重。</p>
+
+    <div class="food-grid">
+      <div class="dish reveal"><h4>酸汤鱼</h4><p>贵州第一名菜。分红酸汤（小番茄+辣椒发酵）与白酸汤（米汤自然发酵），加木姜子提香，酸辣开胃、鱼肉鲜嫩。</p><p class="where">凯里最正宗；贵阳老凯俚酸汤鱼、贵厨酸汤牛肉</p></div>
+      <div class="dish reveal"><h4>贵州辣子鸡</h4><p>以息烽阳朗辣子鸡最有名，糍粑辣椒炒制，鸡肉香辣软糯、油而不腻。</p><p class="where">息烽阳朗；贵阳各大黔菜馆，可打包真空装</p></div>
+      <div class="dish reveal"><h4>烙锅</h4><p>贵州版"铁板烧"，五花肉、臭豆腐、洋芋粑在凸底铁锅上边烙边吃，蘸五香辣椒面。</p><p class="where">贵阳夜市、六盘水水城古镇；丁姨妈烙锅</p></div>
+      <div class="dish reveal"><h4>肠旺面</h4><p>贵阳"王牌早餐"：猪大肠+猪血+脆哨+红油汤面，辣而不燥、汤鲜味浓。</p><p class="where">金牌罗记（蔡家街）、蒋家肠旺面（合群路）</p></div>
+      <div class="dish reveal"><h4>丝娃娃</h4><p>薄如蝉翼的米皮裹十几种素菜丝，灌入酸汤蘸水，一口一个清爽酸辣。</p><p class="where">杨姨妈（飞山街）、丝恋红汤丝娃娃</p></div>
+      <div class="dish reveal"><h4>花溪牛肉粉</h4><p>汤鲜粉滑，牛肉分量足，加糊辣椒面更爽。</p><p class="where">花溪王记、飞碗牛肉粉</p></div>
+      <div class="dish reveal"><h4>糯米饭</h4><p>贵阳人早餐顶流：糯米+脆哨+折耳根+酸萝卜+辣椒油+白糖，咸甜辣交融。</p><p class="where">六广门毛阿姨、舒记贞丰糯米饭</p></div>
+      <div class="dish reveal"><h4>安顺裹卷</h4><p>近乎透明的米粉皮卷酸萝卜、豆芽、海带丝，灵魂是辣椒底料，多味可选。</p><p class="where">安顺何记裹卷、王记首家多味香辣裹卷</p></div>
+      <div class="dish reveal"><h4>夺夺粉</h4><p>安顺特色小火锅，米豆腐软嫩难夹、需用竹签"夺"着吃，酸汤/酸辣锅底。</p><p class="where">安顺龙老太味全夺夺粉（总店）</p></div>
+      <div class="dish reveal"><h4>青岩卤猪脚</h4><p>"状元蹄"，十余种香料文火卤制，软糯弹牙，蘸糊辣椒蘸水。</p><p class="where">青岩古镇王万妈、范老四、金必轩</p></div>
+      <div class="dish reveal"><h4>豆米火锅</h4><p>四季豆米熬成浓汤做锅底，越煮越香，配软哨、酥肉。</p><p class="where">贵阳新大新、陈氏人家豆米火锅</p></div>
+      <div class="dish reveal"><h4>牛瘪火锅</h4><p>黔东南"黑暗料理"，又称"百草汤"，微苦回甘，侗苗待客上品。</p><p class="where">黔东南榕江、从江一带，胆大者挑战</p></div>
+    </div>
+
+    <p class="food-note reveal">
+      <b>甜品与伴手礼</b>：玫瑰冰粉 / 糕粑稀饭（青岩谢家百年糕粑）、刺梨制品（贵州"维C之王"）、都匀毛尖、湄潭翠芽、茅台酒、苗银饰品、蜡染布艺。<br>
+      <b>贵阳美食街速查</b>：二七路小吃街（游客友好）· 青云市集（网红夜市）· 民生路+蔡家街+正新街（本地人烟火气）· 护国路（粉面老店）· 全林步行街（烙锅、冰浆）。
+    </p>
+  </div>
+</section>
+
+<!-- ================= 四、行程路线 ================= -->
+<section id="routes">
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 04 · 行程</p>
+    <h2 class="sec-title reveal">经典行程路线</h2>
+    <p class="sec-sub reveal">贵州景点分散、相距较远，经典玩法是以贵阳为中心环线游览。以下路线可根据体力与兴趣删减。</p>
+
+    <!-- 环线示意 SVG：描边动画 -->
+    <div class="route-svg-box reveal">
+      <svg viewBox="0 0 1000 300" aria-label="七日环线示意图">
+        <defs>
+          <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7">
+            <circle cx="5" cy="5" r="4" fill="#b5442c"/>
+          </marker>
+        </defs>
+        <!-- 喀斯特背景 -->
+        <g fill="#eef1e9">
+          <path d="M40,260 L90,190 L140,260 Z"/><path d="M120,260 L185,170 L250,260 Z"/>
+          <path d="M760,260 L820,180 L880,260 Z"/><path d="M850,260 L910,200 L970,260 Z"/>
+        </g>
+        <path class="route-draw" d="M120,220 C220,120 320,120 400,180 C470,232 540,232 610,180 C690,120 800,130 880,210"
+              fill="none" stroke="#b5442c" stroke-width="3" stroke-linecap="round" marker-end="url(#dot)"/>
+        <g font-family="sans-serif" font-size="14" fill="#16302f" text-anchor="middle" font-weight="600">
+          <g><circle cx="120" cy="220" r="9" fill="#16302f"/><text x="120" y="225" fill="#fff" font-size="11">筑</text><text x="120" y="252">贵阳</text></g>
+          <g><circle cx="268" cy="146" r="7" fill="#2e7d5b"/><text x="268" y="126">黄果树</text></g>
+          <g><circle cx="400" cy="180" r="7" fill="#2e7d5b"/><text x="400" y="212">荔波</text></g>
+          <g><circle cx="528" cy="212" r="7" fill="#2e7d5b"/><text x="528" y="244">西江苗寨</text></g>
+          <g><circle cx="660" cy="150" r="7" fill="#2e7d5b"/><text x="660" y="130">镇远</text></g>
+          <g><circle cx="792" cy="152" r="7" fill="#2e7d5b"/><text x="792" y="132">梵净山</text></g>
+          <g><circle cx="880" cy="210" r="7" fill="#c9a24b"/><text x="880" y="242">返贵阳</text></g>
+        </g>
+        <text x="500" y="40" text-anchor="middle" font-size="15" fill="#5b6b68" letter-spacing="6">七日全景环线 · 约 1170 公里</text>
+      </svg>
+    </div>
+
+    <div class="itin">
+      <div class="itin-card reveal">
+        <header><h3>三日精华游</h3><span>周末党首选</span></header>
+        <div class="day"><b>D1</b><p>抵达贵阳 → <em>黔灵山公园</em>（看野生猕猴）→ <em>甲秀楼夜景</em> → 青云市集宵夜</p></div>
+        <div class="day"><b>D2</b><p>贵阳 → <em>黄果树瀑布</em>全天（陡坡塘→天星桥→大瀑布+水帘洞）→ 返贵阳</p></div>
+        <div class="day"><b>D3</b><p><em>青岩古镇</em>半日（吃状元蹄、逛背街）→ 返程</p></div>
+      </div>
+      <div class="itin-card reveal">
+        <header><h3>五日经典游</h3><span>首次来黔推荐</span></header>
+        <div class="day"><b>D1</b><p>抵达贵阳，<em>甲秀楼</em> + 二七路小吃街</p></div>
+        <div class="day"><b>D2</b><p>贵阳 → <em>黄果树瀑布</em>全天 → 住安顺或返贵阳</p></div>
+        <div class="day"><b>D3</b><p>贵阳 → <em>荔波小七孔</em>全天 → 住小七孔东门</p></div>
+        <div class="day"><b>D4</b><p>荔波 → <em>西江千户苗寨</em>，晚上观景台拍万家灯火，住寨内吊脚楼</p></div>
+        <div class="day"><b>D5</b><p>苗寨晨雾 → 拦门酒/长桌宴 → 凯里南站高铁返贵阳（约40分钟）</p></div>
+      </div>
+      <div class="itin-card reveal">
+        <header><h3>七日全景环线</h3><span>深度首选 · 约1170km</span></header>
+        <div class="day"><b>D1</b><p>抵达贵阳，甲秀楼、黔灵山、青云市集</p></div>
+        <div class="day"><b>D2</b><p>贵阳 → <em>黄果树</em>（7:00前入园），住黄果树/安顺 <em>120km</em></p></div>
+        <div class="day"><b>D3</b><p>黄果树 → <em>荔波小七孔</em>，住小七孔东门 <em>280km</em></p></div>
+        <div class="day"><b>D4</b><p>荔波 → <em>西江千户苗寨</em>，夜景+长桌宴 <em>200km</em></p></div>
+        <div class="day"><b>D5</b><p>西江 → <em>镇远古城</em>，㵲阳河夜游，住临河客栈 <em>120km</em></p></div>
+        <div class="day"><b>D6</b><p>镇远 → <em>梵净山</em>（蘑菇石+红云金顶），住江口/铜仁 <em>150km</em></p></div>
+        <div class="day"><b>D7</b><p>梵净山 → 贵阳，途经<em>青岩古镇</em>吃卤猪脚，返程 <em>300km</em></p></div>
+      </div>
+    </div>
+
+    <div class="theme-lines">
+      <div class="theme-line reveal"><b>黔西南喀斯特线（+2天）</b>贵阳 → 织金洞 → 兴义万峰林 → 马岭河峡谷 → 万峰湖</div>
+      <div class="theme-line reveal"><b>黔东南民族风情线（+2天）</b>凯里 → 郎德上寨 → 肇兴侗寨 → 堂安梯田 → 岜沙苗寨 → 加榜梯田</div>
+      <div class="theme-line reveal"><b>春季赏花线（3–4月）</b>贵阳 → 平坝樱花园 → 毕节百里杜鹃 → 万峰林油菜花</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 五、交通 & 六、住宿 ================= -->
+<section id="transport">
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 05 · 交通与住宿</p>
+    <h2 class="sec-title reveal">如何抵达，住在何处</h2>
+    <p class="sec-sub reveal">贵州已形成以贵阳为中心的高铁网，"县县通高速"；4–6 人同行建议包车（约 500–800 元/天起），是最主流的舒适玩法。</p>
+
+    <div class="two-col">
+      <div class="panel reveal">
+        <h3><svg viewBox="0 0 26 26" fill="none" stroke="#b5442c" stroke-width="1.8"><path d="M3,18 h20 M5,18 v-6 q8,-6 16,0 v6 M9,12 v-3 h8 v3 M13,4 v5"/></svg>大交通与高铁</h3>
+        <ul>
+          <li><b>飞机</b>：贵阳龙洞堡机场（KWE）距市中心约 11 公里，地铁 2 号线直达市区；机场大巴 10–20 元，打车约 35–50 元。另有兴义、铜仁、安顺、荔波等支线机场可直飞目的地。</li>
+          <li><b>自驾</b>：路况良好但桥隧多、限速多、山区多雾。贵阳→黄果树约 130km/2h；→荔波约 260km/3.5h；→西江约 200km/2.5h；→梵净山约 300km/4h。</li>
+          <li><b>景区直通车</b>：贵阳旅游集散中心及各大 OTA 有发往黄果树、小七孔、西江、梵净山、镇远的直通车；旺季建议提前预订。</li>
+        </ul>
+        <table class="rail-table">
+          <tr><th>车站</th><th>贵阳北出发</th><th>对应景区</th></tr>
+          <tr><td>安顺西站</td><td>约30分钟</td><td>黄果树（转直通车约1小时）、龙宫</td></tr>
+          <tr><td>凯里南站</td><td>约40分钟</td><td>西江千户苗寨（转直通车约1小时）</td></tr>
+          <tr><td>荔波站</td><td>贵南高铁</td><td>小七孔（转车约30–40分钟）</td></tr>
+          <tr><td>铜仁站</td><td>沪昆高铁</td><td>梵净山（距东门约1小时车程）</td></tr>
+          <tr><td>从江站</td><td>约1.5小时</td><td>肇兴侗寨（直通车15分钟）</td></tr>
+          <tr><td>兴义南站</td><td>盘兴高铁</td><td>万峰林（旅游专线约30分钟）</td></tr>
+          <tr><td>镇远站</td><td>沪昆铁路</td><td>镇远古城（打车10分钟）</td></tr>
+        </table>
+      </div>
+
+      <div class="panel reveal">
+        <h3><svg viewBox="0 0 26 26" fill="none" stroke="#2e7d5b" stroke-width="1.8"><path d="M3,21 v-9 l10,-7 10,7 v9 M8,21 v-6 h10 v6 M3,21 h20"/></svg>住宿推荐</h3>
+        <table class="lodge-table">
+          <tr><th>目的地</th><th>推荐区域与价位</th></tr>
+          <tr><td>贵阳</td><td>喷水池/大十字/甲秀楼商圈：经济型 200–350 元，高档 400–800 元；赶高铁住观山湖区</td></tr>
+          <tr><td>安顺/黄果树</td><td>市区 150–300 元选择多；景区旁方便次日早进园</td></tr>
+          <tr><td>荔波</td><td>小七孔东门民宿 200–400 元，方便早晚错峰</td></tr>
+          <tr><td>西江苗寨</td><td>观景台附近吊脚楼推窗即景，旺季 400–1000 元+，务必早订；山下古街 150–300 元性价比高</td></tr>
+          <tr><td>镇远</td><td>㵲阳河沿岸临河客栈（祝圣桥/兴隆街），淡季 150–300 元</td></tr>
+          <tr><td>梵净山</td><td>江口东门（黑湾河）山脚民宿 150–400 元，方便一早入园</td></tr>
+          <tr><td>兴义</td><td>万峰林景区内（下纳灰村）田园民宿 200–500 元，推窗见峰林</td></tr>
+          <tr><td>青岩古镇</td><td>古镇内精品民宿，体验古镇晨昏静谧</td></tr>
+        </table>
+        <ul style="margin-top:14px">
+          <li><b>订房贴士</b>：旺季（7–8月、五一、国庆）苗寨、镇远临河房需提前 1–2 周预订；苗寨吊脚楼多为楼梯，行李多者慎选高处。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 七、旅行小贴士 ================= -->
+<section id="tips">
+  <!-- 雨幕 SVG 动画 -->
+  <svg class="rain-svg" viewBox="0 0 1200 190" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="#7fa8a0" stroke-width="2" stroke-linecap="round">
+      <line class="drop" x1="80" y1="0" x2="74" y2="26" style="animation-duration:1.6s"/>
+      <line class="drop" x1="220" y1="0" x2="214" y2="24" style="animation-duration:2.1s;animation-delay:-.7s"/>
+      <line class="drop" x1="360" y1="0" x2="354" y2="26" style="animation-duration:1.8s;animation-delay:-1.2s"/>
+      <line class="drop" x1="520" y1="0" x2="514" y2="24" style="animation-duration:2.4s;animation-delay:-.4s"/>
+      <line class="drop" x1="680" y1="0" x2="674" y2="26" style="animation-duration:1.7s;animation-delay:-1.5s"/>
+      <line class="drop" x1="840" y1="0" x2="834" y2="24" style="animation-duration:2.2s;animation-delay:-.9s"/>
+      <line class="drop" x1="1000" y1="0" x2="994" y2="26" style="animation-duration:1.9s;animation-delay:-.2s"/>
+      <line class="drop" x1="1140" y1="0" x2="1134" y2="24" style="animation-duration:2.5s;animation-delay:-1.8s"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 06 · 贴士</p>
+    <h2 class="sec-title reveal">天无三日晴，雨具要常备</h2>
+    <p class="sec-sub reveal">19 条来自贵州山水间的实用叮嘱，帮你避开绝大多数遗憾与坑。</p>
+
+    <div class="tip-grid">
+      <div class="tip-card reveal">
+        <h3>☔ 天气与装备</h3>
+        <ol>
+          <li><b>雨具常备</b>：轻便雨衣优于雨伞（瀑布景区、梵净山上风大禁用雨伞）。</li>
+          <li><b>防晒到位</b>：高原紫外线强，防晒霜、遮阳帽、墨镜全年必备。</li>
+          <li><b>分层穿衣</b>：山区昼夜温差可达 8–10℃ 以上，夏季也备薄外套；梵净山顶比山下低约 10℃。</li>
+          <li><b>防滑鞋</b>：景区多石板路、湿滑栈道，小七孔可备溯溪鞋。</li>
+          <li><b>其他</b>：驱蚊液、肠胃药（黔菜酸辣）、充电宝、少量现金。</li>
+        </ol>
+      </div>
+      <div class="tip-card reveal">
+        <h3>🎫 门票与预约</h3>
+        <ol>
+          <li><b>官方渠道购票</b>：认准"一码游贵州"小程序及各景区官方公众号；热门景区实名制分时预约，旺季提前 3–7 天抢票。</li>
+          <li><b>优惠政策</b>：国有 A 级景区常年对 6 周岁以下儿童、65 周岁以上老人、现役军人、残疾人等免门票；近年对学生、教师、医护、警察等群体推出免票政策，出行前查询核验。</li>
+          <li><b>证件必带</b>：身份证（刷证入园）、学生证/教师证等优惠证件。</li>
+        </ol>
+      </div>
+      <div class="tip-card reveal">
+        <h3>🍶 民族习俗与礼仪</h3>
+        <ol>
+          <li><b>拦门酒</b>：双手接碗、抿一小口即可，不胜酒力微笑说明，切忌用手推挡碗。</li>
+          <li><b>"高山流水"敬酒</b>：长桌宴上苗家姑娘叠加酒碗敬酒，量力而行、提前示意。</li>
+          <li><b>拍照礼仪</b>：拍摄村民、老人、儿童及银饰盛装特写前先征得同意；鼓楼、祠堂内保持安静。</li>
+          <li><b>入乡随俗</b>：不随意触碰祭祀物品，忌踩门槛，尊重当地禁忌。</li>
+        </ol>
+      </div>
+      <div class="tip-card warn reveal">
+        <h3>⚠️ 高原健康与防骗避坑</h3>
+        <ol>
+          <li>贵州平均海拔约 1100 米，一般无高原反应；梵净山 2572 米，心血管疾病者慎乘索道、慎登金顶。</li>
+          <li>饮食酸辣为主，肠胃弱者循序渐进；折耳根气味独特、先少量尝试。汛期（6–8月）关注天气预警与景区公告。</li>
+          <li><b>拒绝低价团</b>：合同没写的＝没有，半夜签约＝有问题，不给合同＝100% 是坑。</li>
+          <li>景区周边勿买"野生药材"等高价特产；银饰到正规店铺购买并索要凭证；勿轻信"带路免票"拉客人员。</li>
+          <li>如遇强制购物或欺诈，保留证据，拨打 <b>12301</b>（旅游投诉）或 <b>12315</b>（消费者投诉）维权。</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 八、特色文化 ================= -->
+<section id="culture">
+  <!-- 旋转银饰纹样环 -->
+  <svg class="culture-ring" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="#c9d2d4" stroke-width="1.2">
+      <circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="70"/>
+      <g id="ringMotif"><path d="M100,8 L108,24 L92,24 Z"/><circle cx="100" cy="30" r="3"/></g>
+      <use href="#ringMotif" transform="rotate(30 100 100)"/><use href="#ringMotif" transform="rotate(60 100 100)"/>
+      <use href="#ringMotif" transform="rotate(90 100 100)"/><use href="#ringMotif" transform="rotate(120 100 100)"/>
+      <use href="#ringMotif" transform="rotate(150 100 100)"/><use href="#ringMotif" transform="rotate(180 100 100)"/>
+      <use href="#ringMotif" transform="rotate(210 100 100)"/><use href="#ringMotif" transform="rotate(240 100 100)"/>
+      <use href="#ringMotif" transform="rotate(270 100 100)"/><use href="#ringMotif" transform="rotate(300 100 100)"/>
+      <use href="#ringMotif" transform="rotate(330 100 100)"/>
+    </g>
+  </svg>
+  <svg class="culture-ring r2" viewBox="0 0 200 200" aria-hidden="true">
+    <g fill="none" stroke="#c9a24b" stroke-width="1">
+      <circle cx="100" cy="100" r="88"/><circle cx="100" cy="100" r="60"/>
+      <path d="M100,12 l6,12 -12,0 Z"/><path d="M100,188 l6,-12 -12,0 Z"/>
+      <path d="M12,100 l12,6 0,-12 Z"/><path d="M188,100 l-12,6 0,-12 Z"/>
+    </g>
+  </svg>
+
+  <div class="wrap">
+    <p class="eyebrow reveal">Chapter 07 · 文化</p>
+    <h2 class="sec-title reveal">民族文化千岛</h2>
+    <p class="sec-sub reveal">贵州世居少数民族 17 个，苗、布依、侗、水、仡佬等民族风情最为浓郁。</p>
+
+    <div class="culture-grid">
+      <div class="tribe reveal">
+        <h3>苗族 · 银饰与歌舞的民族</h3>
+        <p class="where">黔东南（西江千户苗寨、郎德上寨、岜沙苗寨）、黔南、黔西南</p>
+        <p><b>文化符号</b>：苗族银饰锻造技艺（国家级非遗，盛装时全身银饰可达十余斤）、吊脚楼营造技艺、苗绣、蜡染、芦笙舞。</p>
+        <p><b>体验</b>：西江长桌宴、拦门酒十二道、苗服旅拍、控拜村银饰锻造体验。</p>
+        <div class="fest"><b>节庆</b>：苗年（农历十月，最隆重的新年，万人盛装巡游）· 姊妹节（农历三月十五，"最古老的东方情人节"）· 吃新节、芦笙节</div>
+      </div>
+      <div class="tribe reveal">
+        <h3>侗族 · 大歌与鼓楼的民族</h3>
+        <p class="where">黔东南黎平、从江、榕江（肇兴侗寨、堂安侗寨、小黄侗寨）</p>
+        <p><b>侗族大歌</b>：2009 年列入人类非物质文化遗产，多声部、无指挥、无伴奏的天然和声，被誉为"清泉般的音乐"。</p>
+        <p><b>鼓楼与风雨桥</b>：鼓楼全木结构不用一钉一铆，是侗寨精神中心；风雨桥集桥、廊、亭于一体。</p>
+        <div class="fest"><b>节庆</b>：侗年（农历十一月初）· 祭萨大典 · 行歌坐月（青年男女对歌传情）</div>
+      </div>
+      <div class="tribe reveal">
+        <h3>布依族 · 八音坐唱的田园民族</h3>
+        <p class="where">黔西南（兴义万峰林纳灰村）、黔南、安顺（黄果树周边）</p>
+        <p><b>八音坐唱</b>：以牛骨胡、葫芦琴等八种乐器合奏说唱，国家级非遗，被誉为"声音活化石"。</p>
+        <p><b>石板房与蜡染</b>：镇宁、安顺一带布依村寨以石板为瓦，冬暖夏凉；蜡染是世代相传的蓝白艺术。</p>
+        <div class="fest"><b>节庆与美食</b>：六月六（布依族"小年"）· 三月三 · 查白歌节；五色糯米饭、布依八大碗、打糍粑</div>
+      </div>
+      <div class="tribe reveal">
+        <h3>其他民族与特色文化</h3>
+        <p class="where">水族 · 彝族 · 屯堡 · 古法造纸</p>
+        <p><b>水族</b>（黔南三都）：端节历时 49 天，被称为"世界上最长的节日"；水书是与甲骨文媲美的古老文字。</p>
+        <p><b>彝族</b>（毕节、六盘水）：农历六月二十四火把节，万人火把巡游、摔跤选美。</p>
+        <p><b>屯堡文化</b>（安顺）：明代江淮移民后裔，600 年汉服遗风；安顺地戏被誉为"中国戏剧活化石"。<b>丹寨石桥村</b>：千年古法造纸，可亲手体验抄纸。</p>
+        <div class="fest"><b>提示</b>：若行程赶上民族节庆，是深入体验贵州的最佳契机</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 附：速查表 ================= -->
+<section id="cheat">
+  <div class="wrap">
+    <p class="eyebrow reveal">Appendix · 速查</p>
+    <h2 class="sec-title reveal">贵州旅游速查表</h2>
+    <p class="sec-sub reveal">出发前最后看一眼这一页。</p>
+    <div class="cheat reveal">
+      <div class="cheat-row"><div class="k">最佳季节</div><div class="v"><b>9–11月</b>最佳；6–8月避暑观瀑；3–4月赏花</div></div>
+      <div class="cheat-row"><div class="k">建议天数</div><div class="v">精华 <b>3</b> 天 / 经典 <b>5</b> 天 / 全景 <b>7</b> 天</div></div>
+      <div class="cheat-row"><div class="k">必带物品</div><div class="v">身份证、雨衣、防晒、防滑鞋、薄外套、肠胃药、驱蚊液</div></div>
+      <div class="cheat-row"><div class="k">预约入口</div><div class="v">"一码游贵州"小程序、各景区官方公众号</div></div>
+      <div class="cheat-row"><div class="k">三大必看</div><div class="v"><b>黄果树瀑布 · 荔波小七孔 · 西江千户苗寨</b></div></div>
+      <div class="cheat-row"><div class="k">三大必吃</div><div class="v"><b>酸汤鱼 · 肠旺面 · 丝娃娃</b></div></div>
+      <div class="cheat-row"><div class="k">旅游投诉</div><div class="v"><b>12301</b> / <b>12315</b></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-seal">黔</div>
+  <div class="f-title">多彩贵州欢迎你</div>
+  <p>门票价格、开放时间、优惠政策等信息收集自公开渠道（截至 2025–2026 年），景区政策可能调整，出行前请以各景区官方公告为准。</p>
+  <p>山水有相逢 · 祝旅途愉快</p>
+</footer>
+
+<script>
+/* 导航滚动态 */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>60)},{passive:true});
+
+/* 滚动渐显 */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* 银饰纹样带：复制 motif 填满 */
+(function(){
+  const half=document.getElementById('bandHalf');
+  if(!half)return;
+  let html='';
+  for(let i=0;i<8;i++)html+='<use href="#motif" x="'+(i*180)+'"/>';
+  half.innerHTML=html;
+})();
+</script>
+</body>
+</html>

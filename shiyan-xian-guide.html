@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>十堰 → 西安 自驾全攻略 · 一条路穿过秦岭，四个季节四种玩法</title>
+<style>
+:root{
+  --paper:#F8F5F0; --paper-deep:#F0EBE2; --ink:#2A2A2A; --ink-soft:#5C564E;
+  --spring:#6B9B7A; --spring-deep:#3F6B4E;
+  --summer:#4A7A8C; --summer-deep:#2E5563;
+  --autumn:#C4704F; --autumn-deep:#8E4A2F;
+  --winter:#5A7A94; --winter-deep:#3A5468;
+  --gold:#C9A227; --rule:#DDD5C7;
+  --display:"Noto Serif SC","Songti SC","STSong",serif;
+  --body:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased}
+::selection{background:var(--autumn);color:#fff}
+
+/* ============ 顶部 Hero ============ */
+.hero{max-width:1080px;margin:0 auto;padding:64px 24px 24px;text-align:center}
+.eyebrow{font-size:12px;letter-spacing:.5em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:18px}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(30px,5.4vw,56px);line-height:1.25;letter-spacing:.02em}
+h1 .arrow{color:var(--autumn);font-weight:400;padding:0 .1em}
+.lede{max-width:640px;margin:22px auto 0;color:var(--ink-soft);font-size:15.5px}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:30px}
+.stat{text-align:center}
+.stat b{font-family:var(--display);font-size:28px;display:block;color:var(--autumn-deep)}
+.stat span{font-size:12px;color:var(--ink-soft);letter-spacing:.15em}
+
+/* ============ 路线动画 SVG ============ */
+.route-wrap{max-width:1080px;margin:8px auto 0;padding:0 24px}
+.route-card{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:28px 18px 12px;box-shadow:0 10px 40px rgba(60,45,30,.07)}
+.route-svg{width:100%;height:auto;display:block}
+.route-caption{text-align:center;font-size:12.5px;color:var(--ink-soft);padding:10px 0 14px;letter-spacing:.1em}
+
+/* 路径描边动画 */
+#routePath{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 3.2s ease-out .4s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+/* 节点依次点亮 */
+.node{opacity:0;animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
+.node circle.dot{transform-origin:center;transform-box:fill-box}
+.node-label{font-size:13px;fill:var(--ink);font-weight:600}
+.node-sub{font-size:10px;fill:var(--ink-soft)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* 汽车 */
+#car{filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+/* 山形呼吸 */
+.mtn{animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.9}50%{opacity:.65}}
+
+/* ============ 四季导航 ============ */
+.season-nav{position:sticky;top:0;z-index:50;background:rgba(248,245,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin-top:36px}
+.season-nav-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:center;gap:6px;padding:10px 16px;overflow-x:auto}
+.snav{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:999px;text-decoration:none;color:var(--ink-soft);font-size:14px;font-weight:600;white-space:nowrap;transition:all .25s;border:1px solid transparent}
+.snav svg{width:20px;height:20px;transition:transform .4s}
+.snav:hover svg{transform:rotate(35deg)}
+.snav.spr:hover{background:#EAF3EC;color:var(--spring-deep);border-color:var(--spring)}
+.snav.sum:hover{background:#E9F1F4;color:var(--summer-deep);border-color:var(--summer)}
+.snav.aut:hover{background:#F9EEE8;color:var(--autumn-deep);border-color:var(--autumn)}
+.snav.win:hover{background:#ECF1F5;color:var(--winter-deep);border-color:var(--winter)}
+.snav.home:hover{background:var(--paper-deep);color:var(--ink);border-color:var(--rule)}
+
+/* ============ 章节布局 ============ */
+main{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+section{margin-top:72px;scroll-margin-top:76px}
+.sec-head{display:flex;align-items:baseline;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:30px;flex-wrap:wrap}
+.sec-no{font-family:var(--display);font-size:15px;color:var(--ink-soft);letter-spacing:.2em}
+h2{font-family:var(--display);font-weight:900;font-size:clamp(24px,3.6vw,36px);line-height:1.3}
+.sec-tag{margin-left:auto;font-size:12.5px;padding:4px 14px;border-radius:999px;letter-spacing:.1em;font-weight:600}
+.tag-spr{background:#EAF3EC;color:var(--spring-deep)}
+.tag-sum{background:#E9F1F4;color:var(--summer-deep)}
+.tag-aut{background:#F9EEE8;color:var(--autumn-deep)}
+.tag-win{background:#ECF1F5;color:var(--winter-deep)}
+.tag-all{background:var(--paper-deep);color:var(--ink-soft)}
+h3{font-family:var(--display);font-size:21px;font-weight:700;margin:36px 0 14px;display:flex;align-items:center;gap:10px}
+h3::before{content:"";width:22px;height:2px;background:currentColor;flex:none}
+.season-spr h3{color:var(--spring-deep)} .season-sum h3{color:var(--summer-deep)}
+.season-aut h3{color:var(--autumn-deep)} .season-win h3{color:var(--winter-deep)}
+p{margin:12px 0;color:#3B3731}
+strong{color:var(--ink)}
+ul,ol{margin:12px 0 12px 1.4em}
+li{margin:6px 0;color:#3B3731}
+
+/* 季节章节左侧色条 */
+.season-sec{position:relative;padding-left:26px}
+.season-sec::before{content:"";position:absolute;left:0;top:6px;bottom:0;width:4px;border-radius:4px}
+.season-spr::before{background:linear-gradient(var(--spring),#B8D4BF)}
+.season-sum::before{background:linear-gradient(var(--summer),#A8C8D4)}
+.season-aut::before{background:linear-gradient(var(--autumn),#E8B89A)}
+.season-win::before{background:linear-gradient(var(--winter),#B4C8D8)}
+
+/* 卡片与表格 */
+.card{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:20px 24px;margin:16px 0;box-shadow:0 4px 18px rgba(60,45,30,.05)}
+.warn{border-left:5px solid var(--autumn);background:#FCF4EC}
+.warn .warn-title{color:var(--autumn-deep);font-weight:700;font-family:var(--display);font-size:17px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(60,45,30,.06)}
+th{background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:600;padding:11px 14px;text-align:left;letter-spacing:.05em}
+td{padding:10px 14px;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#FBF9F5}
+blockquote{border-left:3px solid var(--gold);background:#FBF7EC;padding:12px 18px;margin:16px 0;color:var(--ink-soft);font-size:14.5px;border-radius:0 10px 10px 0}
+
+/* 玩法条目 */
+.play{display:flex;gap:14px;margin:18px 0}
+.play-marker{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;color:#fff;font-size:15px;margin-top:2px}
+.season-spr .play-marker{background:var(--spring)} .season-sum .play-marker{background:var(--summer)}
+.season-aut .play-marker{background:var(--autumn)} .season-win .play-marker{background:var(--winter)}
+.play-body{flex:1}
+.play-title{font-weight:700;font-size:16.5px;font-family:var(--display)}
+.play-body p{margin:6px 0;font-size:15px}
+
+/* 装备清单三栏 */
+.gear-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:8px}
+.gear-col{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:20px}
+.gear-col h4{font-family:var(--display);font-size:16.5px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--rule)}
+.gear-col ul{list-style:none;margin:0}
+.gear-col li{padding-left:20px;position:relative;font-size:14.5px}
+.gear-col li::before{content:"▸";position:absolute;left:0;color:var(--gold)}
+
+/* ============ 秋季深度版（赏秋详细攻略） ============ */
+.autumn-deep{margin-top:44px;padding:26px 22px 20px;background:linear-gradient(180deg,#FCF4EC 0%,#FBF9F5 100%);border:1px solid #EBD4C2;border-radius:18px;position:relative;overflow:hidden}
+.autumn-deep::before{content:"";position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(196,112,79,.12) 0%,transparent 70%);pointer-events:none}
+.autumn-deep-title{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(20px,2.8vw,26px);font-weight:900;color:var(--autumn-deep);margin-bottom:6px;flex-wrap:wrap}
+.autumn-deep-title .maple{width:30px;height:30px;flex:none}
+.autumn-deep-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;letter-spacing:.05em}
+.autumn-deep h4{font-family:var(--display);font-size:17.5px;font-weight:700;color:var(--autumn-deep);margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+.autumn-deep h4::before{content:"";width:18px;height:2px;background:var(--autumn);flex:none}
+.autumn-deep h5{font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin:18px 0 8px;padding-left:10px;border-left:3px solid var(--autumn)}
+.autumn-deep p{font-size:14.5px}
+.autumn-deep ul,.autumn-deep ol{font-size:14.5px}
+.autumn-deep li{margin:5px 0}
+.autumn-deep table{font-size:13.5px;margin:14px 0}
+.autumn-deep th{background:var(--autumn-deep);padding:10px 12px}
+.autumn-deep td{padding:9px 12px;vertical-align:top}
+.autumn-deep td:first-child{font-weight:600;color:var(--autumn-deep);white-space:nowrap}
+
+/* 红叶时序三档小卡 */
+.timeline-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0 6px}
+.tl-card{background:#fff;border:1px solid #EBD4C2;border-radius:12px;padding:14px 16px;position:relative;box-shadow:0 2px 8px rgba(142,74,47,.06)}
+.tl-card .tl-time{display:inline-block;font-family:var(--display);font-weight:700;font-size:13px;color:#fff;background:var(--autumn);padding:3px 10px;border-radius:999px;margin-bottom:8px;letter-spacing:.05em}
+.tl-card.tl-1 .tl-time{background:#B85A35}
+.tl-card.tl-2 .tl-time{background:var(--autumn)}
+.tl-card.tl-3 .tl-time{background:#D89B6F}
+.tl-card .tl-alt{font-size:11.5px;color:var(--ink-soft);letter-spacing:.1em;margin-bottom:4px}
+.tl-card .tl-spots{font-size:13.5px;color:var(--ink);line-height:1.7}
+.tl-card .tl-spots strong{color:var(--autumn-deep)}
+
+/* 串联路线块 */
+.route-block{background:#fff;border:1px solid #EBD4C2;border-radius:12px;padding:14px 18px;margin:12px 0}
+.route-block .rb-tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:13px;color:var(--autumn-deep);background:#F9EEE8;padding:2px 10px;border-radius:999px;margin-bottom:6px}
+.route-block .rb-title{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--ink);margin-bottom:4px}
+.route-block ul{margin:6px 0 4px 1.4em}
+.route-block li{font-size:13.8px;margin:4px 0}
+
+/* 赏秋点位分组小标签 */
+.spot-group{font-family:var(--display);font-weight:700;font-size:14.5px;color:var(--autumn-deep);margin:16px 0 6px;display:flex;align-items:center;gap:8px}
+.spot-group::before{content:"●";color:var(--autumn);font-size:10px}
+
+@media(max-width:640px){
+  .autumn-deep{padding:20px 14px}
+  .autumn-deep td:first-child{white-space:normal}
+}
+
+/* 参考来源 */
+.refs{font-size:13.5px;color:var(--ink-soft);columns:2;column-gap:36px}
+.refs li{break-inside:avoid;margin-bottom:8px}
+@media(max-width:640px){.refs{columns:1}}
+
+/* 页脚 */
+footer{border-top:1px solid var(--rule);margin-top:80px;padding:36px 24px 48px;text-align:center;color:var(--ink-soft);font-size:13px}
+footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bottom:8px}
+
+/* 滚动入场 */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* 季节叶片装饰（角落） */
+.leaf-deco{position:absolute;pointer-events:none;opacity:.5}
+
+@media(max-width:640px){
+  .hero{padding-top:44px}
+  .play{gap:10px}
+  .sec-head{gap:10px}
+  .sec-tag{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #routePath{stroke-dashoffset:0;animation:none}
+  .node{opacity:1;animation:none}
+  .reveal{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="eyebrow">秦 楚 古 道 · 高 速 版</div>
+  <h1>十堰 <span class="arrow">→</span> 西安<br>一条路穿过秦岭，四个季节四种玩法</h1>
+  <p class="lede">从武当山脚下到十三朝古都，约 300 公里，横穿秦岭腹地。春天沿途是花海，夏天是 20℃ 的避暑走廊，秋天是漫山红叶，冬天是温泉与雪场。这份攻略按季节拆开讲，每个季节给你一条最对的玩法。</p>
+  <div class="hero-stats">
+    <div class="stat"><b>297<small style="font-size:14px"> km</small></b><span>主线里程</span></div>
+    <div class="stat"><b>4.5<small style="font-size:14px"> h</small></b><span>正常车程</span></div>
+    <div class="stat"><b>18.04<small style="font-size:14px"> km</small></b><span>终南山隧道</span></div>
+    <div class="stat"><b>¥140</b><span>主线过路费</span></div>
+  </div>
+</header>
+
+<!-- ============ 路线动画 SVG ============ -->
+<div class="route-wrap reveal">
+  <div class="route-card">
+    <svg class="route-svg" viewBox="0 0 1000 340" role="img" aria-label="十堰到西安自驾路线动画：途经郧西、漫川关、山阳、商洛、蓝田，终点西安">
+      <defs>
+        <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#6B9B7A"/>
+          <stop offset=".35" stop-color="#4A7A8C"/>
+          <stop offset=".7" stop-color="#C4704F"/>
+          <stop offset="1" stop-color="#8E4A2F"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2"/>
+        </filter>
+      </defs>
+
+      <!-- 背景秦岭山形 -->
+      <g class="mtn" fill="none" stroke="#DDD5C7" stroke-width="2">
+        <path d="M60 250 L140 160 L210 240 L290 140 L370 235 L450 155 L530 240 L610 145 L690 235 L770 160 L850 245 L930 170"/>
+        <path d="M100 265 L180 195 L260 260 L340 185 L420 258 L500 195 L580 262 L660 190 L740 260 L820 200 L900 258" opacity=".5"/>
+      </g>
+      <text x="500" y="118" text-anchor="middle" font-size="13" fill="#B9AE9C" letter-spacing="6" font-family="serif">秦 岭 腹 地</text>
+
+      <!-- 主路线 -->
+      <path id="routePath" d="M90 260 C 180 250, 220 220, 300 205 S 430 185, 500 170 S 640 140, 710 128 S 850 95, 915 82"
+            fill="none" stroke="url(#roadGrad)" stroke-width="5" stroke-linecap="round"/>
+
+      <!-- 汽车（SMIL 沿路径移动） -->
+      <g id="car">
+        <g>
+          <rect x="-14" y="-8" width="28" height="13" rx="4" fill="#2A2A2A"/>
+          <rect x="-9" y="-13" width="16" height="8" rx="3" fill="#2A2A2A"/>
+          <rect x="-7" y="-12" width="5" height="6" rx="1" fill="#BCD3E0"/>
+          <rect x="0" y="-12" width="5" height="6" rx="1" fill="#BCD3E0"/>
+          <circle cx="-7" cy="6" r="3.4" fill="#2A2A2A"/><circle cx="-7" cy="6" r="1.4" fill="#F8F5F0"/>
+          <circle cx="8" cy="6" r="3.4" fill="#2A2A2A"/><circle cx="8" cy="6" r="1.4" fill="#F8F5F0"/>
+          <animateMotion dur="9s" begin="1.2s" repeatCount="indefinite" rotate="auto"
+            path="M90 260 C 180 250, 220 220, 300 205 S 430 185, 500 170 S 640 140, 710 128 S 850 95, 915 82"/>
+        </g>
+      </g>
+
+      <!-- 节点：起点十堰 -->
+      <g class="node" style="animation-delay:.5s">
+        <circle cx="90" cy="260" r="9" fill="#6B9B7A" class="dot"/>
+        <circle cx="90" cy="260" r="4" fill="#F8F5F0"/>
+        <text x="90" y="292" text-anchor="middle" class="node-label">十堰</text>
+        <text x="90" y="308" text-anchor="middle" class="node-sub">起点 · 武当山下</text>
+      </g>
+      <!-- 郧西 -->
+      <g class="node" style="animation-delay:1.3s">
+        <circle cx="300" cy="205" r="7" fill="#4A7A8C" class="dot"/>
+        <circle cx="300" cy="205" r="3" fill="#F8F5F0"/>
+        <text x="300" y="237" text-anchor="middle" class="node-label">郧西</text>
+        <text x="300" y="253" text-anchor="middle" class="node-sub">樱花 · 五龙河</text>
+      </g>
+      <!-- 漫川关 -->
+      <g class="node" style="animation-delay:2s">
+        <circle cx="410" cy="182" r="7" fill="#C9A227" class="dot"/>
+        <circle cx="410" cy="182" r="3" fill="#F8F5F0"/>
+        <text x="410" y="152" text-anchor="middle" class="node-label">漫川关</text>
+        <text x="410" y="168" text-anchor="middle" class="node-sub">陕鄂界 · 朝秦暮楚</text>
+      </g>
+      <!-- 山阳 -->
+      <g class="node" style="animation-delay:2.6s">
+        <circle cx="520" cy="163" r="7" fill="#4A7A8C" class="dot"/>
+        <circle cx="520" cy="163" r="3" fill="#F8F5F0"/>
+        <text x="520" y="197" text-anchor="middle" class="node-label">山阳</text>
+        <text x="520" y="213" text-anchor="middle" class="node-sub">天竺山</text>
+      </g>
+      <!-- 商洛 -->
+      <g class="node" style="animation-delay:3.2s">
+        <circle cx="655" cy="137" r="7" fill="#4A7A8C" class="dot"/>
+        <circle cx="655" cy="137" r="3" fill="#F8F5F0"/>
+        <text x="655" y="108" text-anchor="middle" class="node-label">商洛</text>
+        <text x="655" y="124" text-anchor="middle" class="node-sub">红叶大道</text>
+      </g>
+      <!-- 蓝田 -->
+      <g class="node" style="animation-delay:3.8s">
+        <circle cx="770" cy="112" r="7" fill="#4A7A8C" class="dot"/>
+        <circle cx="770" cy="112" r="3" fill="#F8F5F0"/>
+        <text x="770" y="146" text-anchor="middle" class="node-label">蓝田</text>
+        <text x="770" y="162" text-anchor="middle" class="node-sub">汤峪 · 王顺山</text>
+      </g>
+      <!-- 终点西安 -->
+      <g class="node" style="animation-delay:4.4s">
+        <circle cx="915" cy="82" r="11" fill="#C4704F" class="dot"/>
+        <circle cx="915" cy="82" r="5" fill="#F8F5F0"/>
+        <text x="915" y="58" text-anchor="middle" class="node-label" font-size="15">西安</text>
+        <text x="915" y="42" text-anchor="middle" class="node-sub">终点 · 十三朝古都</text>
+      </g>
+    </svg>
+    <div class="route-caption">G70 福银高速主线 · 十堰 → 郧西 → 漫川关 → 山阳 → 商洛 → 蓝田 → 西安</div>
+  </div>
+</div>
+
+<!-- ============ 四季导航 ============ -->
+<nav class="season-nav">
+  <div class="season-nav-inner">
+    <a class="snav home" href="#overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>总览</a>
+    <a class="snav spr" href="#spring">
+      <svg viewBox="0 0 24 24"><path d="M12 22V12M12 12C12 7 8 3 3 3c0 5 4 9 9 9zm0 0c0-5 4-9 9-9 0 5-4 9-9 9z" fill="#6B9B7A"/></svg>春 · 花海</a>
+    <a class="snav sum" href="#summer">
+      <svg viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6l2.1 2.1m0-12.8l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="#4A7A8C" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="4" fill="#4A7A8C"/></svg>夏 · 避暑</a>
+    <a class="snav aut" href="#autumn">
+      <svg viewBox="0 0 24 24"><path d="M12 2C7 7 4 11 4 15a8 8 0 0 0 16 0c0-4-3-8-8-13zm0 20v-8" fill="#C4704F" stroke="#8E4A2F" stroke-width="1"/></svg>秋 · 红叶</a>
+    <a class="snav win" href="#winter">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5A7A94" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4 6l16 12M20 6L4 18M2 12h20"/></svg>冬 · 温泉滑雪</a>
+    <a class="snav home" href="#gear">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l1 13H5L6 7zm3 0a3 3 0 0 1 6 0"/></svg>装备清单</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ 一、总览 ============ -->
+<section id="overview" class="reveal">
+  <div class="sec-head">
+    <span class="sec-no">壹</span>
+    <h2>总览：先读懂这条路</h2>
+    <span class="sec-tag tag-all">路线 · 费用 · 时效</span>
+  </div>
+
+  <h3>两条路线，心里要有数</h3>
+  <p>十堰到西安的自驾，本质上是翻越秦岭。目前有两条主力通道：</p>
+  <div class="card">
+    <p><strong>主线：G70 福银高速（传统路线）</strong></p>
+    <p>十堰出发 → 郧西 → 漫川关（陕鄂交界）→ 山阳 → 商洛 → 蓝田 → 西安。全程约 <strong>297 公里，正常车程 4.5 小时左右</strong>。这条线沿金钱河、丹江谷地穿行，隧道群密集，是秦楚之间最直接的通道。沿途漫川关古镇、天竺山、金丝峡、牛背梁等景点都挂在这条线上，是"边走边玩"价值最高的一条。</p>
+  </div>
+  <div class="card">
+    <p><strong>备线：G65 包茂高速经安康（施工期主力绕行线）</strong></p>
+    <p>十堰 → 安康 → 秦岭终南山隧道 → 西安。全程约 <strong>440 公里，车程 5.5—6 小时</strong>。比主线绕，但它会带你经过<strong>秦岭终南山公路隧道——全长 18.04 公里，世界最长的双洞公路越岭隧道</strong>，隧道内每 5 公里一处特殊灯光段，本身就是一段独特的驾驶体验。</p>
+  </div>
+
+  <h3>费用参考（5 座小客车）</h3>
+  <table>
+    <thead><tr><th>项目</th><th>主线 G70</th><th>备线经安康</th></tr></thead>
+    <tbody>
+      <tr><td>里程</td><td>约 297 km</td><td>约 440 km</td></tr>
+      <tr><td>车程</td><td>约 4.5 h</td><td>约 5.5—6 h</td></tr>
+      <tr><td>过路费</td><td>约 140 元</td><td>约 200 元</td></tr>
+      <tr><td>油费（参考）</td><td>约 178 元</td><td>约 260 元</td></tr>
+      <tr><td><strong>单程总成本</strong></td><td><strong>约 320 元</strong></td><td><strong>约 460 元</strong></td></tr>
+    </tbody>
+  </table>
+  <blockquote>费用为参考值，实际以收费站结算和当日油价为准；节假日 7 座及以下小客车免费通行政策照常执行。</blockquote>
+
+  <div class="card warn">
+    <div class="warn-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 20h20L12 3zm0 7v4m0 3v.5"/></svg>
+      重要时效信息：2026 年 G70 施工管制
+    </div>
+    <p><strong>2026 年 6 月 6 日至 9 月 30 日</strong>，G70 福银高速实施"安全韧性提升工程"，以下路段<strong>双向全幅封闭</strong>：</p>
+    <ul>
+      <li>蓝田南枢纽至闫村互通立交段</li>
+      <li>山阳北枢纽至高坝南枢纽段</li>
+      <li>S4011 商州联络线南城子至麻池河枢纽段</li>
+    </ul>
+    <p>另有半幅管制：2026 年 6 月 6 日至 12 月 31 日，<strong>陕鄂界至高坝南枢纽段湖北方向封闭</strong>（即从湖北方向入陕走商漫段受限），天竺山服务区封闭，漫川关、天竺山收费站往湖北方向封闭，辋川、葛牌、杨斜、闫村、高坝收费站封闭。</p>
+    <p><strong>官方绕行方案：</strong></p>
+    <ul>
+      <li>西安往湖北方向：由 <strong>G40 沪陕高速</strong>绕行，或由 <strong>G65 包茂高速转 G7011 十天高速</strong>绕行（即经安康方向）；</li>
+      <li>湖北往西安方向：在湖北境内由 <strong>G59 呼北高速</strong>或 <strong>G7011 十天高速</strong>绕行；</li>
+      <li>西安至商州车辆：由 G40 沪陕高速通行；</li>
+      <li>山阳、漫川关区域内车辆：由 G242、G345 国道绕行（仅保障生产生活必需车辆，禁止过境车）。</li>
+    </ul>
+    <p><strong>结论：2026 年 6—9 月自驾走十堰—西安，别指望直走 G70 全程，提前规划绕行安康方向或沪陕高速方向。</strong>10 月之后主线恢复，秋季红叶季反而赶上了好时候（详见秋季章节）。</p>
+  </div>
+
+  <h3>不开车的人：西十高铁已经开了</h3>
+  <p>2026 年 6 月 30 日，<strong>西十高铁</strong>开通，十堰东站直达西安东站，最快约 1.5 小时。2026 年 8 月 6 日起部分车次降价，二等座最低 <strong>134 元</strong>（原价 154—174 元）。铁路部门还联合两地文旅推出"高铁票根优惠"，凭 7 天内高铁票可在武当山、大唐芙蓉园等 118 家沿线文旅单位享门票减免。</p>
+  <p>这对自驾者的意义是：<strong>如果只是想"人到西安"，高铁更快更便宜；自驾的价值在于沿途——秦岭这条线上的风景，高铁窗外只能看到一半。</strong>本文档专注自驾玩法。</p>
+
+  <h3>通行小贴士</h3>
+  <ol>
+    <li><strong>隧道多、长、密</strong>。G70 主线秦岭段隧道群一个接一个，进出隧道光线骤变，务必保持车距、开近光灯；终南山隧道限速 80 km/h，全程监控，别超速。</li>
+    <li><strong>山区天气说变就变</strong>。秦岭腹地夏季多雷阵雨、冬季会降雪结冰，出发前查"陕西交通"或高德/百度地图实时路况。</li>
+    <li><strong>服务区提前加油</strong>。山区段服务区间距大，施工期部分服务区封闭（如天竺山服务区），油量低于半箱见到服务区就补。</li>
+    <li><strong>节假日错峰</strong>。西安进出城方向（尤其沪陕高速灞桥段）节假日上午易堵，返程尽量赶早或赶晚。</li>
+  </ol>
+</section>
+
+<!-- ============ 二、春季 ============ -->
+<section id="spring" class="season-sec season-spr reveal">
+  <div class="sec-head">
+    <span class="sec-no">贰</span>
+    <h2>春季（3—5 月）：花海开场，古镇喝头一盏茶</h2>
+    <span class="sec-tag tag-spr">春 · 赏花 + 古镇</span>
+  </div>
+
+  <p>3 月的秦巴山区是全年最柔软的时候：十堰周边桃花、樱花开罢，油菜花沿河谷铺开；4 月气温回升到 15—22℃，秦岭里草木返青，溪水涨起来；5 月满山新绿。这个季节人流还没到暑期规模，古镇、峡谷都能安安静静地玩。</p>
+
+  <h3>路线与费用</h3>
+  <p>春季无施工管制（2026 年管制从 6 月开始），直接走 <strong>G70 主线</strong>：十堰 → 郧西 → 漫川关 → 商洛 → 蓝田 → 西安，297 km / 约 4.5 h / 过路费约 140 元。建议把节奏放慢，<strong>中途在郧西和山阳各停一次</strong>。</p>
+
+  <h3>春季玩法</h3>
+  <div class="play">
+    <div class="play-marker">①</div>
+    <div class="play-body">
+      <div class="play-title">十堰出发第一站：郧西赏花</div>
+      <p>郧西是出十堰进秦岭的第一个县。天河景区每年春季办<strong>樱花节</strong>，往年樱花节期间对外地游客门票五折（原价 50 元）；<strong>五龙河风景区</strong>（4A）被称为"鄂西北的九寨沟"，峡谷清幽，门票+换乘车门市 110 元、线上约 85 元，春季水量渐涨、山花点缀，是进山前的热身景点。秦巴生态植物园（门票 20 元）则是轻量级的赏花选择。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">②</div>
+    <div class="play-body">
+      <div class="play-title">中途重头戏：漫川关古镇</div>
+      <p>进入陕西境内的第一个大亮点。漫川关地处金钱河与靳家河交汇处，"昔疆秦楚之塞，今界陕鄂之边"，是<strong>"朝秦暮楚"典故的地理源头</strong>。古镇免费开放，看点集中在"一街二楼三馆"：明清石子老街、鸳鸯双戏楼（两座戏楼对台而建，全国罕见）、骡帮会馆、北会馆、武昌会馆——全是当年水旱码头商帮扎堆的遗迹。逛完来一桌<strong>漫川八大件</strong>（当地传统宴席菜），听一段漫川大调，半天刚好。春季人少，青石板路上能拍出没人的空镜。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">③</div>
+    <div class="play-body">
+      <div class="play-title">抵达西安后</div>
+      <p>3—4 月的西安是赏花季：青龙寺樱花、兴庆公园郁金香、大明宫遗址春色，城墙（门票约 54 元）骑行不热不冷正合适。</p>
+    </div>
+  </div>
+
+  <h3>春季注意事项</h3>
+  <ul>
+    <li>山区昼夜温差大（白天 20℃+、夜间可跌到个位数），<strong>外套必须随车带</strong>。</li>
+    <li>3 月底—4 月秦岭偶有倒春寒和雨雾天气，隧道口、垭口路段注意湿滑。</li>
+    <li>赏花点花期受气温影响每年浮动 1—2 周，出发前查当地文旅公众号确认。</li>
+    <li>春季周末西安周边游车流大，返程避开周日下午 4 点后。</li>
+  </ul>
+</section>
+
+<!-- ============ 三、夏季 ============ -->
+<section id="summer" class="season-sec season-sum reveal">
+  <div class="sec-head">
+    <span class="sec-no">叁</span>
+    <h2>夏季（6—8 月）：20℃ 的秦岭避暑走廊</h2>
+    <span class="sec-tag tag-sum">夏 · 避暑（2026 注意绕行）</span>
+  </div>
+
+  <p>7—8 月西安城区 40℃ 上下，而秦岭腹地（牛背梁、金丝峡一带）白天只有 20—26℃——这条线是陕西人公认的避暑走廊。峡谷里溪水冰凉，漂流正当季。<strong>代价是：2026 年夏季恰逢 G70 大修，路线必须绕。</strong></p>
+
+  <h3>路线与费用（2026 年夏季特别版）</h3>
+  <div class="card">
+    <p><strong>走法 A（玩秦岭景点为主）：</strong>十堰 → G59/G7011 至安康 → G65 包茂高速过终南山隧道 → 西安，约 440 km / 5.5—6 h。这样可以从北向南"顺路"游柞水牛背梁（隧道南口就是营盘镇），但金丝峡在商南方向，与此线不顺路，需单独取舍。</p>
+  </div>
+  <div class="card">
+    <p><strong>走法 B（目标金丝峡）：</strong>十堰 → 商南方向，金丝峡位于商洛市商南县，走 G40 沪陕高速方向可达，避开封闭段。</p>
+  </div>
+  <p>管制期间漫川关、天竺山收费站往湖北方向封闭，<strong>想从湖北侧直接进漫川关古镇的夏季行程 2026 年 6—9 月不成立</strong>，建议推迟到秋季。</p>
+
+  <h3>夏季玩法</h3>
+  <div class="play">
+    <div class="play-marker">①</div>
+    <div class="play-body">
+      <div class="play-title">牛背梁国家森林公园</div>
+      <p>终南山隧道南口出来不远即是，主峰海拔 2800 多米，是秦岭东段最高峰之一，林荫步道全程凉快，西安人周末避暑首选。往年对应届高考毕业生有免门票政策。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">②</div>
+    <div class="play-body">
+      <div class="play-title">金丝峡（5A）</div>
+      <p>商南县境内，号称"中国最美大峡谷"，青龙峡、黑龙峡、丹江源一线悬泉飞瀑、碧潭连串，暑期峡谷内体感只有 20℃ 出头。门票 100 元，建议把车停在陆督门（北门），乘景交车上山至栗园门（南门），再沿栈道步行下山回到北门，全程徒步 10 公里以上、4—5 小时，景交车+门票可提前网购（持教师资格证门票半价）。往年 7—8 月对中高考毕业生免门票。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">③</div>
+    <div class="play-body">
+      <div class="play-title">柞水溶洞 + 漂流</div>
+      <p>柞水溶洞（"秦岭洞天福地"）常年恒温，夏天进洞要披外套；周边<strong>福缘漂流</strong>全长 5.5 公里、1 个多小时漂完，成人票提前网购约 138 元（门市 218 元）；牛背梁漂流门票 118 元起。漂流是夏季这条线的招牌体验，但周末排队久，尽量工作日去。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">④</div>
+    <div class="play-body">
+      <div class="play-title">抵达西安后</div>
+      <p>白天躲进陕西历史博物馆（免费，需预约）、西安博物院，傍晚再上城墙、逛大唐不夜城。</p>
+    </div>
+  </div>
+
+  <h3>夏季注意事项</h3>
+  <ul>
+    <li><strong>2026 年 6—9 月务必提前查管制通告和实时路况</strong>，导航设置为"避开封闭路段"，别硬闯封闭收费站。</li>
+    <li>山区暴雨说来就来，峡谷景区遇强降雨会临时关闭，行前看景区公告。</li>
+    <li>漂流穿速干衣+溯溪鞋，手机装防水袋；带娃选平缓河段。</li>
+    <li>暑期是秦岭民宿旺季，<strong>柞水、商南的住宿提前一周订</strong>。</li>
+  </ul>
+</section>
+
+<!-- ============ 四、秋季 ============ -->
+<section id="autumn" class="season-sec season-aut reveal">
+  <div class="sec-head">
+    <span class="sec-no">肆</span>
+    <h2>秋季（9—11 月）：红叶走廊，全年颜值巅峰</h2>
+    <span class="sec-tag tag-aut">秋 · 红叶 + 长恨歌</span>
+  </div>
+
+  <p>秦岭的秋天从 9 月底着色，<strong>10 月中下旬至 11 月上旬是红叶盛期</strong>。G70 福银高速秦岭段本身就是观赏线：蓝田至商洛段山脊上黄栌、枫树、漆树层层变色，车窗两侧就是油画。而且 2026 年 9 月 30 日施工管制结束后主线恢复通行，<strong>2026 年红叶季恰好能完整走 G70 主线</strong>，时机完美。</p>
+  <p>更关键的是：秦岭是全国秋色层次最丰富的山脉之一——从着色到落叶持续近两个月，且因海拔差异形成"先高后低"的天然时序接力，<strong>10 月到 11 月无论哪一周出发，都有正处盛期的点位</strong>。本章下方附有大幅扩充的《秦岭赏秋详细攻略》，按时序、点位、路线、拍摄、注意事项五个维度拆开讲。</p>
+
+  <h3>路线与费用</h3>
+  <p><strong>G70 主线</strong>：十堰 → 郧西 → 漫川关 → 山阳 → 商洛 → 蓝田 → 西安，297 km / 约 4.5 h / 过路费约 140 元。建议<strong>返程（西安→十堰方向）安排在上午</strong>，逆光少、红叶通透。</p>
+  <p>2026 年赏秋季特别提示：主线全幅封闭 9 月 30 日结束、国庆前后恢复通行；但按施工通告，湖北方向陕鄂界至高坝南枢纽段及漫川关、天竺山收费站湖北方向匝道管制持续到 12 月 31 日，从十堰方向直接进出漫川关、天竺山可能仍受影响，<strong>出发前务必复核最新通告</strong>（详见文末注意事项）。</p>
+
+  <h3>秋季玩法</h3>
+  <div class="play">
+    <div class="play-marker">①</div>
+    <div class="play-body">
+      <div class="play-title">秦岭红叶大道（蓝田—商洛段）</div>
+      <p>不必专门找"红叶景区"，这段高速本身就是观景线。可在蓝田服务区、商洛沿线观景台停车拍照（施工结束后恢复）。想深入的话，蓝田汤峪、王顺山一带有县道可进山，色彩比高速视角更浓。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">②</div>
+    <div class="play-body">
+      <div class="play-title">漫川关古镇 + 柿子</div>
+      <p>秋天的漫川关，金钱河水位回落，古镇周边的柿子树挂果，徽派马头墙衬着黄叶，是出片率最高的季节。顺路带几串当地柿饼。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">③</div>
+    <div class="play-body">
+      <div class="play-title">山阳天竺山</div>
+      <p>秦岭东段名山，门票 49.9 元起，秋季云海概率高，山顶看层林尽染。注意施工期天竺山服务区封闭、收费站往湖北方向封闭，<strong>10 月后恢复正常再安排</strong>。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">④</div>
+    <div class="play-body">
+      <div class="play-title">抵达西安后</div>
+      <p>秋季西安的重头戏在临潼：<strong>华清宫</strong>（门票约 120 元）+ 晚间实景舞剧<strong>《长恨歌》</strong>——以骊山为幕、温泉为台，是来西安必看的一场演出，秋季夜场不冷不热体验最佳；顺路兵马俑（120 元）。11 月终南山古观音禅寺千年银杏进入观赏期（需预约）。</p>
+    </div>
+  </div>
+
+  <h3>秋季注意事项</h3>
+  <ul>
+    <li>红叶盛期（10 月中下旬）周末 G70 秦岭段车流量大，建议周中出行或早出发。</li>
+    <li>10 月起山区夜间气温接近 0℃，<strong>清晨桥面、隧道口易结薄霜</strong>，减速慢行。</li>
+    <li>《长恨歌》旺季票紧张，提前 3—5 天官方渠道购票。</li>
+    <li>秋季干燥，山区火险等级高，景区严禁烟火。</li>
+  </ul>
+
+  <!-- ============ 秦岭赏秋详细攻略（深度版） ============ -->
+  <div class="autumn-deep">
+    <div class="autumn-deep-title">
+      <svg class="maple" viewBox="0 0 24 24" fill="#C4704F" aria-hidden="true">
+        <path d="M12 2l1.6 3.2L17 4.4l-.6 3.6 3 2-2.8 2.2 1.4 3.4-3.6-.6-1.4 3.4-1.4-3.4-3.6.6 1.4-3.4L6.6 10l3-2-.6-3.6 3.4.8L12 2z" opacity=".95"/>
+        <path d="M12 14v8" stroke="#8E4A2F" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </svg>
+      秦岭赏秋详细攻略（深度版）
+    </div>
+    <div class="autumn-deep-sub">时序 · 点位 · 路线 · 拍摄 · 提醒，五个维度拆开讲</div>
+
+    <h4>1. 何时去：一张秦岭红叶时序地图</h4>
+    <p>秦岭红叶的规律是<strong>"高海拔先红、低海拔后红"</strong>：9 月底 2000 米以上高山率先着色，10 月中旬 1000—2000 米中山进入盛期，10 月底至 11 月轮到河谷与关中浅山。整季近两个月，但<strong>单个点位的盛期只有 2—3 周</strong>，按时间选点位是赏秋的第一课。</p>
+
+    <div class="timeline-3">
+      <div class="tl-card tl-1">
+        <span class="tl-time">9 月底 — 10 月中旬</span>
+        <div class="tl-alt">高海拔 2000 米+ 先红</div>
+        <div class="tl-spots"><strong>太白山 · 紫柏山 · 狮子沟牧场 · 太子岭</strong>（留坝）</div>
+      </div>
+      <div class="tl-card tl-2">
+        <span class="tl-time">10 月中旬 — 11 月上旬</span>
+        <div class="tl-alt">中山进入盛期（黄金档）</div>
+        <div class="tl-spots"><strong>金丝峡 · 牛背梁 · 木王山 · 天竺山 · 圭峰山 · 太平 · 朱雀 · 少华山 · 黄柏塬</strong></div>
+      </div>
+      <div class="tl-card tl-3">
+        <span class="tl-time">10 月下旬 — 11 月中下旬</span>
+        <div class="tl-alt">低海拔河谷与关中浅山</div>
+        <div class="tl-spots"><strong>古观音禅寺千年银杏 · 漫川关柿子 · 翠华山彩林</strong></div>
+      </div>
+    </div>
+
+    <p>气象参考：中国天气网历年"全国赏红叶地图"显示，10 月中下旬陕西中北部陆续进入最佳观赏期，11 月上旬陕南接棒；暖秋年份整体推迟 1—2 周，强寒潮则加速变色也加速落叶。<strong>红叶讲究"红透未落"，行前一周查各景区红叶节公告和实时播报，比死记日期靠谱。</strong></p>
+
+    <h4>2. 核心赏秋点位清单</h4>
+
+    <div class="spot-group">A 组｜G70 主线沿线（商洛方向）——本线"主战场"</div>
+    <table>
+      <thead><tr><th>点位</th><th>最佳红叶期</th><th>红叶看点</th><th>门票（参考）</th><th>与主线的关系</th></tr></thead>
+      <tbody>
+        <tr><td>金丝峡（5A，商南）</td><td>10 月中旬—11 月底（红叶节一般 10 月底启动）</td><td>森林覆盖率 98%，红黄棕绿叠色，峡谷窄峡+瀑布群，"金丝红叶满天下"</td><td>100 元（学生 50，网购约 95）</td><td>十堰方向走 G59 呼北高速转 G40 沪陕高速，金丝峡出口下，约 230 km / 3 h</td></tr>
+        <tr><td>牛背梁（柞水）</td><td>10 月—11 月</td><td>2300 余种树木，枫树、黄腊木、青冈木交织；秋季亦是观云海看日出的季节</td><td>110 元（半价 55；索道上行 85 / 下行 65，景交 30）</td><td>秦岭终南山隧道南口即达，S102 省道直通，距西安 42 km</td></tr>
+        <tr><td>木王山国家森林公园（镇安）</td><td>10 月中旬—11 月中旬</td><td>官方定位"秋观红叶"，鹰嘴峰、四海坪、双头马彩林成片，云海概率高</td><td>门票约 40 元 + 观光车 50—70 元（必购，以景区公示为准）</td><td>G65 包茂高速镇安出口，县城至景区约 87 km / 2 h 山路</td></tr>
+        <tr><td>天竺山（山阳）</td><td>10 月下旬—11 月中旬（每年办红叶节）</td><td>秦岭东段名山，高海拔秘境云海+层林尽染，正创建 5A</td><td>约 60—90 元（以景区公示为准；商洛本地有门票+索道 99 元政策）</td><td>G70 主线天竺山出口</td></tr>
+        <tr><td>漫川关古镇（山阳）</td><td>10 月下旬—11 月</td><td>柿子挂果、马头墙衬黄叶、金钱河秋水，免费出片地</td><td>免费</td><td>G70 主线漫川关出口</td></tr>
+        <tr><td>塔云山（镇安）</td><td>10 月中旬—11 月中旬</td><td>金顶海拔 1665.8 米，道教名山，"远看飞霞满天，近看玲珑剔透"</td><td>80 元 + 观光车 20 元</td><td>镇安县城西约 35 km</td></tr>
+      </tbody>
+    </table>
+
+    <div class="spot-group">B 组｜秦岭北麓（西安方向）——到西安后的延伸玩法</div>
+    <table>
+      <thead><tr><th>点位</th><th>最佳红叶期</th><th>看点</th><th>门票</th></tr></thead>
+      <tbody>
+        <tr><td>圭峰山（鄠邑区）</td><td>10 月中旬—11 月中旬（10 月中下旬最盛）</td><td>海拔 1528 米，"圭峰明月"为鄠邑八景之一；黄栌占主体，云海+红叶双绝，西安人私藏的免费赏秋地</td><td>免费，全天开放</td></tr>
+        <tr><td>太平国家森林公园（鄠邑区）</td><td>10 月中旬—11 月初</td><td>红叶+落差 160 余米彩虹瀑布同框，历年办红叶节</td><td>旺季 60 元（儿童 30）</td></tr>
+        <tr><td>朱雀国家森林公园（鄠邑区）</td><td>10 月中旬—11 月中旬</td><td>曾被官方红叶节评为"最佳观赏地"，可登秦岭北麓高峰冰晶顶</td><td>旺季 45 元，观光车往返 28.9 元</td></tr>
+        <tr><td>翠华山（长安区）</td><td>10 月下旬—11 月初</td><td>山崩地质奇观+天池+彩林"调色板"，本地人公认秋景顶级</td><td>旺季 65 元（学生 32）</td></tr>
+        <tr><td>少华山（渭南华州区）</td><td>10 月 15 日—11 月 15 日（红叶节档期）</td><td>红叶从峡谷铺到山脊，配西北首条双向悬空玻璃栈道</td><td>60 元，索道往返 100 元，景交往返 25 元</td></tr>
+        <tr><td>古观音禅寺（长安区）</td><td>11 月上旬—12 月初（银杏）</td><td>千年银杏，传为唐太宗手植，金黄满院</td><td>免费，须提前预约（见注意事项）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="spot-group">C 组｜秦岭西段秘境（进阶选项）——陕西秋色的天花板</div>
+    <ul>
+      <li><strong>留坝（汉中）</strong>：官方认证的"秦岭最美廊道"，红叶<strong>由高至低、自西向东</strong>接力，从 10 月上旬持续到 11 月中旬，绵延六百余里。核心点位：紫柏山（门票 40 元、索道 80 元，落叶松金黄+云雾，最佳 10 月 16—30 日）、情人谷（免费，五百亩落叶松，停车免费）、狮子沟牧场（免费高山草甸，最佳 10 月 10—30 日）、高江路"最美乡村公路"（石门子为最佳摄影位，沿途高大枫树）、张良庙（旺季 50 元）。红叶季有官方套票：紫柏山+张良庙+栈道博物馆+球幕影院原价 221 元、红叶季 98 元/套，自驾游客凭高速过路费凭证购景区票还有补贴（2025 年政策执行期为 9 月—11 月 30 日，次年以官方发布为准）。</li>
+      <li><strong>黄柏塬（宝鸡太白县）</strong>：896 平方公里、森林覆盖率 96% 的秦岭腹地秘境，门票约 63 元。大箭沟号称"小九寨"，彩色河床+红叶是看秋最佳处，最佳时段 10 月中下旬。进山必经的<strong>太洋公路（太白—华阳）</strong>本身就是陕西顶级秋色自驾线。</li>
+    </ul>
+
+    <h4>3. 推荐串联路线（2—4 日玩法）</h4>
+
+    <div class="route-block">
+      <span class="rb-tag">路线 A · 2 日</span>
+      <div class="rb-title">商洛红叶经典线（首次走这条，G70 恢复后最顺）</div>
+      <ul>
+        <li><strong>D1</strong>：十堰出发 → G59 呼北高速转 G40 沪陕高速 → <strong>金丝峡</strong>全天（约 230 km / 3 h）。游览建议：车停陆督门（北门），景交车上行至栗园门（南门），沿栈道下行回北门，全程 10 公里以上、4—5 小时；门票+景交提前网购。宿商南县城或金丝峡镇。</li>
+        <li><strong>D2</strong>：上午 G40 转 G70 → <strong>漫川关古镇</strong>（约 150 km / 2 h），逛老街、看柿子、午餐漫川八大件；下午 G70 主线直达西安（约 150 km / 2 h）。体力富余可在 D2 上午先加<strong>天竺山</strong>半日（注意确认湖北方向匝道是否恢复，见注意事项）。</li>
+      </ul>
+    </div>
+
+    <div class="route-block">
+      <span class="rb-tag">路线 B · 1—2 日</span>
+      <div class="rb-title">终南山秋色补充线（抵西安后延伸）</div>
+      <ul>
+        <li><strong>一日版</strong>：早起登<strong>圭峰山</strong>（免费，看云海要赶早）→ 下午<strong>太平森林公园</strong>或<strong>翠华山</strong>（同在鄠邑/长安区，相距约 30 km）。</li>
+        <li><strong>11 月版</strong>：<strong>古观音禅寺银杏</strong>（务必先约到号）+ 翠华山彩林，一天正好。</li>
+        <li><strong>少华山</strong>在华州区，可与临潼华清宫、兵马俑串成连霍高速一线（华州/少华山出口下，310 国道东行 5 km）。</li>
+      </ul>
+    </div>
+
+    <div class="route-block">
+      <span class="rb-tag">路线 C · 3—4 日</span>
+      <div class="rb-title">秦岭西段深度环线（追天花板秋色，10 月 10—30 日最佳）</div>
+      <ul>
+        <li><strong>D1</strong>：西安 → G30 连霍高速至太白（约 210 km / 3 h）→ 太洋公路南下 → <strong>黄柏塬</strong>（大箭沟），宿黄柏塬镇或太白县城。</li>
+        <li><strong>D2</strong>：黄柏塬 → 华阳古镇 → 洋县 → <strong>留坝</strong>（约 160 km / 3.5 h 山路），下午狮子沟牧场或太子岭，宿留坝县城或楼房沟民宿。</li>
+        <li><strong>D3</strong>：<strong>紫柏山</strong>（索道）+ 情人谷 → 高江路石门子 → 张良庙，宿留坝。</li>
+        <li><strong>D4</strong>：留坝 → 汉中（G316 约 76 km）→ G7011 十天高速经安康 → 十堰（约 430 km / 5.5 h），闭环不走回头路；也可在安康住一晚拆成 5 日。</li>
+        <li><strong>提示</strong>：此线深入秦岭南麓腹地，山路弯多、信号弱，务必下载离线地图、县城补满油；红叶季留坝民宿紧俏，提前 1—2 周订。</li>
+      </ul>
+    </div>
+
+    <h4>4. 拍摄与体验 Tips</h4>
+    <ul>
+      <li><strong>黄金时段</strong>：清晨 7—9 点，河谷晨雾+侧光，云海概率最高（圭峰山、紫柏山、天竺山）；下午 4—6 点逆光红叶通透，适合峡谷与叶片特写（金丝峡、太平森林公园）。</li>
+      <li><strong>机位推荐</strong>：金丝峡峡谷仰拍窄峡一线天、圭峰山顶俯瞰彩林、紫柏山落叶松+云雾、高江路石门子段枫树大道、漫川关柿子树+徽派马头墙、黄花岭 S102 自驾段（牛背梁方向，车览彩林）。</li>
+      <li><strong>穿搭</strong>：白、米、藏青等纯色在彩林里最出挑；红裙红衫与红叶顺色，慎选。</li>
+      <li><strong>装备</strong>：圭峰山、太平、朱雀都有徒步登山段，穿防滑徒步鞋、带登山杖；山顶比山脚低 5—8℃，防风外套必带；保温杯热水在清晨机位上是刚需。</li>
+      <li><strong>节奏</strong>：红叶"红透未落"的窗口只有 2—3 周，一场大风大雨就可能打落大半——<strong>宁早勿晚</strong>，出发前看景区官方红叶实况播报。</li>
+    </ul>
+
+    <h4>5. 赏秋专项提醒</h4>
+    <ul>
+      <li><strong>赏秋点位人流</strong>：10 月中下旬逢周末，金丝峡、圭峰山、太平森林公园车位紧张，建议 8 点前进山或周中出行；圭峰山周末可能临时交通管制，服从现场引导。</li>
+      <li><strong>古观音禅寺预约</strong>：免费但必须通过"终南山古观音禅寺"服务号提前预约（一般提前 3 天放号，每日中午更新名额），开放 9:00—16:30、每 30 分钟一个时段，银杏盛期名额秒光，<strong>先约到号再排行程</strong>。</li>
+      <li><strong>2026 年时效</strong>：G70 主线全幅封闭 9 月 30 日结束，红叶季可正常走主线；但施工通告中"湖北方向陕鄂界至高坝南枢纽段封闭、漫川关/天竺山收费站湖北方向匝道管制"持续到 12 月 31 日——十堰方向直达漫川关、天竺山的行程出发前务必核实最新通告（微信搜"G70 福银高速交通管制"或致电陕西交通服务热线 12122）。</li>
+      <li><strong>深山线路</strong>：留坝、黄柏塬、木王山等点位弯急坡陡、信号弱，下载离线地图、县城补满油，避免夜间行车。</li>
+      <li><strong>窗口期短</strong>：单点红叶盛期只有 2—3 周，大风大雨会打落大半，宁早勿晚，行前看景区官方红叶实况播报。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 五、冬季 ============ -->
+<section id="winter" class="season-sec season-win reveal">
+  <div class="sec-head">
+    <span class="sec-no">伍</span>
+    <h2>冬季（12—2 月）：温泉打底，滑雪加分</h2>
+    <span class="sec-tag tag-win">冬 · 温泉 + 雪场</span>
+  </div>
+
+  <p>冬天的秦岭是另一种气质：隧道这边十堰湿冷，隧道那边关中干冷，雪后山脊银白一片。这个季节自驾的核心逻辑不是"看景"，而是<strong>把西安周边的温泉和雪场串起来</strong>——白天滑雪、晚上泡汤，是全年舒适度最高的玩法组合。</p>
+
+  <h3>路线与费用</h3>
+  <p>主线 G70 冬季正常通行，但<strong>遇降雪秦岭段会临时管制</strong>（封闭或限速带道通行），出发前必查实时路况；若主线管制，改走 G65 包茂高速经安康方向（终南山隧道受天气影响小）。费用同总览表。</p>
+
+  <h3>冬季玩法</h3>
+  <div class="play">
+    <div class="play-marker">①</div>
+    <div class="play-body">
+      <div class="play-title">华清宫温泉（临潼）</div>
+      <p>冬季玩法的头牌。华清宫门票淡季（12 月—次年 2 月）约 80 元，景区内的<strong>华清御汤</strong>是真温泉酒店，恒温 43℃，16 眼户外汤池，泡完看骊山雪景。冬季《长恨歌》会推出"冰火《长恨歌》"版本，雪中看演出是限定体验。</p>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">②</div>
+    <div class="play-body">
+      <div class="play-title">滑雪</div>
+      <ul>
+        <li><strong>翠华山滑雪场</strong>：距西安市区约 25 公里，海拔 1200 米，坡道长 700—800 米，号称"秦岭第一雪场"，门票 98 元起，初级友好，适合十堰过来的家庭首滑；</li>
+        <li><strong>照金国际滑雪场</strong>（铜川方向）：占地约 1000 亩、造雪面积 18 万㎡，雪期 12 月至次年 3 月，雪质和设备是西安周边顶配，适合认真滑雪的人；</li>
+        <li><strong>白鹿原滑雪场</strong>：距市区最近（约 6 公里），图方便可选。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-marker">③</div>
+    <div class="play-body">
+      <div class="play-title">雪景与年味</div>
+      <p>雪后的西安城墙、大明宫是"一秒回长安"的顶级场景；<strong>春节前后西安城墙灯会、大唐不夜城新春活动</strong>是传统节目，自驾返程可顺路感受。漫川关古镇春节期间有社火、大调等民俗表演，返程顺路一看。</p>
+    </div>
+  </div>
+
+  <h3>冬季注意事项</h3>
+  <ul>
+    <li><strong>防滑链是硬要求</strong>：秦岭段遇雪可能强制要求安装防滑链才放行，后备箱常备一副并提前练习安装。</li>
+    <li>山区隧道口、背阴桥面易暗冰，进隧道前收油减速。</li>
+    <li>冬季续航/油耗波动大，电动车提前规划充电桩（服务区充电桩冬季排队明显）。</li>
+    <li>滑雪装备雪场可租（雪板+雪鞋约百元级），自带贴身速干衣和滑雪袜更舒适。</li>
+    <li>春节返程高峰（初五、初六）G70 进十堰方向易堵，错峰选初四前或初七后。</li>
+  </ul>
+</section>
+
+<!-- ============ 六、全年通用 ============ -->
+<section id="tips" class="reveal">
+  <div class="sec-head">
+    <span class="sec-no">陆</span>
+    <h2>全年通用注意事项</h2>
+    <span class="sec-tag tag-all">四季适用</span>
+  </div>
+  <ol>
+    <li><strong>出发前查路况</strong>：关注"陕西交通 12122"、商洛/西安交警官方发布，重点看隧道管制、恶劣天气封路信息；2026 年施工期内加查 G70 管制通告动态。</li>
+    <li><strong>隧道驾驶纪律</strong>：进隧道前提前减速开灯，隧道内严禁变道、停车；长隧道（终南山 18 km）注意疲劳，利用灯光景观段调节。</li>
+    <li><strong>限速与测速</strong>：秦岭段全程区间测速+点位测速密集，小客车限速普遍 80—100 km/h，别跟导航提示的"历史超速点"较劲。</li>
+    <li><strong>加油/补给节奏</strong>：郧西、山阳、商洛、蓝田沿线都有服务区或县城出口，油量半箱即补；施工期部分服务区封闭，预留余量。</li>
+    <li><strong>住宿预订逻辑</strong>：暑期（柞水、商南）、红叶季周末（蓝田、商洛）、春节（西安市区、临潼）是三大紧张时段，至少提前一周。</li>
+    <li><strong>高铁是 Plan B</strong>：行程中若遇极端天气封路，西十高铁（十堰东↔西安东，约 1.5 h，二等座最低 134 元）随时可作替代方案，票根还能在沿线 118 家文旅单位享优惠。</li>
+    <li><strong>证件与优惠</strong>：学生证、教师资格证、老年证在沿线多数景区有半价或免票政策，随车带好。</li>
+  </ol>
+</section>
+
+<!-- ============ 七、装备清单 ============ -->
+<section id="gear" class="reveal">
+  <div class="sec-head">
+    <span class="sec-no">柒</span>
+    <h2>装备清单</h2>
+    <span class="sec-tag tag-all">车辆 · 人员 · 应急</span>
+  </div>
+  <div class="gear-grid">
+    <div class="gear-col">
+      <h4>🚗 车辆类</h4>
+      <ul>
+        <li>防滑链（冬季必备，建议 11 月起常备）</li>
+        <li>搭电线/应急启动电源、胎压计、补胎液</li>
+        <li>玻璃水（冬季换防冻型）</li>
+        <li>车载充电器、手机支架、ETC（确认余额）</li>
+      </ul>
+    </div>
+    <div class="gear-col">
+      <h4>🎒 人员类</h4>
+      <ul>
+        <li>四季皆宜：保温杯、雨具、舒适徒步鞋、墨镜（隧道群明暗交替护眼）</li>
+        <li>春季：防风外套、薄羽绒（山区早晚）</li>
+        <li>夏季：速干衣、溯溪鞋、防水袋、驱蚊液、防晒霜</li>
+        <li>秋季：抓绒+冲锋衣（早晚近 0℃）、摄影备用电池（低温掉电快）</li>
+        <li>冬季：羽绒服、帽子手套、滑雪袜、暖宝宝</li>
+      </ul>
+    </div>
+    <div class="gear-col">
+      <h4>🩹 应急类</h4>
+      <ul>
+        <li>常用药（感冒、肠胃、晕车、创可贴）</li>
+        <li>高热量零食和饮用水（防堵车滞留）</li>
+        <li>充电宝、离线地图（秦岭深处信号弱，<strong>提前下载陕西/湖北离线地图包</strong>）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 参考来源 ============ -->
+<section id="refs" class="reveal">
+  <div class="sec-head">
+    <span class="sec-no">附</span>
+    <h2>主要参考来源</h2>
+  </div>
+  <ol class="refs">
+    <li>商洛公安交警/西安交警：《关于对 G70 福银高速蓝田南枢纽至陕鄂界段实施交通管制的通告》（2026 年 6 月 1 日发布，新浪财经转载）</li>
+    <li>车主手册 icauto.com.cn：十堰—西安路线测算（297.36 km / 4.6 h / 油费 178 元 / 路桥费 140 元）</li>
+    <li>维基百科：秦岭终南山公路隧道（全长 18.04 km，世界最长双洞公路越岭隧道，限速 80 km/h）</li>
+    <li>湖北日报/湖北省文旅厅：《西十高铁，票价降了》（2026-08-03，二等座最低 134 元、票根优惠 118 家单位）</li>
+    <li>中新网陕西：秦岭秋景红叶相关报道</li>
+    <li>携程：金丝峡景区门票及游玩攻略（门票 100 元、景交车建议、教师证半价）</li>
+    <li>携程：漫川古镇（免费、一街二楼三馆、4.4 分 59 条点评）</li>
+    <li>知乎：漫川古镇景区旅游攻略（骡帮会馆、双戏楼细节）</li>
+    <li>同程/去哪儿：五龙河风景区门票（门票+换乘车 110 元/线上 85 元）</li>
+    <li>湖北省文旅厅：花漾荆楚赏花季惠民清单（郧西天河景区樱花节优惠）</li>
+    <li>西安本地宝：柞水溶洞福缘漂流门票（成人票 138 元起）</li>
+    <li>腾讯新闻：商洛 17 家景区暑期优惠政策（金丝峡、牛背梁免票政策）</li>
+    <li>西安本地宝/凤凰网陕西/陕西日报：西安周边滑雪场盘点（翠华山、照金、白鹿原）</li>
+    <li>携程：翠华山滑雪场（门票 98 元起）</li>
+    <li>文旅部官网：冬游陕西报道（华清御汤温泉恒温 43℃、照金滑雪场数据）</li>
+    <li>华清宫官网/携程：华清宫门票及《长恨歌》（门票 120 元、冰火《长恨歌》）</li>
+    <li>西安本地宝：《陕西金丝峡赏红叶攻略》（红叶节 10 月底启动、门票 100 元/网购 95 元、学生票 50 元）</li>
+    <li>西部网：《三秦四季 秋色"陕"烁来秦岭，赴一场红叶之约》（金丝峡红叶、牛背梁 2300 余种树木、少华山/太白山红叶、自驾线路）</li>
+    <li>新浪旅游/知乎：牛背梁赏秋（红叶最佳观赏期 10—11 月、门票 110 元、索道上行 85 元）</li>
+    <li>木王山景区官网/去哪儿/携程：木王山国家森林公园（门票约 40 元+观光车必购、"秋观红叶"四大主题）</li>
+    <li>商洛日报/网易陕西：秦岭天竺山景区红叶节（红叶节客流、门票参考 60—90 元、5A 创建中、商洛本地门票+索道 99 元政策）</li>
+    <li>搜狐/知乎/西安本地宝：圭峰山红叶（最佳观赏期 10 月中旬—11 月中旬、免费开放、黄栌为主、云海+红叶）</li>
+    <li>西安本地宝：太平国家森林公园红叶攻略（红叶最佳期 10 月中旬—11 月初、旺季门票 60 元）；朱雀国家森林公园门票（旺季 45 元、观光车往返 28.9 元、秦岭红叶节最佳观赏地）；翠华山门票（旺季 65 元）</li>
+    <li>同程/新浪：少华山国家森林公园（红叶最佳观赏 10 月 15 日—11 月 15 日、门票 60 元、索道往返 100 元、景交 25 元、玻璃栈道）；央视报道（2025 年少华山红叶期持续至 11 月中旬）</li>
+    <li>西安本地宝：《秦岭最美廊道 2025 汉中留坝红叶季》（红叶季套票 98 元/套、自驾游客过路费补贴、活动日历）；携程游记：留坝红叶秘境（紫柏山门票 40 元+索道 80 元、情人谷免费、狮子沟牧场、高江路石门子、最佳观赏期逐点标注）</li>
+    <li>携程/大晴天旅行网：黄柏塬赏秋（门票约 63 元、大箭沟"小九寨"、太洋公路秋色自驾线）</li>
+    <li>西安本地宝/凤凰网佛教：终南山古观音禅寺银杏（免费、服务号预约、提前 3 天放号、11 月上旬进入最佳观赏期、千年银杏传为唐太宗手植）</li>
+    <li>中国天气网：《全国赏红叶地图》（2024/2025 年陕西红叶上妆时序：10 月中下旬陕中北部、11 月上旬陕南）</li>
+  </ol>
+  <blockquote>注：门票、过路费、油价等信息采集于 2026 年 8 月（赏秋点位门票与时序综合历年官方及媒体报道），出行前请以景区官方和收费站实际为准。</blockquote>
+</section>
+
+</main>
+
+<footer>
+  <div class="fin">路在车轮下，四季在窗外。</div>
+  <div>十堰 → 西安 · 秦岭自驾四季攻略 · 信息采集于 2026 年 8 月</div>
+</footer>
+
+<script>
+// 滚动入场动画（尊重 prefers-reduced-motion）
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
