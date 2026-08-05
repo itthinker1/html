@@ -175,8 +175,10 @@ footer{border-top:1px solid var(--rule);margin-top:80px;padding:36px 24px 48px;t
 footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bottom:8px}
 
 /* 滚动入场 */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
+/* 渐进增强：默认可读，JS 启动后才隐藏待动画；JS 失败也不会白板 */
+.reveal{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.js .reveal.in{opacity:1;transform:none}
 
 /* 季节叶片装饰（角落） */
 .leaf-deco{position:absolute;pointer-events:none;opacity:.5}
@@ -191,7 +193,7 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   #routePath{stroke-dashoffset:0;animation:none}
   .node{opacity:1;animation:none}
-  .reveal{opacity:1;transform:none}
+  .reveal,.js .reveal{opacity:1!important;transform:none!important}
   html{scroll-behavior:auto}
 }
 </style>
@@ -824,17 +826,44 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
 <script>
 // 滚动入场动画（尊重 prefers-reduced-motion）
+// 渐进增强：先给 <html> 加 .js 类，CSS 才会隐藏 .reveal；
+// 若 JS 未执行 / IO 不可用 / 长元素阈值问题，页面默认全部可见，不会白板。
 (function(){
+  var docEl = document.documentElement;
+  // reduced-motion 用户：直接全部显示，不加 .js，跳过动画
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
     return;
   }
+  docEl.classList.add('js');
+
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  if (!('IntersectionObserver' in window)) {
+    // 老浏览器：直接全部显示
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
     });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  }, {
+    // threshold:0 + 顶部内缩 rootMargin：长元素一进入视口下沿即触发，
+    // 避免 threshold:0.08 在元素高度超过视口 12.5 倍时永不触发的问题
+    threshold: 0,
+    rootMargin: '0px 0px -8% 0px'
+  });
+  revealEls.forEach(function(el){ io.observe(el); });
+
+  // 保险丝：3.5s 后仍未 .in 的元素强制显示（IO 异常 / 快速滚动漏触发）
+  setTimeout(function(){
+    revealEls.forEach(function(el){
+      if (!el.classList.contains('in')) {
+        el.classList.add('in');
+        io.unobserve(el);
+      }
+    });
+  }, 3500);
 })();
 </script>
 </body>
