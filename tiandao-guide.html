@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《天道》(2008) 完整下载指南</title>
+<style>
+  /* ========== Reset & Base ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf8f5;
+    --bg-card: #ffffff;
+    --bg-code: #f5f2ed;
+    --text-primary: #2c2722;
+    --text-secondary: #6b635a;
+    --text-tertiary: #9a9288;
+    --border: #e8e2d9;
+    --border-strong: #d9d2c7;
+    --accent: #8b5a2b;
+    --accent-light: #c49a6c;
+    --accent-bg: #fdf6ee;
+    --rating: #d4a017;
+    --danger: #b85450;
+    --danger-bg: #fdf2f1;
+    --shadow-sm: 0 1px 2px rgba(44, 39, 34, 0.04);
+    --shadow-md: 0 2px 8px rgba(44, 39, 34, 0.06);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+  }
+
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC",
+                 "WenQuanYi Micro Hei", sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+  a:hover { color: #6b4420; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ========== Layout ========== */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* ========== Header / Drama Info ========== */
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .page-header .eyebrow {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .page-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .drama-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    text-align: left;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .drama-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 24px;
+    font-size: 0.9375rem;
+  }
+
+  .drama-meta .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .drama-meta .meta-label {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .drama-meta .meta-value {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .drama-meta .rating {
+    color: var(--rating);
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: #5a7a4a;
+    background: #f3f7ef;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-top: 16px;
+    font-weight: 500;
+  }
+
+  .verified-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #7cb342;
+  }
+
+  /* ========== Section ========== */
+  .section {
+    margin-bottom: 36px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-bg);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+
+  .section-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* ========== Subsection ========== */
+  .subsection {
+    margin-bottom: 24px;
+  }
+
+  .subsection:last-child {
+    margin-bottom: 0;
+  }
+
+  .subsection-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent-light);
+  }
+
+  /* ========== Table ========== */
+  .resource-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    font-size: 0.875rem;
+  }
+
+  .resource-table thead {
+    background: var(--bg-code);
+  }
+
+  .resource-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .resource-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+
+  .resource-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .resource-table tbody tr:hover {
+    background: var(--accent-bg);
+  }
+
+  .resource-table .platform {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .resource-table .link-cell {
+    word-break: break-all;
+    font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+    font-size: 0.8125rem;
+  }
+
+  .resource-table .link-cell a {
+    color: var(--accent);
+  }
+
+  .resource-table .code-token {
+    display: inline-block;
+    background: var(--bg-code);
+    border: 1px solid var(--border-strong);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .resource-table .code-token.muted {
+    color: var(--text-tertiary);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  /* ========== Magnet / Code Block ========== */
+  .magnet-item {
+    margin-bottom: 16px;
+  }
+
+  .magnet-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .magnet-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .magnet-label .num {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .magnet-code {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+    font-size: 0.78125rem;
+    color: var(--text-primary);
+    word-break: break-all;
+    line-height: 1.6;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .magnet-code:hover {
+    border-color: var(--accent-light);
+  }
+
+  .magnet-code a {
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  .warning-note {
+    display: flex;
+    gap: 10px;
+    background: var(--danger-bg);
+    border-left: 3px solid var(--danger);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.875rem;
+    color: #6b3a38;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .warning-note .warn-icon {
+    flex-shrink: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  /* ========== Research Note ========== */
+  .research-note {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .research-note strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ========== Recommendation Cards ========== */
+  .plan-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .plan-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .plan-card:hover {
+    border-color: var(--accent-light);
+    box-shadow: var(--shadow-md);
+  }
+
+  .plan-card.recommended {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--accent-bg) 0%, var(--bg-card) 60px);
+  }
+
+  .plan-card.recommended::before {
+    content: "最推荐";
+    position: absolute;
+    top: 0;
+    right: 20px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .plan-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--bg-code);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .plan-steps {
+    list-style: none;
+    counter-reset: step;
+    padding-left: 34px;
+  }
+
+  .plan-steps li {
+    counter-increment: step;
+    position: relative;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    line-height: 1.7;
+  }
+
+  .plan-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-code);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+  }
+
+  .plan-steps li strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .plan-desc {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    padding-left: 34px;
+  }
+
+  /* ========== Footer / Disclaimer ========== */
+  .disclaimer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    line-height: 1.8;
+  }
+
+  .disclaimer strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* ========== Responsive ========== */
+  @media (max-width: 640px) {
+    .container {
+      padding: 24px 14px 40px;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+
+    .drama-card {
+      padding: 18px 20px;
+    }
+
+    .drama-meta {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 16px;
+    }
+
+    .section-header {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .section-subtitle {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .resource-table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .resource-table th,
+    .resource-table td {
+      padding: 10px 12px;
+      font-size: 0.8125rem;
+    }
+
+    .plan-card {
+      padding: 16px 18px;
+    }
+
+    .plan-card.recommended::before {
+      right: 14px;
+    }
+
+    .research-note {
+      padding: 16px 18px;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .drama-meta {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ========== Print ========== */
+  @media print {
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 0; }
+    .resource-table, .drama-card, .plan-card, .research-note {
+      box-shadow: none;
+    }
+    a { color: var(--text-primary); text-decoration: underline; }
+  }
+
+  /* ========== Focus & Accessibility ========== */
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--accent-light);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========== Page Header ========== -->
+    <header class="page-header">
+      <div class="eyebrow">Download Guide</div>
+      <h1>《天道》完整下载指南</h1>
+      <p class="subtitle">2008 · 24集 · 国产经典商战剧</p>
+
+      <div class="drama-card">
+        <div class="drama-meta">
+          <div class="meta-item">
+            <span class="meta-label">导演</span>
+            <span class="meta-value">张前</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">主演</span>
+            <span class="meta-value">王志文 / 左小青</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">豆瓣评分</span>
+            <span class="meta-value rating">9.2 <span style="font-size:0.75rem;color:var(--text-tertiary);font-weight:400;">/ 10</span></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">原著</span>
+            <span class="meta-value">豆豆《遥远的救世主》</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">集数</span>
+            <span class="meta-value">24 集 · 每集约 42 分钟</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">英文名</span>
+            <span class="meta-value">Tian Dao / The Way of Heaven</span>
+          </div>
+        </div>
+        <div class="verified-badge">验证于 2026-08-14 · 网盘链接均已实测有效</div>
+      </div>
+    </header>
+
+    <!-- ========== Section 1: Cloud Resources ========== -->
+    <section class="section" aria-labelledby="section-cloud">
+      <div class="section-header">
+        <div class="section-icon" aria-hidden="true">⭐</div>
+        <h2 id="section-cloud">一、网盘源</h2>
+        <span class="section-subtitle">已验证有效 · 最靠谱</span>
+      </div>
+
+      <!-- 4K -->
+      <div class="subsection">
+        <h3 class="subsection-title">4K 超高清修复 · 未删减</h3>
+        <table class="resource-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 28%;">平台</th>
+              <th scope="col" style="width: 54%;">链接</th>
+              <th scope="col" style="width: 18%;">提取码</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="platform">夸克网盘（78.2G）</td>
+              <td class="link-cell"><a href="https://pan.quark.cn/s/3b582631be2c" target="_blank" rel="noopener noreferrer">pan.quark.cn/s/3b582631be2c</a></td>
+              <td><span class="code-token muted">无</span></td>
+            </tr>
+            <tr>
+              <td class="platform">百度网盘</td>
+              <td class="link-cell"><a href="https://pan.baidu.com/s/1Cjk_PWQIbtVekmLHgqD4Yw" target="_blank" rel="noopener noreferrer">pan.baidu.com/s/1Cjk_PWQIbtVekmLHgqD4Yw</a></td>
+              <td><span class="code-token">4een</span></td>
+            </tr>
+            <tr>
+              <td class="platform">迅雷网盘</td>
+              <td class="link-cell"><a href="https://pan.xunlei.com/s/VNGrqni59CYQRfdFoYz9-Az0A1" target="_blank" rel="noopener noreferrer">pan.xunlei.com/s/VNGrqni59CYQRfdFoYz9-Az0A1</a></td>
+              <td><span class="code-token">cec5</span></td>
+            </tr>
+            <tr>
+              <td class="platform">迅雷网盘（4.4G）</td>
+              <td class="link-cell"><a href="https://pan.xunlei.com/s/VNvGDxgfHyY1T1tXfMslJH46A1" target="_blank" rel="noopener noreferrer">pan.xunlei.com/s/VNvGDxgfHyY1T1tXfMslJH46A1</a></td>
+              <td><span class="code-token">qdsd</span></td>
+            </tr>
+            <tr>
+              <td class="platform">夸克网盘（12.9G）</td>
+              <td class="link-cell"><a href="https://pan.quark.cn/s/005694e7a6ce" target="_blank" rel="noopener noreferrer">pan.quark.cn/s/005694e7a6ce</a></td>
+              <td><span class="code-token muted">无</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 1080P -->
+      <div class="subsection">
+        <h3 class="subsection-title">1080P 高清修复 · 未删减</h3>
+        <table class="resource-table" role="table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 28%;">平台</th>
+              <th scope="col" style="width: 54%;">链接</th>
+              <th scope="col" style="width: 18%;">提取码</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="platform">百度网盘</td>
+              <td class="link-cell"><a href="https://pan.baidu.com/s/1k-QdAdnFXSbRjCUWM7oMWw" target="_blank" rel="noopener noreferrer">pan.baidu.com/s/1k-QdAdnFXSbRjCUWM7oMWw</a></td>
+              <td><span class="code-token">ksqy</span></td>
+            </tr>
+            <tr>
+              <td class="platform">夸克网盘（12.9G）</td>
+              <td class="link-cell"><a href="https://pan.quark.cn/s/e1959b1f8b0f" target="_blank" rel="noopener noreferrer">pan.quark.cn/s/e1959b1f8b0f</a></td>
+              <td><span class="code-token">BneT</span></td>
+            </tr>
+            <tr>
+              <td class="platform">阿里云盘</td>
+              <td class="link-cell"><a href="https://www.aliyundrive.com/s/ehgyrEJb7Qj" target="_blank" rel="noopener noreferrer">aliyundrive.com/s/ehgyrEJb7Qj</a></td>
+              <td><span class="code-token muted">无</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== Section 2: Magnet ========== -->
+    <section class="section" aria-labelledby="section-magnet">
+      <div class="section-header">
+        <div class="section-icon" aria-hidden="true">🧲</div>
+        <h2 id="section-magnet">二、磁力 / BT 链接</h2>
+        <span class="section-subtitle">国内源 · 共 2 条</span>
+      </div>
+
+      <div class="magnet-item">
+        <div class="magnet-label"><span class="num">①</span>1080P 全24集（12.94G）</div>
+        <div class="magnet-code">
+          <a href="magnet:?xt=urn:btih:4CFA6433AA664726702D14C0D0857609E13E1335">magnet:?xt=urn:btih:4CFA6433AA664726702D14C0D0857609E13E1335</a>
+        </div>
+      </div>
+
+      <div class="magnet-item">
+        <div class="magnet-label"><span class="num">②</span>未删减版</div>
+        <div class="magnet-code">
+          <a href="magnet:?xt=urn:btih:f5e87f7f51125cd54a495579f15c574262dcdc42">magnet:?xt=urn:btih:f5e87f7f51125cd54a495579f15c574262dcdc42</a>
+        </div>
+      </div>
+
+      <div class="warning-note" role="note">
+        <span class="warn-icon" aria-hidden="true">⚠️</span>
+        <span>老剧种子可能做种人数少，下载会慢或失败，属正常现象。优先推荐网盘源。</span>
+      </div>
+    </section>
+
+    <!-- ========== Section 3: Research Note ========== -->
+    <section class="section" aria-labelledby="section-research">
+      <div class="section-header">
+        <div class="section-icon" aria-hidden="true">🔍</div>
+        <h2 id="section-research">三、检索说明</h2>
+        <span class="section-subtitle">诚实记录</span>
+      </div>
+
+      <div class="research-note">
+        <p>已用英文名 <strong>Tian Dao / The Way of Heaven</strong> 检索了国际磁力站（limetorrent、torrentdownloads、btdb、1337x、btdig、thepiratebay 等），<strong>确认国际站均未收录此中文老剧</strong>。</p>
+        <p style="margin-top: 8px;">能下这部剧的只有上述国内网盘源和 2 条磁力链接。</p>
+      </div>
+    </section>
+
+    <!-- ========== Section 4: Recommendations ========== -->
+    <section class="section" aria-labelledby="section-recommend">
+      <div class="section-header">
+        <div class="section-icon" aria-hidden="true">🎯</div>
+        <h2 id="section-recommend">四、推荐操作</h2>
+        <span class="section-subtitle">绕开网盘限速</span>
+      </div>
+
+      <div class="plan-cards">
+
+        <!-- Plan A -->
+        <div class="plan-card recommended">
+          <h3 class="plan-title">
+            <span class="plan-badge">A</span>
+            网盘离线下载
+          </h3>
+          <ol class="plan-steps">
+            <li>复制上面任一条<strong>磁力链接</strong></li>
+            <li>粘贴到<strong>百度网盘 / 夸克网盘 →「离线下载」</strong>输入框</li>
+            <li>让网盘服务器帮你下载，不占本地带宽、不占电脑，转存后可在线观看</li>
+          </ol>
+        </div>
+
+        <!-- Plan B -->
+        <div class="plan-card">
+          <h3 class="plan-title">
+            <span class="plan-badge">B</span>
+            BT 客户端下载
+          </h3>
+          <p class="plan-desc">用 <strong>qBittorrent / 迅雷 / 比特彗星</strong> 打开磁力链接，走 P2P 不限速。<br>但老剧可能无做种，速度不稳。</p>
+        </div>
+
+        <!-- Plan C -->
+        <div class="plan-card">
+          <h3 class="plan-title">
+            <span class="plan-badge">C</span>
+            直接网盘保存
+          </h3>
+          <p class="plan-desc">新用户登录夸克 / 迅雷送 1TB 空间，直接保存 4K 版后下载，操作最简单。</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== Footer ========== -->
+    <footer class="disclaimer" role="contentinfo">
+      <p><strong>免责声明</strong></p>
+      <p>以上资源均来自第三方公开分享，仅供个人学习交流，请勿商用，版权归原片方所有。</p>
+    </footer>
+
+  </div>
+</body>
+</html>
