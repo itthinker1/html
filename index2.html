@@ -7,7 +7,8 @@
 <style>
 /* =========================================================
    便签墙风格 · vibe coding 成果导航
-   软木背景 + 马卡龙色便签 + 胶带图钉 + 手写风标题
+   软木背景 + 马卡龙色便签 + 胶带图钉 + 手绘风标题
+   Three.js 微尘粒子 · SVG 手绘装饰
    ========================================================= */
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -19,6 +20,8 @@ body{
   color:#3a2e1f;
   min-height:100vh;
   line-height:1.7;
+  position:relative;
+  overflow-x:hidden;
   /* 软木墙背景：多层渐变模拟软木塞颗粒 */
   background-color: #c8a97e;
   background-image:
@@ -27,6 +30,8 @@ body{
     radial-gradient(circle at 70% 60%, rgba(120,80,40,.18) 1.5px, transparent 2px),
     radial-gradient(circle at 40% 80%, rgba(120,80,40,.2) 1.5px, transparent 2px),
     radial-gradient(circle at 85% 20%, rgba(120,80,40,.15) 1.5px, transparent 2px),
+    radial-gradient(circle at 15% 45%, rgba(100,65,30,.16) 1px, transparent 1.5px),
+    radial-gradient(circle at 60% 35%, rgba(100,65,30,.14) 1px, transparent 1.5px),
     /* 浅色颗粒 */
     radial-gradient(circle at 10% 70%, rgba(220,190,150,.35) 1px, transparent 1.5px),
     radial-gradient(circle at 55% 15%, rgba(220,190,150,.3) 1px, transparent 1.5px),
@@ -40,13 +45,31 @@ body{
       transparent 1px,
       transparent 4px
     ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(100,70,40,.05) 0px,
+      rgba(100,70,40,.05) 2px,
+      transparent 2px,
+      transparent 11px
+    ),
     /* 整体底色渐变 */
     radial-gradient(ellipse at 30% 20%, #d4b890 0%, #c8a97e 40%, #b89568 100%);
   background-size:
     80px 80px, 100px 100px, 120px 120px, 90px 90px,
+    65px 65px, 75px 75px,
     60px 60px, 70px 70px, 85px 85px, 95px 95px,
-    auto, auto;
+    auto, auto, auto;
   background-attachment: fixed;
+}
+
+/* Three.js 粒子画布 */
+#particle-canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
 }
 
 /* 顶部一层淡淡的暗角，让墙更有深度 */
@@ -55,13 +78,14 @@ body::before{
   position:fixed; inset:0;
   pointer-events:none;
   background:
-    radial-gradient(ellipse at center, transparent 50%, rgba(60,40,20,.25) 100%);
-  z-index:0;
+    radial-gradient(ellipse at 20% 10%, rgba(255,220,160,.15) 0%, transparent 50%),
+    radial-gradient(ellipse at center, transparent 50%, rgba(60,40,20,.22) 100%);
+  z-index:1;
 }
 
 .wrap{
   position:relative;
-  z-index:1;
+  z-index:2;
   max-width:1200px;
   margin:0 auto;
   padding:56px 28px 80px;
@@ -72,18 +96,36 @@ header{
   text-align:center;
   margin-bottom:48px;
   color:#4a3520;
+  position:relative;
+}
+.header-decor{
+  position:absolute;
+  pointer-events:none;
+  opacity:.7;
+}
+.header-decor.left{
+  left:5%; top:20px;
+  transform:rotate(-12deg);
+}
+.header-decor.right{
+  right:5%; top:30px;
+  transform:rotate(8deg) scaleX(-1);
+}
+@media (max-width:700px){
+  .header-decor{ display:none; }
 }
 .eyebrow{
   display:inline-block;
   font-size:13px;
   letter-spacing:4px;
   color:#7a5a35;
-  padding:4px 14px;
+  padding:4px 16px;
   border:1.5px dashed #9a7a50;
   border-radius:3px;
   margin-bottom:18px;
   transform:rotate(-1deg);
-  background:rgba(255,245,225,.35);
+  background:rgba(255,245,225,.4);
+  font-weight:600;
 }
 h1{
   font-family:"Kaiti SC","KaiTi","STKaiti","楷体","楷体_GB2312",
@@ -93,14 +135,24 @@ h1{
   color:#3d2815;
   text-shadow:
     1px 1px 0 rgba(255,240,210,.5),
-    2px 3px 8px rgba(80,50,20,.2);
+    2px 3px 8px rgba(80,50,20,.18);
   letter-spacing:2px;
   margin-bottom:14px;
+  position:relative;
+  display:inline-block;
+}
+h1 .underline-svg{
+  position:absolute;
+  bottom:-4px; left:50%;
+  transform:translateX(-50%);
+  width:85%;
+  height:10px;
+  opacity:.5;
 }
 .sub{
   font-size:clamp(14px,2vw,17px);
   color:#6a4a28;
-  max-width:560px;
+  max-width:620px;
   margin:0 auto;
   line-height:1.9;
 }
@@ -120,6 +172,14 @@ h1{
   padding:10px 4px;
 }
 
+/* 软木板上的散置装饰 */
+.board-decor{
+  position:absolute;
+  pointer-events:none;
+  z-index:1;
+  opacity:.75;
+}
+
 /* 便签卡片 */
 .note{
   position:relative;
@@ -129,25 +189,35 @@ h1{
   padding:28px 22px 52px;
   min-height:220px;
   border-radius:2px;
-  /* 纸张纹理 */
+  z-index:2;
+  /* 纸张纹理：细微纤维感 */
+  background-color:inherit;
   background-image:
-    linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 30%),
+    linear-gradient(160deg, rgba(255,255,255,.4) 0%, rgba(255,255,255,0) 25%, rgba(255,255,255,0) 75%, rgba(0,0,0,.04) 100%),
     repeating-linear-gradient(
       90deg,
       transparent 0px,
       transparent 2px,
-      rgba(0,0,0,.015) 2px,
-      rgba(0,0,0,.015) 3px
+      rgba(0,0,0,.012) 2px,
+      rgba(0,0,0,.012) 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 5px,
+      rgba(0,0,0,.008) 5px,
+      rgba(0,0,0,.008) 6px
     );
   box-shadow:
-    0 2px 4px rgba(60,40,20,.15),
-    0 8px 20px rgba(60,40,20,.18),
-    inset 0 1px 0 rgba(255,255,255,.5);
+    0 1px 2px rgba(60,40,20,.12),
+    0 4px 10px rgba(60,40,20,.12),
+    0 12px 28px rgba(60,40,20,.18),
+    inset 0 1px 0 rgba(255,255,255,.6);
   transition:transform .35s cubic-bezier(.2,.9,.3,1.2),
               box-shadow .35s ease,
               filter .35s ease;
   cursor:pointer;
-  /* 随机旋转由 JS / nth-child 控制 */
+  will-change:transform;
 }
 
 /* 每张便签不同颜色 + 轻微旋转 */
@@ -169,76 +239,103 @@ h1{
 .note:hover{
   transform:rotate(0deg) translateY(-6px) scale(1.02);
   box-shadow:
-    0 4px 8px rgba(60,40,20,.2),
-    0 18px 40px rgba(60,40,20,.28),
-    inset 0 1px 0 rgba(255,255,255,.6);
+    0 2px 4px rgba(60,40,20,.15),
+    0 8px 18px rgba(60,40,20,.2),
+    0 22px 50px rgba(60,40,20,.28),
+    inset 0 1px 0 rgba(255,255,255,.7);
   filter:brightness(1.04);
   z-index:10;
 }
 
-/* 胶带（顶部） */
+/* 便签上的小涂鸦装饰 */
+.note-doodle{
+  position:absolute;
+  pointer-events:none;
+  opacity:.45;
+  z-index:2;
+}
+
+/* 胶带（顶部） — 更真实的纸胶带质感 */
 .note::before{
   content:"";
   position:absolute;
-  top:-10px;
+  top:-11px;
   left:var(--pin-x);
   transform:translateX(-50%) rotate(calc(var(--rot) * -0.5));
-  width:72px;
-  height:22px;
-  background:linear-gradient(180deg,
-    rgba(255,255,255,.55) 0%,
-    rgba(255,255,255,.35) 50%,
-    rgba(255,255,255,.55) 100%);
-  border-left:1px solid rgba(255,255,255,.4);
-  border-right:1px solid rgba(255,255,255,.4);
+  width:76px;
+  height:24px;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.5) 0%,
+      rgba(255,255,255,.28) 45%,
+      rgba(255,255,255,.22) 55%,
+      rgba(255,255,255,.48) 100%);
+  border-left:1px solid rgba(255,255,255,.35);
+  border-right:1px solid rgba(255,255,255,.35);
   box-shadow:
-    0 2px 4px rgba(0,0,0,.1),
-    inset 0 0 8px rgba(255,255,255,.3);
-  /* 胶带条纹 */
+    0 2px 5px rgba(0,0,0,.12),
+    inset 0 0 10px rgba(255,255,255,.25);
+  /* 胶带纤维纹理 */
   background-image:
     repeating-linear-gradient(
-      45deg,
-      rgba(200,200,200,.1) 0px,
-      rgba(200,200,200,.1) 2px,
-      transparent 2px,
-      transparent 5px
+      90deg,
+      rgba(180,160,120,.08) 0px,
+      rgba(180,160,120,.08) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(200,180,140,.06) 0px,
+      rgba(200,180,140,.06) 1px,
+      transparent 1px,
+      transparent 2px
     );
-  opacity:.85;
+  opacity:.9;
+  z-index:3;
 }
 
 /* 图钉（胶带中心） */
 .note::after{
   content:"";
   position:absolute;
-  top:0px;
+  top:-1px;
   left:var(--pin-x);
   transform:translateX(-50%);
-  width:10px; height:10px;
+  width:11px; height:11px;
   border-radius:50%;
   background:
-    radial-gradient(circle at 35% 30%, #ffb3b3 0%, #e65c5c 50%, #a33 100%);
+    radial-gradient(circle at 35% 30%, #ffcaca 0%, #e66 45%, #c44 70%, #922 100%);
   box-shadow:
-    0 1px 2px rgba(0,0,0,.3),
+    0 1px 3px rgba(0,0,0,.35),
     inset 0 -1px 2px rgba(0,0,0,.25),
-    inset 0 1px 1px rgba(255,255,255,.5);
-  z-index:2;
+    inset 0 1px 1px rgba(255,255,255,.55),
+    0 0 0 1px rgba(150,30,30,.2);
+  z-index:4;
 }
 
-/* 右下角折角 */
+/* 右下角折角 — 更立体 */
 .note .fold{
   position:absolute;
   bottom:0; right:0;
-  width:24px; height:24px;
-  background:linear-gradient(135deg, transparent 50%, rgba(0,0,0,.08) 50%);
-  border-top-left-radius:0;
+  width:26px; height:26px;
   pointer-events:none;
+  z-index:3;
 }
 .note .fold::before{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(135deg, transparent 50%, rgba(255,255,255,.4) 50%);
-  mix-blend-mode:overlay;
+  background:
+    linear-gradient(135deg, transparent 50%, rgba(0,0,0,.1) 50%);
+}
+.note .fold::after{
+  content:"";
+  position:absolute;
+  bottom:2px; right:2px;
+  width:10px; height:10px;
+  background:linear-gradient(135deg, transparent 50%, rgba(255,255,255,.35) 50%);
+  border-radius:0 0 2px 0;
 }
 
 /* 便签内排版 */
@@ -247,12 +344,14 @@ h1{
   font-size:11.5px;
   padding:2px 9px;
   margin-bottom:10px;
-  background:rgba(0,0,0,.08);
+  background:rgba(0,0,0,.07);
   color:#5a4020;
   border-radius:2px;
   letter-spacing:1px;
   font-family:"Kaiti SC","KaiTi","STKaiti",serif;
   border:1px dashed rgba(80,50,20,.3);
+  position:relative;
+  z-index:5;
 }
 .note h3{
   font-family:"Kaiti SC","KaiTi","STKaiti","楷体",
@@ -263,12 +362,16 @@ h1{
   margin-bottom:10px;
   line-height:1.4;
   letter-spacing:0.5px;
+  position:relative;
+  z-index:5;
 }
 .note p{
   font-size:13.5px;
   color:#5a4020;
   line-height:1.7;
   font-family:"Kaiti SC","KaiTi","STKaiti","PingFang SC","Microsoft YaHei",sans-serif;
+  position:relative;
+  z-index:5;
 }
 .note .path{
   position:absolute;
@@ -279,8 +382,9 @@ h1{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   word-break:break-all;
   max-width:calc(100% - 44px);
-  opacity:.8;
+  opacity:.75;
   transform:rotate(0.5deg);
+  z-index:5;
 }
 .note .date{
   position:absolute;
@@ -291,29 +395,16 @@ h1{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   transform:rotate(-1deg);
   opacity:.85;
+  z-index:5;
 }
 
-/* 便签上的小装饰——回形针（部分便签） */
+/* 便签上的回形针装饰 */
 .note.clip-left .clip{
   position:absolute;
-  top:-4px; left:16px;
-  width:14px; height:28px;
-  border:2px solid #888;
-  border-bottom:none;
-  border-radius:4px 4px 0 0;
-  transform:rotate(-8deg);
-  box-shadow:0 1px 2px rgba(0,0,0,.15);
-  background:linear-gradient(90deg,#aaa,#ccc,#999);
-  -webkit-background-clip:padding-box;
-}
-.note.clip-left .clip::after{
-  content:"";
-  position:absolute;
-  bottom:0; left:2px;
-  width:6px; height:14px;
-  border:2px solid #888;
-  border-top:none;
-  border-radius:0 0 3px 3px;
+  top:-5px; left:18px;
+  width:14px; height:30px;
+  z-index:5;
+  pointer-events:none;
 }
 
 /* ========== 便签下划线效果（模拟笔记本横格） ========== */
@@ -321,7 +412,8 @@ h1{
   position:absolute;
   top:72px; left:22px; right:22px; bottom:50px;
   pointer-events:none;
-  opacity:.35;
+  opacity:.3;
+  z-index:1;
   background-image: repeating-linear-gradient(
     180deg,
     transparent 0px,
@@ -337,6 +429,7 @@ footer{
   margin-top:64px;
   color:#5a4020;
   font-size:14px;
+  position:relative;
 }
 footer .stamp{
   display:inline-block;
@@ -398,164 +491,497 @@ footer .tip{
 @media (prefers-reduced-motion:reduce){
   .note{ transition:none; opacity:1; transform:rotate(var(--rot)); }
   .note:hover{ transform:rotate(var(--rot)); }
+  #particle-canvas{ display:none; }
 }
 </style>
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <span class="eyebrow">📌 VIBE CODING · 便签墙</span>
-      <h1>随手一贴，都是成果</h1>
-      <p class="sub">我的 <strong>vibe coding</strong> 小作品，钉在这面软木墙上。<br>点开一张便签，看看里面写了什么。</p>
-    </header>
 
-    <section class="board" id="board">
+<!-- Three.js 粒子背景 -->
+<canvas id="particle-canvas"></canvas>
 
-      <!-- 1 -->
-      <a class="note clip-left" href="tiandao-guide.html">
-        <div class="clip"></div>
-        <span class="tag">影视下载</span>
-        <h3>《天道》完整下载指南</h3>
-        <div class="lines"></div>
-        <p>导演张前、王志文主演，豆瓣 9.2，网盘+磁力全源实测有效。</p>
-        <span class="path">tiandao-guide.html</span>
-        <span class="date">2026-08-15</span>
-        <div class="fold"></div>
-      </a>
+<main class="wrap">
+  <header>
+    <!-- 左侧装饰：手绘纸飞机 -->
+    <svg class="header-decor left" width="70" height="55" viewBox="0 0 70 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 28 L62 8 L52 26 L62 45 L5 25 Z" fill="#f5e6c8" stroke="#8b6914" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M52 26 L30 24" stroke="#8b6914" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M5 28 L22 26 L18 34 L5 28 Z" fill="#e8d4a8" stroke="#8b6914" stroke-width="1" stroke-linejoin="round"/>
+      <!-- 虚线轨迹 -->
+      <path d="M62 48 Q70 52 68 58" stroke="#8b6914" stroke-width="1.2" stroke-dasharray="3 3" stroke-linecap="round" fill="none"/>
+    </svg>
 
-      <!-- 2 -->
-      <a class="note" href="shiyan-xian-guide.html">
-        <span class="tag">自驾攻略</span>
-        <h3>十堰 → 西安 自驾全攻略</h3>
-        <div class="lines"></div>
-        <p>一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</p>
-        <span class="path">shiyan-xian-guide.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 右侧装饰：手绘咖啡杯 -->
+    <svg class="header-decor right" width="60" height="65" viewBox="0 0 60 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 杯身 -->
+      <path d="M10 18 L12 55 Q13 58 16 58 L40 58 Q43 58 44 55 L46 18 Z" fill="#faf0dc" stroke="#6b4423" stroke-width="1.8" stroke-linejoin="round"/>
+      <!-- 杯口 -->
+      <ellipse cx="28" cy="18" rx="18" ry="5" fill="#f0e0c0" stroke="#6b4423" stroke-width="1.8"/>
+      <!-- 杯把手 -->
+      <path d="M46 24 Q56 26 56 36 Q56 46 46 48" stroke="#6b4423" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- 热气 -->
+      <path d="M18 8 Q20 2 22 8 Q24 14 22 20" stroke="#a08060" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".7">
+        <animate attributeName="d" values="M18 8 Q20 2 22 8 Q24 14 22 20;M18 6 Q20 0 22 6 Q24 12 22 18;M18 8 Q20 2 22 8 Q24 14 22 20" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M28 6 Q30 0 32 6 Q34 12 32 18" stroke="#a08060" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".7">
+        <animate attributeName="d" values="M28 6 Q30 0 32 6 Q34 12 32 18;M28 4 Q30 -2 32 4 Q34 10 32 16;M28 6 Q30 0 32 6 Q34 12 32 18" dur="3.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M38 8 Q40 2 42 8 Q44 14 42 20" stroke="#a08060" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".7">
+        <animate attributeName="d" values="M38 8 Q40 2 42 8 Q44 14 42 20;M38 6 Q40 0 42 6 Q44 12 42 18;M38 8 Q40 2 42 8 Q44 14 42 20" dur="2.8s" repeatCount="indefinite"/>
+      </path>
+    </svg>
 
-      <!-- 3 -->
-      <a class="note clip-left" href="guizhou-travel.html">
-        <div class="clip"></div>
-        <span class="tag">贵州旅游</span>
-        <h3>多彩贵州 · 山水人文全指南</h3>
-        <div class="lines"></div>
-        <p>贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</p>
-        <span class="path">guizhou-travel.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <span class="eyebrow">VIBE CODING 成果导航</span>
+    <h1>
+      随时随地，vibe coding
+      <!-- 手绘下划线 -->
+      <svg class="underline-svg" viewBox="0 0 300 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 5 Q60 2 120 5 T230 5 T295 6" stroke="#c8884a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </h1>
+    <p class="sub">我的 vibe coding 成果导航 —— 用 AI 辅助做出来的一个个 HTML 小作品，全部收录在这一页。点击卡片即可跳转。</p>
+  </header>
 
-      <!-- 4 -->
-      <a class="note" href="vibe-coding.html">
-        <span class="tag">首页 / 落地页</span>
-        <h3>随时随地，vibe coding</h3>
-        <div class="lines"></div>
-        <p>我做的 vibe coding 落地页，打开即见。</p>
-        <span class="path">vibe-coding.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+  <section class="board" id="board">
 
-      <!-- 5 -->
-      <a class="note clip-left" href="kimi-k3-vs-glm-5.2.html">
-        <div class="clip"></div>
-        <span class="tag">大模型对比</span>
-        <h3>Kimi K3 vs GLM 5.2</h3>
-        <div class="lines"></div>
-        <p>国产开源大模型巅峰对决，一文看懂差异。</p>
-        <span class="path">kimi-k3-vs-glm-5.2.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 散置装饰：散落的图钉 -->
+    <svg class="board-decor" style="left:2%; top:8%;" width="16" height="16" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="6" fill="url(#pin-gold)" stroke="#8b6914" stroke-width=".8"/>
+      <circle cx="6" cy="6" r="1.5" fill="#fff" opacity=".6"/>
+      <defs><radialGradient id="pin-gold" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffd700"/><stop offset="50%" stop-color="#daa520"/><stop offset="100%" stop-color="#8b6914"/></radialGradient></defs>
+    </svg>
+    <svg class="board-decor" style="right:3%; top:15%;" width="14" height="14" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="6" fill="url(#pin-blue)" stroke="#2a4a7a" stroke-width=".8"/>
+      <circle cx="6" cy="6" r="1.5" fill="#fff" opacity=".6"/>
+      <defs><radialGradient id="pin-blue" cx="35%" cy="30%"><stop offset="0%" stop-color="#8ab4f8"/><stop offset="50%" stop-color="#4a7fd6"/><stop offset="100%" stop-color="#2a4a7a"/></radialGradient></defs>
+    </svg>
+    <svg class="board-decor" style="left:5%; top:45%;" width="14" height="14" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="6" fill="url(#pin-green)" stroke="#2a6a3a" stroke-width=".8"/>
+      <circle cx="6" cy="6" r="1.5" fill="#fff" opacity=".6"/>
+      <defs><radialGradient id="pin-green" cx="35%" cy="30%"><stop offset="0%" stop-color="#8fd8a0"/><stop offset="50%" stop-color="#4ab060"/><stop offset="100%" stop-color="#2a6a3a"/></radialGradient></defs>
+    </svg>
+    <svg class="board-decor" style="right:5%; bottom:12%;" width="16" height="16" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="6" fill="url(#pin-red2)" stroke="#8a2a2a" stroke-width=".8"/>
+      <circle cx="6" cy="6" r="1.5" fill="#fff" opacity=".6"/>
+      <defs><radialGradient id="pin-red2" cx="35%" cy="30%"><stop offset="0%" stop-color="#ff9090"/><stop offset="50%" stop-color="#e05050"/><stop offset="100%" stop-color="#8a2a2a"/></radialGradient></defs>
+    </svg>
 
-      <!-- 6 -->
-      <a class="note" href="erhai-east.html">
-        <span class="tag">大理洱海</span>
-        <h3>东线 · 海东秘境攻略</h3>
-        <div class="lines"></div>
-        <p>东线海东秘境，避开人潮的小众玩法。</p>
-        <span class="path">erhai-east.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 散置装饰：回形针 -->
+    <svg class="board-decor" style="right:8%; top:40%; transform:rotate(20deg);" width="12" height="28" viewBox="0 0 12 28" fill="none">
+      <path d="M2 2 L10 2 L10 22 Q10 26 6 26 Q2 26 2 22 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M4 6 L8 6 L8 20 Q8 22 6 22" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+    </svg>
+    <svg class="board-decor" style="left:3%; bottom:20%; transform:rotate(-15deg);" width="12" height="28" viewBox="0 0 12 28" fill="none">
+      <path d="M2 2 L10 2 L10 22 Q10 26 6 26 Q2 26 2 22 L2 8" stroke="#9a7a50" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M4 6 L8 6 L8 20 Q8 22 6 22" stroke="#b89a70" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+    </svg>
 
-      <!-- 7 -->
-      <a class="note clip-left" href="erhai-full.html">
-        <div class="clip"></div>
-        <span class="tag">大理洱海</span>
-        <h3>环湖攻略 · 完整版</h3>
-        <div class="lines"></div>
-        <p>洱海环湖全攻略，路线景点一次到位。</p>
-        <span class="path">erhai-full.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 1 -->
+    <a class="note clip-left" href="tiandao-guide.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：小星星 -->
+      <svg class="note-doodle" style="top:12px; right:16px; width:22px; height:22px;" viewBox="0 0 24 24" fill="#d4a017" opacity=".4" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2 L14 9 L21 9 L15.5 13.5 L17.5 21 L12 17 L6.5 21 L8.5 13.5 L3 9 L10 9 Z" fill="#d4a017" stroke="#8b6914" stroke-width=".8" stroke-linejoin="round"/>
+      </svg>
+      <span class="tag">影视下载</span>
+      <h3>《天道》完整下载指南</h3>
+      <div class="lines"></div>
+      <p>导演张前、王志文主演，豆瓣 9.2，网盘+磁力全源实测有效。</p>
+      <span class="path">tiandao-guide.html</span>
+      <span class="date">2026-08-15</span>
+      <div class="fold"></div>
+    </a>
 
-      <!-- 8 -->
-      <a class="note" href="shaxi-dense-morandi.html">
-        <span class="tag">沙溪古镇</span>
-        <h3>莫兰迪手账</h3>
-        <div class="lines"></div>
-        <p>沙溪古镇莫兰迪色系手账风页面。</p>
-        <span class="path">shaxi-dense-morandi.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 2 -->
+    <a class="note" href="shiyan-xian-guide.html">
+      <!-- 涂鸦：小心形 -->
+      <svg class="note-doodle" style="top:14px; right:18px; width:20px; height:18px;" viewBox="0 0 20 18" fill="#e57373" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 16 Q2 11 2 6 Q2 2 6 2 Q9 2 10 5 Q11 2 14 2 Q18 2 18 6 Q18 11 10 16Z" fill="#e57373" stroke="#b04040" stroke-width=".8" stroke-linejoin="round"/>
+      </svg>
+      <span class="tag">自驾攻略</span>
+      <h3>十堰 → 西安 自驾全攻略</h3>
+      <div class="lines"></div>
+      <p>一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</p>
+      <span class="path">shiyan-xian-guide.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-      <!-- 9 -->
-      <a class="note clip-left" href="shaxi-bento-craft.html">
-        <div class="clip"></div>
-        <span class="tag">沙溪古镇</span>
-        <h3>手绘网格</h3>
-        <div class="lines"></div>
-        <p>沙溪古镇手绘网格风，手账感十足。</p>
-        <span class="path">shaxi-bento-craft.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 3 -->
+    <a class="note clip-left" href="guizhou-travel.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：小山峰 -->
+      <svg class="note-doodle" style="top:12px; right:14px; width:26px; height:18px;" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 16 L8 7 L12 12 L16 4 L24 16 Z" fill="#5a8a5a" stroke="#3a5a3a" stroke-width=".8" stroke-linejoin="round" opacity=".5"/>
+      </svg>
+      <span class="tag">贵州旅游</span>
+      <h3>多彩贵州 · 山水人文全指南</h3>
+      <div class="lines"></div>
+      <p>贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</p>
+      <span class="path">guizhou-travel.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-      <!-- 10 -->
-      <a class="note" href="shaxi-roadmap-watercolor.html">
-        <span class="tag">沙溪古镇</span>
-        <h3>水彩路线图</h3>
-        <div class="lines"></div>
-        <p>沙溪古镇水彩风路线图，一眼看懂怎么逛。</p>
-        <span class="path">shaxi-roadmap-watercolor.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 4 -->
+    <a class="note" href="vibe-coding.html">
+      <!-- 涂鸦：闪电 -->
+      <svg class="note-doodle" style="top:12px; right:16px; width:18px; height:24px;" viewBox="0 0 18 24" fill="#f9a825" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 2 L3 13 L8 13 L6 22 L15 10 L10 10 L12 2 Z" fill="#f9a825" stroke="#b8760a" stroke-width=".8" stroke-linejoin="round"/>
+      </svg>
+      <span class="tag">首页 / 落地页</span>
+      <h3>随时随地，vibe coding</h3>
+      <div class="lines"></div>
+      <p>我做的 vibe coding 落地页，打开即见。</p>
+      <span class="path">vibe-coding.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-      <!-- 11 -->
-      <a class="note clip-left" href="erhai-detailed-guide.html">
-        <div class="clip"></div>
-        <span class="tag">大理洱海</span>
-        <h3>洱海 · 景点详细攻略</h3>
-        <div class="lines"></div>
-        <p>洱海景点详细拆解，深度游必备。</p>
-        <span class="path">erhai-detailed-guide.html</span>
-        <span class="date">2026-08-05</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 5 -->
+    <a class="note clip-left" href="kimi-k3-vs-glm-5.2.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：VS 符号 -->
+      <svg class="note-doodle" style="top:14px; right:16px; width:24px; height:18px;" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="12" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-weight="700" fill="#7b1fa2" stroke="#4a0072" stroke-width=".3">VS</text>
+        <circle cx="12" cy="9" r="8.5" fill="none" stroke="#7b1fa2" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/>
+      </svg>
+      <span class="tag">大模型对比</span>
+      <h3>Kimi K3 vs GLM 5.2</h3>
+      <div class="lines"></div>
+      <p>国产开源大模型巅峰对决，一文看懂差异。</p>
+      <span class="path">kimi-k3-vs-glm-5.2.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-      <!-- 12 -->
-      <a class="note" href="netlify-deploy-guide.html">
-        <span class="tag">技术工具</span>
-        <h3>Netlify 三种部署模式完全指南</h3>
-        <div class="lines"></div>
-        <p>从零到上线，三种部署方式全讲解。</p>
-        <span class="path">netlify-deploy-guide.html</span>
-        <span class="date">2026-08-04</span>
-        <div class="fold"></div>
-      </a>
+    <!-- 6 -->
+    <a class="note" href="erhai-east.html">
+      <!-- 涂鸦：小太阳 -->
+      <svg class="note-doodle" style="top:10px; right:14px; width:24px; height:24px;" viewBox="0 0 24 24" fill="#ffb300" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="5" fill="#ffb300" stroke="#e65100" stroke-width=".8"/>
+        <g stroke="#e65100" stroke-width="1.2" stroke-linecap="round">
+          <line x1="12" y1="2" x2="12" y2="5"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="5" y2="12"/>
+          <line x1="19" y1="12" x2="22" y2="12"/>
+          <line x1="5" y1="5" x2="7" y2="7"/>
+          <line x1="17" y1="17" x2="19" y2="19"/>
+          <line x1="19" y1="5" x2="17" y2="7"/>
+          <line x1="7" y1="17" x2="5" y2="19"/>
+        </g>
+      </svg>
+      <span class="tag">大理洱海</span>
+      <h3>东线 · 海东秘境攻略</h3>
+      <div class="lines"></div>
+      <p>东线海东秘境，避开人潮的小众玩法。</p>
+      <span class="path">erhai-east.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-    </section>
+    <!-- 7 -->
+    <a class="note clip-left" href="erhai-full.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：湖水波纹 -->
+      <svg class="note-doodle" style="top:14px; right:14px; width:28px; height:14px;" viewBox="0 0 28 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 7 Q4 3 8 7 T16 7 T24 7 T28 7" stroke="#1976d2" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".5"/>
+        <path d="M0 10 Q4 6 8 10 T16 10 T24 10 T28 10" stroke="#1976d2" stroke-width="1" fill="none" stroke-linecap="round" opacity=".4"/>
+      </svg>
+      <span class="tag">大理洱海</span>
+      <h3>环湖攻略 · 完整版</h3>
+      <div class="lines"></div>
+      <p>洱海环湖全攻略，路线景点一次到位。</p>
+      <span class="path">erhai-full.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
 
-    <footer>
-      <div class="stamp">共 <span class="count" id="count">0</span> 张便签</div>
-      <p class="tip">随时新增，随时 vibe coding ✨</p>
-    </footer>
-  </main>
+    <!-- 8 -->
+    <a class="note" href="shaxi-dense-morandi.html">
+      <!-- 涂鸦：调色板 -->
+      <svg class="note-doodle" style="top:12px; right:16px; width:24px; height:20px;" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2 C6 2 2 6 2 11 C2 15 5 18 9 18 L10 18 C11 18 11 17 10 16 C10 15 11 14 12 14 C16 14 19 12 20 9 C21 6 18 2 12 2Z" fill="#d7ccc8" stroke="#6d4c41" stroke-width=".8"/>
+        <circle cx="7" cy="9" r="1.5" fill="#ef9a9a"/>
+        <circle cx="11" cy="7" r="1.5" fill="#90caf9"/>
+        <circle cx="15" cy="9" r="1.5" fill="#a5d6a7"/>
+      </svg>
+      <span class="tag">沙溪古镇</span>
+      <h3>莫兰迪手账</h3>
+      <div class="lines"></div>
+      <p>沙溪古镇莫兰迪色系手账风页面。</p>
+      <span class="path">shaxi-dense-morandi.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
+
+    <!-- 9 -->
+    <a class="note clip-left" href="shaxi-bento-craft.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：网格小图 -->
+      <svg class="note-doodle" style="top:12px; right:14px; width:22px; height:22px;" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="8" height="8" fill="#ffcc80" stroke="#e65100" stroke-width=".7" rx="1"/>
+        <rect x="12" y="2" width="8" height="8" fill="#81c784" stroke="#2e7d32" stroke-width=".7" rx="1"/>
+        <rect x="2" y="12" width="8" height="8" fill="#64b5f6" stroke="#1565c0" stroke-width=".7" rx="1"/>
+        <rect x="12" y="12" width="8" height="8" fill="#ba68c8" stroke="#6a1b9a" stroke-width=".7" rx="1"/>
+      </svg>
+      <span class="tag">沙溪古镇</span>
+      <h3>手绘网格</h3>
+      <div class="lines"></div>
+      <p>沙溪古镇手绘网格风，手账感十足。</p>
+      <span class="path">shaxi-bento-craft.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
+
+    <!-- 10 -->
+    <a class="note" href="shaxi-roadmap-watercolor.html">
+      <!-- 涂鸦：指路箭头 -->
+      <svg class="note-doodle" style="top:14px; right:16px; width:26px; height:16px;" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 8 L18 8 L18 4 L24 8 L18 12 L18 8" fill="#ef6c00" stroke="#bf360c" stroke-width=".8" stroke-linejoin="round"/>
+      </svg>
+      <span class="tag">沙溪古镇</span>
+      <h3>水彩路线图</h3>
+      <div class="lines"></div>
+      <p>沙溪古镇水彩风路线图，一眼看懂怎么逛。</p>
+      <span class="path">shaxi-roadmap-watercolor.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
+
+    <!-- 11 -->
+    <a class="note clip-left" href="erhai-detailed-guide.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
+      <!-- 涂鸦：地图标记 -->
+      <svg class="note-doodle" style="top:10px; right:16px; width:20px; height:24px;" viewBox="0 0 20 24" fill="#e53935" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2 C5 2 2 6 2 10 C2 15 10 22 10 22 C10 22 18 15 18 10 C18 6 15 2 10 2Z" fill="#e53935" stroke="#b71c1c" stroke-width=".8" stroke-linejoin="round"/>
+        <circle cx="10" cy="10" r="3" fill="#fff" opacity=".8"/>
+      </svg>
+      <span class="tag">大理洱海</span>
+      <h3>洱海 · 景点详细攻略</h3>
+      <div class="lines"></div>
+      <p>洱海景点详细拆解，深度游必备。</p>
+      <span class="path">erhai-detailed-guide.html</span>
+      <span class="date">2026-08-05</span>
+      <div class="fold"></div>
+    </a>
+
+    <!-- 12 -->
+    <a class="note" href="netlify-deploy-guide.html">
+      <!-- 涂鸦：小火箭 -->
+      <svg class="note-doodle" style="top:10px; right:14px; width:22px; height:26px;" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 2 C8 5 7 10 7 15 L15 15 C15 10 14 5 11 2Z" fill="#455a64" stroke="#263238" stroke-width=".8" stroke-linejoin="round"/>
+        <circle cx="11" cy="9" r="2" fill="#81d4fa" stroke="#0277bd" stroke-width=".6"/>
+        <path d="M7 13 L3 18 L7 17 Z" fill="#78909c" stroke="#455a64" stroke-width=".6" stroke-linejoin="round"/>
+        <path d="M15 13 L19 18 L15 17 Z" fill="#78909c" stroke="#455a64" stroke-width=".6" stroke-linejoin="round"/>
+        <path d="M9 16 L11 24 L13 16" fill="#ff7043" stroke="#d84315" stroke-width=".6" stroke-linejoin="round"/>
+        <path d="M10 17 L11 22 L12 17" fill="#ffd54f" stroke="#f57f17" stroke-width=".4" stroke-linejoin="round"/>
+      </svg>
+      <span class="tag">技术工具</span>
+      <h3>Netlify 三种部署模式完全指南</h3>
+      <div class="lines"></div>
+      <p>从零到上线，三种部署方式全讲解。</p>
+      <span class="path">netlify-deploy-guide.html</span>
+      <span class="date">2026-08-04</span>
+      <div class="fold"></div>
+    </a>
+
+  </section>
+
+  <footer>
+    <div class="stamp">共 <span class="count" id="count">0</span> 张便签</div>
+    <p class="tip">随时新增，随时 vibe coding ✨</p>
+  </footer>
+</main>
+
+<!-- Three.js 粒子特效 -->
+<script>
+(function(){
+  var canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+
+  // 检测减少动画偏好
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    canvas.style.display = 'none';
+    return;
+  }
+
+  // 移动端减少粒子
+  var isMobile = window.innerWidth < 768;
+  var particleCount = isMobile ? 35 : 70;
+
+  // 动态加载 Three.js
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
+  script.onload = initParticles;
+  script.onerror = function() {
+    // 优雅降级：隐藏 canvas
+    canvas.style.display = 'none';
+  };
+  document.head.appendChild(script);
+
+  function initParticles() {
+    if (typeof THREE === 'undefined') {
+      canvas.style.display = 'none';
+      return;
+    }
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 100;
+
+    var renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+
+    // 创建粒子系统：微小尘埃/光斑
+    var particles = new THREE.BufferGeometry();
+    var positions = new Float32Array(particleCount * 3);
+    var sizes = new Float32Array(particleCount);
+    var speeds = new Float32Array(particleCount);
+    var opacities = new Float32Array(particleCount);
+    var phases = new Float32Array(particleCount);
+
+    for (var i = 0; i < particleCount; i++) {
+      // 在视口范围内随机分布
+      positions[i * 3] = (Math.random() - 0.5) * 400;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 300;
+      positions[i * 3 + 2] = Math.random() * 80 - 40;
+      sizes[i] = Math.random() * 2.5 + 0.5;
+      speeds[i] = Math.random() * 0.08 + 0.02;
+      opacities[i] = Math.random() * 0.4 + 0.15;
+      phases[i] = Math.random() * Math.PI * 2;
+    }
+
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    particles.setAttribute('aOpacity', new THREE.BufferAttribute(opacities, 1));
+
+    // 自定义着色器材质：柔和发光尘埃
+    var particleMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 }
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float aOpacity;
+        varying float vOpacity;
+        uniform float time;
+        void main() {
+          vec3 pos = position;
+          // 缓慢漂浮
+          pos.x += sin(time * 0.15 + position.y * 0.01) * 8.0;
+          pos.y += cos(time * 0.12 + position.x * 0.01) * 5.0 + time * 2.0;
+          // 超出边界循环
+          if (pos.y > 160.0) pos.y = -160.0;
+          if (pos.y < -160.0) pos.y = 160.0;
+          if (pos.x > 200.0) pos.x = -200.0;
+          if (pos.x < -200.0) pos.x = 200.0;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_PointSize = size * (300.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+          vOpacity = aOpacity;
+        }
+      `,
+      fragmentShader: `
+        varying float vOpacity;
+        void main() {
+          // 径向渐变：中心亮边缘透明
+          vec2 uv = gl_PointCoord - vec2(0.5);
+          float dist = length(uv);
+          if (dist > 0.5) discard;
+          float alpha = smoothstep(0.5, 0.0, dist) * vOpacity;
+          // 暖金色调
+          vec3 color = vec3(1.0, 0.85, 0.55);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+
+    var particleSystem = new THREE.Points(particles, particleMaterial);
+    scene.add(particleSystem);
+
+    // 鼠标视差：微小偏移，增加沉浸感
+    var mouseX = 0, mouseY = 0;
+    var targetX = 0, targetY = 0;
+
+    document.addEventListener('mousemove', function(e) {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+
+    // 窗口大小调整
+    window.addEventListener('resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // 动画循环
+    var startTime = Date.now();
+    var frameCount = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      frameCount++;
+      var elapsed = (Date.now() - startTime) / 1000;
+
+      particleMaterial.uniforms.time.value = elapsed;
+
+      // 平滑的相机视差
+      targetX += (mouseX - targetX) * 0.02;
+      targetY += (mouseY - targetY) * 0.02;
+      particleSystem.rotation.y = targetX * 0.05;
+      particleSystem.rotation.x = -targetY * 0.03;
+
+      renderer.render(scene, camera);
+    }
+
+    // 页面不可见时暂停
+    var paused = false;
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        paused = true;
+      } else {
+        if (paused) {
+          paused = false;
+          startTime = Date.now() - (particleMaterial.uniforms.time.value * 1000);
+        }
+      }
+    });
+
+    animate();
+  }
+})();
+</script>
 
 <script>
   // 统计便签数量
@@ -565,12 +991,19 @@ footer .tip{
   // 逐张入场动画
   (function(){
     var notes = document.querySelectorAll('#board .note');
+    var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      notes.forEach(function(n){ n.classList.add('show'); });
+      return;
+    }
+
     if(!('IntersectionObserver' in window)){
       notes.forEach(function(n){ n.classList.add('show'); });
       return;
     }
     // 错开入场时间
-    notes.forEach(function(n, i){
+    notes.forEach(function(n, i) {
       n.style.transitionDelay = (i * 60) + 'ms';
     });
     var io = new IntersectionObserver(function(entries){
