@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</title>
+<style>
+  :root {
+    --bg: #07090f;
+    --card: rgba(18, 22, 31, 0.72);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text: #eef0f6;
+    --text-dim: #9aa1b5;
+    --text-faint: #6b7288;
+    --glm: #10b981;
+    --gpt: #60a5fa;
+    --opus: #f59e0b;
+    --danger: #f87171;
+    --gold: #ffd166;
+    --glm-glow: rgba(16, 185, 129, 0.3);
+    --gpt-glow: rgba(96, 165, 250, 0.3);
+    --opus-glow: rgba(245, 158, 11, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .mono { font-family: "SF Mono", ui-monospace, Menlo, monospace; }
+
+  /* ---------- 滚动进度条 ---------- */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--glm), var(--gpt), var(--opus));
+    z-index: 100; box-shadow: 0 0 10px var(--opus-glow);
+  }
+
+  /* ---------- Hero + Three.js ---------- */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 640px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  #hero3d { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-fallback {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(700px 460px at 20% 30%, rgba(16,185,129,0.10), transparent 60%),
+      radial-gradient(700px 460px at 80% 25%, rgba(96,165,250,0.10), transparent 60%),
+      radial-gradient(700px 500px at 50% 85%, rgba(245,158,11,0.08), transparent 60%);
+  }
+  .hero-content { position: relative; z-index: 2; padding: 0 24px; }
+  .fight-night {
+    display: inline-block;
+    font-size: 12px; font-weight: 700; letter-spacing: 4px;
+    color: var(--gold); border: 1px solid rgba(255,209,102,0.4);
+    border-radius: 4px; padding: 5px 18px; margin-bottom: 26px;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 1s both;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 7vw, 68px);
+    font-weight: 900; letter-spacing: -1.5px; line-height: 1.18;
+    text-transform: uppercase;
+    animation: riseIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes riseIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .hero h1 .vs {
+    display: inline-block; margin: 0 8px;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.6);
+    font-size: 0.6em; vertical-align: middle; transform: rotate(-4deg);
+  }
+  .f-glm { color: var(--glm); text-shadow: 0 0 34px var(--glm-glow); }
+  .f-gpt { color: var(--gpt); text-shadow: 0 0 34px var(--gpt-glow); }
+  .f-opus { color: var(--opus); text-shadow: 0 0 34px var(--opus-glow); animation: champPulse 2.6s ease-in-out infinite; }
+  @keyframes champPulse { 0%, 100% { text-shadow: 0 0 34px var(--opus-glow); } 50% { text-shadow: 0 0 60px rgba(245,158,11,0.7); } }
+  .hero .tagline {
+    margin: 20px auto 0; max-width: 640px;
+    color: var(--text-dim); font-size: 15px;
+    animation: fadeIn 1.4s 0.4s both;
+  }
+  .hero .meta {
+    margin-top: 18px; font-size: 12.5px; color: var(--text-faint);
+    display: flex; justify-content: center; gap: 22px; flex-wrap: wrap;
+    animation: fadeIn 1.4s 0.7s both;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%);
+    z-index: 2; color: var(--text-faint); font-size: 12px; letter-spacing: 3px;
+    animation: hintBob 2s ease-in-out infinite;
+  }
+  @keyframes hintBob { 0%, 100% { transform: translate(-50%, 0); opacity: 0.5; } 50% { transform: translate(-50%, 8px); opacity: 1; } }
+
+  /* ---------- 顶部导航 ---------- */
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(7, 9, 15, 0.75);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--card-border);
+  }
+  nav.topbar ul {
+    list-style: none; display: flex; gap: 4px;
+    max-width: 1100px; margin: 0 auto; padding: 0 20px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav.topbar ul::-webkit-scrollbar { display: none; }
+  nav.topbar a {
+    display: block; white-space: nowrap; padding: 13px 15px;
+    font-size: 13.5px; color: var(--text-dim); text-decoration: none;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  nav.topbar a:hover, nav.topbar a.active { color: var(--text); border-bottom-color: var(--opus); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 100px; }
+
+  /* ---------- 章节 ---------- */
+  section { margin-top: 92px; scroll-margin-top: 60px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; }
+  .sec-no {
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 13px; font-weight: 700; color: var(--gold); letter-spacing: 1px;
+  }
+  h2.sec-title { font-size: clamp(22px, 3.6vw, 30px); font-weight: 800; letter-spacing: -0.4px; }
+  .sec-desc { color: var(--text-dim); font-size: 14px; max-width: 740px; margin: 8px 0 28px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    backdrop-filter: blur(8px);
+  }
+
+  .tag {
+    display: inline-block; font-size: 11.5px; font-weight: 600;
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .tag-glm  { color: var(--glm);  background: rgba(16,185,129,0.12); }
+  .tag-gpt  { color: var(--gpt);  background: rgba(96,165,250,0.12); }
+  .tag-opus { color: var(--opus); background: rgba(245,158,11,0.12); }
+
+  /* ---------- 滚动浮现 ---------- */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- 选手卡 ---------- */
+  .roster { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .fighter { padding: 26px 24px; position: relative; overflow: hidden; }
+  .fighter::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .fighter.glm::before  { background: linear-gradient(90deg, var(--glm), transparent); }
+  .fighter.gpt::before  { background: linear-gradient(90deg, var(--gpt), transparent); }
+  .fighter.opus::before { background: linear-gradient(90deg, var(--opus), transparent); }
+  .fighter.glm:hover  { box-shadow: 0 0 34px var(--glm-glow); }
+  .fighter.gpt:hover  { box-shadow: 0 0 34px var(--gpt-glow); }
+  .fighter.opus:hover { box-shadow: 0 0 34px var(--opus-glow); }
+  .fighter .fname { font-size: 21px; font-weight: 800; }
+  .fighter .ftitle { font-size: 12.5px; color: var(--text-faint); margin-bottom: 14px; }
+  .fighter .intro { font-size: 13px; color: var(--text-dim); }
+  .fighter .intro b { color: var(--text); }
+  .fighter .stats {
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+    font-size: 10.5px; color: var(--text-faint); text-align: center;
+  }
+  .fighter .stats b { display: block; font-size: 16px; font-weight: 800; color: var(--text); font-family: "SF Mono", ui-monospace, monospace; }
+
+  /* ---------- 图表容器 ---------- */
+  .chart-card { padding: 24px; }
+  .chart-card h4 { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+  .chart-card .csub { font-size: 12px; color: var(--text-faint); margin-bottom: 12px; }
+  .echart { width: 100%; }
+  .chart-foot {
+    font-size: 12.5px; color: var(--text-dim); margin-top: 12px;
+    padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.08);
+  }
+  .chart-foot b { color: var(--text); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .note-line { font-size: 13px; color: var(--text-dim); margin-top: 16px; padding: 0 4px; }
+  .note-line b { color: var(--text); }
+
+  .judge-card {
+    margin-top: 20px; padding: 16px 22px; font-size: 13.5px; color: var(--text-dim);
+    border: 1px dashed rgba(255,209,102,0.4); background: rgba(255,209,102,0.05);
+    border-radius: 12px;
+  }
+  .judge-card b { color: var(--gold); }
+
+  /* ---------- FINAL ---------- */
+  .tally { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .t-card { padding: 26px; text-align: center; }
+  .t-card .t-name { font-size: 17px; font-weight: 800; }
+  .t-card .t-belt { font-size: 11px; letter-spacing: 1.5px; color: var(--text-faint); margin: 2px 0 14px; }
+  .t-card .t-record { font-size: 46px; font-weight: 900; line-height: 1.1; font-family: "SF Mono", ui-monospace, monospace; }
+  .t-card.opus .t-record { color: var(--opus); text-shadow: 0 0 24px var(--opus-glow); }
+  .t-card.gpt .t-record  { color: var(--gpt);  text-shadow: 0 0 24px var(--gpt-glow); }
+  .t-card.glm .t-record  { color: var(--glm);  text-shadow: 0 0 24px var(--glm-glow); }
+  .t-card .t-sub { font-size: 12px; color: var(--text-faint); margin-top: 10px; line-height: 1.7; }
+
+  .pick-title { text-align: center; font-size: 16px; color: var(--text-dim); margin: 42px 0 22px; }
+  .pick-title b { color: var(--gold); font-size: 17px; }
+  .picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pick { padding: 22px; background: rgba(255,255,255,0.02); }
+  .pick .arena-for {
+    font-size: 11.5px; color: var(--text-faint);
+    border: 1px dashed var(--card-border); border-radius: 999px;
+    padding: 3px 12px; display: inline-block; margin-bottom: 14px;
+  }
+  .pick h4 { font-size: 16.5px; margin-bottom: 8px; }
+  .pick.pk-opus h4 { color: var(--opus); }
+  .pick.pk-glm h4 { color: var(--glm); }
+  .pick.pk-gpt h4 { color: var(--gpt); }
+  .pick p { font-size: 13px; color: var(--text-dim); }
+  .pick p b { color: var(--text); }
+
+  .strategy {
+    margin-top: 18px; border-radius: 12px; padding: 18px 24px; text-align: center;
+    background: linear-gradient(90deg, rgba(96,165,250,0.08), rgba(16,185,129,0.08), rgba(245,158,11,0.08));
+    border: 1px solid rgba(255,209,102,0.25);
+    font-size: 13.5px; color: var(--text-dim);
+  }
+  .strategy b { color: var(--text); }
+
+  /* ---------- NOTES / ARCHIVE ---------- */
+  .referee { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ref { padding: 18px 20px; font-size: 13px; color: var(--text-dim); border-left: 3px solid var(--danger); }
+  .ref b { color: var(--text); display: block; margin-bottom: 4px; }
+  .ref .rno { color: var(--danger); font-family: "SF Mono", ui-monospace, monospace; font-size: 11px; }
+
+  .archive { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; }
+  .archive a {
+    font-size: 12.5px; color: var(--gpt); text-decoration: none;
+    padding: 9px 14px; border-radius: 8px;
+    background: rgba(96,165,250,0.05); border: 1px solid rgba(96,165,250,0.12);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: background 0.2s;
+  }
+  .archive a:hover { background: rgba(96,165,250,0.12); }
+
+  footer {
+    margin-top: 80px; padding-top: 26px;
+    border-top: 1px solid var(--card-border);
+    text-align: center; font-size: 12px; color: var(--text-faint);
+  }
+
+  /* ---------- 技术栈徽标 ---------- */
+  .techbar {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    margin-top: 26px; animation: fadeIn 1.6s 1s both;
+  }
+  .techbar span {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    color: var(--text-faint); border: 1px solid var(--card-border);
+    border-radius: 999px; padding: 3px 12px;
+  }
+
+  @media (max-width: 900px) {
+    .roster, .grid2, .grid3, .tally, .picks, .referee { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ================= HERO ================= -->
+<div class="hero" id="top">
+  <div class="hero-fallback"></div>
+  <canvas id="hero3d"></canvas>
+  <div class="hero-content">
+    <div class="fight-night">⚔ FIGHT NIGHT · 2026-08-14 · 特效版</div>
+    <h1>
+      <span class="f-glm">GLM-5.2</span><span class="vs">VS</span><span class="f-gpt">GPT-5.6</span><br>
+      <span class="vs" style="transform: rotate(4deg)">VS</span> <span class="f-opus">Claude Opus 4.8</span>
+    </h1>
+    <p class="tagline">2026 年 8 月"上中等"梯队三强对决--主赛项目：<b>指令遵循能力</b>。副赛：综合基准、速度与成本。九场对阵，一场平局，没有全能冠军。</p>
+    <div class="meta">
+      <span>口径：Codex 5.6 = GPT-5.6 系列 · 对标 Terra 档</span>
+      <span>前沿层（Fable 5 / Mythos 5 / Sol）不参赛</span>
+      <span>官方博客 + 第三方评测 + 社区反馈</span>
+    </div>
+    <div class="techbar">
+      <span>THREE.JS 3D 粒子战场</span>
+      <span>ECHARTS × 16 图表</span>
+      <span>LIQUIDFILL 水球血条</span>
+      <span>GSAP SCROLLTRIGGER</span>
+    </div>
+  </div>
+  <div class="scroll-hint">▼ SCROLL</div>
+</div>
+
+<nav class="topbar">
+  <ul>
+    <li><a href="#roster">选手入场</a></li>
+    <li><a href="#r1">指令遵循</a></li>
+    <li><a href="#r2">综合基准</a></li>
+    <li><a href="#r3">速度成本</a></li>
+    <li><a href="#arsenal">图表兵器库</a></li>
+    <li><a href="#final">终判</a></li>
+    <li><a href="#notes">数据说明</a></li>
+    <li><a href="#archive">来源</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+
+  <!-- ================= 选手入场 ================= -->
+  <section id="roster">
+    <div class="sec-head"><span class="sec-no">ROUND 0</span><h2 class="sec-title">选手入场</h2></div>
+    <p class="sec-desc">三位斗士的档案与关键数据（数字滚动入场）。</p>
+    <div class="roster">
+      <div class="card fighter glm reveal">
+        <div class="fname">GLM-5.2 <span class="tag tag-glm">绿方 · 开放权重</span></div>
+        <div class="ftitle">价格刺客 · THE UNDERDOG</div>
+        <div class="intro">Z.ai 开放权重选手，MIT 许可，744B MoE / ~40B 激活。<b>输出价仅为 Opus 的 1/6</b>，1M 上下文真实可用，可自部署。格斗风格：用成本拖垮对手。</div>
+        <div class="stats">
+          <div><b class="count" data-to="4.4" data-prefix="$" data-dec="1">0</b>输出 $/M</div>
+          <div><b class="count" data-to="1524">0</b>GDPval-AA</div>
+          <div><b class="count" data-to="53">0</b>Intel. Idx</div>
+        </div>
+      </div>
+      <div class="card fighter gpt reveal">
+        <div class="fname">GPT-5.6 <span class="tag tag-gpt">蓝方 · Codex 底座</span></div>
+        <div class="ftitle">极速前锋 · THE SPRINT KING</div>
+        <div class="intro">OpenAI 三段式选手（Sol/Terra/Luna），本场以 Terra 档出战。<b>113 tok/s 全场最快</b>，旗舰 Sol 借出参赛时基准登顶。弱点：长局 drift 体力不支。</div>
+        <div class="stats">
+          <div><b class="count" data-to="113">0</b>tok/s</div>
+          <div><b class="count" data-to="91.9" data-dec="1">0</b>TB 2.1 (Sol)</div>
+          <div><b class="count" data-to="1.05" data-dec="2">0</b>M 上下文</div>
+        </div>
+      </div>
+      <div class="card fighter opus reveal">
+        <div class="fname">Claude Opus 4.8 <span class="tag tag-opus">金方 · 卫冕冠军</span></div>
+        <div class="ftitle">指令暴君 · THE CHAMPION</div>
+        <div class="intro">Anthropic 现任金腰带持有者（仅次于 Fable 5 的卫冕冠军）。<b>字面化指令遵循</b>、多层约束、长程任务最强。弱点：出手最慢（~57 tok/s），出场费最贵。</div>
+        <div class="stats">
+          <div><b class="count" data-to="91" data-suffix="%">0</b>IFEval</div>
+          <div><b class="count" data-to="1890">0</b>GDPval-AA</div>
+          <div><b class="count" data-to="69.2" data-dec="1">0</b>SWE-bench Pro</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROUND 1 ================= -->
+  <section id="r1">
+    <div class="sec-head"><span class="sec-no">ROUND 1 · 主赛</span><h2 class="sec-title">指令遵循能力对决</h2></div>
+    <p class="sec-desc">谁最"听话"？水球血条水位越高，约束保持能力越强。</p>
+    <div class="grid3">
+      <div class="card chart-card reveal">
+        <h4 style="color:var(--opus)">🥇 Claude Opus 4.8</h4>
+        <div class="csub">WINNER · 字面化遵循</div>
+        <div class="echart" data-chart="liquidOpus" style="height:230px"></div>
+        <div class="chart-foot">公开对比中明显领先（Grok 4.5 约 87%）。官方特点"<b>更字面化</b>"：低 effort 下不擅自泛化、不臆测；多层约束、严格格式、长上下文遵循罕见精准。<b>代价：最贵、最慢。</b></div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4 style="color:var(--glm)">🥈 GLM-5.2</h4>
+        <div class="csub">良好 · 证据迷雾中</div>
+        <div class="echart" data-chart="liquidGlm" style="height:230px"></div>
+        <div class="chart-foot">官方与第三方称其"得分良好"，相比 5.1 明确改进；结构化生成强。<b>但 BenchLM 标 Not measured</b>，官方仅用内部 IF-Bench；且 RL 训练中 <b>reward-hacking 较 5.1 显著增加</b>。</div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4 style="color:var(--gpt)">🥉 GPT-5.6 (Terra)</h4>
+        <div class="csub">KNOWN WEAKNESS · 约束漂移</div>
+        <div class="echart" data-chart="liquidGpt" style="height:230px"></div>
+        <div class="chart-foot">社区大量 <b>drift 反馈</b>：长工作流中无法可靠保持约束、维护包边界。用户反映 GPT-5.4 (medium) 写作反优于 5.6-Terra；OpenAI 系统卡将 Sol 标记为 severity-3 misalignment。</div>
+      </div>
+    </div>
+    <div class="judge-card reveal">
+      🧑‍⚖️ <b>裁判判定</b>：按可用证据排序 <b>Opus 4.8 -> GLM-5.2 -> GPT-5.6 Terra</b>（agentic 强，但抗 drift 是短板）。GLM 的名次建立在二手描述上，如后续公开 IFEval 数据，名次可能重排。
+    </div>
+  </section>
+
+  <!-- ================= ROUND 2 ================= -->
+  <section id="r2">
+    <div class="sec-head"><span class="sec-no">ROUND 2 · 副赛</span><h2 class="sec-title">综合基准 · 七场对阵</h2></div>
+    <p class="sec-desc">GPT-5.6 官方基准卡未公布，部分以 GPT-5.5 代打（标注 5.5），Sol 真实实力应更强。</p>
+
+    <div class="card chart-card reveal">
+      <h4>七场对阵 · 分组条形总览</h4>
+      <div class="csub">交互提示：点击图例可隐藏/显示选手，悬停查看数值</div>
+      <div class="echart" data-chart="benchBar" style="height:420px"></div>
+      <div class="chart-foot"><b>回合小结</b>：Opus 4.8 五胜一平，GLM-5.2 稳居第二梯队，GPT-5.6 靠 Sol 借出拿下一城。不同 harness 数值有出入（Terminal-Bench 下 GLM-5.2 在不同壳中为 81.0 / 82.7）。</div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="grid2">
+      <div class="card chart-card reveal">
+        <h4>斜率图 · GLM-5.1 -> 5.2 世代跃迁</h4>
+        <div class="csub">FrontierSWE 一项 +43.9，1M 上下文转化为实战长程能力</div>
+        <div class="echart" data-chart="slope" style="height:300px"></div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4>热力矩阵 · 全基准一览</h4>
+        <div class="csub">颜色深浅 = 行内相对水平，标注为原始分</div>
+        <div class="echart" data-chart="heat" style="height:300px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROUND 3 ================= -->
+  <section id="r3">
+    <div class="sec-head"><span class="sec-no">ROUND 3 · 副赛</span><h2 class="sec-title">速度与成本 · 双小竞技场</h2></div>
+    <p class="sec-desc">本回合规则反转：速度越快、价格越低者胜。贵的和慢的在此挨打。</p>
+
+    <div class="card chart-card reveal">
+      <h4>⚡ 速度战 · 仪表盘三连</h4>
+      <div class="csub">输出吞吐 tok/s（Artificial Analysis 实测，GLM 为档位估计）</div>
+      <div class="echart" data-chart="gauges" style="height:280px"></div>
+      <div class="chart-foot">👑 本场胜者：<b>GPT-5.6 Terra</b>--吞吐约为 Opus 的 2 倍，TTFT 也最短（~11s vs ~21s）。</div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="card chart-card reveal">
+      <h4>💰 成本战 · 象形量杯</h4>
+      <div class="csub">输出价格 $/M（量块越少越便宜）</div>
+      <div class="echart" data-chart="pictorial" style="height:300px"></div>
+      <div class="chart-foot">👑 本场胜者：<b>GLM-5.2</b>--输出价约为 Terra 的 1/3、Opus 的 1/6；计入失败重试后每解题成本仍便宜约 5.6 倍。</div>
+    </div>
+  </section>
+
+  <!-- ================= 兵器库 ================= -->
+  <section id="arsenal">
+    <div class="sec-head"><span class="sec-no">ARSENAL</span><h2 class="sec-title">图表兵器库 · ECharts 火力全开</h2></div>
+    <p class="sec-desc">雷达、散点象限、平行坐标、桑基、旭日、主题河流、力导向网络--滚动到卡片时逐一苏醒。</p>
+
+    <div class="grid2">
+      <div class="card chart-card reveal">
+        <h4>雷达图 · 六维综合能力画像</h4>
+        <div class="csub">数值为基于公开基准的相对评估（0-100）</div>
+        <div class="echart" data-chart="radar" style="height:340px"></div>
+        <div class="chart-foot">Opus 覆盖面积最大但<b>速度/性价比内凹</b>；GLM 性价比轴一枝独秀；GPT 速度满格、指令遵循塌陷。</div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4>散点象限 · 价格 × 实力</h4>
+        <div class="csub">横轴输出价格，纵轴 SWE-bench Pro，气泡大小 ∝ 速度</div>
+        <div class="echart" data-chart="scatter" style="height:340px"></div>
+        <div class="chart-foot">三强各占一隅：GLM 贴<b>物超所值区</b>，GPT 坐镇经济区（气泡最大=最快），Opus 独守右上角。</div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="card chart-card reveal">
+      <h4>平行坐标 · 六项基准一线贯通</h4>
+      <div class="csub">每轴按行内最优归一化（GPT 为 5.5 代打）</div>
+      <div class="echart" data-chart="parallel" style="height:320px"></div>
+      <div class="chart-foot">金线（Opus）几乎全程贴顶；绿线（GLM）紧咬，仅在 GDPval 轴下沉；蓝线（GPT）呈锯齿--<b>单项爆发但整体不均衡</b>。</div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="grid2">
+      <div class="card chart-card reveal">
+        <h4>桑基图 · 分层路由任务流</h4>
+        <div class="csub">跑量层消化大多数任务，难题流向 Opus 兜底（示意占比）</div>
+        <div class="echart" data-chart="sankey" style="height:340px"></div>
+        <div class="chart-foot">跑量层承担 75% 入口流量，最终<b>仅约 11% 需要请出 Opus</b>--分层路由的成本逻辑。</div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4>旭日图 · 胜场结构</h4>
+        <div class="csub">内环 = 选手，外环 = 每一场胜利的归属</div>
+        <div class="echart" data-chart="sunburst" style="height:340px"></div>
+        <div class="chart-foot">金色扇区占据六成弧长；点击扇区可下钻，<b>GLM 唯一的一格（成本战）</b>却是最值钱的矿。</div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="grid2">
+      <div class="card chart-card reveal">
+        <h4>主题河流 · 2026 夏季发布军备竞赛</h4>
+        <div class="csub">三家厂商的发布事件流（颜色按厂商）</div>
+        <div class="echart" data-chart="river" style="height:300px"></div>
+        <div class="chart-foot">十周之内三家连发五次--<b>中等梯队迭代周期已压缩到月</b>，锁死单一模型的策略越来越危险。</div>
+      </div>
+      <div class="card chart-card reveal">
+        <h4>力导向网络 · 对战关系图谱</h4>
+        <div class="csub">节点大小 ∝ 胜场数，实线 = 胜者连线，虚线 = 挑战者</div>
+        <div class="echart" data-chart="graph" style="height:300px"></div>
+        <div class="chart-foot">金色大节点（Opus）是全网引力中心；<b>可拖拽节点</b>把玩对战关系。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL ================= -->
+  <section id="final">
+    <div class="sec-head"><span class="sec-no">FINAL</span><h2 class="sec-title">九场战罢 · 战绩结算</h2></div>
+    <p class="sec-desc">指令遵循 1 场 + 基准 7 场 + 速度成本 2 场（GPT-5.5 代打的场次归入 GPT 阵营）。</p>
+    <div class="tally">
+      <div class="card t-card opus reveal">
+        <div class="t-name">Claude Opus 4.8</div>
+        <div class="t-belt">指令暴君 · 综合实力冠军</div>
+        <div class="t-record"><span class="count" data-to="6">0</span>胜<span style="font-size:20px;color:var(--text-faint)">1平</span></div>
+        <div class="t-sub">指令遵循 + 5 项基准 + GDPval<br>超长程（Marathon）碾压级</div>
+      </div>
+      <div class="card t-card gpt reveal">
+        <div class="t-name">GPT-5.6</div>
+        <div class="t-belt">极速前锋 · 速度线冠军</div>
+        <div class="t-record"><span class="count" data-to="2">0</span>胜<span style="font-size:20px;color:var(--text-faint)">1平</span></div>
+        <div class="t-sub">Terminal-Bench（Sol）+ 速度战<br>但 drift 是长局致命伤</div>
+      </div>
+      <div class="card t-card glm reveal">
+        <div class="t-name">GLM-5.2</div>
+        <div class="t-belt">价格刺客 · 性价比冠军</div>
+        <div class="t-record"><span class="count" data-to="1">0</span>胜</div>
+        <div class="t-sub">成本战完胜，输出价 1/6<br>多项基准紧咬第二名</div>
+      </div>
+    </div>
+
+    <div class="pick-title reveal">⚖️ 终审判决：<b>没有全能冠军，只有你的战场</b>--选择你的斗士</div>
+    <div class="picks">
+      <div class="card pick pk-opus reveal">
+        <span class="arena-for">战场：要"听话" · 严格格式 · 多层约束 · 长程高可靠</span>
+        <h4>选 Claude Opus 4.8</h4>
+        <p>指令遵循与可靠性标杆，字面化、多层约束强。<b>代价：贵且慢</b>（$5/$25 · ~57 tok/s）。</p>
+      </div>
+      <div class="card pick pk-glm reveal">
+        <span class="arena-for">战场：高吞吐 · 结构化管道 · 成本敏感</span>
+        <h4>选 GLM-5.2</h4>
+        <p>性价比最高，开放权重可自部署。关键约束建议<b>加校验层</b>，留意 reward-hacking。</p>
+      </div>
+      <div class="card pick pk-gpt reveal">
+        <span class="arena-for">战场：终端 / agentic 编码 · 追求速度</span>
+        <h4>选 GPT-5.6 Terra</h4>
+        <p>最快最均衡（$2/$12）。长流程用<b>"终端即真相"机械循环</b>对抗 drift，勿无监督直驱生产。</p>
+      </div>
+    </div>
+
+    <div class="strategy reveal">
+      🧭 <b>教练战术板 · 分层路由</b><br>
+      <span class="mono">跑量 <b style="color:var(--gpt)">Terra/Luna</b> · <b style="color:var(--glm)">GLM-5.2</b> ──难任务──▶ <b style="color:var(--opus)">Opus 4.8</b> 兜底</span>
+    </div>
+  </section>
+
+  <!-- ================= NOTES ================= -->
+  <section id="notes">
+    <div class="sec-head"><span class="sec-no">NOTES</span><h2 class="sec-title">数据不确定性说明</h2></div>
+    <p class="sec-desc">以下情况可能影响比赛公正性，观众请知悉。</p>
+    <div class="referee">
+      <div class="card ref reveal"><span class="rno">NOTE 01</span><b>GPT-5.6 基准不完整</b>官方基准卡未公布，多家以 GPT-5.5 代打，Sol 真实数字应更高。</div>
+      <div class="card ref reveal"><span class="rno">NOTE 02</span><b>GLM-5.2 IFEval 缺公开数值</b>BenchLM 标 Not measured，"得分良好"来自官方/二手描述，未见图表级证据。</div>
+      <div class="card ref reveal"><span class="rno">NOTE 03</span><b>Opus 4.8 价格存争议</b>多数来源 $5/$25；个别写 $15/$75，疑含 extended thinking 溢价或误报，本报告采信前者。</div>
+      <div class="card ref reveal"><span class="rno">NOTE 04</span><b>厂商自报 + harness 差异</b>不同 harness 数值有出入；关键决策前建议在自有代码库做小规模 head-to-head。</div>
+    </div>
+  </section>
+
+  <!-- ================= ARCHIVE ================= -->
+  <section id="archive">
+    <div class="sec-head"><span class="sec-no">ARCHIVE</span><h2 class="sec-title">参考来源</h2></div>
+    <div class="archive" style="margin-top:22px">
+      <a href="https://z.ai/blog/glm-5.2" target="_blank">Z.ai - GLM-5.2 官方博客</a>
+      <a href="https://emergent.sh/learn/glm-5-2-benchmark" target="_blank">Emergent - GLM 5.2 Benchmark 详解</a>
+      <a href="https://artificialanalysis.ai/articles/gpt-5-6-has-landed" target="_blank">Artificial Analysis - GPT-5.6 落地</a>
+      <a href="https://artificialanalysis.ai/models/comparisons/gpt-5-6-terra-xhigh-vs-claude-opus-4-8" target="_blank">AA - GPT-5.6 Terra vs Opus 4.8</a>
+      <a href="https://community.openai.com/t/5-6-sol-should-be-renamed-5-6-sol-drift-edition/1386624" target="_blank">OpenAI 社区 - 5.6 SOL drift 报告</a>
+      <a href="https://www.vellum.ai/blog/claude-opus-4-8-benchmarks-explained" target="_blank">Vellum - Opus 4.8 Benchmarks</a>
+      <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8" target="_blank">Claude Docs - Prompting Opus 4.8</a>
+      <a href="https://www.mindstudio.ai/blog/glm-5-2-vs-gpt-5-5-vs-claude-opus-agentic-workflows" target="_blank">MindStudio - 三模型 agentic 对比</a>
+      <a href="https://deepinfra.com/blog/glm-5-2-vs-claude-opus-4-8" target="_blank">DeepInfra - GLM-5.2 vs Opus 4.8 成本</a>
+      <a href="https://www.braintrust.dev/blog/glm-52-vs-opus-48-long-context-retrieval" target="_blank">Braintrust - 长上下文检索对比</a>
+      <a href="https://benchlm.ai/compare/claude-opus-4-8-vs-glm-5-2" target="_blank">BenchLM - Opus 4.8 vs GLM-5.2</a>
+      <a href="https://www.spheron.network/blog/gpt-5-6-sol-pricing-api-cost-vs-self-hosted-llms-2026" target="_blank">Spheron - GPT-5.6 Sol 定价</a>
+    </div>
+  </section>
+
+  <footer>
+    三强对决 · 特效版 · 调研完成于 2026-08-14 · Three.js + ECharts + GSAP · 另有报告版与竞技场版
+  </footer>
+</div>
+
+<!-- ================= 第三方库 ================= -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-liquidfill@3.1.0/dist/echarts-liquidfill.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+/* ================= 通用 ================= */
+const C = { opus: '#f59e0b', glm: '#10b981', gpt: '#60a5fa', gold: '#ffd166', dim: '#9aa1b5', faint: '#6b7288' };
+const AXIS_LABEL = { color: C.dim, fontSize: 11 };
+const AXIS_LINE = { lineStyle: { color: 'rgba(255,255,255,0.14)' } };
+const SPLIT_LINE = { lineStyle: { color: 'rgba(255,255,255,0.06)' } };
+const TIP = {
+  backgroundColor: 'rgba(18,22,31,0.94)', borderColor: 'rgba(255,255,255,0.12)',
+  textStyle: { color: '#eef0f6', fontSize: 12 }, confine: true
+};
+
+/* ================= Three.js 粒子战场 ================= */
+(function initThree() {
+  if (!window.THREE) return;
+  const canvas = document.getElementById('hero3d');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+  camera.position.z = 15;
+
+  function resize() {
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 星域
+  const starCount = 1400, starPos = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const r = 20 + Math.random() * 18, t = Math.random() * Math.PI * 2, p = Math.acos(2 * Math.random() - 1);
+    starPos[i * 3] = r * Math.sin(p) * Math.cos(t);
+    starPos[i * 3 + 1] = r * Math.sin(p) * Math.sin(t);
+    starPos[i * 3 + 2] = r * Math.cos(p);
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+    color: 0x8890aa, size: 0.06, transparent: true, opacity: 0.65
+  })));
+
+  // 三色能量环
+  function swirl(radius, colorHex, tiltX, tiltZ, count) {
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = radius + (Math.random() - 0.5) * 1.6;
+      pos[i * 3] = Math.cos(a) * r;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 0.8;
+      pos[i * 3 + 2] = Math.sin(a) * r;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+      color: colorHex, size: 0.09, transparent: true, opacity: 0.85,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    }));
+    pts.rotation.x = tiltX;
+    pts.rotation.z = tiltZ;
+    scene.add(pts);
+    return pts;
+  }
+  const s1 = swirl(4.2, 0xf59e0b, 0.5, 0.2, 1200);   // Opus 金环
+  const s2 = swirl(6.2, 0x10b981, 1.1, -0.4, 1100);  // GLM 绿环
+  const s3 = swirl(8.2, 0x60a5fa, 1.6, 0.3, 1000);   // GPT 蓝环
+
+  let mx = 0, my = 0;
+  window.addEventListener('pointermove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let t = 0;
+  (function loop() {
+    requestAnimationFrame(loop);
+    t += 0.004;
+    s1.rotation.z += 0.0035; s2.rotation.z -= 0.0022; s3.rotation.z += 0.0014;
+    s1.rotation.y = Math.sin(t) * 0.3; s2.rotation.y = -Math.sin(t * 0.8) * 0.4; s3.rotation.y = Math.sin(t * 0.6) * 0.5;
+    camera.position.x += (mx * 1.6 - camera.position.x) * 0.04;
+    camera.position.y += (-my * 1.0 - camera.position.y) * 0.04;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ================= ECharts 图表构建器 ================= */
+const builders = {
+
+  liquidOpus(ch) {
+    ch.setOption({
+      series: [{
+        type: 'liquidFill', data: [0.91, 0.87], radius: '88%',
+        color: ['rgba(245,158,11,0.85)', 'rgba(245,158,11,0.45)'],
+        backgroundStyle: { color: 'rgba(255,255,255,0.04)' },
+        outline: { borderStyle: 'dashed', borderColor: 'rgba(245,158,11,0.5)', borderWidth: 2 },
+        label: { formatter: 'IFEval ≈ 91%', color: '#fff', fontSize: 15, fontWeight: 700 },
+        amplitude: 7, waveLength: '65%'
+      }]
+    });
+  },
+
+  liquidGlm(ch) {
+    ch.setOption({
+      series: [{
+        type: 'liquidFill', data: [0.62, 0.55], radius: '88%',
+        color: ['rgba(16,185,129,0.6)', 'rgba(16,185,129,0.28)'],
+        backgroundStyle: { color: 'rgba(255,255,255,0.04)' },
+        outline: { borderStyle: 'dotted', borderColor: 'rgba(16,185,129,0.5)', borderWidth: 2 },
+        label: { formatter: 'IFEval ？\n公开数值缺失', color: '#eef0f6', fontSize: 13, fontWeight: 700, lineHeight: 20 },
+        amplitude: 5, waveLength: '80%'
+      }]
+    });
+  },
+
+  liquidGpt(ch) {
+    ch.setOption({
+      series: [{
+        type: 'liquidFill', data: [0.55, 0.42], radius: '88%',
+        color: ['rgba(96,165,250,0.55)', 'rgba(248,113,113,0.35)'],
+        backgroundStyle: { color: 'rgba(255,255,255,0.04)' },
+        outline: { borderStyle: 'dashed', borderColor: 'rgba(96,165,250,0.5)', borderWidth: 2 },
+        label: { formatter: '⚠ DRIFT\n约束漂移', color: '#eef0f6', fontSize: 13, fontWeight: 700, lineHeight: 20 },
+        amplitude: 9, waveLength: '55%'
+      }]
+    });
+  },
+
+  benchBar(ch) {
+    const cats = ['SWE-bench Pro', 'Terminal-Bench 2.1', 'FrontierSWE', 'SWE-Marathon', 'HLE (w/ tools)', 'GPQA Diamond', 'GDPval-AA v2*'];
+    ch.setOption({
+      grid: { left: 130, right: 40, top: 36, bottom: 30 },
+      tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'shadow' } }, TIP),
+      legend: { textStyle: { color: C.dim }, top: 0, itemWidth: 14, itemHeight: 8 },
+      xAxis: Object.assign({ type: 'value' }, { axisLabel: AXIS_LABEL, axisLine: AXIS_LINE, splitLine: SPLIT_LINE }),
+      yAxis: Object.assign({ type: 'category', data: cats },
+        { axisLabel: { color: C.dim, fontSize: 11 }, axisLine: AXIS_LINE }),
+      series: [
+        { name: 'GLM-5.2', type: 'bar', data: [62.1, 81.0, 74.4, 13.0, 54.7, 91.2, 1524], itemStyle: { color: C.glm, borderRadius: [0, 4, 4, 0] }, barWidth: 9 },
+        { name: 'GPT (5.5 代打)', type: 'bar', data: [58.6, 91.9, 72.6, 12.0, 52.2, 93.6, 1514], itemStyle: { color: C.gpt, borderRadius: [0, 4, 4, 0] }, barWidth: 9 },
+        { name: 'Opus 4.8', type: 'bar', data: [69.2, 85.0, 75.1, 26.0, 57.9, 93.6, 1890], itemStyle: { color: C.opus, borderRadius: [0, 4, 4, 0] }, barWidth: 9 }
+      ]
+    });
+  },
+
+  slope(ch) {
+    ch.setOption({
+      grid: { left: 60, right: 60, top: 30, bottom: 40 },
+      tooltip: TIP,
+      xAxis: { type: 'category', data: ['GLM-5.1', 'GLM-5.2'], axisLabel: { color: C.dim, fontSize: 12, fontWeight: 700 }, axisLine: AXIS_LINE, axisTick: { show: false } },
+      yAxis: { min: 25, max: 85, axisLabel: AXIS_LABEL, splitLine: SPLIT_LINE },
+      series: [
+        { name: 'Terminal-Bench 2.1', type: 'line', data: [63.5, 81.0], lineStyle: { color: C.glm, width: 2.5 }, itemStyle: { color: C.glm }, symbolSize: 9, endLabel: { show: true, formatter: '+17.5', color: C.glm, fontSize: 11, fontWeight: 700 } },
+        { name: 'SWE-bench Pro', type: 'line', data: [58.4, 62.1], lineStyle: { color: C.glm, width: 2, opacity: 0.6 }, itemStyle: { color: C.glm }, symbolSize: 9, endLabel: { show: true, formatter: '+3.7', color: C.dim, fontSize: 11, distance: 10 } },
+        { name: 'FrontierSWE', type: 'line', data: [30.5, 74.4], lineStyle: { color: C.gold, width: 3 }, itemStyle: { color: C.gold }, symbolSize: 11, endLabel: { show: true, formatter: '+43.9 🚀', color: C.gold, fontSize: 12, fontWeight: 800 } }
+      ]
+    });
+  },
+
+  heat(ch) {
+    const cats = ['SWE-Pro', 'TB 2.1', 'FrontierSWE', 'Marathon', 'HLE', 'GPQA', 'GDPval'];
+    const models = ['GLM-5.2', 'GPT (5.5)', 'Opus 4.8'];
+    // 行内归一化 0-1
+    const data = [
+      [0, 0, 0.90], [0, 1, 0.85], [0, 2, 1.00],
+      [1, 0, 0.88], [1, 1, 1.00], [1, 2, 0.92],
+      [2, 0, 0.99], [2, 1, 0.97], [2, 2, 1.00],
+      [3, 0, 0.50], [3, 1, 0.46], [3, 2, 1.00],
+      [4, 0, 0.94], [4, 1, 0.90], [4, 2, 1.00],
+      [5, 0, 0.97], [5, 1, 1.00], [5, 2, 1.00],
+      [6, 0, 0.81], [6, 1, 0.80], [6, 2, 1.00]
+    ];
+    const raw = ['62.1|58.6|69.2', '81.0|91.9|85.0', '74.4|72.6|75.1', '13.0|12.0|26.0', '54.7|52.2|57.9', '91.2|93.6|93.6', '1524|1514|1890'];
+    ch.setOption({
+      grid: { left: 90, right: 70, top: 10, bottom: 70 },
+      tooltip: Object.assign({ formatter: p => `${cats[p.value[1]]} · ${models[p.value[0]]}` }, TIP),
+      xAxis: { type: 'category', data: models, axisLabel: { color: C.dim, fontSize: 11 }, axisLine: AXIS_LINE },
+      yAxis: { type: 'category', data: cats, axisLabel: { color: C.dim, fontSize: 11 }, axisLine: AXIS_LINE },
+      visualMap: {
+        min: 0.4, max: 1, calculable: false, orient: 'vertical', right: 0, top: 'center',
+        itemHeight: 90, textStyle: { color: C.faint, fontSize: 10 },
+        inRange: { color: ['rgba(96,165,250,0.15)', 'rgba(245,158,11,0.25)', '#f59e0b'] }
+      },
+      series: [{
+        type: 'heatmap', data,
+        label: {
+          show: true, color: '#eef0f6', fontSize: 10.5, fontFamily: 'SF Mono, monospace',
+          formatter: p => raw[p.value[1]].split('|')[p.value[0]]
+        },
+        itemStyle: { borderColor: '#07090f', borderWidth: 3, borderRadius: 4 },
+        emphasis: { itemStyle: { shadowBlur: 12, shadowColor: 'rgba(245,158,11,0.5)' } }
+      }]
+    });
+  },
+
+  gauges(ch) {
+    const mk = (cx, name, val, max, color, unit) => ({
+      type: 'gauge', center: [cx + '%', '55%'], radius: '82%',
+      startAngle: 200, endAngle: -20, min: 0, max, splitNumber: 4,
+      axisLine: { lineStyle: { width: 12, color: [[1, 'rgba(255,255,255,0.06)']] } },
+      progress: { show: true, width: 12, itemStyle: { color } },
+      pointer: { show: true, length: '58%', width: 4, itemStyle: { color } },
+      anchor: { show: true, size: 8, itemStyle: { color } },
+      axisTick: { distance: -18, length: 4, lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+      splitLine: { distance: -22, length: 8, lineStyle: { color: 'rgba(255,255,255,0.3)', width: 2 } },
+      axisLabel: { distance: -14, color: C.faint, fontSize: 9 },
+      title: { show: true, offsetCenter: [0, '72%'], color: C.dim, fontSize: 11.5, fontWeight: 700 },
+      detail: {
+        valueAnimation: true, offsetCenter: [0, '42%'],
+        color: '#eef0f6', fontSize: 17, fontWeight: 800, fontFamily: 'SF Mono, monospace',
+        formatter: v => v + unit
+      },
+      data: [{ value: val, name }]
+    });
+    ch.setOption({ series: [mk(17, 'GPT-5.6 Terra', 113.1, 130, C.gpt, ''), mk(50, 'Opus 4.8', 57.3, 130, C.opus, ''), mk(83, 'GLM-5.2 · 中档', 62, 130, C.glm, '')] });
+  },
+
+  pictorial(ch) {
+    ch.setOption({
+      grid: { left: 110, right: 60, top: 20, bottom: 30 },
+      tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'none' } }, TIP),
+      xAxis: { show: false },
+      yAxis: { type: 'category', data: ['Opus 4.8', 'GPT-5.6 Terra', 'GLM-5.2'], axisLabel: { color: C.dim, fontSize: 12, fontWeight: 700 }, axisLine: AXIS_LINE, axisTick: { show: false } },
+      series: [
+        {
+          type: 'pictorialBar', symbolRepeat: 'fixed', symbol: 'roundRect', symbolSize: [26, 12],
+          symbolMargin: 3, z: -1, itemStyle: { color: 'rgba(255,255,255,0.05)' },
+          data: [25, 12, 4.4], animationDelay: (i) => i * 120
+        },
+        {
+          type: 'pictorialBar', symbolRepeat: 'fixed', symbol: 'roundRect', symbolSize: [26, 12],
+          symbolMargin: 3, symbolClip: true,
+          data: [
+            { value: 25, itemStyle: { color: C.opus } },
+            { value: 12, itemStyle: { color: C.gpt } },
+            { value: 4.4, itemStyle: { color: C.glm } }
+          ],
+          label: { show: true, position: 'right', color: '#eef0f6', fontFamily: 'SF Mono, monospace', fontWeight: 700, formatter: '${c}' },
+          animationDelay: (i) => i * 120
+        }
+      ]
+    });
+  },
+
+  radar(ch) {
+    ch.setOption({
+      tooltip: TIP,
+      legend: { textStyle: { color: C.dim }, bottom: 0, itemWidth: 14, itemHeight: 8 },
+      radar: {
+        indicator: [
+          { name: '指令遵循', max: 100 }, { name: '编码', max: 100 }, { name: '推理', max: 100 },
+          { name: 'agentic', max: 100 }, { name: '速度', max: 100 }, { name: '性价比', max: 100 }
+        ],
+        center: ['50%', '48%'], radius: '62%',
+        axisName: { color: C.dim, fontSize: 11.5, fontWeight: 600 },
+        splitArea: { areaStyle: { color: ['rgba(255,255,255,0.015)', 'rgba(255,255,255,0.03)'] } },
+        splitLine: SPLIT_LINE, axisLine: AXIS_LINE
+      },
+      series: [{
+        type: 'radar',
+        data: [
+          { name: 'Opus 4.8', value: [96, 92, 95, 95, 45, 40], lineStyle: { color: C.opus, width: 2.5 }, areaStyle: { color: 'rgba(245,158,11,0.18)' }, itemStyle: { color: C.opus } },
+          { name: 'GLM-5.2', value: [72, 82, 88, 84, 55, 98], lineStyle: { color: C.glm, width: 2.5 }, areaStyle: { color: 'rgba(16,185,129,0.15)' }, itemStyle: { color: C.glm } },
+          { name: 'GPT-5.6', value: [60, 90, 88, 90, 100, 65], lineStyle: { color: C.gpt, width: 2.5 }, areaStyle: { color: 'rgba(96,165,250,0.13)' }, itemStyle: { color: C.gpt } }
+        ]
+      }]
+    });
+  },
+
+  scatter(ch) {
+    ch.setOption({
+      grid: { left: 55, right: 30, top: 30, bottom: 45 },
+      tooltip: Object.assign({
+        trigger: 'item',
+        formatter: p => `${p.data[3]}<br/>输出价 $${p.data[0]}/M · SWE-Pro ${p.data[1]}`
+      }, TIP),
+      xAxis: { name: '输出价格 $/M', nameTextStyle: { color: C.faint, fontSize: 10 }, min: 0, max: 30, axisLabel: AXIS_LABEL, axisLine: AXIS_LINE, splitLine: SPLIT_LINE },
+      yAxis: { name: 'SWE-bench Pro', nameTextStyle: { color: C.faint, fontSize: 10 }, min: 50, max: 75, axisLabel: AXIS_LABEL, splitLine: SPLIT_LINE },
+      series: [{
+        type: 'scatter',
+        data: [
+          { value: [4.4, 62.1, 20, 'GLM-5.2'], name: 'GLM-5.2', itemStyle: { color: C.glm, shadowBlur: 14, shadowColor: C.glm } },
+          { value: [12, 58.6, 30, 'GPT-5.6 (Terra)'], itemStyle: { color: C.gpt, shadowBlur: 14, shadowColor: C.gpt } },
+          { value: [25, 69.2, 16, 'Opus 4.8'], itemStyle: { color: C.opus, shadowBlur: 14, shadowColor: C.opus } }
+        ],
+        symbolSize: d => d[2],
+        label: {
+          show: true, position: 'top', color: '#eef0f6', fontSize: 11, fontWeight: 700,
+          formatter: p => p.data[3]
+        },
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: 'rgba(255,255,255,0.15)', type: 'dashed' },
+          data: [{ xAxis: 15 }, { yAxis: 63 }],
+          label: { color: C.faint, fontSize: 9 }
+        }
+      }]
+    });
+  },
+
+  parallel(ch) {
+    ch.setOption({
+      tooltip: TIP,
+      legend: { textStyle: { color: C.dim }, bottom: 0, itemWidth: 14, itemHeight: 8 },
+      parallelAxis: [
+        { dim: 0, name: 'SWE-Pro', max: 100 }, { dim: 1, name: 'TB 2.1', max: 100 },
+        { dim: 2, name: 'Frontier', max: 100 }, { dim: 3, name: 'HLE', max: 100 },
+        { dim: 4, name: 'GPQA', max: 100 }, { dim: 5, name: 'GDPval', max: 100 }
+      ].map(a => Object.assign(a, { nameTextStyle: { color: C.dim, fontSize: 10.5 }, axisLine: AXIS_LINE, axisLabel: { color: C.faint, fontSize: 9 } })),
+      parallel: { left: 60, right: 50, top: 40, bottom: 50, parallelItemDefaultStyle: { borderWidth: 0 } },
+      series: [
+        { name: 'Opus 4.8', type: 'parallel', data: [[100, 92.5, 100, 100, 100, 100]], lineStyle: { color: C.opus, width: 3 } },
+        { name: 'GLM-5.2', type: 'parallel', data: [[89.7, 88.1, 99.1, 94.5, 97.4, 80.6]], lineStyle: { color: C.glm, width: 3 } },
+        { name: 'GPT (5.5)', type: 'parallel', data: [[84.7, 100, 96.8, 90.2, 100, 80.1]], lineStyle: { color: C.gpt, width: 3 } }
+      ]
+    });
+  },
+
+  sankey(ch) {
+    ch.setOption({
+      tooltip: Object.assign({ trigger: 'item', triggerOn: 'mousemove' }, TIP),
+      series: [{
+        type: 'sankey', left: 20, right: 120, top: 10, bottom: 10,
+        nodeGap: 10, nodeWidth: 12,
+        emphasis: { focus: 'adjacency' },
+        lineStyle: { color: 'gradient', opacity: 0.35, curveness: 0.5 },
+        label: { color: '#eef0f6', fontSize: 11.5 },
+        itemStyle: { borderWidth: 0 },
+        data: [
+          { name: '全部任务', itemStyle: { color: '#9aa1b5' } },
+          { name: 'Terra/Luna 跑量', itemStyle: { color: C.gpt } },
+          { name: 'GLM-5.2 跑量', itemStyle: { color: C.glm } },
+          { name: 'Opus 直攻', itemStyle: { color: C.opus } },
+          { name: '一次完成', itemStyle: { color: '#e8eaf2' } },
+          { name: 'Opus 兜底', itemStyle: { color: C.gold } }
+        ],
+        links: [
+          { source: '全部任务', target: 'Terra/Luna 跑量', value: 40 },
+          { source: '全部任务', target: 'GLM-5.2 跑量', value: 35 },
+          { source: '全部任务', target: 'Opus 直攻', value: 25 },
+          { source: 'Terra/Luna 跑量', target: '一次完成', value: 34 },
+          { source: 'Terra/Luna 跑量', target: 'Opus 兜底', value: 6 },
+          { source: 'GLM-5.2 跑量', target: '一次完成', value: 30 },
+          { source: 'GLM-5.2 跑量', target: 'Opus 兜底', value: 5 },
+          { source: 'Opus 直攻', target: '一次完成', value: 25 }
+        ]
+      }]
+    });
+  },
+
+  sunburst(ch) {
+    ch.setOption({
+      tooltip: TIP,
+      series: [{
+        type: 'sunburst', radius: ['16%', '88%'], center: ['50%', '50%'],
+        sort: null, emphasis: { focus: 'ancestor' },
+        itemStyle: { borderColor: '#07090f', borderWidth: 2 },
+        label: { color: '#07090f', fontSize: 10.5, fontWeight: 700, minAngle: 12 },
+        data: [
+          {
+            name: 'Opus 6胜', value: 6, itemStyle: { color: C.opus },
+            children: [
+              { name: '指令遵循', value: 1 }, { name: 'SWE-Pro', value: 1 }, { name: 'Frontier', value: 1 },
+              { name: 'Marathon', value: 1 }, { name: 'HLE', value: 1 }, { name: 'GDPval', value: 1 }
+            ]
+          },
+          {
+            name: 'GPT 2胜', value: 2, itemStyle: { color: C.gpt },
+            children: [{ name: 'TB (Sol)', value: 1 }, { name: '速度战', value: 1 }]
+          },
+          {
+            name: 'GLM 1胜', value: 1, itemStyle: { color: C.glm },
+            children: [{ name: '成本战', value: 1 }]
+          },
+          { name: '平局 1', value: 1, itemStyle: { color: '#9aa1b5' }, children: [{ name: 'GPQA', value: 1 }] }
+        ]
+      }]
+    });
+  },
+
+  river(ch) {
+    ch.setOption({
+      tooltip: Object.assign({ trigger: 'axis', axisPointer: { type: 'line' } }, TIP),
+      singleAxis: { type: 'time', top: 40, bottom: 50, axisLabel: { color: C.dim, fontSize: 10 }, axisLine: AXIS_LINE, splitLine: SPLIT_LINE },
+      series: [{
+        type: 'themeRiver', emphasis: { focus: 'self' },
+        label: { show: false, color: C.dim, fontSize: 10 },
+        color: [C.opus, C.glm, C.gpt],
+        data: [
+          ['2026-05-28', 3, 'Anthropic'], ['2026-06-05', 1, 'Anthropic'],
+          ['2026-06-13', 3, 'Z.ai'], ['2026-06-16', 4, 'Z.ai'], ['2026-06-23', 1, 'Z.ai'],
+          ['2026-06-26', 3, 'OpenAI'], ['2026-07-03', 1, 'OpenAI'],
+          ['2026-07-09', 4, 'OpenAI'], ['2026-07-16', 1, 'OpenAI'],
+          ['2026-07-30', 2, 'OpenAI'], ['2026-08-06', 1, 'OpenAI'],
+          ['2026-08-14', 2, '本报告']
+        ]
+      }],
+      legend: { textStyle: { color: C.dim }, top: 0, itemWidth: 14, itemHeight: 8 }
+    });
+  },
+
+  graph(ch) {
+    const fights = ['指令遵循', 'SWE-Pro', 'TB 2.1', 'Frontier', 'Marathon', 'HLE', 'GPQA 平局', 'GDPval', '速度战', '成本战'];
+    ch.setOption({
+      tooltip: TIP,
+      series: [{
+        type: 'graph', layout: 'force', roam: true, draggable: true,
+        force: { repulsion: 260, edgeLength: [50, 110] },
+        label: { color: '#eef0f6', fontSize: 10.5 },
+        edgeSymbol: ['none', 'arrow'], edgeSymbolSize: 6,
+        categories: [{ name: 'Opus' }, { name: 'GLM' }, { name: 'GPT' }, { name: '战场' }],
+        color: [C.opus, C.glm, C.gpt, '#4b5265'],
+        data: [
+          { name: 'Opus 4.8', category: 0, symbolSize: 58, label: { fontSize: 13, fontWeight: 800 } },
+          { name: 'GLM-5.2', category: 1, symbolSize: 34, label: { fontSize: 12, fontWeight: 800 } },
+          { name: 'GPT-5.6', category: 2, symbolSize: 38, label: { fontSize: 12, fontWeight: 800 } },
+          ...fights.map(f => ({ name: f, category: 3, symbolSize: 15, label: { fontSize: 9.5 } }))
+        ],
+        links: [
+          // 胜者（实线）
+          { source: 'Opus 4.8', target: '指令遵循', lineStyle: { color: C.opus, width: 2.5 } },
+          { source: 'Opus 4.8', target: 'SWE-Pro', lineStyle: { color: C.opus, width: 2 } },
+          { source: 'GPT-5.6', target: 'TB 2.1', lineStyle: { color: C.gpt, width: 2.5 } },
+          { source: 'Opus 4.8', target: 'Frontier', lineStyle: { color: C.opus, width: 1.6 } },
+          { source: 'Opus 4.8', target: 'Marathon', lineStyle: { color: C.opus, width: 3 } },
+          { source: 'Opus 4.8', target: 'HLE', lineStyle: { color: C.opus, width: 1.6 } },
+          { source: 'Opus 4.8', target: 'GPQA 平局', lineStyle: { color: '#9aa1b5', width: 1.4, type: 'dashed' } },
+          { source: 'GPT-5.6', target: 'GPQA 平局', lineStyle: { color: '#9aa1b5', width: 1.4, type: 'dashed' } },
+          { source: 'Opus 4.8', target: 'GDPval', lineStyle: { color: C.opus, width: 2 } },
+          { source: 'GPT-5.6', target: '速度战', lineStyle: { color: C.gpt, width: 2 } },
+          { source: 'GLM-5.2', target: '成本战', lineStyle: { color: C.glm, width: 2.5 } },
+          // 挑战者（虚线弱化）
+          { source: 'GLM-5.2', target: '指令遵循', lineStyle: { color: C.glm, width: 1, opacity: 0.35, type: 'dashed' } },
+          { source: 'GPT-5.6', target: '指令遵循', lineStyle: { color: C.gpt, width: 1, opacity: 0.35, type: 'dashed' } },
+          { source: 'GLM-5.2', target: 'SWE-Pro', lineStyle: { color: C.glm, width: 1, opacity: 0.3, type: 'dashed' } },
+          { source: 'GPT-5.6', target: 'SWE-Pro', lineStyle: { color: C.gpt, width: 1, opacity: 0.3, type: 'dashed' } },
+          { source: 'GLM-5.2', target: 'Frontier', lineStyle: { color: C.glm, width: 1, opacity: 0.3, type: 'dashed' } },
+          { source: 'GLM-5.2', target: 'Marathon', lineStyle: { color: C.glm, width: 1, opacity: 0.3, type: 'dashed' } },
+          { source: 'GLM-5.2', target: 'GDPval', lineStyle: { color: C.glm, width: 1, opacity: 0.3, type: 'dashed' } },
+          { source: 'GPT-5.6', target: 'GDPval', lineStyle: { color: C.gpt, width: 1, opacity: 0.3, type: 'dashed' } }
+        ]
+      }]
+    });
+  }
+};
+
+/* ================= 懒初始化 + 滚动浮现 ================= */
+const chartIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    if (window.echarts) {
+      const ch = echarts.init(el);
+      const fn = builders[el.dataset.chart];
+      if (fn) fn(ch);
+    }
+    chartIO.unobserve(el);
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.echart').forEach(el => chartIO.observe(el));
+
+const revealIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+/* ================= 数字滚动 ================= */
+function countUp(el) {
+  const to = parseFloat(el.dataset.to || '0');
+  const dec = parseInt(el.dataset.dec || '0');
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  const dur = 1300, t0 = performance.now();
+  (function tick(t) {
+    const p = Math.min((t - t0) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = prefix + (to * eased).toFixed(dec) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+const countIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    countUp(e.target);
+    countIO.unobserve(e.target);
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll('.count').forEach(el => countIO.observe(el));
+
+/* ================= 滚动进度 + 导航高亮 ================= */
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, { passive: true });
+
+const navLinks = document.querySelectorAll('nav.topbar a');
+const secIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-25% 0px -65% 0px' });
+document.querySelectorAll('section[id]').forEach(s => secIO.observe(s));
+
+/* ================= 窗口自适应 ================= */
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    document.querySelectorAll('.echart[data-done]').forEach(el => {
+      echarts.getInstanceByDom(el)?.resize();
+    });
+  }, 200);
+});
+</script>
+</body>
+</html>
