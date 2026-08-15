@@ -255,7 +255,7 @@ h1 .underline-svg{
   z-index:2;
 }
 
-/* 胶带（顶部） — 更真实的纸胶带质感 */
+/* 胶带（顶部） — 暖黄色和纸胶带，统一单色调 */
 .note::before{
   content:"";
   position:absolute;
@@ -264,34 +264,32 @@ h1 .underline-svg{
   transform:translateX(-50%) rotate(calc(var(--rot) * -0.5));
   width:76px;
   height:24px;
-  background:
-    linear-gradient(180deg,
-      rgba(255,255,255,.5) 0%,
-      rgba(255,255,255,.28) 45%,
-      rgba(255,255,255,.22) 55%,
-      rgba(255,255,255,.48) 100%);
-  border-left:1px solid rgba(255,255,255,.35);
-  border-right:1px solid rgba(255,255,255,.35);
+  background-color:rgba(255, 210, 80, 0.82);
+  border-left:1px solid rgba(255,195,60,.55);
+  border-right:1px solid rgba(255,195,60,.55);
   box-shadow:
-    0 2px 5px rgba(0,0,0,.12),
-    inset 0 0 10px rgba(255,255,255,.25);
-  /* 胶带纤维纹理 */
+    0 2px 5px rgba(0,0,0,.15),
+    inset 0 0 10px rgba(255,255,255,.2);
+  /* 纸胶带纤维纹理 */
   background-image:
     repeating-linear-gradient(
       90deg,
-      rgba(180,160,120,.08) 0px,
-      rgba(180,160,120,.08) 1px,
+      rgba(180,140,40,.14) 0px,
+      rgba(180,140,40,.14) 1px,
       transparent 1px,
       transparent 3px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(200,180,140,.06) 0px,
-      rgba(200,180,140,.06) 1px,
+      rgba(200,160,60,.1) 0px,
+      rgba(200,160,60,.1) 1px,
       transparent 1px,
       transparent 2px
-    );
-  opacity:.9;
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255,.35) 0%,
+      rgba(255,255,255,.12) 50%,
+      rgba(255,255,255,.28) 100%);
   z-index:3;
 }
 
@@ -315,91 +313,7 @@ h1 .underline-svg{
 }
 
 
-/* 胶带 3 色循环（叠加在默认透明胶带上） */
-/* 暖黄和纸胶带 */
-.note-1::before,
-.note-4::before,
-.note-7::before,
-.note-10::before{
-  background-color:rgba(255, 215, 100, 0.55);
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(180,140,40,.12) 0px,
-      rgba(180,140,40,.12) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(200,160,60,.08) 0px,
-      rgba(200,160,60,.08) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    linear-gradient(180deg,
-      rgba(255,255,255,.35) 0%,
-      rgba(255,255,255,.15) 50%,
-      rgba(255,255,255,.3) 100%);
-  border-left:1px solid rgba(255,200,80,.4);
-  border-right:1px solid rgba(255,200,80,.4);
-}
-/* 樱花粉胶带 */
-.note-2::before,
-.note-5::before,
-.note-8::before,
-.note-11::before{
-  background-color:rgba(255, 170, 185, 0.5);
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(180,80,100,.12) 0px,
-      rgba(180,80,100,.12) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(200,100,120,.08) 0px,
-      rgba(200,100,120,.08) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    linear-gradient(180deg,
-      rgba(255,255,255,.35) 0%,
-      rgba(255,255,255,.15) 50%,
-      rgba(255,255,255,.3) 100%);
-  border-left:1px solid rgba(255,150,170,.4);
-  border-right:1px solid rgba(255,150,170,.4);
-}
-/* 薄荷绿胶带 */
-.note-3::before,
-.note-6::before,
-.note-9::before,
-.note-12::before{
-  background-color:rgba(150, 210, 170, 0.5);
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(60,140,90,.12) 0px,
-      rgba(60,140,90,.12) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(80,160,110,.08) 0px,
-      rgba(80,160,110,.08) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    linear-gradient(180deg,
-      rgba(255,255,255,.35) 0%,
-      rgba(255,255,255,.15) 50%,
-      rgba(255,255,255,.3) 100%);
-  border-left:1px solid rgba(120,200,150,.4);
-  border-right:1px solid rgba(120,200,150,.4);
-}
+/* 胶带统一为暖黄色，无多色循环（所有便签共用 .note::before 基类样式） */
 /* 右下角折角 — 更立体 */
 .note .fold{
   position:absolute;
