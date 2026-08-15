@@ -118,6 +118,38 @@
   }
   .card:hover .arrow{background:var(--grad);color:#08131f;border-color:transparent}
 
+  /* 右上角切换按钮（玻璃拟态） */
+  .switch-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:100;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.3px;
+    transition:all .25s ease;
+  }
+  .switch-btn:hover{
+    background:rgba(255,255,255,.1);
+    border-color:rgba(255,255,255,.2);
+    transform:translateY(-1px);
+  }
+  .switch-btn svg{ flex-shrink:0; }
+  @media (max-width:640px){
+    .switch-btn{ top:12px; right:12px; padding:7px 12px; font-size:12px; }
+  }
+
   footer{text-align:center;color:#5a6278;font-size:13px;margin-top:56px}
   footer code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:6px;color:#9aa3bd}
 
@@ -128,6 +160,10 @@
 </style>
 </head>
 <body>
+  <a class="switch-btn" href="index2.html" aria-label="切换到便签墙风格">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    便签墙
+  </a>
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
@@ -157,8 +193,8 @@
         <span class="arrow">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
         </span>
-        <h3>中等模型三强对决 · 特效版</h3>
-        <p>GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8 三强巅峰对决，霓虹特效沉浸式对比。</p>
+        <h3>三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</h3>
+        <p>2026 年 8 月"上中等"梯队三强对决——指令遵循、综合基准、速度与成本，九场对阵一场平局。</p>
         <div class="path-row"><div class="path">model-showdown.html</div><span class="date">2026-08-15</span></div>
       </a>
 
