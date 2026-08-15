@@ -220,19 +220,19 @@ h1 .underline-svg{
   will-change:transform;
 }
 
-/* 每张便签不同颜色 + 轻微旋转 */
-.note:nth-child(1){ background-color:#fff8c5; --rot:-2.5deg; --pin-x:40% }
-.note:nth-child(2){ background-color:#ffd6d6; --rot:1.8deg;  --pin-x:55% }
-.note:nth-child(3){ background-color:#cde8d6; --rot:-1.2deg; --pin-x:48% }
-.note:nth-child(4){ background-color:#d6e4ff; --rot:2.2deg;  --pin-x:42% }
-.note:nth-child(5){ background-color:#ffe4b8; --rot:-3deg;   --pin-x:58% }
-.note:nth-child(6){ background-color:#e8d5f5; --rot:1.5deg;  --pin-x:35% }
-.note:nth-child(7){ background-color:#fff8c5; --rot:-0.8deg; --pin-x:52% }
-.note:nth-child(8){ background-color:#ffd6d6; --rot:2.8deg;  --pin-x:45% }
-.note:nth-child(9){ background-color:#cde8d6; --rot:-2deg;   --pin-x:60% }
-.note:nth-child(10){ background-color:#d6e4ff; --rot:0.8deg; --pin-x:38% }
-.note:nth-child(11){ background-color:#ffe4b8; --rot:-1.8deg; --pin-x:50% }
-.note:nth-child(12){ background-color:#e8d5f5; --rot:2.5deg; --pin-x:56% }
+/* 每张便签不同颜色 + 轻微旋转（用序号类替代 nth-child，避免装饰元素干扰） */
+.note-1{ background-color:#fff8c5; --rot:-2.5deg; --pin-x:40% }
+.note-2{ background-color:#ffd6d6; --rot:1.8deg;  --pin-x:55% }
+.note-3{ background-color:#cde8d6; --rot:-1.2deg; --pin-x:48% }
+.note-4{ background-color:#d6e4ff; --rot:2.2deg;  --pin-x:42% }
+.note-5{ background-color:#ffe4b8; --rot:-3deg;   --pin-x:58% }
+.note-6{ background-color:#e8d5f5; --rot:1.5deg;  --pin-x:35% }
+.note-7{ background-color:#fff8c5; --rot:-0.8deg; --pin-x:52% }
+.note-8{ background-color:#ffd6d6; --rot:2.8deg;  --pin-x:45% }
+.note-9{ background-color:#cde8d6; --rot:-2deg;   --pin-x:60% }
+.note-10{ background-color:#d6e4ff; --rot:0.8deg; --pin-x:38% }
+.note-11{ background-color:#ffe4b8; --rot:-1.8deg; --pin-x:50% }
+.note-12{ background-color:#e8d5f5; --rot:2.5deg; --pin-x:56% }
 
 .note{ transform:rotate(var(--rot)); }
 
@@ -314,6 +314,92 @@ h1 .underline-svg{
   z-index:4;
 }
 
+
+/* 胶带 3 色循环（叠加在默认透明胶带上） */
+/* 暖黄和纸胶带 */
+.note-1::before,
+.note-4::before,
+.note-7::before,
+.note-10::before{
+  background-color:rgba(255, 215, 100, 0.55);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(180,140,40,.12) 0px,
+      rgba(180,140,40,.12) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(200,160,60,.08) 0px,
+      rgba(200,160,60,.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255,.35) 0%,
+      rgba(255,255,255,.15) 50%,
+      rgba(255,255,255,.3) 100%);
+  border-left:1px solid rgba(255,200,80,.4);
+  border-right:1px solid rgba(255,200,80,.4);
+}
+/* 樱花粉胶带 */
+.note-2::before,
+.note-5::before,
+.note-8::before,
+.note-11::before{
+  background-color:rgba(255, 170, 185, 0.5);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(180,80,100,.12) 0px,
+      rgba(180,80,100,.12) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(200,100,120,.08) 0px,
+      rgba(200,100,120,.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255,.35) 0%,
+      rgba(255,255,255,.15) 50%,
+      rgba(255,255,255,.3) 100%);
+  border-left:1px solid rgba(255,150,170,.4);
+  border-right:1px solid rgba(255,150,170,.4);
+}
+/* 薄荷绿胶带 */
+.note-3::before,
+.note-6::before,
+.note-9::before,
+.note-12::before{
+  background-color:rgba(150, 210, 170, 0.5);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(60,140,90,.12) 0px,
+      rgba(60,140,90,.12) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(80,160,110,.08) 0px,
+      rgba(80,160,110,.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255,.35) 0%,
+      rgba(255,255,255,.15) 50%,
+      rgba(255,255,255,.3) 100%);
+  border-left:1px solid rgba(120,200,150,.4);
+  border-right:1px solid rgba(120,200,150,.4);
+}
 /* 右下角折角 — 更立体 */
 .note .fold{
   position:absolute;
@@ -399,13 +485,47 @@ h1 .underline-svg{
 }
 
 /* 便签上的回形针装饰 */
-.note.clip-left .clip{
+.note .clip{
   position:absolute;
-  top:-5px; left:18px;
+  top:-5px;
   width:14px; height:30px;
   z-index:5;
   pointer-events:none;
 }
+.note.clip-left .clip{ left:18px; }
+.note.clip-right .clip{ right:18px; transform:scaleX(-1); }
+
+/* 回形针 3 色循环：银(A) / 金(B) / 玫瑰金(C)
+   第1,4,7,10 → 不锈钢银
+   第2,5,8,11 → 金色
+   第3,6,9,12 → 玫瑰金/铜色 */
+/* 银色系 */
+.note-1 .clip path:first-child,
+.note-4 .clip path:first-child,
+.note-7 .clip path:first-child,
+.note-10 .clip path:first-child{ stroke:#a8a8a8; }
+.note-1 .clip path:last-child,
+.note-4 .clip path:last-child,
+.note-7 .clip path:last-child,
+.note-10 .clip path:last-child{ stroke:#c8c8c8; }
+/* 金色系 */
+.note-2 .clip path:first-child,
+.note-5 .clip path:first-child,
+.note-8 .clip path:first-child,
+.note-11 .clip path:first-child{ stroke:#c9a227; }
+.note-2 .clip path:last-child,
+.note-5 .clip path:last-child,
+.note-8 .clip path:last-child,
+.note-11 .clip path:last-child{ stroke:#e8c547; }
+/* 玫瑰金/铜色 */
+.note-3 .clip path:first-child,
+.note-6 .clip path:first-child,
+.note-9 .clip path:first-child,
+.note-12 .clip path:first-child{ stroke:#b87333; }
+.note-3 .clip path:last-child,
+.note-6 .clip path:last-child,
+.note-9 .clip path:last-child,
+.note-12 .clip path:last-child{ stroke:#d4956a; }
 
 /* ========== 便签下划线效果（模拟笔记本横格） ========== */
 .note .lines{
@@ -577,7 +697,7 @@ footer .tip{
     </svg>
 
     <!-- 1 -->
-    <a class="note clip-left" href="tiandao-guide.html">
+    <a class="note note-1 clip-left" href="tiandao-guide.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -596,7 +716,11 @@ footer .tip{
     </a>
 
     <!-- 2 -->
-    <a class="note" href="shiyan-xian-guide.html">
+    <a class="note note-2 clip-right" href="shiyan-xian-guide.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：小心形 -->
       <svg class="note-doodle" style="top:14px; right:18px; width:20px; height:18px;" viewBox="0 0 20 18" fill="#e57373" xmlns="http://www.w3.org/2000/svg">
         <path d="M10 16 Q2 11 2 6 Q2 2 6 2 Q9 2 10 5 Q11 2 14 2 Q18 2 18 6 Q18 11 10 16Z" fill="#e57373" stroke="#b04040" stroke-width=".8" stroke-linejoin="round"/>
@@ -611,7 +735,7 @@ footer .tip{
     </a>
 
     <!-- 3 -->
-    <a class="note clip-left" href="guizhou-travel.html">
+    <a class="note note-3 clip-left" href="guizhou-travel.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -630,7 +754,11 @@ footer .tip{
     </a>
 
     <!-- 4 -->
-    <a class="note" href="vibe-coding.html">
+    <a class="note note-4 clip-right" href="vibe-coding.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：闪电 -->
       <svg class="note-doodle" style="top:12px; right:16px; width:18px; height:24px;" viewBox="0 0 18 24" fill="#f9a825" xmlns="http://www.w3.org/2000/svg">
         <path d="M11 2 L3 13 L8 13 L6 22 L15 10 L10 10 L12 2 Z" fill="#f9a825" stroke="#b8760a" stroke-width=".8" stroke-linejoin="round"/>
@@ -645,7 +773,7 @@ footer .tip{
     </a>
 
     <!-- 5 -->
-    <a class="note clip-left" href="kimi-k3-vs-glm-5.2.html">
+    <a class="note note-5 clip-left" href="kimi-k3-vs-glm-5.2.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -665,7 +793,11 @@ footer .tip{
     </a>
 
     <!-- 6 -->
-    <a class="note" href="erhai-east.html">
+    <a class="note note-6 clip-right" href="erhai-east.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：小太阳 -->
       <svg class="note-doodle" style="top:10px; right:14px; width:24px; height:24px;" viewBox="0 0 24 24" fill="#ffb300" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="5" fill="#ffb300" stroke="#e65100" stroke-width=".8"/>
@@ -690,7 +822,7 @@ footer .tip{
     </a>
 
     <!-- 7 -->
-    <a class="note clip-left" href="erhai-full.html">
+    <a class="note note-7 clip-left" href="erhai-full.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -710,7 +842,11 @@ footer .tip{
     </a>
 
     <!-- 8 -->
-    <a class="note" href="shaxi-dense-morandi.html">
+    <a class="note note-8 clip-right" href="shaxi-dense-morandi.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：调色板 -->
       <svg class="note-doodle" style="top:12px; right:16px; width:24px; height:20px;" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 2 C6 2 2 6 2 11 C2 15 5 18 9 18 L10 18 C11 18 11 17 10 16 C10 15 11 14 12 14 C16 14 19 12 20 9 C21 6 18 2 12 2Z" fill="#d7ccc8" stroke="#6d4c41" stroke-width=".8"/>
@@ -728,7 +864,7 @@ footer .tip{
     </a>
 
     <!-- 9 -->
-    <a class="note clip-left" href="shaxi-bento-craft.html">
+    <a class="note note-9 clip-left" href="shaxi-bento-craft.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -750,7 +886,11 @@ footer .tip{
     </a>
 
     <!-- 10 -->
-    <a class="note" href="shaxi-roadmap-watercolor.html">
+    <a class="note note-10 clip-right" href="shaxi-roadmap-watercolor.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：指路箭头 -->
       <svg class="note-doodle" style="top:14px; right:16px; width:26px; height:16px;" viewBox="0 0 26 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 8 L18 8 L18 4 L24 8 L18 12 L18 8" fill="#ef6c00" stroke="#bf360c" stroke-width=".8" stroke-linejoin="round"/>
@@ -765,7 +905,7 @@ footer .tip{
     </a>
 
     <!-- 11 -->
-    <a class="note clip-left" href="erhai-detailed-guide.html">
+    <a class="note note-11 clip-left" href="erhai-detailed-guide.html">
       <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
@@ -785,7 +925,11 @@ footer .tip{
     </a>
 
     <!-- 12 -->
-    <a class="note" href="netlify-deploy-guide.html">
+    <a class="note note-12 clip-right" href="netlify-deploy-guide.html">
+      <svg class="clip" viewBox="0 0 14 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L12 2 L12 24 Q12 28 7 28 Q2 28 2 24 L2 8" stroke="#888" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M4 6 L10 6 L10 22 Q10 24 7 24" stroke="#aaa" stroke-width="1" fill="none" stroke-linecap="round" opacity=".7"/>
+      </svg>
       <!-- 涂鸦：小火箭 -->
       <svg class="note-doodle" style="top:10px; right:14px; width:22px; height:26px;" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M11 2 C8 5 7 10 7 15 L15 15 C15 10 14 5 11 2Z" fill="#455a64" stroke="#263238" stroke-width=".8" stroke-linejoin="round"/>
