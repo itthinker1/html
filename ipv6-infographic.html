@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPv6 一图看懂 · 下一代互联网协议</title>
+<style>
+  :root{--bg:#f7f8fb;--ink:#1a2332;--muted:#5a6a85;--accent:#1a56db;--line:#e3e8f0}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;
+  }
+  main{max-width:760px;margin:0 auto;padding:40px 20px 64px}
+  .topbar{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .title{font-size:clamp(22px,4.5vw,30px);font-weight:800;letter-spacing:.5px}
+  .title .tag{
+    display:inline-block;vertical-align:middle;font-size:12px;font-weight:600;letter-spacing:1px;
+    color:var(--accent);background:rgba(26,86,219,.08);
+    border:1px solid rgba(26,86,219,.25);border-radius:999px;padding:3px 10px;margin-left:10px;
+  }
+  .sub{color:var(--muted);font-size:14px}
+  .frame{
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;
+    box-shadow:0 12px 40px -18px rgba(20,40,90,.18);
+    padding:12px;
+  }
+  .frame img{display:block;width:100%;height:auto;border-radius:10px}
+  .caption{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
+  .caption a{color:var(--accent);text-decoration:none}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px}
+</style>
+</head>
+<body>
+<main>
+  <div class="topbar">
+    <h1 class="title">IPv6 一图看懂<span class="tag">下一代互联网协议</span></h1>
+    <span class="sub">One Chart · Understand IPv6</span>
+  </div>
+  <div class="frame">
+    <img src="images/ipv6-infographic.jpg" alt="IPv6 一图看懂信息图：什么是IPv6、核心优势、IPv4 vs IPv6 对比、过渡技术、总结">
+  </div>
+  <p class="caption">128 位地址 · 无需 NAT · 内置 IPsec · SLAAC —— 物联网与未来互联网的基石</p>
+</main>
+<footer>vibe coding 成果 · IPv6 一图看懂</footer>
+</body>
+</html>
