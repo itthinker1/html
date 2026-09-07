@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四句真话，读懂职场的人情与规矩 · 双风格</title>
+<style>
+/* =========================================================
+   全局重置 & 基础
+   ========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  /* 默认 — 风格A 简约雅致 */
+  --bg: #f7f3ea;
+  --bg-soft: #efe8d8;
+  --text-primary: #2c261e;
+  --text-secondary: #5a5040;
+  --text-muted: #7a6f5a;
+  --text-accent: #8a7a5a;
+  --accent: #c9a96e;
+  --accent-soft: #d4c8a8;
+  --accent-light: #e8dec4;
+  --border: #d4c8a8;
+  --border-dashed: #d4c8a8;
+  --hero-border-top: #c9a96e;
+  --hero-border-bottom: #d4c8a8;
+  --footer-bg: transparent;
+  --footer-border: #c9a96e;
+  --source-border: #e8e0cc;
+  --source-text: #7a6f5a;
+  --quote-mark: #c9a96e;
+  --toggle-bg: #efe8d8;
+  --toggle-thumb: #c9a96e;
+  --toggle-text: #7a6f5a;
+  --toggle-text-active: #fff;
+  --toggle-icon: #a89878;
+  --toggle-icon-active: #fff;
+  --font-heading: "Songti SC", "SimSun", "STSong", "Source Han Serif SC", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-quote: "Songti SC", "SimSun", "Kaiti SC", "KaiTi", serif;
+  --font-num: "Songti SC", "SimSun", serif;
+}
+
+/* 风格B 商务杂志 */
+body.style-b {
+  --bg: #14130f;
+  --bg-soft: #1a1914;
+  --text-primary: #f0e6c8;
+  --text-secondary: #b8ad90;
+  --text-muted: #9a9078;
+  --text-accent: #c9a96e;
+  --accent: #c9a96e;
+  --accent-soft: rgba(201, 169, 110, 0.3);
+  --accent-light: rgba(201, 169, 110, 0.15);
+  --border: rgba(201, 169, 110, 0.2);
+  --border-dashed: rgba(201, 169, 110, 0.2);
+  --hero-border-top: transparent;
+  --hero-border-bottom: transparent;
+  --footer-bg: rgba(201, 169, 110, 0.08);
+  --footer-border: #c9a96e;
+  --source-border: rgba(201, 169, 110, 0.15);
+  --source-text: #9a9078;
+  --quote-mark: #c9a96e;
+  --toggle-bg: #1f1d17;
+  --toggle-thumb: #c9a96e;
+  --toggle-text: #9a9078;
+  --toggle-text-active: #14130f;
+  --toggle-icon: #7a7058;
+  --toggle-icon-active: #14130f;
+  --font-heading: "Songti SC", "SimSun", "STSong", "Source Han Serif SC", serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-quote: "Songti SC", "Kaiti SC", "KaiTi", "STSong", serif;
+  --font-num: "Times New Roman", "Songti SC", serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  transition: background-color 0.6s ease, color 0.6s ease;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 风格B的装饰边框 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
+  border: 1px solid transparent;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.6s ease;
+}
+body.style-b::before {
+  border-color: rgba(201, 169, 110, 0.15);
+}
+
+/* =========================================================
+   右上角切换控件
+   ========================================================= */
+.style-switcher {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 4px;
+  background: var(--toggle-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+body.style-b .style-switcher {
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+.switch-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--toggle-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 0.4s ease, background-color 0.4s ease;
+  font-family: var(--font-body);
+  position: relative;
+  z-index: 2;
+  min-width: 64px;
+}
+
+.switch-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--toggle-icon);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.4s ease;
+}
+
+.switch-btn.active {
+  color: var(--toggle-text-active);
+  background: var(--toggle-thumb);
+}
+
+.switch-btn.active svg {
+  stroke: var(--toggle-icon-active);
+}
+
+/* =========================================================
+   主容器
+   ========================================================= */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px 40px 80px;
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================================
+   Hero 区
+   ========================================================= */
+.hero {
+  padding: 50px 0 60px;
+  position: relative;
+  text-align: center;
+  border-top: 2px solid var(--hero-border-top);
+  border-bottom: 1px solid var(--hero-border-bottom);
+  margin-bottom: 0;
+  transition: border-color 0.6s ease, padding 0.4s ease, text-align 0.4s ease;
+}
+
+body.style-b .hero {
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+  padding: 60px 0 80px;
+}
+
+/* Eyebrow — 两种风格不同文字 */
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  transition: color 0.6s ease;
+}
+
+.eyebrow-a { display: inline; }
+.eyebrow-b { display: none; }
+
+body.style-b .eyebrow-a { display: none; }
+body.style-b .eyebrow-b {
+  display: inline;
+  font-size: 11px;
+  letter-spacing: 8px;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+.hero h1 {
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+  transition: font-size 0.4s ease, font-weight 0.4s ease, color 0.6s ease,
+              margin-bottom 0.4s ease, line-height 0.4s ease, text-align 0.4s ease;
+}
+
+body.style-b .hero h1 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 30px;
+  text-align: left;
+  background: linear-gradient(135deg, #f0e6c8 0%, #c9a96e 50%, #f0e6c8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 副标题 — 两种风格不同文字 */
+.subtitle-a {
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  font-family: var(--font-heading);
+  display: block;
+  transition: color 0.6s ease;
+}
+
+.subtitle-b {
+  display: none;
+}
+
+body.style-b .subtitle-a { display: none; }
+body.style-b .subtitle-b {
+  display: block;
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.9;
+  border-left: 2px solid var(--accent);
+  padding-left: 20px;
+  text-align: left;
+  font-family: var(--font-body);
+}
+
+/* =========================================================
+   核心观点列表
+   ========================================================= */
+.points {
+  list-style: none;
+  padding: 0;
+}
+
+.point {
+  display: flex;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px dashed var(--border-dashed);
+  transition: gap 0.4s ease, padding 0.4s ease, border-color 0.6s ease;
+}
+
+body.style-b .point {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 40px;
+  padding: 50px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+
+.point:last-child { border-bottom: none; }
+
+/* 数字 — 两种风格不同显示 */
+.point-num {
+  flex-shrink: 0;
+  width: 56px;
+  font-family: var(--font-num);
+  color: var(--accent);
+  font-weight: 300;
+  line-height: 1;
+  text-align: center;
+  padding-top: 4px;
+  transition: width 0.4s ease, color 0.6s ease,
+              font-weight 0.4s ease, text-align 0.4s ease, padding-top 0.4s ease;
+}
+
+.num-cn {
+  display: inline;
+  font-size: 42px;
+  transition: font-size 0.4s ease;
+}
+.num-ar {
+  display: none;
+}
+
+body.style-b .num-cn { display: none; }
+body.style-b .num-ar {
+  display: inline;
+  font-size: 72px;
+  font-weight: 700;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--accent);
+  line-height: 0.9;
+  transition: font-size 0.4s ease;
+}
+
+.point-body {
+  flex: 1;
+  transition: padding-top 0.4s ease;
+}
+
+body.style-b .point-body {
+  padding-top: 10px;
+}
+
+.point-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  transition: font-size 0.4s ease, font-weight 0.4s ease, color 0.6s ease, margin-bottom 0.4s ease;
+}
+
+body.style-b .point-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.point-quote {
+  font-size: 16px;
+  color: var(--text-accent);
+  font-style: italic;
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin-bottom: 12px;
+  font-family: var(--font-quote);
+  transition: font-size 0.4s ease, color 0.6s ease, border-color 0.6s ease,
+              padding-left 0.4s ease, margin-bottom 0.4s ease;
+}
+
+body.style-b .point-quote {
+  font-size: 15px;
+  color: var(--accent);
+  margin-bottom: 14px;
+  border-left: none;
+  padding-left: 0;
+}
+
+body.style-b .point-quote::before { content: "「"; }
+body.style-b .point-quote::after { content: "」"; }
+
+.point-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.9;
+  transition: font-size 0.4s ease, color 0.6s ease, line-height 0.4s ease;
+}
+
+/* =========================================================
+   底部金句
+   ========================================================= */
+.footer-quote-section {
+  margin-top: 60px;
+  text-align: center;
+  padding-top: 40px;
+  border-top: 2px solid var(--footer-border);
+  transition: margin-top 0.4s ease, padding-top 0.4s ease, padding 0.4s ease,
+              background-color 0.6s ease, border-color 0.6s ease,
+              text-align 0.4s ease;
+}
+
+body.style-b .footer-quote-section {
+  margin-top: 80px;
+  padding: 50px 40px;
+  background: var(--footer-bg);
+  border-top: none;
+  border-left: 3px solid var(--footer-border);
+  text-align: left;
+}
+
+.footer-quote {
+  font-size: 22px;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  line-height: 1.8;
+  transition: font-size 0.4s ease, font-weight 0.4s ease, color 0.6s ease;
+}
+
+body.style-b .footer-quote {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.footer-quote::before { content: "「"; color: var(--quote-mark); }
+.footer-quote::after { content: "」"; color: var(--quote-mark); }
+
+body.style-b .footer-quote::before { content: ""; }
+body.style-b .footer-quote::after { content: ""; }
+
+/* =========================================================
+   原文区（直接完整展示，无折叠）
+   ========================================================= */
+.source-section {
+  margin-top: 60px;
+  border-top: 1px solid var(--source-border);
+  padding-top: 28px;
+  transition: border-color 0.6s ease, margin-top 0.4s ease;
+}
+
+body.style-b .source-section {
+  margin-top: 80px;
+}
+
+.source-label {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  font-family: var(--font-heading);
+  transition: color 0.6s ease;
+  display: block;
+}
+
+.source-body {
+  font-size: 14px;
+  line-height: 2.1;
+  color: var(--source-text);
+  transition: color 0.6s ease, font-size 0.4s ease, line-height 0.4s ease;
+}
+
+body.style-b .source-body {
+  font-size: 14.5px;
+  line-height: 2.2;
+}
+
+.source-body p {
+  margin-bottom: 16px;
+  text-indent: 2em;
+}
+
+.source-body p.no-indent {
+  text-indent: 0;
+}
+
+.source-body strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.source-body .source-heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-accent);
+  margin: 24px 0 10px;
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+}
+
+body.style-b .source-body .source-heading {
+  color: var(--accent);
+}
+
+/* =========================================================
+   页脚
+   ========================================================= */
+.page-footer {
+  text-align: center;
+  padding: 40px 20px 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  opacity: 0.6;
+  transition: color 0.6s ease;
+}
+
+/* =========================================================
+   响应式
+   ========================================================= */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px 24px 60px;
+  }
+
+  .style-switcher {
+    top: 12px;
+    right: 12px;
+    padding: 3px;
+    border-radius: 10px;
+  }
+
+  .switch-btn {
+    padding: 8px 10px;
+    font-size: 10px;
+    min-width: 52px;
+    gap: 3px;
+  }
+
+  .switch-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hero {
+    padding: 30px 0 40px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  body.style-b .hero h1 {
+    font-size: 32px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+  }
+
+  body.style-b .eyebrow.eyebrow-b {
+    letter-spacing: 6px;
+  }
+
+  .point {
+    flex-direction: column;
+    gap: 16px;
+    padding: 30px 0;
+  }
+
+  body.style-b .point {
+    grid-template-columns: 60px 1fr;
+    gap: 20px;
+    padding: 36px 0;
+  }
+
+  .num-cn { font-size: 32px; }
+  body.style-b .num-ar { font-size: 48px; }
+
+  .point-num {
+    width: auto;
+    text-align: left;
+  }
+
+  .point-title { font-size: 18px; }
+  body.style-b .point-title { font-size: 19px; }
+
+  .footer-quote-section {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+
+  body.style-b .footer-quote-section {
+    padding: 30px 24px;
+  }
+
+  .footer-quote { font-size: 18px; }
+  body.style-b .footer-quote { font-size: 19px; }
+
+  body::before {
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .source-body {
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  body.style-b .source-body {
+    font-size: 13.5px;
+    line-height: 2;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+</style>
+</head>
+<body class="style-a">
+
+<!-- 右上角风格切换控件 -->
+<div class="style-switcher" role="tablist" aria-label="风格切换">
+  <button class="switch-btn active" data-style="a" role="tab" aria-selected="true" title="简约雅致">
+    <!-- 纸张/日光图标 -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2"></path>
+      <path d="M12 20v2"></path>
+      <path d="m4.93 4.93 1.41 1.41"></path>
+      <path d="m17.66 17.66 1.41 1.41"></path>
+      <path d="M2 12h2"></path>
+      <path d="M20 12h2"></path>
+      <path d="m6.34 17.66-1.41 1.41"></path>
+      <path d="m19.07 4.93-1.41 1.41"></path>
+    </svg>
+    <span>简约雅致</span>
+  </button>
+  <button class="switch-btn" data-style="b" role="tab" aria-selected="false" title="商务杂志">
+    <!-- 月亮/杂志图标 -->
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    <span>商务杂志</span>
+  </button>
+</div>
+
+<!-- 主内容 -->
+<main class="container">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="eyebrow eyebrow-a">职 场 真 言</div>
+    <div class="eyebrow eyebrow-b">ISSUE 04 · 人情与规矩</div>
+    <h1>四句真话，读懂职场的人情与规矩</h1>
+    <p class="subtitle-a">一个刚上任的技术总师，在烧烤摊上被老李教了四件事</p>
+    <p class="subtitle-b">一个刚上任的技术总师，在烧烤摊上被老李教了四件事。每一件，都是摸爬滚打几十年用血泪换来的教训。</p>
+  </header>
+
+  <!-- 4个核心观点 -->
+  <ol class="points">
+    <li class="point">
+      <div class="point-num">
+        <span class="num-cn">壹</span>
+        <span class="num-ar">01</span>
+      </div>
+      <div class="point-body">
+        <div class="point-title">上任第一天，就有人等着你摔跟头</div>
+        <div class="point-quote">别在专业上争高低，主动示弱递台阶，把面子给别人</div>
+        <div class="point-desc">从你坐上位子的第一天起，就欠了他们一份"情绪账"。安排工作可能推诿，做决策可能质疑。你赢了位置，人家心里不平衡；把面子给他，功劳分他一半，疙瘩也就解开了。</div>
+      </div>
+    </li>
+    <li class="point">
+      <div class="point-num">
+        <span class="num-cn">贰</span>
+        <span class="num-ar">02</span>
+      </div>
+      <div class="point-body">
+        <div class="point-title">别当超级英雄，要当翻译</div>
+        <div class="point-quote">向上翻译成决策信息，向下翻译成具体任务</div>
+        <div class="point-desc">向上汇报永远是一页纸——结论、建议、成本、风险；给下面开会只讲任务、节点、责任人。你当不好这个翻译，上下两头都会觉得你是废物。</div>
+      </div>
+    </li>
+    <li class="point">
+      <div class="point-num">
+        <span class="num-cn">叁</span>
+        <span class="num-ar">03</span>
+      </div>
+      <div class="point-body">
+        <div class="point-title">找一个敢唱黑脸、用规则挡子弹的人</div>
+        <div class="point-quote">他替你挡子弹，你才能当爱护下属的领导</div>
+        <div class="point-desc">找一个业务过硬、性子直，但绝对听你指挥的人。推考核、抓进度、卡质量，得罪人的事全交给他。你站的不是"我厉害"，站的是规矩厉害。</div>
+      </div>
+    </li>
+    <li class="point">
+      <div class="point-num">
+        <span class="num-cn">肆</span>
+        <span class="num-ar">04</span>
+      </div>
+      <div class="point-body">
+        <div class="point-title">阎王好办，小鬼难缠</div>
+        <div class="point-quote">真正卡你的是财务、行政、机要、秘书，流程比道理大</div>
+        <div class="point-desc">你只盯着大领导，却忽略了财务、行政、机要，甚至领导的秘书。光拜佛没用，你得让佛身边的罗汉、金刚都觉得你是个懂事的人。</div>
+      </div>
+    </li>
+  </ol>
+
+  <!-- 底部金句 -->
+  <section class="footer-quote-section">
+    <div class="footer-quote">技术只是入场券，做人才是护身符</div>
+  </section>
+
+  <!-- 完整原文区（直接展示，无折叠） -->
+  <section class="source-section">
+    <span class="source-label">完 整 原 文</span>
+    <div class="source-body">
+
+      <p>三十岁那年任命下来，我成了单位最年轻的技术总师。外面议论纷纷说我运气好，但我自己心里清楚：单位里资历比我老、后台比我硬的，全在背后死死盯着我。提拔我的人是总经理老李，比我大整整二十岁。那天晚上他把我叫出去，到单位附近一个烧烤摊，一碟花生米、两碟烤串、两瓶啤酒。我以为他要跟我说点场面话、谈谈愿景，结果他把酒杯一放，第一句就是："今晚这段酒，是我给你断奶的。"我当时就愣住了。他花了两个小时教了我四件事，至今我都很难忘，每一件都是他摸爬滚打几十年，用真金白银、用栽跟头的血泪换来的。</p>
+
+      <p class="source-heading no-indent">第一件事：你上任的第一天，底下就已经有人在等着你摔下去了。</p>
+      <p>老李掰着指头跟我算：你看老张比你早进单位十年，资格老；小王是上面领导的关系；还有那个从研究院调来的博士，哪个不比你强？换你你服不服？他说，从你坐上位子的第一天起，你就欠了他们一份"情绪账"。安排工作他们可能会推诿，你做决策他们可能会质疑。这时候你千万不能在专业上跟他们争高低。我问他那怎么办。他说，你今晚就给这几位挨个打个电话，什么都不解释，就说一句话——"哥，我心里真没底，想找你聊聊，方便吗？"只要他肯见你，这事就成了。</p>
+      <p>我不明白前面说什么呢。老李说，你记住，把姿态放到最低，承认自己年轻、经验不足，论资历论能力，这位置本来就应该是他的，请他以后多指点、多照应。我说这不就是示弱吗？老李把杯子往桌上一磕：这不叫示弱，这叫递台阶。你赢了位置，人家心里不平衡；你现在把面子给他，把功劳分他一半，哪怕只是嘴上客气，他心里那个疙瘩也就解开了。职场的世界，有时候一句软话，比竞争管用一百倍。那天晚上我犹犹豫豫打了三个电话，后来老张成了我的顶梁柱，小王也没有背后搞动作，那个博士也愿意在关键时刻帮我一把。</p>
+
+      <p class="source-heading no-indent">第二件事：别当超级英雄，要当个翻译。</p>
+      <p>刚上任那会儿，我恨不得自己把图纸画完，熬几个通宵写技术方案，然后拿给老李看。他就翻了两眼，直接往桌上一扔，说："我要的是——这事能不能干？要多少人？多少钱？多长时间？你给我拿部小说来，让我帮你做阅读理解吗？"我当时脸一下子就红了。</p>
+      <p>第二天他把我叫到办公室，指着窗外说，你看对面那座楼，那是总部大楼，领导说要"科技赋能"，你听得懂吗？我摇头。那好，你的任务就来了——把"科技赋能"翻译成下面兄弟听得懂的话。那什么是赋能？就是咱们的外围产品能不能上自动化，谁来干、工期多久、预算多少。这叫向下翻译。</p>
+      <p>再看下面：一线操作人员天天面对的是设备故障、工期延误，他们说这设备不行，你听得懂吗？我又摇头。他说你必须得懂，你要把这些声音提炼成我能看懂的报告。比方说：核心设备的故障率上升30%，建议申请专项资金改造，否则影响年度指标完成。这叫向上翻译。他说你就是那个翻译，你当不好，那上下两头都会觉得你是废物。从那以后，我跟老李汇报永远是这一页纸——结论、建议、成本、风险；给下面开会，只讲任务、节点、责任人。整个部门立马就顺了，我也不那么累了。</p>
+
+      <p class="source-heading no-indent">第三件事：找一个敢唱黑脸、用规则帮你挡子弹的人。</p>
+      <p>老李问我："《亮剑》你看过吧？李云龙在前面打仗，那个老总呢，天天在后面替他擦屁股。"他说你也需要这样的人。我又愣住了。他说，找一个业务过硬、性子直，但绝对听你指挥的人。推考核、抓进度、卡质量，这些得罪人的事我全交给他。等底下人来告状，你就当着大家的面批评他两句，说要注意工作方法，咱们是一家人。但转过头，评优评先你必须第一个考虑他。他替你当了子弹，你才能当那个爱护下属的领导。我回去就找了个叫大勇的，技术过硬但爱得罪人。我让他专门盯着安全和质量红线，一年下来事故率降了、效率上去了，而我从头到尾都没跟谁红过脸——因为我站的不是"我厉害"，站的是什么？规矩厉害。</p>
+
+      <p class="source-heading no-indent">第四件事：阎王好办，小鬼难缠。真正不能得罪的，往往不是大领导。</p>
+      <p>一年后我又有点飘了。一次为了科研经费，在会上跟财务总监拍了桌子。会后老李把我叫到办公室，把门一关，开口就骂："你以为你是谁啊？跟财总拍桌子！你知不知道在国有企业，流程比道理大！"他问我：你知道单位的钱是怎么批下来的吗？你知道领导的行程是怎么安排的吗？你知道你为什么总是拿不到急缺的设备吗？你只盯着大领导，却忽略了财务、行政、机要，甚至领导的秘书。这些人虽然不直接搞技术，但他们卡着你的流程、掌握着你的信息通道。好，你今天跟财总拍桌子，明天你的报销就给你卡住；如果你跟行政顶嘴，后天你的会议室就永远排不上。所以想要干成事，你光拜佛没用，你得让佛身边的罗汉、金刚都觉得你是个懂事的人。从那以后，我跟职能部门顾问多了一些沟通，逢年过节该有的往来不能少，平时办事该有的尊重要到位。</p>
+
+      <p>那天晚上老李把最后一杯啤酒干了，拍拍我的肩膀，说："今晚跟你说的这些都是术。你记住，术是手段，得人才是根本，别把自己活成了算计别人的人。"我站在门口，看着他的背影消失在走廊的尽头。那一刻我才明白，职场生存，技术只是入场券，而做人才是护身符。</p>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- 页脚 -->
+<footer class="page-footer">
+  来源：Bilibili · UP主 卓尔不惑
+</footer>
+
+<script>
+(function() {
+  const btns = document.querySelectorAll('.switch-btn');
+  const body = document.body;
+
+  function setStyle(style) {
+    // 切换 body class
+    body.classList.remove('style-a', 'style-b');
+    body.classList.add('style-' + style);
+
+    // 更新按钮状态
+    btns.forEach(btn => {
+      const isActive = btn.dataset.style === style;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    // 保存偏好
+    try {
+      localStorage.setItem('laolingdao-style', style);
+    } catch(e) {}
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      setStyle(this.dataset.style);
+    });
+  });
+
+  // 键盘支持（左右方向键切换）
+  btns.forEach(btn => {
+    btn.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const current = Array.from(btns).findIndex(b => b.classList.contains('active'));
+        const next = e.key === 'ArrowRight'
+          ? (current + 1) % btns.length
+          : (current - 1 + btns.length) % btns.length;
+        btns[next].focus();
+        setStyle(btns[next].dataset.style);
+      }
+    });
+  });
+
+  // 读取保存的偏好
+  try {
+    const saved = localStorage.getItem('laolingdao-style');
+    if (saved === 'b') {
+      setStyle('b');
+    }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>
