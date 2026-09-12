@@ -68,6 +68,7 @@ body::after{
   z-index:0;
   opacity:0.12;
   background-image:
+    /* 主星点层 */
     radial-gradient(1px 1px at 10% 12%, var(--ink-faint) 50%, transparent 51%),
     radial-gradient(1px 1px at 22% 8%, var(--ink-faint) 50%, transparent 51%),
     radial-gradient(1.5px 1.5px at 15% 20%, var(--gold) 50%, transparent 51%),
@@ -84,7 +85,16 @@ body::after{
     radial-gradient(1.5px 1.5px at 95% 85%, var(--gold) 50%, transparent 51%),
     radial-gradient(1px 1px at 50% 5%, var(--ink-faint) 50%, transparent 51%),
     radial-gradient(1px 1px at 45% 92%, var(--ink-faint) 50%, transparent 51%),
-    radial-gradient(1px 1px at 55% 88%, var(--ink-faint) 50%, transparent 51%);
+    radial-gradient(1px 1px at 55% 88%, var(--ink-faint) 50%, transparent 51%),
+    /* 辅助星点层（更淡，增加深邃感） */
+    radial-gradient(0.8px 0.8px at 35% 30%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(0.8px 0.8px at 65% 35%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(0.8px 0.8px at 25% 50%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(0.8px 0.8px at 75% 55%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(0.8px 0.8px at 40% 75%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(0.8px 0.8px at 60% 70%, var(--ink-faint) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 38% 45%, var(--gold) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 62% 60%, var(--gold) 50%, transparent 51%);
   background-size: 100% 100%;
   animation: twinkle 8s ease-in-out infinite alternate;
 }
@@ -264,6 +274,236 @@ body::after{
   padding-bottom: 40px;
   margin-bottom: 32px;
 }
+
+
+/* ============================================================
+   SVG 动效系统——静态不干扰、动态有灵气
+   所有动画周期 ≥ 8s，opacity 变幅 ≤ 30%，不影响阅读
+   ============================================================ */
+
+/* ---- 1. 太极自转（中心太极 45s 一圈，顺行法天） ---- */
+.bagua-circle svg .taiji-center{
+  transform-origin: 100px 100px;
+  animation: taiji-spin 45s linear infinite;
+}
+@keyframes taiji-spin{
+  from { transform: translate(100px, 100px) rotate(0deg); }
+  to   { transform: translate(100px, 100px) rotate(360deg); }
+}
+
+/* ---- 2. 八卦符呼吸明灭（错峰相位，呼应感应） ---- */
+.bagua-circle svg .bagua-sym{
+  animation: bagua-breath 10s ease-in-out infinite alternate;
+}
+.bagua-circle svg .bagua-qian  { animation-delay: 0s;    }
+.bagua-circle svg .bagua-kun   { animation-delay: -5s;   }
+.bagua-circle svg .bagua-li    { animation-delay: -2.5s; }
+.bagua-circle svg .bagua-kan   { animation-delay: -7.5s; }
+.bagua-circle svg .bagua-zhen  { animation-delay: -1.25s;}
+.bagua-circle svg .bagua-dui   { animation-delay: -3.75s;}
+.bagua-circle svg .bagua-gen   { animation-delay: -6.25s;}
+.bagua-circle svg .bagua-xun   { animation-delay: -8.75s;}
+
+@keyframes bagua-breath{
+  0%   { opacity: 0.75; }
+  100% { opacity: 1;    }
+}
+
+/* ---- 3. 外层光晕缓慢脉动 ---- */
+.bagua-circle svg .bagua-glow{
+  animation: glow-pulse 12s ease-in-out infinite alternate;
+  transform-origin: 100px 100px;
+}
+@keyframes glow-pulse{
+  0%   { opacity: 0.8; transform: scale(1);    }
+  100% { opacity: 1;   transform: scale(1.04); }
+}
+
+/* ---- 4. 八卦连线呼吸（与光晕错峰） ---- */
+.bagua-circle svg .bagua-lines{
+  animation: lines-breath 15s ease-in-out infinite alternate;
+}
+@keyframes lines-breath{
+  0%   { opacity: 0.2;  }
+  100% { opacity: 0.35; }
+}
+
+/* ---- 5. 章节标题卦符律动（感应微动） ---- */
+h2.sec-title .gua-mark{
+  animation: gua-mark-float 8s ease-in-out infinite alternate;
+}
+@keyframes gua-mark-float{
+  0%   { opacity: 0.55; transform: translateY(0);    }
+  100% { opacity: 0.75; transform: translateY(-1px); }
+}
+
+/* ---- 6. 六爻动爻光晕脉动 ---- */
+.yao-stack .yao.active{
+  animation: yao-glow 4s ease-in-out infinite alternate;
+}
+@keyframes yao-glow{
+  0%   { box-shadow: 0 0 6px rgba(178,58,42,0.4);  }
+  100% { box-shadow: 0 0 12px rgba(178,58,42,0.7); }
+}
+
+/* ---- 7. 星图增强——多层错峰脉冲 ---- */
+body::after{
+  animation:
+    twinkle 8s ease-in-out infinite alternate,
+    star-drift 120s linear infinite;
+}
+@keyframes star-drift{
+  0%   { background-position: 0 0; }
+  100% { background-position: 10px -5px; }
+}
+
+/* ---- 8. 卷轴轴杆光泽扫过 ---- */
+.scroll-top .axis::before,
+.scroll-bottom .axis::before{
+  /* 重置—实际用轴杆本体加内部光泽层 */
+}
+.scroll-top .axis,
+.scroll-bottom .axis{
+  position: relative;
+  overflow: hidden;
+}
+.axis-shine{
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 30%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.axis-shine-top{
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,235,180,0.3) 50%,
+    transparent 100%);
+  animation: axis-shine 20s ease-in-out infinite;
+}
+.axis-shine-bottom{
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,230,170,0.25) 50%,
+    transparent 100%);
+  animation: axis-shine 25s ease-in-out infinite;
+  animation-delay: -10s;
+}
+@keyframes axis-shine{
+  0%   { left: -30%; opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { left: 120%; opacity: 0.8; }
+  100% { left: 120%; opacity: 0; }
+}
+
+/* ---- 9. 卷边阴影呼吸 ---- */
+.scroll-body::after{
+  animation: scroll-edge-breath 10s ease-in-out infinite alternate;
+}
+@keyframes scroll-edge-breath{
+  0%{
+    box-shadow:
+      inset 12px 0 24px -12px rgba(0,0,0,0.10),
+      inset -12px 0 24px -12px rgba(0,0,0,0.10);
+  }
+  100%{
+    box-shadow:
+      inset 12px 0 24px -12px rgba(0,0,0,0.15),
+      inset -12px 0 24px -12px rgba(0,0,0,0.15);
+  }
+}
+
+/* ---- 10. 插图动效 ---- */
+
+/* 插图一：蓍草轻微摇曳（左/右错峰） */
+.illustration svg .illus-straw-left{
+  animation: straw-sway-l 12s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+.illustration svg .illus-straw-right{
+  animation: straw-sway-r 14s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+@keyframes straw-sway-l{
+  0%   { transform: rotate(0.3deg) translateX(0); }
+  100% { transform: rotate(-0.3deg) translateX(-0.5px); }
+}
+@keyframes straw-sway-r{
+  0%   { transform: rotate(-0.2deg) translateX(0); }
+  100% { transform: rotate(0.4deg) translateX(0.5px); }
+}
+.illustration svg .illus-taiji-mid{
+  animation: illus-taiji-rotate 60s linear infinite;
+  transform-origin: 160px 80px;
+}
+@keyframes illus-taiji-rotate{
+  from { transform: translate(160px, 80px) rotate(0deg);   }
+  to   { transform: translate(160px, 80px) rotate(360deg); }
+}
+
+/* 插图二：香烟飘动 + 缓慢变形 */
+.illustration svg .incense-smoke{
+  animation: smoke-waft 8s ease-in-out infinite alternate;
+}
+@keyframes smoke-waft{
+  0%   { opacity: 0.3; transform: translateX(0); }
+  100% { opacity: 0.45; transform: translateX(1.5px); }
+}
+
+/* 插图三：竹简墨迹微晕染 */
+.illustration svg .bamboo-scroll{
+  animation: ink-bleed 15s ease-in-out infinite alternate;
+}
+@keyframes ink-bleed{
+  0%   { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+.illustration svg .ancient-coin{
+  animation: coin-glint 12s ease-in-out infinite alternate;
+  transform-origin: 60px 135px;
+}
+@keyframes coin-glint{
+  0%   { opacity: 0.45; }
+  100% { opacity: 0.6;  }
+}
+
+/* 插图四：云雾漂移 + 飞鸟缓慢移动 */
+.illustration svg .mountain-clouds{
+  animation: cloud-drift 40s ease-in-out infinite alternate;
+}
+@keyframes cloud-drift{
+  0%   { transform: translateX(0);    opacity: 0.45; }
+  100% { transform: translateX(8px); opacity: 0.55; }
+}
+.illustration svg .flying-birds{
+  animation: birds-fly 30s linear infinite;
+}
+@keyframes birds-fly{
+  0%   { transform: translateX(0);      opacity: 0.35; }
+  50%  { opacity: 0.5; }
+  100% { transform: translateX(20px);   opacity: 0.3;  }
+}
+.illustration svg .sky-taiji{
+  animation: sky-taiji-spin 80s linear infinite;
+  transform-origin: 300px 40px;
+}
+@keyframes sky-taiji-spin{
+  from { transform: translate(300px, 40px) rotate(0deg);   opacity: 0.18; }
+  50%  { opacity: 0.25; }
+  to   { transform: translate(300px, 40px) rotate(360deg); opacity: 0.18; }
+}
+
+/* ---- 11. 页脚小太极慢转 ---- */
+.footer .taiji-footer{
+  animation: taiji-footer-spin 90s linear infinite;
+}
+@keyframes taiji-footer-spin{
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 
 /* 先天八卦圆阵 */
 .bagua-circle{
@@ -775,6 +1015,57 @@ tr:nth-child(even) td{
   margin-bottom: 8px;
 }
 
+
+/* ============================================================
+   无障碍：prefers-reduced-motion — 该偏好下全部静止
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  .bagua-circle svg .taiji-center,
+  .bagua-circle svg .bagua-sym,
+  .bagua-circle svg .bagua-glow,
+  .bagua-circle svg .bagua-lines,
+  h2.sec-title .gua-mark,
+  .yao-stack .yao.active,
+  body::after,
+  .axis-shine-top,
+  .axis-shine-bottom,
+  .scroll-body::after,
+  .illustration svg .illus-straw-left,
+  .illustration svg .illus-straw-right,
+  .illustration svg .illus-taiji-mid,
+  .illustration svg .incense-smoke,
+  .illustration svg .bamboo-scroll,
+  .illustration svg .ancient-coin,
+  .illustration svg .mountain-clouds,
+  .illustration svg .flying-birds,
+  .illustration svg .sky-taiji,
+  .footer .taiji-footer,
+  .bagua-circle svg{
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   移动端降级：简化动画，降低性能消耗
+   ============================================================ */
+@media (max-width: 700px){
+  /* 移动端保留核心的太极转 + 星图呼吸，弱化其余 */
+  .bagua-circle svg .bagua-sym{
+    animation-duration: 15s;
+  }
+  .illustration svg .mountain-clouds,
+  .illustration svg .flying-birds,
+  .illustration svg .sky-taiji,
+  .illustration svg .illus-taiji-mid{
+    animation-duration: 80s;
+  }
+  .axis-shine-top,
+  .axis-shine-bottom{
+    animation-duration: 35s;
+  }
+}
+
 /* ============================================================
    响应式
    ============================================================ */
@@ -854,7 +1145,7 @@ tr:nth-child(even) td{
 
   <!-- ===== 上轴 ===== -->
   <div class="scroll-top">
-    <div class="axis"></div>
+    <div class="axis"><span class="axis-shine axis-shine-top"></span></div>
     <div class="tassel left"></div>
     <div class="tassel right"></div>
   </div>
@@ -997,7 +1288,7 @@ tr:nth-child(even) td{
           <rect x="20" y="138" width="280" height="4" fill="#A08050" opacity="0.2" rx="1"/>
 
           <!-- 左堆蓍草 -->
-          <g stroke="#4A3F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7">
+          <g class="illus-straw-left" stroke="#4A3F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7">
             <line x1="50" y1="40" x2="48" y2="118"/>
             <line x1="58" y1="35" x2="56" y2="118"/>
             <line x1="66" y1="42" x2="64" y2="118"/>
@@ -1015,7 +1306,7 @@ tr:nth-child(even) td{
           </g>
 
           <!-- 右堆蓍草 -->
-          <g stroke="#4A3F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7">
+          <g class="illus-straw-right" stroke="#4A3F2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7">
             <line x1="200" y1="45" x2="198" y2="118"/>
             <line x1="208" y1="40" x2="206" y2="118"/>
             <line x1="216" y1="48" x2="214" y2="118"/>
@@ -1033,7 +1324,7 @@ tr:nth-child(even) td{
           </g>
 
           <!-- 中间分开的空隙 + 太极 -->
-          <g transform="translate(160, 80)">
+          <g class="illus-taiji-mid" transform="translate(160, 80)">
             <circle cx="0" cy="0" r="16" fill="none" stroke="#B23A2A" stroke-width="0.6" opacity="0.4"/>
             <path d="M0 -14 A14 14 0 0 1 0 14 A7 7 0 0 1 0 0 A7 7 0 0 0 0 -14 Z"
                   fill="#B23A2A" opacity="0.25"/>
@@ -1108,7 +1399,7 @@ tr:nth-child(even) td{
             <circle cx="15" cy="-23" r="1.5" fill="#C9B896" opacity="0.6"/>
 
             <!-- 香烟（缭绕上升） -->
-            <g fill="none" stroke="#B23A2A" stroke-width="0.8" stroke-linecap="round" opacity="0.35">
+            <g class="incense-smoke" fill="none" stroke="#B23A2A" stroke-width="0.8" stroke-linecap="round" opacity="0.35">
               <path d="M-15 -28 Q-18 -40 -12 -50 Q-6 -60 -14 -72 Q-20 -82 -10 -90"/>
               <path d="M0 -33 Q3 -45 -3 -55 Q-9 -65 0 -76 Q6 -84 2 -94"/>
               <path d="M15 -25 Q12 -38 18 -48 Q24 -58 16 -68 Q10 -78 18 -86"/>
@@ -1293,7 +1584,7 @@ tr:nth-child(even) td{
           <rect x="20" y="145" width="300" height="10" fill="#B89A5E" opacity="0.2" rx="2"/>
 
           <!-- 展开的竹简（主体） -->
-          <g transform="translate(170, 80)">
+          <g class="bamboo-scroll" transform="translate(170, 80)">
             <!-- 竹简片 -->
             <g stroke="#5A4210" stroke-width="1" fill="none" opacity="0.65">
               <line x1="-120" y1="-30" x2="-120" y2="50"/>
@@ -1346,7 +1637,7 @@ tr:nth-child(even) td{
           </g>
 
           <!-- 古钱 -->
-          <g transform="translate(60, 135)" opacity="0.5">
+          <g class="ancient-coin" transform="translate(60, 135)" opacity="0.5">
             <circle cx="0" cy="0" r="10" fill="#B8963A" opacity="0.4" stroke="#8B6914" stroke-width="0.8"/>
             <rect x="-3" y="-3" width="6" height="6" fill="#F2EBDD" opacity="0.8"/>
           </g>
@@ -1411,7 +1702,7 @@ tr:nth-child(even) td{
                 fill="#4A3F2E" opacity="0.15"/>
 
           <!-- 云雾 -->
-          <g fill="#F2EBDD" opacity="0.5">
+          <g class="mountain-clouds" fill="#F2EBDD" opacity="0.5">
             <ellipse cx="80" cy="130" rx="40" ry="8"/>
             <ellipse cx="200" cy="115" rx="50" ry="7"/>
             <ellipse cx="300" cy="140" rx="35" ry="6"/>
@@ -1454,14 +1745,14 @@ tr:nth-child(even) td{
           </g>
 
           <!-- 飞鸟 -->
-          <g fill="none" stroke="#4A3F2E" stroke-width="1" stroke-linecap="round" opacity="0.4">
+          <g class="flying-birds" fill="none" stroke="#4A3F2E" stroke-width="1" stroke-linecap="round" opacity="0.4">
             <path d="M150 40 Q155 37 160 40 Q165 37 170 40"/>
             <path d="M200 55 Q204 52 208 55 Q212 52 216 55"/>
             <path d="M120 65 Q123 63 126 65"/>
           </g>
 
           <!-- 太极（天上） -->
-          <g transform="translate(300, 40)" opacity="0.2">
+          <g class="sky-taiji" transform="translate(300, 40)" opacity="0.2">
             <circle cx="0" cy="0" r="15" fill="none" stroke="#B23A2A" stroke-width="0.5"/>
             <path d="M0 -14 A14 14 0 0 1 0 14 A7 7 0 0 1 0 0 A7 7 0 0 0 0 -14 Z"
                   fill="#B23A2A"/>
@@ -1488,7 +1779,7 @@ tr:nth-child(even) td{
 
       <!-- ============== 页脚 ============== -->
       <footer class="footer">
-        <svg class="taiji-mini" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <svg class="taiji-mini taiji-footer" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="46" fill="none" stroke="#7A6E58" stroke-width="1.2" opacity="0.5"/>
           <path d="M50 4 A46 46 0 0 1 50 96 A23 23 0 0 1 50 50 A23 23 0 0 0 50 4 Z"
                 fill="#7A6E58" opacity="0.7"/>
@@ -1504,7 +1795,7 @@ tr:nth-child(even) td{
 
   <!-- ===== 下轴 ===== -->
   <div class="scroll-bottom">
-    <div class="axis"></div>
+    <div class="axis"><span class="axis-shine axis-shine-bottom"></span></div>
   </div>
 
 </div>
