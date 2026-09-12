@@ -789,50 +789,75 @@ li ul, li ol{
 }
 
 /* ============================================================
-   步骤卡片
+   步骤章节——去框化·古籍正文式
+   去掉硬边框与背景色块，改用留白 + 卦题分隔线 + 中文序号
+   整体一气呵成，如卷轴正文的连续章节
    ============================================================ */
 .step-card{
-  margin: 24px 0;
-  padding: 28px 28px 24px;
-  background: var(--paper-light);
-  border: 1px solid var(--ochre-light);
+  margin: 36px 0 40px;
+  padding: 0 8px;
   position: relative;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
+/* 步骤标题行：左侧中文序号 + 卦符 + 标题 + 右侧卦符，下方细装饰线 */
 .step-card .step-num{
-  position: absolute;
-  top: -12px;
-  left: 24px;
-  background: var(--vermilion);
-  color: var(--paper);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
   font-family: "KaiTi","STKaiti","楷体",serif;
-  font-size: 13px;
-  padding: 2px 16px;
-  letter-spacing: 0.25em;
-  border-radius: 1px;
+  color: var(--vermilion);
+  letter-spacing: 0.3em;
+  font-size: 15px;
+}
+.step-card .step-num::before{
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--vermilion);
+  border-radius: 50%;
+  vertical-align: middle;
+  opacity: 0.8;
+  margin-right: 2px;
 }
 
 .step-card h3{
-  font-size: 18px;
+  font-size: 19px;
   color: var(--ink);
   font-weight: 500;
-  margin-bottom: 16px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--ochre-light);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+/* 标题左侧卦符（取代右侧大背景卦） */
+.step-card h3::before{
+  content: attr(data-gua);
+  font-size: 22px;
+  color: var(--vermilion);
+  opacity: 0.75;
+  line-height: 1;
+  font-family: serif;
+}
+/* 标题右下小装饰点 */
+.step-card h3::after{
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 28px;
+  height: 1px;
+  background: var(--vermilion);
+  opacity: 0.6;
 }
 
-/* 步骤卡片左侧卦符装饰 */
+/* 步骤卡片右侧卦符——去大背景，改用标题内小卦符 */
 .step-card .side-gua{
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  font-size: 60px;
-  color: var(--ochre);
-  opacity: 0.08;
-  line-height: 1;
-  pointer-events: none;
+  display: none;
 }
 
 /* ============================================================
@@ -1143,8 +1168,8 @@ tr:nth-child(even) td{
   h1.title{ font-size: 28px; letter-spacing: 0.15em; }
   .bagua-circle{ width: 150px; height: 150px; margin-bottom: 20px; }
   h2.sec-title{ font-size: 19px; }
-  .step-card{ padding: 22px 18px 18px; }
-  .step-card .side-gua{ display: none; }
+  .step-card{ padding: 0 4px; margin: 28px 0 32px; }
+  .step-card h3{ font-size: 17px; }
   .yao-diagram{ flex-direction: column; gap: 16px; align-items: flex-start; }
   .yao-stack{ width: 100px; }
   table{ font-size: 14px; }
@@ -1254,92 +1279,213 @@ tr:nth-child(even) td{
         <div class="bagua-circle">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#B23A2A" stop-opacity="0.08"/>
+              <!-- 外晕：金朱交融，温润沉郁 -->
+              <radialGradient id="outerGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="55%" stop-color="#B8963A" stop-opacity="0"/>
+                <stop offset="75%" stop-color="#B8963A" stop-opacity="0.06"/>
+                <stop offset="92%" stop-color="#B23A2A" stop-opacity="0.04"/>
                 <stop offset="100%" stop-color="#B23A2A" stop-opacity="0"/>
               </radialGradient>
+              <!-- 朱墨内晕（太极周围） -->
+              <radialGradient id="innerHalo" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#B23A2A" stop-opacity="0.1"/>
+                <stop offset="60%" stop-color="#B8963A" stop-opacity="0.05"/>
+                <stop offset="100%" stop-color="#B8963A" stop-opacity="0"/>
+              </radialGradient>
+              <!-- 金色描边渐变 -->
+              <linearGradient id="goldStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#C9B896"/>
+                <stop offset="50%" stop-color="#B8963A"/>
+                <stop offset="100%" stop-color="#A68828"/>
+              </linearGradient>
             </defs>
 
-            <!-- 光晕 -->
-            <circle class="bagua-glow" cx="100" cy="100" r="95" fill="url(#glow)"/>
+            <!-- ===== 第一层：外晕 ===== -->
+            <circle cx="100" cy="100" r="98" fill="url(#outerGlow)"/>
 
-            <!-- 外层圆 -->
-            <circle cx="100" cy="100" r="92" fill="none" stroke="#B89A5E" stroke-width="0.6" opacity="0.6"/>
-            <circle cx="100" cy="100" r="86" fill="none" stroke="#C9B896" stroke-width="0.4" stroke-dasharray="2,4" opacity="0.5"/>
+            <!-- ===== 第二层：最外双圆 + 二十四山点 ===== -->
+            <circle cx="100" cy="100" r="94" fill="none" stroke="#B89A5E" stroke-width="0.5" opacity="0.5"/>
+            <circle cx="100" cy="100" r="91" fill="none" stroke="#C9B896" stroke-width="0.3" opacity="0.4"/>
 
-            <!-- 先天八卦（上南下北，左东右西） -->
-
-            <!-- 乾 ☰ 南（上） -->
-            <g class="bagua-sym bagua-qian" transform="translate(100, 18)">
-              <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☰</text>
-              <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">乾　南</text>
+            <!-- 二十四山点：每15°一个点（二十四山 / 二十四节气） -->
+            <g stroke="none" fill="#B8963A" opacity="0.5">
+              <circle cx="100" cy="92.5" r="0.8"/><circle cx="107.5" cy="92.8" r="0.6"/>
+              <circle cx="114.5" cy="94" r="0.6"/><circle cx="121" cy="96" r="0.6"/>
+              <circle cx="126.5" cy="98.5" r="0.8"/><circle cx="131.5" cy="102" r="0.6"/>
+              <circle cx="135.5" cy="106" r="0.6"/><circle cx="138.5" cy="110.5" r="0.6"/>
+              <circle cx="140.5" cy="115.5" r="0.8"/><circle cx="141.5" cy="121" r="0.6"/>
+              <circle cx="141.5" cy="126.5" r="0.6"/><circle cx="140.5" cy="132" r="0.6"/>
+              <circle cx="138.5" cy="137" r="0.8"/><circle cx="135.5" cy="141.5" r="0.6"/>
+              <circle cx="131.5" cy="145.5" r="0.6"/><circle cx="126.5" cy="149" r="0.6"/>
+              <circle cx="121" cy="151.5" r="0.8"/><circle cx="114.5" cy="153.5" r="0.6"/>
+              <circle cx="107.5" cy="154.5" r="0.6"/><circle cx="100" cy="155" r="0.6"/>
+              <circle cx="92.5" cy="154.5" r="0.8"/><circle cx="85.5" cy="153.5" r="0.6"/>
+              <circle cx="79" cy="151.5" r="0.6"/><circle cx="73.5" cy="149" r="0.6"/>
+              <circle cx="68.5" cy="145.5" r="0.8"/><circle cx="64.5" cy="141.5" r="0.6"/>
+              <circle cx="61.5" cy="137" r="0.6"/><circle cx="59.5" cy="132" r="0.6"/>
+              <circle cx="58.5" cy="126.5" r="0.8"/><circle cx="58.5" cy="121" r="0.6"/>
+              <circle cx="59.5" cy="115.5" r="0.6"/><circle cx="61.5" cy="110.5" r="0.6"/>
+              <circle cx="64.5" cy="106" r="0.8"/><circle cx="68.5" cy="102" r="0.6"/>
+              <circle cx="73.5" cy="98.5" r="0.6"/><circle cx="79" cy="96" r="0.6"/>
+              <circle cx="85.5" cy="94" r="0.8"/><circle cx="92.5" cy="92.8" r="0.6"/>
+            </g>
+            <!-- 正位四点加大（四维四正之中的四正） -->
+            <g stroke="none" fill="#B23A2A" opacity="0.55">
+              <circle cx="100" cy="92.5" r="1.3"/>  <!-- 南 -->
+              <circle cx="100" cy="155" r="1.3"/>   <!-- 北 -->
+              <circle cx="59.5" cy="123.8" r="1.3"/><!-- 西 --><circle cx="140.5" cy="123.8" r="1.3"/><!-- 东 -->
             </g>
 
-            <!-- 坤 ☷ 北（下） -->
-            <g class="bagua-sym bagua-kun" transform="translate(100, 170)">
-              <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☷</text>
-              <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">坤　北</text>
+            <!-- ===== 第三层：八卦手绘爻象 ===== -->
+            <!-- 每卦三爻：阳=实线矩形，阴=左右两段矩形 -->
+            <!-- 卦位半径 ~74，卦名 ~86 -->
+
+            <!-- 乾 ☰ 南（上）—— 三阳爻 -->
+            <g transform="translate(100, 30)">
+              <g fill="#2B2317" opacity="0.88">
+                <rect x="-12" y="-11" width="24" height="2.4" rx="0.5"/>
+                <rect x="-12" y="-4"  width="24" height="2.4" rx="0.5"/>
+                <rect x="-12" y="3"   width="24" height="2.4" rx="0.5"/>
+              </g>
+              <text x="0" y="18" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">乾</text>
+              <text x="0" y="29" text-anchor="middle" font-size="7" fill="#B23A2A" font-family="KaiTi,STKaiti,serif" letter-spacing="1" opacity="0.7">南</text>
             </g>
 
-            <!-- 离 ☲ 东（左） -->
-            <g class="bagua-sym bagua-li" transform="translate(16, 100)">
-              <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☲</text>
-              <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">離　東</text>
+            <!-- 坤 ☷ 北（下）—— 三阴爻 -->
+            <g transform="translate(100, 170)">
+              <g fill="#2B2317" opacity="0.88">
+                <rect x="-12" y="-11" width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="-11" width="10" height="2.4" rx="0.5"/>
+                <rect x="-12" y="-4"  width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="-4"  width="10" height="2.4" rx="0.5"/>
+                <rect x="-12" y="3"   width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="3"   width="10" height="2.4" rx="0.5"/>
+              </g>
+              <text x="0" y="18" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">坤</text>
+              <text x="0" y="29" text-anchor="middle" font-size="7" fill="#B23A2A" font-family="KaiTi,STKaiti,serif" letter-spacing="1" opacity="0.7">北</text>
             </g>
 
-            <!-- 坎 ☵ 西（右） -->
-            <g class="bagua-sym bagua-kan" transform="translate(184, 100)">
-              <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☵</text>
-              <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">坎　西</text>
+            <!-- 离 ☲ 东（左）—— 阳阴阳 -->
+            <g transform="translate(26, 100) rotate(90)">
+              <g fill="#2B2317" opacity="0.88">
+                <rect x="-12" y="-11" width="24" height="2.4" rx="0.5"/>
+                <rect x="-12" y="-4"  width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="-4"  width="10" height="2.4" rx="0.5"/>
+                <rect x="-12" y="3"   width="24" height="2.4" rx="0.5"/>
+              </g>
+              <text x="0" y="18" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2" transform="rotate(-90)">離</text>
+              <text x="0" y="-22" text-anchor="middle" font-size="7" fill="#B23A2A" font-family="KaiTi,STKaiti,serif" letter-spacing="1" opacity="0.7" transform="rotate(-90)">東</text>
             </g>
 
-            <!-- 震 ☳ 东北（左上） -->
-            <g class="bagua-sym bagua-zhen" transform="translate(38, 42)">
-              <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☳</text>
-              <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">震</text>
+            <!-- 坎 ☵ 西（右）—— 阴阳阴 -->
+            <g transform="translate(174, 100) rotate(-90)">
+              <g fill="#2B2317" opacity="0.88">
+                <rect x="-12" y="-11" width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="-11" width="10" height="2.4" rx="0.5"/>
+                <rect x="-12" y="-4"  width="24" height="2.4" rx="0.5"/>
+                <rect x="-12" y="3"   width="10" height="2.4" rx="0.5"/>
+                <rect x="2"   y="3"   width="10" height="2.4" rx="0.5"/>
+              </g>
+              <text x="0" y="18" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2" transform="rotate(90)">坎</text>
+              <text x="0" y="-22" text-anchor="middle" font-size="7" fill="#B23A2A" font-family="KaiTi,STKaiti,serif" letter-spacing="1" opacity="0.7" transform="rotate(90)">西</text>
             </g>
 
-            <!-- 兑 ☱ 东南（左下） -->
-            <g class="bagua-sym bagua-dui" transform="translate(38, 158)">
-              <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☱</text>
-              <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">兌</text>
+            <!-- 震 ☳ 东北（左上）—— 阴阴阳 -->
+            <g transform="translate(44, 52) rotate(-45)">
+              <g fill="#2B2317" opacity="0.8">
+                <rect x="-9" y="-8" width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="-8" width="7.5" height="2" rx="0.4"/>
+                <rect x="-9" y="-1.5" width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="-1.5" width="7.5" height="2" rx="0.4"/>
+                <rect x="-9" y="5"  width="18" height="2" rx="0.4"/>
+              </g>
+              <text x="0" y="14" text-anchor="middle" font-size="7.5" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" transform="rotate(45)">震</text>
             </g>
 
-            <!-- 艮 ☶ 西北（右上） -->
-            <g class="bagua-sym bagua-gen" transform="translate(162, 42)">
-              <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☶</text>
-              <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">艮</text>
+            <!-- 兑 ☱ 东南（左下）—— 阳阳阴 -->
+            <g transform="translate(44, 148) rotate(45)">
+              <g fill="#2B2317" opacity="0.8">
+                <rect x="-9" y="-8" width="18" height="2" rx="0.4"/>
+                <rect x="-9" y="-1.5" width="18" height="2" rx="0.4"/>
+                <rect x="-9" y="5"  width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="5"  width="7.5" height="2" rx="0.4"/>
+              </g>
+              <text x="0" y="14" text-anchor="middle" font-size="7.5" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" transform="rotate(-45)">兌</text>
             </g>
 
-            <!-- 巽 ☴ 西南（右下） -->
-            <g class="bagua-sym bagua-xun" transform="translate(162, 158)">
-              <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☴</text>
-              <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">巽</text>
+            <!-- 艮 ☶ 西北（右上）—— 阳阴阴 -->
+            <g transform="translate(156, 52) rotate(45)">
+              <g fill="#2B2317" opacity="0.8">
+                <rect x="-9" y="-8" width="18" height="2" rx="0.4"/>
+                <rect x="-9" y="-1.5" width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="-1.5" width="7.5" height="2" rx="0.4"/>
+                <rect x="-9" y="5"  width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="5"  width="7.5" height="2" rx="0.4"/>
+              </g>
+              <text x="0" y="14" text-anchor="middle" font-size="7.5" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" transform="rotate(-45)">艮</text>
             </g>
 
-            <!-- 太极光晕（极淡金色脉动） -->
-            <circle class="taiji-halo" cx="100" cy="100" r="44" fill="none" stroke="#B8963A" stroke-width="0.8" opacity="0.4"/>
-            <circle class="taiji-halo" cx="100" cy="100" r="52" fill="none" stroke="#B8963A" stroke-width="0.4" opacity="0.2" style="animation-delay: -2s"/>
-
-            <!-- 中心太极图 -->
-            <g class="taiji-center" transform="translate(100, 100)">
-              <!-- 外圈 -->
-              <circle cx="0" cy="0" r="36" fill="none" stroke="#B89A5E" stroke-width="0.5" opacity="0.5"/>
-              <!-- 太极主体 -->
-              <circle cx="0" cy="0" r="32" fill="none" stroke="#2B2317" stroke-width="0.8" opacity="0.9"/>
-              <path d="M0 -32 A32 32 0 0 1 0 32 A16 16 0 0 1 0 0 A16 16 0 0 0 0 -32 Z"
-                    fill="#2B2317" opacity="0.9"/>
-              <!-- 鱼眼 -->
-              <circle cx="0" cy="-16" r="4" fill="#F2EBDD"/>
-              <circle cx="0" cy="16" r="4" fill="#2B2317"/>
+            <!-- 巽 ☴ 西南（右下）—— 阴阳阳 -->
+            <g transform="translate(156, 148) rotate(-45)">
+              <g fill="#2B2317" opacity="0.8">
+                <rect x="-9" y="-8" width="7.5" height="2" rx="0.4"/>
+                <rect x="1.5" y="-8" width="7.5" height="2" rx="0.4"/>
+                <rect x="-9" y="-1.5" width="18" height="2" rx="0.4"/>
+                <rect x="-9" y="5"  width="18" height="2" rx="0.4"/>
+              </g>
+              <text x="0" y="14" text-anchor="middle" font-size="7.5" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" transform="rotate(45)">巽</text>
             </g>
 
-            <!-- 八卦连线（暗线表示方位对应） -->
-            <g class="bagua-lines" stroke="#B89A5E" stroke-width="0.3" opacity="0.25" fill="none">
-              <line x1="100" y1="30" x2="100" y2="64"/>
-              <line x1="100" y1="136" x2="100" y2="170"/>
-              <line x1="30" y1="100" x2="64" y2="100"/>
-              <line x1="136" y1="100" x2="170" y2="100"/>
+            <!-- ===== 第四层：中圈 + 先天八卦数 ===== -->
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#B89A5E" stroke-width="0.4" opacity="0.4"/>
+            <circle cx="100" cy="100" r="58" fill="none" stroke="#C9B896" stroke-width="0.25" opacity="0.3" stroke-dasharray="1.5,3"/>
+
+            <!-- 先天八卦数：乾1兑2离3震4巽5坎6艮7坤8 -->
+            <g font-size="7.5" fill="#B8963A" font-family="KaiTi,STKaiti,serif" text-anchor="middle" opacity="0.7">
+              <text x="100" y="53">一</text>   <!-- 乾 · 南 -->
+              <text x="140" y="65">二</text>   <!-- 兑 · 东南 -->
+              <text x="149" y="103">三</text>  <!-- 离 · 东 -->
+              <text x="136" y="140">四</text>  <!-- 震 · 东北 -->
+              <text x="64"  y="140">五</text>  <!-- 巽 · 西南 -->
+              <text x="51"  y="103">六</text>  <!-- 坎 · 西 -->
+              <text x="60"  y="65">七</text>   <!-- 艮 · 西北 -->
+              <text x="100" y="151">八</text>  <!-- 坤 · 北 -->
+            </g>
+
+            <!-- ===== 第五层：内晕 ===== -->
+            <circle cx="100" cy="100" r="48" fill="url(#innerHalo)"/>
+
+            <!-- ===== 第六层：中心太极图（精细版） ===== -->
+            <!-- 太极外环（双圈） -->
+            <circle cx="100" cy="100" r="40" fill="none" stroke="#B89A5E" stroke-width="0.4" opacity="0.5"/>
+            <circle cx="100" cy="100" r="37" fill="none" stroke="#C9B896" stroke-width="0.25" opacity="0.4"/>
+
+            <!-- 太极主体：阴鱼黑，阳鱼白（纸色） -->
+            <!-- 外圆描边 -->
+            <circle cx="100" cy="100" r="34" fill="none" stroke="#2B2317" stroke-width="0.7" opacity="0.9"/>
+            <!-- 阴鱼（黑色） -->
+            <path d="M100 66 A34 34 0 0 1 100 134 A17 17 0 0 1 100 100 A17 17 0 0 0 100 66 Z"
+                  fill="#2B2317" opacity="0.9"/>
+            <!-- 阳鱼（纸色）留白，用描边定形 -->
+            <path d="M100 66 A34 34 0 0 0 100 134 A17 17 0 0 0 100 100 A17 17 0 0 1 100 66 Z"
+                  fill="#F2EBDD" opacity="0.95"/>
+
+            <!-- 鱼眼：阳中一点阴，阴中一点阳 -->
+            <circle cx="100" cy="83" r="4" fill="#F2EBDD" stroke="#2B2317" stroke-width="0.4" opacity="0.9"/>
+            <circle cx="100" cy="117" r="4" fill="#2B2317" opacity="0.9"/>
+            <!-- 鱼眼内核（更小，增加层次） -->
+            <circle cx="100" cy="83" r="1.6" fill="#2B2317" opacity="0.8"/>
+            <circle cx="100" cy="117" r="1.6" fill="#F2EBDD" opacity="0.9"/>
+
+            <!-- 太极中心一点（无极） -->
+            <circle cx="100" cy="100" r="1.2" fill="#B23A2A" opacity="0.7"/>
+
+            <!-- 八卦向心连线（极淡，连接卦与太极，增强整体感） -->
+            <g stroke="#B8963A" stroke-width="0.25" opacity="0.2" fill="none">
+              <line x1="100" y1="44" x2="100" y2="60"/>    <!-- 乾 → 太极 -->
+              <line x1="100" y1="140" x2="100" y2="156"/>  <!-- 坤 → 太极 -->
+              <line x1="56" y1="100" x2="72" y2="100"/>    <!-- 离 → 太极 -->
+              <line x1="128" y1="100" x2="144" y2="100"/>  <!-- 坎 → 太极 -->
             </g>
           </svg>
         </div>
@@ -1525,9 +1671,8 @@ tr:nth-child(even) td{
 
         <!-- 第一步：得上卦 -->
         <div class="step-card">
-          <div class="step-num">第一步</div>
-          <div class="side-gua">☰</div>
-          <h3>得 上 卦</h3>
+          <div class="step-num">其　一</div>
+          <h3 data-gua="☰">得 上 卦</h3>
 
           <!-- 上卦爻象 + 说明 -->
           <div class="yao-diagram">
@@ -1577,9 +1722,8 @@ tr:nth-child(even) td{
 
         <!-- 第二步：得下卦 -->
         <div class="step-card">
-          <div class="step-num">第二步</div>
-          <div class="side-gua">☷</div>
-          <h3>得 下 卦</h3>
+          <div class="step-num">其　二</div>
+          <h3 data-gua="☷">得 下 卦</h3>
 
           <div class="yao-diagram">
             <div class="yao-stack" style="margin-left:24px">
@@ -1605,9 +1749,8 @@ tr:nth-child(even) td{
 
         <!-- 第三步：得动爻 -->
         <div class="step-card">
-          <div class="step-num">第三步</div>
-          <div class="side-gua">⚊</div>
-          <h3>得 动 爻</h3>
+          <div class="step-num">其　三</div>
+          <h3 data-gua="⚊">得 动 爻</h3>
 
           <div class="yao-diagram">
             <div class="yao-stack" style="margin-left:24px">
