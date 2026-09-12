@@ -1193,6 +1193,16 @@ tr:nth-child(even) td{
 .section:nth-of-type(5){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.15s both; }
 .illustration{ animation: fadeUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
 .footer{ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s both; }
+
+/* ============================================================
+   强制静止：禁用全部动画，回归静态卷轴
+   （保留 keyframes 定义与结构，但所有元素不运行动画）
+   ============================================================ */
+*, *::before, *::after{
+  animation: none !important;
+  transition: none !important;
+  animation-play-state: paused !important;
+}
 </style>
 </head>
 <body>
