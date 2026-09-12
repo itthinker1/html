@@ -105,23 +105,6 @@ body::after{
 }
 
 /* ============================================================
-   粒子背景层（灵气微尘 + 艾草细屑）
-   ============================================================ */
-#tsparticles{
-  position: fixed !important;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-#particles-canvas,
-#herbs-canvas{
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ============================================================
    卷轴主容器
    ============================================================ */
 .scroll-wrap{
@@ -277,87 +260,142 @@ body::after{
 
 
 /* ============================================================
-   SVG 动效系统——静态不干扰、动态有灵气
-   所有动画周期 ≥ 8s，opacity 变幅 ≤ 30%，不影响阅读
+   SVG 动效系统——纯 CSS/SVG，无外部依赖
+   设计原则：低速冥想感、层次错落、不干扰阅读
+   太极 60s/圈 · 星点 3~8s 闪烁 · 爻象逐爻浮现 · 卷轴舒展开场
+   所有动画尊重 prefers-reduced-motion
    ============================================================ */
 
-/* ---- 1. 太极自转（中心太极 45s 一圈，顺行法天） ---- */
+/* ---- 1. 太极自转（60s 一圈，顺行法天，加光晕脉动） ---- */
 .bagua-circle svg .taiji-center{
   transform-origin: 100px 100px;
-  animation: taiji-spin 45s linear infinite;
+  animation: taiji-spin 60s linear infinite;
 }
 @keyframes taiji-spin{
   from { transform: translate(100px, 100px) rotate(0deg); }
   to   { transform: translate(100px, 100px) rotate(360deg); }
 }
-
-/* ---- 2. 八卦符呼吸明灭（错峰相位，呼应感应） ---- */
-.bagua-circle svg .bagua-sym{
-  animation: bagua-breath 10s ease-in-out infinite alternate;
+/* 太极外围光晕脉动——极淡金色呼吸，衬托阴阳流转 */
+.bagua-circle svg .taiji-halo{
+  transform-origin: 100px 100px;
+  animation: taiji-halo-pulse 8s ease-in-out infinite alternate;
 }
-.bagua-circle svg .bagua-qian  { animation-delay: 0s;    }
-.bagua-circle svg .bagua-kun   { animation-delay: -5s;   }
-.bagua-circle svg .bagua-li    { animation-delay: -2.5s; }
-.bagua-circle svg .bagua-kan   { animation-delay: -7.5s; }
-.bagua-circle svg .bagua-zhen  { animation-delay: -1.25s;}
-.bagua-circle svg .bagua-dui   { animation-delay: -3.75s;}
-.bagua-circle svg .bagua-gen   { animation-delay: -6.25s;}
-.bagua-circle svg .bagua-xun   { animation-delay: -8.75s;}
+@keyframes taiji-halo-pulse{
+  0%   { opacity: 0.3; transform: scale(0.95); }
+  100% { opacity: 0.6; transform: scale(1.08); }
+}
 
-@keyframes bagua-breath{
-  0%   { opacity: 0.75; }
-  100% { opacity: 1;    }
+/* ---- 2. 八卦符错峰呼吸缓浮（八宫相位依次流转） ---- */
+.bagua-circle svg .bagua-sym{
+  animation: bagua-float 12s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+/* 按先天八卦序（乾-兑-离-震-巽-坎-艮-坤）错峰 1.5s */
+.bagua-circle svg .bagua-qian  { animation-delay: 0s;    }
+.bagua-circle svg .bagua-dui   { animation-delay: -1.5s; }
+.bagua-circle svg .bagua-li    { animation-delay: -3s;   }
+.bagua-circle svg .bagua-zhen  { animation-delay: -4.5s; }
+.bagua-circle svg .bagua-xun   { animation-delay: -6s;   }
+.bagua-circle svg .bagua-kan   { animation-delay: -7.5s; }
+.bagua-circle svg .bagua-gen   { animation-delay: -9s;   }
+.bagua-circle svg .bagua-kun   { animation-delay: -10.5s;}
+
+@keyframes bagua-float{
+  0%   { opacity: 0.65; transform: translateY(0) scale(0.97); }
+  100% { opacity: 1;    transform: translateY(-2px) scale(1.03); }
 }
 
 /* ---- 3. 外层光晕缓慢脉动 ---- */
 .bagua-circle svg .bagua-glow{
-  animation: glow-pulse 12s ease-in-out infinite alternate;
+  animation: glow-pulse 15s ease-in-out infinite alternate;
   transform-origin: 100px 100px;
 }
 @keyframes glow-pulse{
-  0%   { opacity: 0.8; transform: scale(1);    }
-  100% { opacity: 1;   transform: scale(1.04); }
+  0%   { opacity: 0.6; transform: scale(0.98); }
+  100% { opacity: 1;   transform: scale(1.05); }
 }
 
 /* ---- 4. 八卦连线呼吸（与光晕错峰） ---- */
 .bagua-circle svg .bagua-lines{
-  animation: lines-breath 15s ease-in-out infinite alternate;
+  animation: lines-breath 18s ease-in-out infinite alternate;
 }
 @keyframes lines-breath{
-  0%   { opacity: 0.2;  }
+  0%   { opacity: 0.15; }
   100% { opacity: 0.35; }
 }
 
 /* ---- 5. 章节标题卦符律动（感应微动） ---- */
 h2.sec-title .gua-mark{
-  animation: gua-mark-float 8s ease-in-out infinite alternate;
+  animation: gua-mark-float 10s ease-in-out infinite alternate;
 }
 @keyframes gua-mark-float{
-  0%   { opacity: 0.55; transform: translateY(0);    }
-  100% { opacity: 0.75; transform: translateY(-1px); }
+  0%   { opacity: 0.5;  transform: translateY(0) rotate(-2deg); }
+  100% { opacity: 0.75; transform: translateY(-2px) rotate(2deg); }
 }
 
-/* ---- 6. 六爻动爻光晕脉动 ---- */
+/* ---- 6. 六爻爻象：逐爻展开 + 动爻朱砂常驻高亮 ---- */
+/* 起卦展开动画（从下往上，呼应"装卦自下而上"） */
+.yao-stack .yao{
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: yao-appear 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+/* 上卦三爻：四爻→五爻→上爻（从下往上） */
+.step-card:nth-of-type(1) .yao-stack .yao:nth-child(3){ animation-delay: 0.4s; }
+.step-card:nth-of-type(1) .yao-stack .yao:nth-child(2){ animation-delay: 0.6s; }
+.step-card:nth-of-type(1) .yao-stack .yao:nth-child(1){ animation-delay: 0.8s; }
+/* 下卦三爻：初爻→二爻→三爻（从下往上） */
+.step-card:nth-of-type(2) .yao-stack .yao:nth-child(3){ animation-delay: 0.4s; }
+.step-card:nth-of-type(2) .yao-stack .yao:nth-child(2){ animation-delay: 0.6s; }
+.step-card:nth-of-type(2) .yao-stack .yao:nth-child(1){ animation-delay: 0.8s; }
+/* 六爻本卦（第三步）：初爻→二爻→三爻→四爻→五爻→上爻 */
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(6){ animation-delay: 0.3s; }
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(5){ animation-delay: 0.45s; }
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(4){ animation-delay: 0.6s; }
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(3){ animation-delay: 0.75s; }
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(2){ animation-delay: 0.9s; }
+.step-card:nth-of-type(3) .yao-stack .yao:nth-child(1){ animation-delay: 1.05s; }
+
+@keyframes yao-appear{
+  from{ opacity: 0; transform: translateX(-10px); }
+  to  { opacity: 1; transform: translateX(0); }
+}
+
+/* 动爻：朱砂常驻脉动高亮（更明显、有呼吸感） */
 .yao-stack .yao.active{
-  animation: yao-glow 4s ease-in-out infinite alternate;
+  animation:
+    yao-appear 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    yao-glow 3s ease-in-out infinite alternate;
+  animation-delay: inherit, 1.2s;
 }
 @keyframes yao-glow{
-  0%   { box-shadow: 0 0 6px rgba(178,58,42,0.4);  }
-  100% { box-shadow: 0 0 12px rgba(178,58,42,0.7); }
+  0%   {
+    box-shadow: 0 0 8px rgba(178,58,42,0.5), 0 0 20px rgba(178,58,42,0.2);
+    background: linear-gradient(90deg, rgba(178,58,42,0.25), rgba(178,58,42,0.15));
+  }
+  100% {
+    box-shadow: 0 0 14px rgba(178,58,42,0.8), 0 0 32px rgba(178,58,42,0.35);
+    background: linear-gradient(90deg, rgba(178,58,42,0.35), rgba(178,58,42,0.2));
+  }
 }
 
-/* ---- 7. 星图增强——多层错峰脉冲 ---- */
+/* ---- 7. 星图增强——多层错峰脉冲 + 极缓漂移 ---- */
 body::after{
   animation:
-    twinkle 8s ease-in-out infinite alternate,
-    star-drift 120s linear infinite;
+    twinkle 6s ease-in-out infinite alternate,
+    star-drift 180s linear infinite;
+}
+@keyframes twinkle{
+  0%   { opacity: 0.07; }
+  50%  { opacity: 0.13; }
+  100% { opacity: 0.09; }
 }
 @keyframes star-drift{
   0%   { background-position: 0 0; }
-  100% { background-position: 10px -5px; }
+  100% { background-position: 20px -10px; }
 }
 
-/* ---- 8. 卷轴轴杆光泽扫过 ---- */
+/* ---- 8. 卷轴轴杆光泽扫过（多层、更有层次） ---- */
 .scroll-top .axis::before,
 .scroll-bottom .axis::before{
   /* 重置—实际用轴杆本体加内部光泽层 */
@@ -370,8 +408,8 @@ body::after{
 .axis-shine{
   position: absolute;
   top: 0;
-  left: -30%;
-  width: 30%;
+  left: -40%;
+  width: 40%;
   height: 100%;
   pointer-events: none;
   overflow: hidden;
@@ -379,63 +417,68 @@ body::after{
 .axis-shine-top{
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(255,235,180,0.3) 50%,
+    rgba(255,235,180,0.15) 30%,
+    rgba(255,240,200,0.4) 50%,
+    rgba(255,235,180,0.15) 70%,
     transparent 100%);
-  animation: axis-shine 20s ease-in-out infinite;
+  animation: axis-shine 18s ease-in-out infinite;
 }
 .axis-shine-bottom{
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(255,230,170,0.25) 50%,
+    rgba(255,230,170,0.12) 30%,
+    rgba(255,235,180,0.3) 50%,
+    rgba(255,230,170,0.12) 70%,
     transparent 100%);
-  animation: axis-shine 25s ease-in-out infinite;
-  animation-delay: -10s;
+  animation: axis-shine 22s ease-in-out infinite;
+  animation-delay: -8s;
 }
 @keyframes axis-shine{
-  0%   { left: -30%; opacity: 0; }
-  10%  { opacity: 1; }
-  50%  { left: 120%; opacity: 0.8; }
+  0%   { left: -40%; opacity: 0; }
+  8%   { opacity: 1; }
+  55%  { left: 120%; opacity: 0.7; }
   100% { left: 120%; opacity: 0; }
 }
 
 /* ---- 9. 卷边阴影呼吸 ---- */
 .scroll-body::after{
-  animation: scroll-edge-breath 10s ease-in-out infinite alternate;
+  animation: scroll-edge-breath 12s ease-in-out infinite alternate;
 }
 @keyframes scroll-edge-breath{
   0%{
     box-shadow:
-      inset 12px 0 24px -12px rgba(0,0,0,0.10),
-      inset -12px 0 24px -12px rgba(0,0,0,0.10);
+      inset 12px 0 24px -12px rgba(0,0,0,0.08),
+      inset -12px 0 24px -12px rgba(0,0,0,0.08);
   }
   100%{
     box-shadow:
-      inset 12px 0 24px -12px rgba(0,0,0,0.15),
-      inset -12px 0 24px -12px rgba(0,0,0,0.15);
+      inset 12px 0 24px -12px rgba(0,0,0,0.16),
+      inset -12px 0 24px -12px rgba(0,0,0,0.16);
   }
 }
 
-/* ---- 10. 插图动效 ---- */
+/* ---- 10. 插图动效（全部调节奏，避免同速） ---- */
 
-/* 插图一：蓍草轻微摇曳（左/右错峰） */
+/* 插图一：蓍草轻微摇曳（左/右错峰，幅度加大但仍克制） */
 .illustration svg .illus-straw-left{
-  animation: straw-sway-l 12s ease-in-out infinite alternate;
+  animation: straw-sway-l 10s ease-in-out infinite alternate;
   transform-origin: bottom center;
 }
 .illustration svg .illus-straw-right{
-  animation: straw-sway-r 14s ease-in-out infinite alternate;
+  animation: straw-sway-r 13s ease-in-out infinite alternate;
   transform-origin: bottom center;
 }
 @keyframes straw-sway-l{
-  0%   { transform: rotate(0.3deg) translateX(0); }
-  100% { transform: rotate(-0.3deg) translateX(-0.5px); }
+  0%   { transform: rotate(0.5deg) translateX(0); }
+  100% { transform: rotate(-0.8deg) translateX(-1px); }
 }
 @keyframes straw-sway-r{
-  0%   { transform: rotate(-0.2deg) translateX(0); }
-  100% { transform: rotate(0.4deg) translateX(0.5px); }
+  0%   { transform: rotate(-0.4deg) translateX(0); }
+  100% { transform: rotate(0.9deg) translateX(1px); }
 }
+/* 中间太极：50s 慢转 */
 .illustration svg .illus-taiji-mid{
-  animation: illus-taiji-rotate 60s linear infinite;
+  animation: illus-taiji-rotate 50s linear infinite;
   transform-origin: 160px 80px;
 }
 @keyframes illus-taiji-rotate{
@@ -445,84 +488,78 @@ body::after{
 
 /* 插图二：香烟飘动 + 缓慢变形 */
 .illustration svg .incense-smoke{
-  animation: smoke-waft 8s ease-in-out infinite alternate;
+  animation: smoke-waft 7s ease-in-out infinite alternate;
 }
 @keyframes smoke-waft{
-  0%   { opacity: 0.3; transform: translateX(0); }
-  100% { opacity: 0.45; transform: translateX(1.5px); }
+  0%   { opacity: 0.25; transform: translateX(0) scaleY(1); }
+  100% { opacity: 0.5;  transform: translateX(2px) scaleY(1.05); }
 }
 
-/* 插图三：竹简墨迹微晕染 */
+/* 插图三：竹简墨迹微晕染 + 古钱微光闪烁 */
 .illustration svg .bamboo-scroll{
-  animation: ink-bleed 15s ease-in-out infinite alternate;
+  animation: ink-bleed 12s ease-in-out infinite alternate;
 }
 @keyframes ink-bleed{
-  0%   { opacity: 0.95; }
-  100% { opacity: 1; }
+  0%   { opacity: 0.9;  }
+  100% { opacity: 1;    }
 }
 .illustration svg .ancient-coin{
-  animation: coin-glint 12s ease-in-out infinite alternate;
+  animation: coin-glint 8s ease-in-out infinite alternate;
   transform-origin: 60px 135px;
 }
 @keyframes coin-glint{
-  0%   { opacity: 0.45; }
-  100% { opacity: 0.6;  }
+  0%   { opacity: 0.35; filter: brightness(0.9); }
+  100% { opacity: 0.65; filter: brightness(1.2); }
 }
 
-/* 插图四：云雾漂移 + 飞鸟缓慢移动 */
+/* 插图四：云雾漂移 + 飞鸟缓慢移动 + 天空太极 */
 .illustration svg .mountain-clouds{
-  animation: cloud-drift 40s ease-in-out infinite alternate;
+  animation: cloud-drift 50s ease-in-out infinite alternate;
 }
 @keyframes cloud-drift{
-  0%   { transform: translateX(0);    opacity: 0.45; }
-  100% { transform: translateX(8px); opacity: 0.55; }
+  0%   { transform: translateX(0);     opacity: 0.4; }
+  50%  { opacity: 0.6; }
+  100% { transform: translateX(12px); opacity: 0.45; }
 }
 .illustration svg .flying-birds{
-  animation: birds-fly 30s linear infinite;
+  animation: birds-fly 25s linear infinite;
 }
 @keyframes birds-fly{
-  0%   { transform: translateX(0);      opacity: 0.35; }
-  50%  { opacity: 0.5; }
-  100% { transform: translateX(20px);   opacity: 0.3;  }
+  0%   { transform: translateX(-10px);  opacity: 0; }
+  20%  { opacity: 0.5; }
+  80%  { opacity: 0.4; }
+  100% { transform: translateX(30px);   opacity: 0; }
 }
 .illustration svg .sky-taiji{
-  animation: sky-taiji-spin 80s linear infinite;
+  animation: sky-taiji-spin 70s linear infinite;
   transform-origin: 300px 40px;
 }
 @keyframes sky-taiji-spin{
-  from { transform: translate(300px, 40px) rotate(0deg);   opacity: 0.18; }
-  50%  { opacity: 0.25; }
-  to   { transform: translate(300px, 40px) rotate(360deg); opacity: 0.18; }
+  from { transform: translate(300px, 40px) rotate(0deg);   opacity: 0.15; }
+  50%  { opacity: 0.28; }
+  to   { transform: translate(300px, 40px) rotate(360deg); opacity: 0.15; }
 }
 
-/* ---- 11. 页脚小太极慢转 ---- */
+/* ---- 11. 页脚小太极慢转（与页眉呼应，反向以示阴阳回环） ---- */
 .footer .taiji-footer{
-  animation: taiji-footer-spin 90s linear infinite;
+  animation: taiji-footer-spin 75s linear infinite;
+  transform-origin: 50px 50px;
 }
 @keyframes taiji-footer-spin{
   from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  to   { transform: rotate(-360deg); }
 }
 
-
-/* 先天八卦圆阵 */
-.bagua-circle{
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 28px;
-  position: relative;
-}
-
+/* 先天八卦圆阵整体悬浮（极缓、微幅） */
 .bagua-circle svg{
-  width: 100%;
-  height: 100%;
-  animation: float 6s ease-in-out infinite alternate;
+  animation: float 8s ease-in-out infinite alternate;
 }
 
 @keyframes float{
-  0%   { transform: translateY(0) rotate(-1deg); }
-  100% { transform: translateY(-4px) rotate(1deg); }
+  0%   { transform: translateY(0) rotate(-0.5deg); }
+  100% { transform: translateY(-6px) rotate(0.5deg); }
 }
+
 
 .eyebrow{
   font-size: 12px;
@@ -1021,15 +1058,20 @@ tr:nth-child(even) td{
    ============================================================ */
 @media (prefers-reduced-motion: reduce){
   .bagua-circle svg .taiji-center,
+  .bagua-circle svg .taiji-halo,
   .bagua-circle svg .bagua-sym,
   .bagua-circle svg .bagua-glow,
   .bagua-circle svg .bagua-lines,
   h2.sec-title .gua-mark,
+  .yao-stack .yao,
   .yao-stack .yao.active,
   body::after,
   .axis-shine-top,
   .axis-shine-bottom,
   .scroll-body::after,
+  .scroll-body,
+  .scroll-wrap,
+  .illustration,
   .illustration svg .illus-straw-left,
   .illustration svg .illus-straw-right,
   .illustration svg .illus-taiji-mid,
@@ -1040,30 +1082,36 @@ tr:nth-child(even) td{
   .illustration svg .flying-birds,
   .illustration svg .sky-taiji,
   .footer .taiji-footer,
-  .bagua-circle svg{
+  .footer,
+  .bagua-circle svg,
+  .section,
+  .header{
     animation: none !important;
     transition: none !important;
   }
+  .yao-stack .yao{ opacity: 1 !important; transform: none !important; }
 }
 
 /* ============================================================
    移动端降级：简化动画，降低性能消耗
    ============================================================ */
 @media (max-width: 700px){
-  /* 移动端保留核心的太极转 + 星图呼吸，弱化其余 */
-  .bagua-circle svg .bagua-sym{
-    animation-duration: 15s;
-  }
-  .illustration svg .mountain-clouds,
-  .illustration svg .flying-birds,
-  .illustration svg .sky-taiji,
-  .illustration svg .illus-taiji-mid{
-    animation-duration: 80s;
-  }
+  /* 移动端保留核心动效，延长周期降低性能消耗 */
+  .bagua-circle svg .taiji-center{ animation-duration: 80s; }
+  .bagua-circle svg .bagua-sym{ animation-duration: 18s; }
+  .bagua-circle svg .taiji-halo{ animation-duration: 12s; }
+  .illustration svg .mountain-clouds{ animation-duration: 70s; }
+  .illustration svg .flying-birds{ animation-duration: 40s; }
+  .illustration svg .sky-taiji{ animation-duration: 100s; }
+  .illustration svg .illus-taiji-mid{ animation-duration: 70s; }
+  .footer .taiji-footer{ animation-duration: 100s; }
   .axis-shine-top,
-  .axis-shine-bottom{
-    animation-duration: 35s;
-  }
+  .axis-shine-bottom{ animation-duration: 35s; }
+  .illustration svg .illus-straw-left,
+  .illustration svg .illus-straw-right{ animation-duration: 18s; }
+  .illustration svg .incense-smoke{ animation-duration: 12s; }
+  .scroll-wrap{ animation-duration: 0.8s; }
+  .scroll-body{ animation: none; }
 }
 
 /* ============================================================
@@ -1119,24 +1167,32 @@ tr:nth-child(even) td{
 }
 
 /* ============================================================
-   进场动画
+   进场动画——卷轴舒展开场
    ============================================================ */
 @keyframes scrollOpen{
-  from{ opacity:0; transform: scaleY(0.95); transform-origin: top center; }
-  to{ opacity:1; transform: scaleY(1); }
+  0%  { opacity: 0; transform: scaleY(0.85); transform-origin: top center; }
+  60% { opacity: 0.8; transform: scaleY(1.01); }
+  100%{ opacity: 1; transform: scaleY(1); }
+}
+@keyframes scrollBodyReveal{
+  from{ opacity: 0; clip-path: inset(0 0 100% 0); }
+  to  { opacity: 1; clip-path: inset(0 0 0 0); }
 }
 @keyframes fadeUp{
-  from{ opacity:0; transform: translateY(10px); }
-  to{ opacity:1; transform: translateY(0); }
+  from{ opacity: 0; transform: translateY(12px); }
+  to  { opacity: 1; transform: translateY(0); }
 }
 
-.scroll-wrap{ animation: scrollOpen 1s ease both; }
-.header{ animation: fadeUp 0.8s ease 0.2s both; }
-.section:nth-of-type(1){ animation: fadeUp 0.8s ease 0.35s both; }
-.section:nth-of-type(2){ animation: fadeUp 0.8s ease 0.5s both; }
-.section:nth-of-type(3){ animation: fadeUp 0.8s ease 0.65s both; }
-.section:nth-of-type(4){ animation: fadeUp 0.8s ease 0.8s both; }
-.section:nth-of-type(5){ animation: fadeUp 0.8s ease 0.95s both; }
+.scroll-wrap{ animation: scrollOpen 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.scroll-body{ animation: scrollBodyReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+.header{ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both; }
+.section:nth-of-type(1){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both; }
+.section:nth-of-type(2){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both; }
+.section:nth-of-type(3){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.85s both; }
+.section:nth-of-type(4){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.0s both; }
+.section:nth-of-type(5){ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.15s both; }
+.illustration{ animation: fadeUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
+.footer{ animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s both; }
 </style>
 </head>
 <body>
@@ -1167,7 +1223,7 @@ tr:nth-child(even) td{
             </defs>
 
             <!-- 光晕 -->
-            <circle cx="100" cy="100" r="95" fill="url(#glow)"/>
+            <circle class="bagua-glow" cx="100" cy="100" r="95" fill="url(#glow)"/>
 
             <!-- 外层圆 -->
             <circle cx="100" cy="100" r="92" fill="none" stroke="#B89A5E" stroke-width="0.6" opacity="0.6"/>
@@ -1176,55 +1232,59 @@ tr:nth-child(even) td{
             <!-- 先天八卦（上南下北，左东右西） -->
 
             <!-- 乾 ☰ 南（上） -->
-            <g transform="translate(100, 18)">
+            <g class="bagua-sym bagua-qian" transform="translate(100, 18)">
               <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☰</text>
               <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">乾　南</text>
             </g>
 
             <!-- 坤 ☷ 北（下） -->
-            <g transform="translate(100, 170)">
+            <g class="bagua-sym bagua-kun" transform="translate(100, 170)">
               <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☷</text>
               <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">坤　北</text>
             </g>
 
             <!-- 离 ☲ 东（左） -->
-            <g transform="translate(16, 100)">
+            <g class="bagua-sym bagua-li" transform="translate(16, 100)">
               <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☲</text>
               <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">離　東</text>
             </g>
 
             <!-- 坎 ☵ 西（右） -->
-            <g transform="translate(184, 100)">
+            <g class="bagua-sym bagua-kan" transform="translate(184, 100)">
               <text x="0" y="6" text-anchor="middle" font-size="24" fill="#2B2317" font-family="serif" opacity="0.85">☵</text>
               <text x="0" y="22" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="2">坎　西</text>
             </g>
 
             <!-- 震 ☳ 东北（左上） -->
-            <g transform="translate(38, 42)">
+            <g class="bagua-sym bagua-zhen" transform="translate(38, 42)">
               <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☳</text>
               <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">震</text>
             </g>
 
             <!-- 兑 ☱ 东南（左下） -->
-            <g transform="translate(38, 158)">
+            <g class="bagua-sym bagua-dui" transform="translate(38, 158)">
               <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☱</text>
               <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">兌</text>
             </g>
 
             <!-- 艮 ☶ 西北（右上） -->
-            <g transform="translate(162, 42)">
+            <g class="bagua-sym bagua-gen" transform="translate(162, 42)">
               <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☶</text>
               <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">艮</text>
             </g>
 
             <!-- 巽 ☴ 西南（右下） -->
-            <g transform="translate(162, 158)">
+            <g class="bagua-sym bagua-xun" transform="translate(162, 158)">
               <text x="0" y="4" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.7">☴</text>
               <text x="0" y="18" text-anchor="middle" font-size="7" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">巽</text>
             </g>
 
+            <!-- 太极光晕（极淡金色脉动） -->
+            <circle class="taiji-halo" cx="100" cy="100" r="44" fill="none" stroke="#B8963A" stroke-width="0.8" opacity="0.4"/>
+            <circle class="taiji-halo" cx="100" cy="100" r="52" fill="none" stroke="#B8963A" stroke-width="0.4" opacity="0.2" style="animation-delay: -2s"/>
+
             <!-- 中心太极图 -->
-            <g transform="translate(100, 100)">
+            <g class="taiji-center" transform="translate(100, 100)">
               <!-- 外圈 -->
               <circle cx="0" cy="0" r="36" fill="none" stroke="#B89A5E" stroke-width="0.5" opacity="0.5"/>
               <!-- 太极主体 -->
@@ -1237,7 +1297,7 @@ tr:nth-child(even) td{
             </g>
 
             <!-- 八卦连线（暗线表示方位对应） -->
-            <g stroke="#B89A5E" stroke-width="0.3" opacity="0.25" fill="none">
+            <g class="bagua-lines" stroke="#B89A5E" stroke-width="0.3" opacity="0.25" fill="none">
               <line x1="100" y1="30" x2="100" y2="64"/>
               <line x1="100" y1="136" x2="100" y2="170"/>
               <line x1="30" y1="100" x2="64" y2="100"/>
@@ -1800,364 +1860,8 @@ tr:nth-child(even) td{
 
 </div>
 
-<!-- ===== 粒子背景 ===== -->
-<div id="tsparticles" aria-hidden="true"></div>
-
-<!-- tsparticles 第三方库（CDN，slim 精简版 ~30KB） -->
-<!-- 库名：tsparticles  v2.12.0  (tsParticles Slim) -->
-<!-- CDN:  https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js -->
-<script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.12.0/tsparticles.slim.bundle.min.js"></script>
-
 <script>
-/* ============================================================
-   粒子系统 —— 灵气微尘 + 艾草细屑
-   主方案：tsparticles（第三方库，CDN 加载）
-   回退方案：手写精简 Canvas 引擎（CDN 加载失败时自动启用）
-   设计要点：
-   · 金色微尘：圆形光点，缓慢上升，呼吸明灭 —— 呼应"至诚感应"
-   · 艾草细屑：细长颗粒，缓慢漂浮左移 —— 呼应"揲蓍起卦"
-   · 指针附近轻微扰动 —— "闭目静心，万象浮游"
-   · 尊重 prefers-reduced-motion，移动端降级
-   ============================================================ */
-(function(){
-  'use strict';
-
-  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reducedMotion) return;
-
-  var isMobile = window.innerWidth < 768;
-
-  // —— 金色微尘数量：桌面 ~40，移动 ~16 ——
-  var dustNum = isMobile ? 16 : 40;
-  // —— 艾草细屑数量：桌面 ~20，移动 ~8 ——
-  var herbNum = isMobile ? 8  : 20;
-
-  /* —— 尝试使用 tsparticles —— */
-  function tryTsParticles(){
-    if(typeof tsParticles === 'undefined') return false;
-
-    tsParticles.load('tsparticles', {
-      fullScreen: { enable: true, zIndex: 1 },
-      detectRetina: true,
-      fpsLimit: 60,
-      background: { color: 'transparent' },
-
-      particles: {
-        number: {
-          value: dustNum,
-          density: { enable: true, width: 1920, height: 1080 }
-        },
-        color: {
-          value: [
-            '#B8963A', // 淡金（主）
-            '#C9A84A', // 亮金
-            '#B23A2A'  // 朱砂（点缀，约10%）
-          ]
-        },
-        shape: {
-          type: 'circle'
-        },
-        opacity: {
-          value: { min: 0.15, max: 0.55 },
-          animation: {
-            enable: true,
-            speed: 0.6,
-            minimumValue: 0.1,
-            sync: false
-          }
-        },
-        size: {
-          value: { min: 1, max: 2.5 },
-          animation: { enable: false }
-        },
-        move: {
-          enable: true,
-          speed: 0.3,
-          direction: 'top',       // 缓慢上升
-          random: true,
-          straight: false,
-          outModes: { default: 'out' },
-          warp: true
-        },
-        // 光晕
-        shadow: {
-          enable: true,
-          blur: 6,
-          color: '#B8963A',
-          offset: { x: 0, y: 0 }
-        }
-      },
-
-      // 鼠标交互：轻微排斥（呼应"感应"）
-      interactivity: {
-        detectsOn: 'window',
-        events: {
-          onHover: {
-            enable: true,
-            mode: 'repulse'
-          },
-          resize: true
-        },
-        modes: {
-          repulse: {
-            distance: 100,
-            duration: 0.4,
-            speed: 0.5,
-            factor: 20
-          }
-        }
-      },
-
-      // 艾草细屑：通过第二个 emitter 发射细长粒子
-      // 注：tsparticles slim 不含 emitter 插件，艾草细屑由回退引擎绘制
-      emitters: []
-    });
-
-    return true;
-  }
-
-  /* ============================================================
-     回退方案：手写精简 Canvas 粒子引擎
-     —— 若 tsparticles CDN 加载失败，自动启用此方案
-     —— 包含：金色微尘 + 艾草细屑 双层粒子
-     ============================================================ */
-  function fallbackCanvas(){
-    var el = document.getElementById('tsparticles');
-    if(!el) return;
-
-    // 用 canvas 替换 tsparticles 容器
-    var canvas = document.createElement('canvas');
-    canvas.id = 'particles-canvas';
-    canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.8;';
-    canvas.setAttribute('aria-hidden', 'true');
-    el.parentNode.insertBefore(canvas, el);
-    el.style.display = 'none';
-
-    var ctx = canvas.getContext('2d');
-    var DPR = Math.min(window.devicePixelRatio || 1, 2);
-
-    function resize(){
-      canvas.width  = window.innerWidth  * DPR;
-      canvas.height = window.innerHeight * DPR;
-      canvas.style.width  = window.innerWidth  + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    var GOLD_COLOR = 'rgba(184, 150, 58, ';
-    var HERB_COLOR = 'rgba(90, 80, 50, ';
-    var VERMILION  = 'rgba(178, 58, 42, ';
-
-    function rand(a,b){ return a + Math.random()*(b-a); }
-
-    // 金色微尘
-    var dusts = [];
-    for(var i=0; i<dustNum; i++){
-      dusts.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: rand(0.6, 2),
-        vy: rand(0.1, 0.4),
-        vx: rand(-0.06, 0.06),
-        alpha: rand(0.2, 0.55),
-        alphaDir: Math.random()>0.5?1:-1,
-        alphaSpeed: rand(0.002, 0.006),
-        alphaMin: rand(0.1, 0.25),
-        alphaMax: rand(0.45, 0.65),
-        isVermilion: Math.random() < 0.1
-      });
-    }
-
-    // 艾草细屑
-    var herbs = [];
-    for(var j=0; j<herbNum; j++){
-      herbs.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        len: rand(4, 10),
-        wid: rand(0.6, 1.3),
-        vx: rand(-0.18, -0.06),
-        vy: rand(-0.1, 0.1),
-        rot: rand(0, Math.PI*2),
-        rotSpeed: rand(-0.003, 0.003),
-        alpha: rand(0.15, 0.38),
-        sway: rand(0, Math.PI*2),
-        swaySpeed: rand(0.005, 0.012)
-      });
-    }
-
-    // 鼠标扰动
-    var mouse = { x:-9999, y:-9999, active:false };
-    document.addEventListener('mousemove', function(e){
-      mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
-    });
-    document.addEventListener('mouseleave', function(){ mouse.active = false; });
-
-    function tick(){
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var w = window.innerWidth, h = window.innerHeight;
-      var mx = mouse.x, my = mouse.y;
-
-      // 金色微尘
-      for(var i=0; i<dusts.length; i++){
-        var d = dusts[i];
-        var dx = d.x-mx, dy = d.y-my, dist2 = dx*dx+dy*dy;
-        var pushX=0, pushY=0;
-        if(mouse.active && dist2 < 10000){
-          var dist = Math.sqrt(dist2)||1;
-          var force = (1-dist/100)*0.3;
-          pushX = (dx/dist)*force;
-          pushY = (dy/dist)*force;
-        }
-        d.x += d.vx + pushX;
-        d.y -= d.vy + pushY;
-        d.alpha += d.alphaDir * d.alphaSpeed;
-        if(d.alpha > d.alphaMax){ d.alpha=d.alphaMax; d.alphaDir=-1; }
-        if(d.alpha < d.alphaMin){ d.alpha=d.alphaMin; d.alphaDir=1; }
-        if(d.y < -10){ d.y = h+10; d.x = Math.random()*w; }
-        if(d.x < -10){ d.x = w+10; }
-        if(d.x > w+10){ d.x = -10; }
-
-        var color = d.isVermilion ? VERMILION : GOLD_COLOR;
-        ctx.beginPath();
-        ctx.arc(d.x*DPR, d.y*DPR, d.r*DPR, 0, Math.PI*2);
-        ctx.fillStyle = color + d.alpha + ')';
-        ctx.fill();
-
-        if(d.r > 1.2){
-          ctx.beginPath();
-          ctx.arc(d.x*DPR, d.y*DPR, d.r*DPR*2.5, 0, Math.PI*2);
-          var grad = ctx.createRadialGradient(d.x*DPR,d.y*DPR,0, d.x*DPR,d.y*DPR,d.r*DPR*2.5);
-          grad.addColorStop(0, color + (d.alpha*0.4) + ')');
-          grad.addColorStop(1, color + '0)');
-          ctx.fillStyle = grad;
-          ctx.fill();
-        }
-      }
-
-      // 艾草细屑
-      for(var j=0; j<herbs.length; j++){
-        var h2 = herbs[j];
-        h2.x += h2.vx;
-        h2.y += h2.vy + Math.sin(h2.sway)*0.03;
-        h2.rot += h2.rotSpeed;
-        h2.sway += h2.swaySpeed;
-
-        var hdx = h2.x-mx, hdy = h2.y-my, hdist2 = hdx*hdx+hdy*hdy;
-        if(mouse.active && hdist2 < 6400){
-          var hdist = Math.sqrt(hdist2)||1;
-          var hforce = (1-hdist/80)*0.5;
-          h2.x += (hdx/hdist)*hforce;
-          h2.y += (hdy/hdist)*hforce;
-          h2.rot += hforce*0.02;
-        }
-
-        if(h2.x < -20){ h2.x = w+20; h2.y = Math.random()*h; }
-        if(h2.y < -20){ h2.y = h+20; }
-        if(h2.y > h+20){ h2.y = -20; }
-
-        ctx.save();
-        ctx.translate(h2.x*DPR, h2.y*DPR);
-        ctx.rotate(h2.rot);
-        ctx.fillStyle = HERB_COLOR + h2.alpha + ')';
-        ctx.fillRect(-h2.len*DPR/2, -h2.wid*DPR/2, h2.len*DPR, h2.wid*DPR);
-        ctx.restore();
-      }
-
-      requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  }
-
-  // —— 启动：优先 tsparticles，失败则回退 ——
-  function init(){
-    if(!tryTsParticles()){
-      // CDN 未加载成功，使用回退方案
-      fallbackCanvas();
-    } else {
-      // tsparticles 加载成功，但艾草细屑需由回退引擎补充
-      // （slim 版不含 emitter 插件，无法做多形状发射）
-      // 只额外绘制艾草细屑
-      fallbackHerbsOnly();
-    }
-  }
-
-  // tsparticles 成功时，只补画艾草细屑
-  function fallbackHerbsOnly(){
-    var canvas = document.createElement('canvas');
-    canvas.id = 'herbs-canvas';
-    canvas.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none;';
-    canvas.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(canvas);
-
-    var ctx = canvas.getContext('2d');
-    var DPR = Math.min(window.devicePixelRatio || 1, 2);
-
-    function resize(){
-      canvas.width  = window.innerWidth  * DPR;
-      canvas.height = window.innerHeight * DPR;
-      canvas.style.width  = window.innerWidth  + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    var HERB_COLOR = 'rgba(90, 80, 50, ';
-    function rand(a,b){ return a + Math.random()*(b-a); }
-
-    var herbs = [];
-    for(var j=0; j<herbNum; j++){
-      herbs.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        len: rand(4, 10),
-        wid: rand(0.6, 1.3),
-        vx: rand(-0.18, -0.06),
-        vy: rand(-0.1, 0.1),
-        rot: rand(0, Math.PI*2),
-        rotSpeed: rand(-0.003, 0.003),
-        alpha: rand(0.15, 0.38),
-        sway: rand(0, Math.PI*2),
-        swaySpeed: rand(0.005, 0.012)
-      });
-    }
-
-    function tick(){
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var w = window.innerWidth, h = window.innerHeight;
-      for(var j=0; j<herbs.length; j++){
-        var h2 = herbs[j];
-        h2.x += h2.vx;
-        h2.y += h2.vy + Math.sin(h2.sway)*0.03;
-        h2.rot += h2.rotSpeed;
-        h2.sway += h2.swaySpeed;
-        if(h2.x < -20){ h2.x = w+20; h2.y = Math.random()*h; }
-        if(h2.y < -20){ h2.y = h+20; }
-        if(h2.y > h+20){ h2.y = -20; }
-        ctx.save();
-        ctx.translate(h2.x*DPR, h2.y*DPR);
-        ctx.rotate(h2.rot);
-        ctx.fillStyle = HERB_COLOR + h2.alpha + ')';
-        ctx.fillRect(-h2.len*DPR/2, -h2.wid*DPR/2, h2.len*DPR, h2.wid*DPR);
-        ctx.restore();
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-
-  // 页面加载后启动
-  if(document.readyState === 'complete'){
-    // 给 CDN 一点加载时间
-    setTimeout(init, 300);
-  } else {
-    window.addEventListener('load', function(){
-      setTimeout(init, 300);
-    });
-  }
-})();
+// （粒子系统已移除，全部动效由纯 SVG/CSS 承担）
 </script>
 
 </body>
