@@ -1654,69 +1654,209 @@ tr:nth-child(even) td{
         <span class="gua-div">☯</span>
       </div>
 
-      <!-- ============== 意境插图三：竹简典籍 ============== -->
+      <!-- ============== 意境插图三：易经典籍 ============== -->
       <div class="illustration">
         <svg width="340" height="170" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
-          <!-- 案台 -->
-          <rect x="20" y="145" width="300" height="10" fill="#B89A5E" opacity="0.2" rx="2"/>
+          <defs>
+            <!-- 书页渐变 -->
+            <linearGradient id="pageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#F7F2E6"/>
+              <stop offset="50%" stop-color="#F2EBDD"/>
+              <stop offset="100%" stop-color="#EDE5D2"/>
+            </linearGradient>
+            <!-- 书脊阴影 -->
+            <linearGradient id="spineShadow" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#2B2317" stop-opacity="0.15"/>
+              <stop offset="50%" stop-color="#2B2317" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#2B2317" stop-opacity="0.15"/>
+            </linearGradient>
+            <!-- 朱砂印 -->
+            <radialGradient id="inkpadGrad" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#C95B4A"/>
+              <stop offset="100%" stop-color="#9E2A1C"/>
+            </radialGradient>
+            <!-- 龟甲纹理渐变 -->
+            <radialGradient id="shellGrad" cx="50%" cy="35%" r="70%">
+              <stop offset="0%" stop-color="#D4B896"/>
+              <stop offset="100%" stop-color="#A08050"/>
+            </radialGradient>
+            <!-- 毛笔笔触模糊滤镜（模拟墨迹晕染） -->
+            <filter id="inkBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="0.3"/>
+            </filter>
+          </defs>
 
-          <!-- 展开的竹简（主体） -->
-          <g class="bamboo-scroll" transform="translate(170, 80)">
-            <!-- 竹简片 -->
-            <g stroke="#5A4210" stroke-width="1" fill="none" opacity="0.65">
-              <line x1="-120" y1="-30" x2="-120" y2="50"/>
-              <line x1="-105" y1="-35" x2="-105" y2="55"/>
-              <line x1="-90" y1="-32" x2="-90" y2="52"/>
-              <line x1="-75" y1="-36" x2="-75" y2="56"/>
-              <line x1="-60" y1="-33" x2="-60" y2="53"/>
-              <line x1="-45" y1="-35" x2="-45" y2="55"/>
-              <line x1="-30" y1="-34" x2="-30" y2="54"/>
-              <line x1="-15" y1="-37" x2="-15" y2="57"/>
-              <line x1="0" y1="-36" x2="0" y2="56"/>
-              <line x1="15" y1="-35" x2="15" y2="55"/>
-              <line x1="30" y1="-34" x2="30" y2="54"/>
-              <line x1="45" y1="-36" x2="45" y2="56"/>
-              <line x1="60" y1="-33" x2="60" y2="53"/>
-              <line x1="75" y1="-35" x2="75" y2="55"/>
-              <line x1="90" y1="-32" x2="90" y2="52"/>
-              <line x1="105" y1="-34" x2="105" y2="54"/>
-              <line x1="120" y1="-30" x2="120" y2="50"/>
+          <!-- 案台（淡淡一条） -->
+          <rect x="20" y="148" width="300" height="6" fill="#B89A5E" opacity="0.15" rx="1.5"/>
+
+          <!-- ===== 主体：摊开的线装书 ===== -->
+          <g transform="translate(170, 82)">
+            <!-- 左页 -->
+            <path d="M -110 -50 L -2 -50 L -2 52 L -110 52 Q -115 50 -117 45 L -120 -43 Q -118 -48 -110 -50 Z"
+                  fill="url(#pageGrad)" stroke="#7A6E58" stroke-width="0.6" opacity="0.9"/>
+            <!-- 右页 -->
+            <path d="M 2 -50 L 110 -50 Q 118 -48 120 -43 L 117 45 Q 115 50 110 52 L 2 52 Z"
+                  fill="url(#pageGrad)" stroke="#7A6E58" stroke-width="0.6" opacity="0.9"/>
+            <!-- 书脊中缝 -->
+            <line x1="0" y1="-50" x2="0" y2="52" stroke="url(#spineShadow)" stroke-width="2"/>
+            <line x1="0" y1="-50" x2="0" y2="52" stroke="#2B2317" stroke-width="0.3" opacity="0.3"/>
+
+            <!-- 线装书打孔（左页外侧） -->
+            <g fill="#2B2317" opacity="0.35">
+              <circle cx="-105" cy="-35" r="1.2"/>
+              <circle cx="-105" cy="-10" r="1.2"/>
+              <circle cx="-105" cy="15" r="1.2"/>
+              <circle cx="-105" cy="40" r="1.2"/>
             </g>
-            <!-- 编绳（上下两道） -->
-            <line x1="-125" y1="-15" x2="125" y2="-15" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
-            <line x1="-125" y1="30" x2="125" y2="30" stroke="#8B4513" stroke-width="0.8" opacity="0.5"/>
+            <!-- 装订线 -->
+            <path d="M -105 -35 Q -103 -22.5 -105 -10" fill="none" stroke="#7A6E58" stroke-width="0.5" opacity="0.5"/>
+            <path d="M -105 -10 Q -103 2.5 -105 15" fill="none" stroke="#7A6E58" stroke-width="0.5" opacity="0.5"/>
+            <path d="M -105 15 Q -103 27.5 -105 40" fill="none" stroke="#7A6E58" stroke-width="0.5" opacity="0.5"/>
 
-            <!-- 竹简上的墨字符号（示意） -->
-            <g fill="#2B2317" opacity="0.4" font-size="8" font-family="serif" text-anchor="middle">
-              <text x="-105" y="-5">乾</text><text x="-105" y="5">元</text>
-              <text x="-75" y="-5">坤</text><text x="-75" y="5">亨</text>
-              <text x="-45" y="-5">震</text><text x="-45" y="5">利</text>
-              <text x="-15" y="-5">巽</text><text x="-15" y="5">贞</text>
-              <text x="15" y="-5">坎</text><text x="15" y="5">吉</text>
-              <text x="45" y="-5">离</text><text x="45" y="5">凶</text>
-              <text x="75" y="-5">艮</text><text x="75" y="5">悔</text>
-              <text x="105" y="-5">兑</text><text x="105" y="5">吝</text>
+            <!-- 书页边栏细线 -->
+            <line x1="-92" y1="-42" x2="-92" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="-10" y1="-42" x2="-10" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="10" y1="-42" x2="10" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="92" y1="-42" x2="92" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <!-- 上下栏线 -->
+            <line x1="-92" y1="-42" x2="-10" y2="-42" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="-92" y1="44" x2="-10" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="10" y1="-42" x2="92" y2="-42" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+            <line x1="10" y1="44" x2="92" y2="44" stroke="#7A6E58" stroke-width="0.3" opacity="0.4"/>
+
+            <!-- 左页：卦象符（乾三连 + 坤六断），淡墨 -->
+            <g fill="#2B2317" opacity="0.25" filter="url(#inkBlur)">
+              <!-- 乾卦 ☰ -->
+              <rect x="-75" y="-30" width="28" height="3" rx="0.5"/>
+              <rect x="-75" y="-22" width="28" height="3" rx="0.5"/>
+              <rect x="-75" y="-14" width="28" height="3" rx="0.5"/>
+              <!-- 坤卦 ☷ -->
+              <rect x="-75" y="0" width="12" height="3" rx="0.5"/>
+              <rect x="-59" y="0" width="12" height="3" rx="0.5"/>
+              <rect x="-75" y="8" width="12" height="3" rx="0.5"/>
+              <rect x="-59" y="8" width="12" height="3" rx="0.5"/>
+              <rect x="-75" y="16" width="12" height="3" rx="0.5"/>
+              <rect x="-59" y="16" width="12" height="3" rx="0.5"/>
+            </g>
+
+            <!-- 左页：竖排小字（周易卦名），极淡 -->
+            <g fill="#4A3F2E" opacity="0.2" font-size="7" font-family="serif" text-anchor="middle"
+               style="writing-mode: vertical-rl">
+              <text x="-30" y="-35">乾　元　亨　利　贞</text>
+              <text x="-20" y="-30">坤　元　亨　牝</text>
+            </g>
+
+            <!-- 右页：太极图（淡墨，较大，似批注） -->
+            <g transform="translate(50, 5)" opacity="0.18">
+              <circle cx="0" cy="0" r="22" fill="none" stroke="#2B2317" stroke-width="0.8"/>
+              <path d="M0 -22 A22 22 0 0 1 0 22 A11 11 0 0 1 0 0 A11 11 0 0 0 0 -22 Z"
+                    fill="#2B2317"/>
+              <circle cx="0" cy="-11" r="3" fill="#F2EBDD"/>
+              <circle cx="0" cy="11" r="3" fill="#2B2317"/>
+            </g>
+
+            <!-- 右页：朱红批注圈点（模拟朱砂批校） -->
+            <g fill="#B23A2A" opacity="0.45">
+              <circle cx="28" cy="-28" r="2.5"/>
+              <circle cx="35" cy="-18" r="2"/>
+              <circle cx="82" cy="22" r="2.5"/>
+            </g>
+            <!-- 朱砂笔道（模拟批注划线） -->
+            <path d="M 78 32 Q 82 30 86 32 Q 88 34 84 36"
+                  fill="none" stroke="#B23A2A" stroke-width="1" opacity="0.4" stroke-linecap="round"/>
+            <path d="M 22 -8 Q 30 -10 38 -8 Q 46 -6 54 -10"
+                  fill="none" stroke="#B23A2A" stroke-width="0.8" opacity="0.3" stroke-linecap="round"/>
+
+            <!-- 右页：竖排卦名 -->
+            <g fill="#4A3F2E" opacity="0.18" font-size="6.5" font-family="serif" text-anchor="middle">
+              <text x="72" y="-32">　周　易　</text>
+              <text x="82" y="-20">上　经</text>
+            </g>
+
+            <!-- 书页折痕与毛边效果 -->
+            <path d="M 110 -50 Q 118 -48 120 -43 L 117 45 Q 115 50 110 52"
+                  fill="none" stroke="#2B2317" stroke-width="0.4" opacity="0.2"/>
+          </g>
+
+          <!-- ===== 左下：龟甲（卜骨） ===== -->
+          <g transform="translate(62, 125) rotate(-18)">
+            <!-- 龟甲主体（腹甲形） -->
+            <path d="M 0 0
+                     Q -22 -5 -28 -20
+                     Q -30 -32 -22 -42
+                     Q -14 -50 0 -52
+                     Q 14 -50 22 -42
+                     Q 30 -32 28 -20
+                     Q 22 -5 0 0 Z"
+                  fill="url(#shellGrad)" stroke="#5A4210" stroke-width="0.8" opacity="0.55"/>
+            <!-- 龟甲中缝 -->
+            <line x1="0" y1="-6" x2="0" y2="-48" stroke="#5A4210" stroke-width="0.5" opacity="0.4"/>
+            <!-- 龟甲横格纹（腹甲盾片） -->
+            <g stroke="#5A4210" stroke-width="0.4" fill="none" opacity="0.35">
+              <path d="M -20 -20 Q 0 -18 20 -20"/>
+              <path d="M -22 -30 Q 0 -28 22 -30"/>
+              <path d="M -18 -40 Q 0 -38 18 -40"/>
+            </g>
+            <!-- 甲骨刻字（三个卦符/甲骨文，用抽象笔画） -->
+            <g stroke="#2B2317" stroke-width="0.7" fill="none" opacity="0.5" stroke-linecap="round">
+              <!-- 左：离卦简形 ☲ -->
+              <line x1="-13" y1="-25" x2="-5" y2="-25"/>
+              <line x1="-13" y1="-21" x2="-9" y2="-21"/>
+              <line x1="-7" y1="-21" x2="-5" y2="-21"/>
+              <line x1="-13" y1="-17" x2="-5" y2="-17"/>
+              <!-- 中：乾卦简形 ☰ -->
+              <line x1="-2" y1="-33" x2="6" y2="-33"/>
+              <line x1="-2" y1="-29" x2="6" y2="-29"/>
+              <line x1="-2" y1="-25" x2="6" y2="-25"/>
+              <!-- 右：类似"卜"字的刻痕 -->
+              <line x1="10" y1="-38" x2="10" y2="-28"/>
+              <line x1="10" y1="-35" x2="16" y2="-37"/>
+              <!-- 左下：小兆纹 -->
+              <path d="M -15 -10 Q -12 -7 -10 -12"/>
+            </g>
+            <!-- 灼烧裂纹（兆纹） -->
+            <g stroke="#8B4513" stroke-width="0.4" fill="none" opacity="0.4" stroke-linecap="round">
+              <path d="M -8 -14 Q -6 -10 -4 -15 Q -2 -20 0 -16"/>
+              <path d="M 8 -12 Q 10 -9 12 -13"/>
+            </g>
+            <!-- 龟甲边缘阴影 -->
+            <path d="M -28 -20 Q -30 -32 -22 -42"
+                  fill="none" stroke="#2B2317" stroke-width="0.6" opacity="0.25"/>
+          </g>
+
+          <!-- ===== 右下：朱砂印泥盒 + 竹签 ===== -->
+          <g transform="translate(278, 128)">
+            <!-- 印泥盒底 -->
+            <ellipse cx="0" cy="6" rx="14" ry="3.5" fill="#5A4210" opacity="0.4"/>
+            <ellipse cx="0" cy="4" rx="14" ry="4" fill="#7A6E58" opacity="0.5" stroke="#5A4210" stroke-width="0.5"/>
+            <!-- 印泥（朱砂） -->
+            <ellipse cx="0" cy="3" rx="11" ry="2.5" fill="url(#inkpadGrad)" opacity="0.7"/>
+            <!-- 盒身 -->
+            <path d="M -14 4 L -13 10 Q 0 13 13 10 L 14 4"
+                  fill="#8B6914" opacity="0.3" stroke="#5A4210" stroke-width="0.5"/>
+            <!-- 盒盖（半掀开，斜靠） -->
+            <g transform="translate(8, -2) rotate(-25)">
+              <ellipse cx="0" cy="0" rx="13" ry="3.5" fill="#A08050" opacity="0.45" stroke="#5A4210" stroke-width="0.5"/>
+              <ellipse cx="0" cy="-0.5" rx="11" ry="2.5" fill="#B8963A" opacity="0.3"/>
             </g>
           </g>
 
-          <!-- 左侧卷轴 -->
-          <g transform="translate(30, 80)" opacity="0.6">
-            <ellipse cx="0" cy="0" rx="10" ry="30" fill="#8B6914" opacity="0.4"/>
-            <ellipse cx="-3" cy="0" rx="8" ry="28" fill="#5A4210" opacity="0.3"/>
-            <ellipse cx="-1" cy="-25" rx="10" ry="4" fill="#A07D1E" opacity="0.5"/>
+          <!-- 竹签/蓍草一根（斜搭在书上，右下伸出来） -->
+          <g transform="translate(248, 38) rotate(35)" opacity="0.6">
+            <line x1="0" y1="0" x2="90" y2="0" stroke="#8B6914" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="0" cy="0" rx="1.5" ry="1" fill="#5A4210" opacity="0.5"/>
+            <ellipse cx="90" cy="0" rx="1.5" ry="1" fill="#A08050" opacity="0.5"/>
+            <!-- 竹节 -->
+            <line x1="25" y1="-1" x2="25" y2="1" stroke="#5A4210" stroke-width="0.5" opacity="0.4"/>
+            <line x1="55" y1="-1" x2="55" y2="1" stroke="#5A4210" stroke-width="0.5" opacity="0.4"/>
+            <!-- 尖端（朱砂蘸过） -->
+            <ellipse cx="90" cy="0" rx="2" ry="1.2" fill="#B23A2A" opacity="0.4"/>
           </g>
 
-          <!-- 右侧卷轴 -->
-          <g transform="translate(310, 80)" opacity="0.6">
-            <ellipse cx="0" cy="0" rx="10" ry="30" fill="#8B6914" opacity="0.4"/>
-            <ellipse cx="3" cy="0" rx="8" ry="28" fill="#5A4210" opacity="0.3"/>
-            <ellipse cx="1" cy="-25" rx="10" ry="4" fill="#A07D1E" opacity="0.5"/>
-          </g>
-
-          <!-- 古钱 -->
-          <g class="ancient-coin" transform="translate(60, 135)" opacity="0.5">
-            <circle cx="0" cy="0" r="10" fill="#B8963A" opacity="0.4" stroke="#8B6914" stroke-width="0.8"/>
-            <rect x="-3" y="-3" width="6" height="6" fill="#F2EBDD" opacity="0.8"/>
+          <!-- 飘落的墨点（极少，点缀用） -->
+          <g fill="#2B2317" opacity="0.2">
+            <circle cx="45" cy="60" r="0.8"/>
+            <circle cx="300" cy="70" r="0.6"/>
           </g>
         </svg>
         <div class="caption">— 易 經 典 籍 —</div>
