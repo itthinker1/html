@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高岛流略筮法 · 起卦步骤</title>
+<style>
+/* ============== 设计 Token（v2 氛围增强版） ============== */
+:root{
+  --paper:       #F2EBDD;   /* 宣纸底 */
+  --paper-dark:  #E8DFCA;   /* 深宣纸 */
+  --paper-deep:  #DBD0B8;   /* 更深宣纸 */
+  --ink:         #2B2317;   /* 墨色主文 */
+  --ink-soft:    #4A3F2E;   /* 淡墨次文 */
+  --ink-faint:   #7A6E58;   /* 浅墨注释 */
+  --vermilion:   #B23A2A;   /* 朱砂红 */
+  --vermilion-soft:#C95B4A;
+  --stone-blue:  #2D5A6B;   /* 石青 */
+  --ochre:       #C9B896;   /* 赭石分隔 */
+  --seal:        #9E2A1C;   /* 印章红 */
+  --gold-faint:  #B89A5E;   /* 淡金（装饰线） */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  font-family: "Songti SC","Noto Serif SC","Source Han Serif SC",
+               "SimSun","STSong",serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.9;
+  font-size: 17px;
+  position: relative;
+  overflow-x: hidden;
+
+  /* ===== 多层背景叠加：宣纸肌理 + 八卦暗纹阵列 + 纸晕 + 云纹 ===== */
+  background-image:
+    /* 顶部纸晕 */
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(43,35,23,0.08) 0%, transparent 60%),
+    /* 底部纸晕 */
+    radial-gradient(ellipse 80% 40% at 50% 110%, rgba(43,35,23,0.06) 0%, transparent 60%),
+    /* 左上朱砂晕 */
+    radial-gradient(ellipse at 15% 20%, rgba(178,58,42,0.05) 0%, transparent 40%),
+    /* 右下石青晕 */
+    radial-gradient(ellipse at 85% 80%, rgba(45,90,107,0.04) 0%, transparent 40%),
+    /* 八卦暗纹阵列（主体） */
+    radial-gradient(circle at 50% 50%, transparent 0%, transparent 100%),
+    /* 横向纤维 */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(43,35,23,0.015) 2px,
+      rgba(43,35,23,0.015) 3px
+    ),
+    /* 纵向纤维 */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(43,35,23,0.01) 3px,
+      rgba(43,35,23,0.01) 4px
+    );
+  background-attachment: fixed;
+}
+
+/* ===== 八卦水印层（整页背景阵列） ===== */
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☰</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☷</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☳</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☴</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☵</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☲</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☶</text></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><text x='90' y='90' text-anchor='middle' dominant-baseline='middle' font-size='60' fill='%232B2317' font-family='serif'>☱</text></svg>");
+  background-size: 180px 180px;
+  background-position:
+    0 0, 90px 90px,
+    45px 45px, 135px 135px,
+    0 90px, 90px 0,
+    45px 135px, 135px 45px;
+  background-repeat: repeat;
+}
+
+/* ===== 淡烟雾氛围 ===== */
+body::after{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+  background:
+    radial-gradient(ellipse 60% 30% at 30% 25%, rgba(242,235,221,0.6) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 25% at 70% 60%, rgba(232,223,202,0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 20% at 50% 85%, rgba(242,235,221,0.3) 0%, transparent 70%);
+  animation: smoke 20s ease-in-out infinite alternate;
+}
+
+@keyframes smoke{
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(2%, -1%) scale(1.05); }
+}
+
+/* ============== 容器 ============== */
+.wrap{
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============== 回纹边角装饰 ============== */
+.corner-deco{
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.corner-deco.tl{ top: 20px; left: 20px; }
+.corner-deco.tr{ top: 20px; right: 20px; transform: scaleX(-1); }
+.corner-deco.bl{ bottom: 20px; left: 20px; transform: scaleY(-1); }
+.corner-deco.br{ bottom: 20px; right: 20px; transform: scale(-1,-1); }
+
+/* ============== 页眉太极 + 先天八卦圆图 ============== */
+.header{
+  text-align: center;
+  position: relative;
+  padding-bottom: 48px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--ochre);
+}
+
+/* 先天八卦圆图（页眉主体装饰） */
+.bagua-circle{
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 24px;
+  position: relative;
+  opacity: 0.9;
+}
+
+.taiji{
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 28px;
+  opacity: 0.85;
+}
+
+/* 页头八卦方位小字 */
+.bagua-azimuth{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto 16px;
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+}
+.bagua-azimuth .dir{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.bagua-azimuth .dir .sym{
+  font-size: 16px;
+  color: var(--ink-soft);
+  opacity: 0.6;
+}
+
+.eyebrow{
+  font-size: 13px;
+  letter-spacing: 0.6em;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+  padding-left: 0.6em; /* 补偿字距 */
+  font-variant-numeric: tabular-nums;
+}
+h1.title{
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.subtitle{
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  font-style: normal;
+}
+/* 装饰短线 */
+.title-deco{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 14px;
+  margin: 18px 0 8px;
+}
+.title-deco .dot{
+  width: 5px;height:5px;border-radius:50%;
+  background: var(--vermilion);
+}
+.title-deco .line{
+  width: 60px;height:1px;background: var(--ochre);
+}
+
+/* 印章 */
+.seal{
+  display:inline-block;
+  margin-top: 22px;
+  padding: 4px 10px;
+  background: var(--seal);
+  color: var(--paper);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  transform: rotate(-2deg);
+  opacity: 0.9;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+
+/* ============== 导语 ============== */
+.intro{
+  font-size: 17px;
+  line-height: 2;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 0 auto 56px;
+  max-width: 560px;
+  padding: 20px 24px;
+  position: relative;
+  background:
+    linear-gradient(var(--paper), var(--paper)) padding-box,
+    linear-gradient(135deg, var(--ochre), transparent 40%, transparent 60%, var(--ochre)) border-box;
+  border: 1px solid transparent;
+}
+.intro::before{
+  content: "";
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid var(--ochre);
+  border-left: none;
+  border-right: none;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.intro blockquote-symbol{
+  display: block;
+  text-align: center;
+  color: var(--ochre);
+  font-size: 14px;
+  margin: 10px 0;
+}
+.intro strong{
+  color: var(--vermilion);
+  font-weight: 500;
+}
+
+/* ============== 章节 ============== */
+.section{
+  margin-bottom: 56px;
+  position: relative;
+}
+
+h2.sec-title{
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 22px;
+  padding-left: 18px;
+  position: relative;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h2.sec-title::before{
+  content: "";
+  position: absolute;
+  left: 0; top: 0.35em;
+  width: 4px;
+  height: 1.1em;
+  background: var(--vermilion);
+}
+/* 章节编号（中文数字，竖排小字） */
+h2.sec-title .sec-num{
+  display: inline-block;
+  font-size: 13px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  margin-right: 12px;
+  vertical-align: middle;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+}
+
+/* 章节标题两侧卦符装饰 */
+.sec-title-gua{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--ink-faint);
+  opacity: 0.5;
+  margin-left: auto;
+  font-weight: normal;
+  letter-spacing: 0.1em;
+}
+.sec-title-gua .gua-char{
+  font-family: serif;
+  font-size: 18px;
+}
+
+/* 三级标题（子步骤） */
+h3.sub-title{
+  font-size: 18px;
+  color: var(--stone-blue);
+  font-weight: 500;
+  margin: 28px 0 14px;
+  letter-spacing: 0.05em;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--ochre);
+  display: inline-block;
+}
+
+/* ============== 正文排版 ============== */
+p{
+  margin-bottom: 14px;
+  text-indent: 2em;
+  color: var(--ink-soft);
+  line-height: 2;
+}
+p.no-indent{text-indent:0}
+
+strong{
+  color: var(--ink);
+  font-weight: 600;
+}
+
+em{
+  font-style: normal;
+  color: var(--vermilion);
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  font-size: 1.05em;
+}
+
+/* 列表 */
+ul, ol{
+  margin: 14px 0 14px 2em;
+  color: var(--ink-soft);
+}
+li{
+  margin-bottom: 10px;
+  line-height: 1.9;
+}
+li strong{ color: var(--ink); }
+/* 二级列表 */
+li ul, li ol{
+  margin: 8px 0 8px 1.5em;
+}
+
+/* 分隔符 */
+hr.divider{
+  border: none;
+  margin: 44px 0;
+  text-align: center;
+  color: var(--ochre);
+  letter-spacing: 1em;
+  padding-left: 1em;
+  position: relative;
+}
+hr.divider::before{
+  content: "☯　☯　☯";
+  font-size: 14px;
+  color: var(--vermilion);
+  opacity: 0.4;
+  letter-spacing: 2em;
+  padding-left: 2em;
+}
+hr.divider::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ochre), transparent);
+  z-index: -1;
+}
+
+/* ============== 八卦表格 ============== */
+.table-wrap{
+  margin: 22px 0;
+  overflow-x: auto;
+  position: relative;
+}
+.table-wrap::before{
+  content: "";
+  position: absolute;
+  top: -6px; left: -6px; right: -6px; bottom: -6px;
+  border: 1px solid var(--ochre);
+  opacity: 0.4;
+  pointer-events: none;
+}
+table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  background: rgba(255,255,255,0.25);
+  position: relative;
+}
+th, td{
+  border: 1px solid var(--ochre);
+  padding: 10px 12px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+th{
+  background: rgba(178,58,42,0.08);
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+tr:nth-child(even) td{
+  background: rgba(255,255,255,0.15);
+}
+.gua-name{
+  font-size: 19px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+}
+.gua-symbol{
+  font-size: 20px;
+  color: var(--ink-faint);
+  display: block;
+  margin-top: 2px;
+  font-family: serif;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* ============== 引用 / 补充块 ============== */
+.quote-block{
+  margin: 22px 0;
+  padding: 18px 22px;
+  background: rgba(232,223,202,0.5);
+  border-left: 3px solid var(--vermilion);
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.9;
+  position: relative;
+}
+.quote-block::before{
+  content: "「";
+  position: absolute;
+  top: 4px; left: 10px;
+  font-size: 40px;
+  color: var(--vermilion);
+  opacity: 0.15;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  line-height: 1;
+}
+.quote-block p{ text-indent: 0; margin-bottom: 8px; position: relative; z-index: 1; }
+.quote-block p:last-child{ margin-bottom: 0; }
+
+/* 小贴士块 */
+.note{
+  margin: 22px 0;
+  padding: 16px 20px;
+  border: 1px dashed var(--ochre);
+  background: rgba(255,255,255,0.2);
+  color: var(--ink-soft);
+  font-size: 15px;
+  position: relative;
+}
+.note::before{
+  content: "注";
+  position: absolute;
+  top: -10px; left: 16px;
+  background: var(--paper);
+  padding: 0 8px;
+  color: var(--vermilion);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+}
+
+/* ============== 步骤卡片（三步起卦）+ 六爻爻象装饰 ============== */
+.step-card{
+  margin: 24px 0;
+  padding: 24px 26px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid var(--ochre);
+  position: relative;
+}
+.step-card .step-num{
+  position: absolute;
+  top: -14px; left: 22px;
+  background: var(--vermilion);
+  color: var(--paper);
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  font-size: 14px;
+  padding: 2px 14px;
+  letter-spacing: 0.2em;
+}
+.step-card h3{
+  font-size: 18px;
+  color: var(--ink);
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 六爻爻象可视化（步骤卡片旁） */
+.yao-visual{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 40px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.yao-visual .yao-line{
+  height: 4px;
+  background: var(--ink);
+  border-radius: 1px;
+}
+.yao-visual .yao-line.yin{
+  background: linear-gradient(90deg,
+    var(--ink) 0%, var(--ink) 42%,
+    transparent 42%, transparent 58%,
+    var(--ink) 58%, var(--ink) 100%);
+}
+.yao-visual .yao-label{
+  font-size: 9px;
+  color: var(--ink-faint);
+  text-align: center;
+  letter-spacing: 0.1em;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  margin-top: -2px;
+}
+
+.step-card-header{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.step-card-header h3{
+  margin-bottom: 0;
+  flex: 1;
+}
+
+/* 卡片右上角卦符 */
+.step-card-gua{
+  position: absolute;
+  top: 12px; right: 16px;
+  font-size: 28px;
+  color: var(--ink-faint);
+  opacity: 0.12;
+  line-height: 1;
+}
+
+/* ============== 页脚 ============== */
+.footer{
+  margin-top: 80px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ochre);
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  position: relative;
+}
+.footer .taiji-mini{
+  width: 24px; height: 24px;
+  margin: 0 auto 14px;
+  opacity: 0.7;
+}
+
+/* 页脚装饰带：天干地支 + 四象 */
+.footer-band{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto 20px;
+  padding: 12px 0;
+  border-top: 1px dashed var(--ochre);
+  border-bottom: 1px dashed var(--ochre);
+  opacity: 0.5;
+}
+.footer-band .item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+}
+.footer-band .item .sym{
+  font-size: 18px;
+  color: var(--vermilion);
+  opacity: 0.6;
+}
+
+/* 香炉/竹简剪影（页脚上方） */
+.footer-altar{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 24px;
+  opacity: 0.12;
+}
+
+/* ============== 蓍草装饰（增强版，更多束） ============== */
+.straw-deco{
+  position: fixed;
+  pointer-events: none;
+  opacity: 0.08;
+  z-index: 1;
+}
+.straw-deco.left{
+  left: 2%; top: 20%;
+  transform: rotate(-12deg);
+}
+.straw-deco.right{
+  right: 2%; bottom: 15%;
+  transform: rotate(15deg);
+}
+
+/* 侧边天干地支竖排装饰 */
+.side-ganzhi{
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  letter-spacing: 0.5em;
+  color: var(--ink-faint);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+}
+.side-ganzhi.left-gan{ left: 8px; }
+.side-ganzhi.right-zhi{ right: 8px; }
+
+/* 章节两侧小型卦图装饰 */
+.section-side-ornament{
+  position: absolute;
+  top: 12px;
+  font-size: 24px;
+  color: var(--ink-faint);
+  opacity: 0.08;
+  pointer-events: none;
+  line-height: 1;
+}
+.section-side-ornament.left{ left: -36px; }
+.section-side-ornament.right{ right: -36px; }
+
+/* ============== 响应式 ============== */
+@media (max-width: 800px){
+  .section-side-ornament{ display: none; }
+  .side-ganzhi{ display: none; }
+  .corner-deco{ display: none; }
+}
+@media (max-width: 600px){
+  .wrap{
+    padding: 36px 20px 60px;
+  }
+  h1.title{
+    font-size: 26px;
+    letter-spacing: 0.1em;
+  }
+  h2.sec-title{
+    font-size: 20px;
+  }
+  body{
+    font-size: 16px;
+  }
+  .step-card{
+    padding: 20px 18px;
+  }
+  table{
+    font-size: 15px;
+  }
+  th, td{
+    padding: 8px 10px;
+  }
+  .straw-deco{ display: none; }
+  .intro{ font-size: 16px; padding: 16px 14px; }
+  .bagua-azimuth{ font-size: 9px; max-width: 320px; }
+  .bagua-azimuth .dir .sym{ font-size: 13px; }
+  .bagua-circle{ width: 100px; height: 100px; }
+  .footer-band{ flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .footer-band .item{ flex-basis: 40%; }
+  .yao-visual{ width: 32px; }
+  .step-card-gua{ font-size: 22px; top: 8px; right: 10px; }
+}
+
+/* 尊重减弱动效偏好 */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+  body::after{ animation: none; }
+}
+
+/* 进场动画 */
+@keyframes fadeUp{
+  from{ opacity:0; transform: translateY(12px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+.header{ animation: fadeUp 0.8s ease both; }
+.section{ animation: fadeUp 0.8s ease both; }
+.section:nth-of-type(1){ animation-delay: 0.1s; }
+.section:nth-of-type(2){ animation-delay: 0.2s; }
+.section:nth-of-type(3){ animation-delay: 0.3s; }
+.section:nth-of-type(4){ animation-delay: 0.4s; }
+.section:nth-of-type(5){ animation-delay: 0.5s; }
+.section:nth-of-type(6){ animation-delay: 0.6s; }
+
+</style>
+</head>
+<body>
+
+<!-- ========== 回纹边角装饰 ========== -->
+<svg class="corner-deco tl" viewBox="0 0 60 60">
+  <g fill="none" stroke="#B23A2A" stroke-width="1.5" stroke-linecap="square">
+    <!-- 回纹：左上角 -->
+    <path d="M2 2 L58 2 L58 8 L8 8 L8 58 L2 58 Z"/>
+    <path d="M14 14 L46 14 L46 20 L20 20 L20 46 L14 46 Z"/>
+    <path d="M26 26 L34 26 L34 34 L26 34 Z"/>
+  </g>
+</svg>
+<svg class="corner-deco tr" viewBox="0 0 60 60">
+  <g fill="none" stroke="#B23A2A" stroke-width="1.5" stroke-linecap="square">
+    <path d="M2 2 L58 2 L58 8 L8 8 L8 58 L2 58 Z"/>
+    <path d="M14 14 L46 14 L46 20 L20 20 L20 46 L14 46 Z"/>
+    <path d="M26 26 L34 26 L34 34 L26 34 Z"/>
+  </g>
+</svg>
+<svg class="corner-deco bl" viewBox="0 0 60 60">
+  <g fill="none" stroke="#B23A2A" stroke-width="1.5" stroke-linecap="square">
+    <path d="M2 2 L58 2 L58 8 L8 8 L8 58 L2 58 Z"/>
+    <path d="M14 14 L46 14 L46 20 L20 20 L20 46 L14 46 Z"/>
+    <path d="M26 26 L34 26 L34 34 L26 34 Z"/>
+  </g>
+</svg>
+<svg class="corner-deco br" viewBox="0 0 60 60">
+  <g fill="none" stroke="#B23A2A" stroke-width="1.5" stroke-linecap="square">
+    <path d="M2 2 L58 2 L58 8 L8 8 L8 58 L2 58 Z"/>
+    <path d="M14 14 L46 14 L46 20 L20 20 L20 46 L14 46 Z"/>
+    <path d="M26 26 L34 26 L34 34 L26 34 Z"/>
+  </g>
+</svg>
+
+<!-- ========== 侧边天干地支竖排 ========== -->
+<div class="side-ganzhi left-gan">甲乙丙丁戊己庚辛壬癸</div>
+<div class="side-ganzhi right-zhi">子丑寅卯辰巳午未申酉戌亥</div>
+
+<!-- 左侧蓍草装饰 -->
+<svg class="straw-deco left" width="70" height="240" viewBox="0 0 70 240">
+  <g stroke="#2B2317" stroke-width="1.5" fill="none" stroke-linecap="round">
+    <line x1="35" y1="0" x2="35" y2="220"/>
+    <line x1="25" y1="12" x2="25" y2="230"/>
+    <line x1="45" y1="6" x2="45" y2="225"/>
+    <line x1="15" y1="18" x2="15" y2="210"/>
+    <line x1="55" y1="10" x2="55" y2="235"/>
+    <line x1="5" y1="24" x2="5" y2="200"/>
+    <line x1="65" y1="14" x2="65" y2="240"/>
+    <!-- 草头 -->
+    <path d="M35 0 Q33 7 35 12 Q37 7 35 0"/>
+    <path d="M25 12 Q23 19 25 24 Q27 19 25 12"/>
+    <path d="M45 6 Q43 13 45 18 Q47 13 45 6"/>
+    <path d="M15 18 Q13 25 15 30 Q17 25 15 18"/>
+    <path d="M55 10 Q53 17 55 22 Q57 17 55 10"/>
+    <!-- 节段标记 -->
+    <line x1="33" y1="60" x2="37" y2="60" stroke-width="2"/>
+    <line x1="33" y1="130" x2="37" y2="130" stroke-width="2"/>
+    <line x1="33" y1="190" x2="37" y2="190" stroke-width="2"/>
+  </g>
+</svg>
+<!-- 右侧蓍草装饰 -->
+<svg class="straw-deco right" width="60" height="220" viewBox="0 0 60 220">
+  <g stroke="#B23A2A" stroke-width="1.2" fill="none" stroke-linecap="round">
+    <line x1="30" y1="0" x2="30" y2="200"/>
+    <line x1="20" y1="10" x2="20" y2="210"/>
+    <line x1="40" y1="4" x2="40" y2="205"/>
+    <line x1="10" y1="16" x2="10" y2="195"/>
+    <line x1="50" y1="8" x2="50" y2="215"/>
+    <!-- 节段 -->
+    <line x1="28" y1="70" x2="32" y2="70" stroke-width="1.8"/>
+    <line x1="28" y1="140" x2="32" y2="140" stroke-width="1.8"/>
+  </g>
+</svg>
+
+<div class="wrap">
+
+  <!-- ============== 页眉 ============== -->
+  <header class="header">
+
+    <!-- 先天八卦圆图 SVG -->
+    <svg class="bagua-circle" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- 外圆 -->
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#C9B896" stroke-width="0.8"/>
+      <circle cx="100" cy="100" r="88" fill="none" stroke="#C9B896" stroke-width="0.5" stroke-dasharray="2,3"/>
+
+      <!-- 八卦符号：先天八卦方位（乾南坤北，离东坎西，震东北，巽西南，艮西北，兑东南） -->
+      <!-- 乾 ☰ 南（上） -->
+      <text x="100" y="28" text-anchor="middle" font-size="22" fill="#2B2317" font-family="serif" opacity="0.7">☰</text>
+      <text x="100" y="14" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="1">乾　南</text>
+
+      <!-- 坤 ☷ 北（下） -->
+      <text x="100" y="188" text-anchor="middle" font-size="22" fill="#2B2317" font-family="serif" opacity="0.7">☷</text>
+      <text x="100" y="198" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="1">坤　北</text>
+
+      <!-- 离 ☲ 东（左） -->
+      <text x="20" y="108" text-anchor="middle" font-size="22" fill="#2B2317" font-family="serif" opacity="0.7">☲</text>
+      <text x="8" y="106" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="1" transform="rotate(-90 8 106)">離　東</text>
+
+      <!-- 坎 ☵ 西（右） -->
+      <text x="180" y="108" text-anchor="middle" font-size="22" fill="#2B2317" font-family="serif" opacity="0.7">☵</text>
+      <text x="192" y="106" text-anchor="middle" font-size="9" fill="#7A6E58" font-family="KaiTi,STKaiti,serif" letter-spacing="1" transform="rotate(90 192 106)">坎　西</text>
+
+      <!-- 震 ☳ 东北（左上） -->
+      <text x="30" y="48" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.6">☳</text>
+      <text x="22" y="38" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">震</text>
+
+      <!-- 兑 ☱ 东南（左下） -->
+      <text x="30" y="168" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.6">☱</text>
+      <text x="22" y="178" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">兌</text>
+
+      <!-- 艮 ☶ 西北（右上） -->
+      <text x="170" y="48" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.6">☶</text>
+      <text x="178" y="38" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">艮</text>
+
+      <!-- 巽 ☴ 西南（右下） -->
+      <text x="170" y="168" text-anchor="middle" font-size="20" fill="#2B2317" font-family="serif" opacity="0.6">☴</text>
+      <text x="178" y="178" text-anchor="middle" font-size="8" fill="#7A6E58" font-family="KaiTi,STKaiti,serif">巽</text>
+
+      <!-- 中心太极（缩小） -->
+      <circle cx="100" cy="100" r="28" fill="none" stroke="#2B2317" stroke-width="0.8" opacity="0.8"/>
+      <path d="M100 72 A28 28 0 0 1 100 128 A14 14 0 0 1 100 100 A14 14 0 0 0 100 72 Z"
+            fill="#2B2317" opacity="0.8"/>
+      <circle cx="100" cy="86" r="3.5" fill="#F2EBDD"/>
+      <circle cx="100" cy="114" r="3.5" fill="#2B2317"/>
+    </svg>
+
+    <div class="eyebrow">易 學 傳 承</div>
+
+    <div class="title-deco">
+      <span class="line"></span>
+      <span class="dot"></span>
+      <span class="line"></span>
+    </div>
+
+    <h1 class="title">高島流略筮法</h1>
+    <div class="subtitle">完 整 起 卦 步 驟</div>
+
+    <div class="title-deco">
+      <span class="line"></span>
+      <span class="dot"></span>
+      <span class="line"></span>
+    </div>
+
+    <div class="seal">略筮真傳</div>
+  </header>
+
+  <!-- ============== 导语 ============== -->
+  <div class="intro">
+    这套方法以四十九根蓍草为工具，<br>
+    核心是<em>「至诚无息、间不容发」</em>的心法，<br>
+    全程分<strong>三次分蓍</strong>完成，<br>
+    比传统大衍筮法大幅精简。
+  </div>
+
+  <!-- ============== 一、准备 ============== -->
+  <section class="section">
+    <div class="section-side-ornament left">☰</div>
+    <div class="section-side-ornament right">☷</div>
+    <h2 class="sec-title">
+      <span class="sec-num">其一</span>准　备
+      <span class="sec-title-gua"><span class="gua-char">☰</span> 乾</span>
+    </h2>
+    <ol>
+      <li>备五十根蓍草／竹签，先抽出<strong>一根</strong>横置于前，代表「太极」，始终不用，全程只用剩余<strong>四十九根</strong>操作。</li>
+      <li>求占者正身静心，双手捧四十九根蓍草于额前（印堂位置），调匀呼吸，清空杂念。</li>
+    </ol>
+  </section>
+
+  <!-- ============== 二、心法 ============== -->
+  <section class="section">
+    <div class="section-side-ornament left">☲</div>
+    <div class="section-side-ornament right">☵</div>
+    <h2 class="sec-title">
+      <span class="sec-num">其二</span>心　法
+      <span class="sec-title-gua"><span class="gua-char">☯</span></span>
+    </h2>
+    <p>默念所占之事，开始<em>屏息闭气</em>（即「至诚无息」），心念完全专注在问题上，不生任何杂念。</p>
+    <p>直到气息憋至生理极限、不得不吐的瞬间，立刻将手中蓍草随机自然地分成左右两堆（即「间不容发」），分蓍动作必须在这一瞬间完成，不能提前也不能犹豫。</p>
+
+    <div class="quote-block">
+      <p>「至诚无息，不息则久，久则征，征则悠远，悠远则博厚，博厚则高明。」</p>
+      <p style="text-align:right;color:var(--ink-faint);font-size:13px">——《中庸》</p>
+    </div>
+  </section>
+
+  <!-- ============== 三、三步起卦 ============== -->
+  <section class="section">
+    <div class="section-side-ornament left">☳</div>
+    <div class="section-side-ornament right">☴</div>
+    <h2 class="sec-title">
+      <span class="sec-num">其三</span>三 步 起 卦
+      <span class="sec-title-gua"><span class="gua-char">☶</span><span class="gua-char">☱</span></span>
+    </h2>
+    <p class="no-indent" style="color:var(--ink-faint);font-size:14px;margin-bottom:20px">
+      ※ 以下为男子规则，女子反之（左右手互换）。
+    </p>
+
+    <!-- 第一步 -->
+    <div class="step-card">
+      <div class="step-num">第一步</div>
+      <div class="step-card-gua">☰</div>
+      <div class="step-card-header">
+        <!-- 上卦爻象示例：乾卦（三阳爻） -->
+        <div class="yao-visual" title="上卦·乾卦">
+          <div class="yao-line"></div>
+          <div class="yao-line"></div>
+          <div class="yao-line"></div>
+        </div>
+        <h3>得 上 卦</h3>
+      </div>
+      <ol>
+        <li>屏息分蓍后，<strong>男子数左手那堆</strong>的数量，女子数右手那堆。</li>
+        <li>用这个数<strong>除以八，取余数</strong>，对应先天八卦数：</li>
+      </ol>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30%">余数</th>
+              <th>卦 名</th>
+              <th style="width:25%">卦 象</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>一</td><td class="gua-name">乾</td><td class="gua-symbol">☰</td></tr>
+            <tr><td>二</td><td class="gua-name">兑</td><td class="gua-symbol">☱</td></tr>
+            <tr><td>三</td><td class="gua-name">离</td><td class="gua-symbol">☲</td></tr>
+            <tr><td>四</td><td class="gua-name">震</td><td class="gua-symbol">☳</td></tr>
+            <tr><td>五</td><td class="gua-name">巽</td><td class="gua-symbol">☴</td></tr>
+            <tr><td>六</td><td class="gua-name">坎</td><td class="gua-symbol">☵</td></tr>
+            <tr><td>七</td><td class="gua-name">艮</td><td class="gua-symbol">☶</td></tr>
+            <tr><td>八</td><td class="gua-name">坤</td><td class="gua-symbol">☷</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul>
+        <li>不足八根直接用原数；若刚好整除，余数按<strong>八</strong>算，对应坤卦。</li>
+      </ul>
+      <p style="margin-top:10px">所得卦即为<em>上卦</em>（外卦）。</p>
+    </div>
+
+    <!-- 第二步 -->
+    <div class="step-card">
+      <div class="step-num">第二步</div>
+      <div class="step-card-gua">☷</div>
+      <div class="step-card-header">
+        <!-- 下卦爻象示例：坤卦（三阴爻） -->
+        <div class="yao-visual" title="下卦·坤卦">
+          <div class="yao-line yin"></div>
+          <div class="yao-line yin"></div>
+          <div class="yao-line yin"></div>
+        </div>
+        <h3>得 下 卦</h3>
+      </div>
+      <ol>
+        <li>将左右两堆蓍草重新合为<strong>四十九根</strong>，重复上述屏息凝神的流程，到气息极限时再次分蓍。</li>
+        <li><strong>男子数右手那堆</strong>的数量，女子数左手那堆。</li>
+        <li>同样<strong>除以八取余数</strong>，对应八卦，所得即为<em>下卦</em>（内卦）。</li>
+      </ol>
+      <div class="note" style="margin-top:16px">
+        上下卦组合，就得到完整的六爻本卦。
+      </div>
+    </div>
+
+    <!-- 第三步 -->
+    <div class="step-card">
+      <div class="step-num">第三步</div>
+      <div class="step-card-gua">⚊</div>
+      <div class="step-card-header">
+        <!-- 动爻爻象示例：六爻全象（三阴三阳，第五爻动） -->
+        <div class="yao-visual" title="本卦六爻·五爻动">
+          <div class="yao-line yin"><span class="yao-label">上</span></div>
+          <div class="yao-line"></div>
+          <div class="yao-line yin" style="box-shadow:0 0 0 1px var(--vermilion);opacity:1"><span class="yao-label" style="color:var(--vermilion)">五 · 动</span></div>
+          <div class="yao-line yin"></div>
+          <div class="yao-line"></div>
+          <div class="yao-line yin"><span class="yao-label">初</span></div>
+        </div>
+        <h3>得 动 爻</h3>
+      </div>
+      <ol>
+        <li>再次将蓍草合为四十九根，重复屏息分蓍的仪式。</li>
+        <li><strong>男子数左手那堆</strong>的数量，女子数右手那堆。</li>
+        <li>用这个数<strong>除以六，取余数</strong>，对应爻位：
+          <ul>
+            <li><strong>一</strong>为初爻（最下方）</li>
+            <li><strong>二</strong>为二爻</li>
+            <li><strong>三</strong>为三爻</li>
+            <li><strong>四</strong>为四爻</li>
+            <li><strong>五</strong>为五爻</li>
+            <li><strong>六</strong>为上爻（最上方）</li>
+          </ul>
+        </li>
+      </ol>
+      <ul>
+        <li>不足六根直接用原数；若刚好整除，余数按<strong>六</strong>算，对应上爻。</li>
+      </ul>
+      <p style="margin-top:10px">所得即为<em>唯一的动爻</em>，高岛流占断以该动爻的爻辞为核心依据。</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============== 四、晚年简化 ============== -->
+  <section class="section">
+    <div class="section-side-ornament left">☶</div>
+    <div class="section-side-ornament right">☱</div>
+    <h2 class="sec-title">
+      <span class="sec-num">其四</span>晚 年 简 化
+      <span class="sec-title-gua"><span class="gua-char">☵</span> 坎</span>
+    </h2>
+    <p class="no-indent" style="color:var(--stone-blue);font-size:15px;margin-bottom:16px">
+      ——两筒抽签法（补充）
+    </p>
+    <p>晚年高岛吞象在神易堂静心究易，将起卦进一步简化，弃蓍草而以「两筒抽签」直接定卦，同样只出一个动爻，依据爻辞索解。</p>
+
+    <h3 class="sub-title">准　备</h3>
+    <p>两个竹筒：</p>
+    <ul>
+      <li><strong>八签筒</strong>：放入八根竹签，分别刻上乾、兑、离、震、巽、坎、艮、坤八卦名。</li>
+      <li><strong>六签筒</strong>：放入六根竹签，分别刻上一爻、二爻……六爻。</li>
+    </ul>
+
+    <h3 class="sub-title">步　骤</h3>
+    <ol>
+      <li>求占者静心默祷（沿袭「至诚无息」心法）。</li>
+      <li><strong>定上下卦</strong>：男子以左手从<strong>八签筒</strong>抽一根作<em>上卦</em>，再以右手抽一根作<em>下卦</em>；女子反之（右手取上卦、左手取下卦）。</li>
+      <li><strong>定动爻</strong>：再以左手（男子）从<strong>六签筒</strong>抽一根作<em>动爻</em>，女子反之。</li>
+      <li>由此得到<strong>只有一个动爻</strong>的卦象，以该动爻爻辞为核心依据占断——与上文三步起卦的断法一致。</li>
+    </ol>
+
+    <h3 class="sub-title">说　明</h3>
+    <ul>
+      <li>此法以抽签直接定卦，不再数筹，比略筮法更「简易」，契合高岛「简易」之旨。</li>
+      <li>坊间另有说法：高岛晚年亦曾以<strong>六枚硬币一掷成卦</strong>，或以六十四根／三百八十四根签直抽而定，均见记载但版本不一，此处以流传最广的「两筒抽签法」为准。</li>
+      <li>此法因过于简单、被指「不符易道精神」，后世用者渐少；高岛在《易经活断八百例》中仍推崇传统筮法与略筮法，以利易学传承。</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============== 补充说明 ============== -->
+  <section class="section">
+    <div class="section-side-ornament left">☷</div>
+    <div class="section-side-ornament right">☰</div>
+    <h2 class="sec-title">
+      <span class="sec-num">附</span>补 充 说 明
+      <span class="sec-title-gua"><span class="gua-char">☷</span> 坤</span>
+    </h2>
+    <ul>
+      <li>全程三次分蓍，每次都必须先将蓍草<strong>全部合拢回四十九根</strong>，再重新屏息分蓍，不能沿用上次分好的堆。</li>
+      <li>高岛吞象强调<em>「心法重于工具」</em>，蓍草只是载体，哪怕用牙签、纸捻都可以，关键是屏息瞬间的专注力与感应度。</li>
+      <li>晚年高岛还有更简化的抽签法（详见上文「其四 · 晚年简化」），但这套略筮法是其最核心、流传最广的标准起卦方式。</li>
+    </ul>
+  </section>
+
+  <!-- ============== 页脚 ============== -->
+  <footer class="footer">
+
+    <!-- 四象天干地支装饰带 -->
+    <div class="footer-band">
+      <div class="item">
+        <span class="sym">青</span>
+        <span>青龍　東</span>
+      </div>
+      <div class="item">
+        <span class="sym">朱</span>
+        <span>朱雀　南</span>
+      </div>
+      <div class="item">
+        <span class="sym">白</span>
+        <span>白虎　西</span>
+      </div>
+      <div class="item">
+        <span class="sym">玄</span>
+        <span>玄武　北</span>
+      </div>
+    </div>
+
+    <!-- 香炉 + 竹简 简笔剪影 -->
+    <div class="footer-altar">
+      <!-- 竹简 -->
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <g fill="none" stroke="#2B2317" stroke-width="1.5" stroke-linecap="round">
+          <line x1="8" y1="10" x2="8" y2="50"/>
+          <line x1="16" y1="8" x2="16" y2="52"/>
+          <line x1="24" y1="12" x2="24" y2="48"/>
+          <line x1="32" y1="10" x2="32" y2="50"/>
+          <line x1="40" y1="14" x2="40" y2="46"/>
+          <line x1="48" y1="8" x2="48" y2="52"/>
+          <line x1="4" y1="20" x2="56" y2="20" stroke-width="1"/>
+          <line x1="4" y1="40" x2="56" y2="40" stroke-width="1"/>
+        </g>
+      </svg>
+
+      <!-- 香炉 -->
+      <svg width="80" height="60" viewBox="0 0 80 60">
+        <g fill="none" stroke="#B23A2A" stroke-width="1.5" stroke-linecap="round">
+          <!-- 炉身 -->
+          <path d="M15 25 L65 25 L60 50 L20 50 Z" stroke="#2B2317"/>
+          <!-- 炉口 -->
+          <ellipse cx="40" cy="25" rx="25" ry="4" stroke="#2B2317"/>
+          <!-- 炉足 -->
+          <line x1="25" y1="50" x2="22" y2="58" stroke="#2B2317"/>
+          <line x1="55" y1="50" x2="58" y2="58" stroke="#2B2317"/>
+          <!-- 双耳 -->
+          <path d="M15 25 Q10 22 12 15" stroke="#2B2317"/>
+          <path d="M65 25 Q70 22 68 15" stroke="#2B2317"/>
+          <!-- 香烟（缭绕） -->
+          <path d="M35 18 Q33 12 36 8 Q39 4 35 0" stroke-width="1" opacity="0.6"/>
+          <path d="M42 18 Q45 13 42 9 Q39 5 44 0" stroke-width="1" opacity="0.6"/>
+          <path d="M48 18 Q50 14 47 10 Q45 6 49 0" stroke-width="0.8" opacity="0.4"/>
+        </g>
+      </svg>
+
+      <!-- 蓍草筒 -->
+      <svg width="50" height="60" viewBox="0 0 50 60">
+        <g fill="none" stroke="#2B2317" stroke-width="1.5" stroke-linecap="round">
+          <!-- 筒身 -->
+          <path d="M8 18 L42 18 L40 58 L10 58 Z"/>
+          <ellipse cx="25" cy="18" rx="17" ry="3"/>
+          <!-- 伸出的蓍草 -->
+          <line x1="15" y1="18" x2="12" y2="2"/>
+          <line x1="22" y1="18" x2="24" y2="0"/>
+          <line x1="30" y1="18" x2="28" y2="4"/>
+          <line x1="36" y1="18" x2="38" y2="-2"/>
+          <!-- 筒身装饰线 -->
+          <line x1="10" y1="35" x2="40" y2="35" stroke-width="1" opacity="0.5"/>
+          <line x1="10" y1="48" x2="40" y2="48" stroke-width="1" opacity="0.5"/>
+        </g>
+      </svg>
+    </div>
+
+    <svg class="taiji-mini" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="48" fill="none" stroke="#7A6E58" stroke-width="1.5"/>
+      <path d="M50 2 A48 48 0 0 1 50 98 A24 24 0 0 1 50 50 A24 24 0 0 0 50 2 Z"
+            fill="#7A6E58"/>
+      <circle cx="50" cy="26" r="6" fill="#F2EBDD"/>
+      <circle cx="50" cy="74" r="6" fill="#7A6E58"/>
+    </svg>
+    <div>至 诚 无 息　·　间 不 容 发</div>
+  </footer>
+
+</div>
+
+<!-- v2 氛围增强版 · 保留全部原文内容 · 新增：八卦暗纹阵列 / 先天八卦圆图 / 六爻爻象可视化 / 回纹边角 / 天干地支侧边 / 四象装饰带 / 香炉竹简剪影 / 烟雾氛围 -->
+
+</body>
+</html>
