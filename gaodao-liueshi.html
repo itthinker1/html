@@ -2034,18 +2034,35 @@ tr:nth-child(even) td{
 
           <p>组合之法：<strong>上卦之象 + 下卦之象 = 卦名</strong>。以下举三例，以明其理：</p>
 
-          <!-- 三例卦象示意 -->
+          <!-- 三例卦象示意（SVG 手绘） -->
           <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:18px 0 8px">
             <!-- 例一：天地否 -->
             <div style="text-align:center">
-              <div class="yao-stack" style="width:90px;margin:0 auto">
-                <div class="yao yang"><span class="yao-label">上爻</span></div>
-                <div class="yao yang"><span class="yao-label">五爻</span></div>
-                <div class="yao yang"><span class="yao-label">四爻</span></div>
-                <div class="yao yin"><span class="yao-label">三爻</span></div>
-                <div class="yao yin"><span class="yao-label">二爻</span></div>
-                <div class="yao yin"><span class="yao-label">初爻</span></div>
-              </div>
+              <svg viewBox="0 0 90 120" width="90" height="120" style="display:block;margin:0 auto" aria-label="天地否卦象">
+                <defs>
+                  <filter id="brush-rou1" x="-10%" y="-10%" width="120%" height="120%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="1"/>
+                    <feDisplacementMap in="SourceGraphic" scale="0.6"/>
+                  </filter>
+                </defs>
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阳 -->
+                  <line x1="10" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阴 -->
+                  <line x1="10" y1="66" x2="38" y2="66"/>
+                  <line x1="52" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阴 -->
+                  <line x1="10" y1="84" x2="38" y2="84"/>
+                  <line x1="52" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+              </svg>
               <p style="margin-top:10px;font-size:14px;color:var(--ink-soft)">
                 上乾（☰天）· 下坤（☷地）<br>
                 <strong style="color:var(--ink)">天地否</strong>
@@ -2053,14 +2070,24 @@ tr:nth-child(even) td{
             </div>
             <!-- 例二：天水讼 -->
             <div style="text-align:center">
-              <div class="yao-stack" style="width:90px;margin:0 auto">
-                <div class="yao yang"><span class="yao-label">上爻</span></div>
-                <div class="yao yang"><span class="yao-label">五爻</span></div>
-                <div class="yao yang"><span class="yao-label">四爻</span></div>
-                <div class="yao yin"><span class="yao-label">三爻</span></div>
-                <div class="yao yang"><span class="yao-label">二爻</span></div>
-                <div class="yao yin"><span class="yao-label">初爻</span></div>
-              </div>
+              <svg viewBox="0 0 90 120" width="90" height="120" style="display:block;margin:0 auto" aria-label="天水讼卦象">
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阳 -->
+                  <line x1="10" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阴 -->
+                  <line x1="10" y1="66" x2="38" y2="66"/>
+                  <line x1="52" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阳 -->
+                  <line x1="10" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+              </svg>
               <p style="margin-top:10px;font-size:14px;color:var(--ink-soft)">
                 上乾（☰天）· 下坎（☵水）<br>
                 <strong style="color:var(--ink)">天水讼</strong>
@@ -2068,14 +2095,24 @@ tr:nth-child(even) td{
             </div>
             <!-- 例三：火泽睽 -->
             <div style="text-align:center">
-              <div class="yao-stack" style="width:90px;margin:0 auto">
-                <div class="yao yang"><span class="yao-label">上爻</span></div>
-                <div class="yao yin"><span class="yao-label">五爻</span></div>
-                <div class="yao yang"><span class="yao-label">四爻</span></div>
-                <div class="yao yang"><span class="yao-label">三爻</span></div>
-                <div class="yao yang"><span class="yao-label">二爻</span></div>
-                <div class="yao yin"><span class="yao-label">初爻</span></div>
-              </div>
+              <svg viewBox="0 0 90 120" width="90" height="120" style="display:block;margin:0 auto" aria-label="火泽睽卦象">
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阴 -->
+                  <line x1="10" y1="30" x2="38" y2="30"/>
+                  <line x1="52" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阳 -->
+                  <line x1="10" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阳 -->
+                  <line x1="10" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+              </svg>
               <p style="margin-top:10px;font-size:14px;color:var(--ink-soft)">
                 上离（☲火）· 下兑（☱泽）<br>
                 <strong style="color:var(--ink)">火泽睽</strong>
@@ -2155,14 +2192,45 @@ tr:nth-child(even) td{
           <h3 data-gua="⚋">识 动 爻 之 位 · 确 位</h3>
 
           <div class="yao-diagram">
-            <div class="yao-stack" style="margin-left:24px">
-              <div class="yao yin"><span class="yao-label">上爻</span></div>
-              <div class="yao yang"><span class="yao-label">五爻</span></div>
-              <div class="yao yin active"><span class="yao-label">四爻·动</span></div>
-              <div class="yao yang"><span class="yao-label">三爻</span></div>
-              <div class="yao yin"><span class="yao-label">二爻</span></div>
-              <div class="yao yin"><span class="yao-label">初爻</span></div>
-            </div>
+            <svg viewBox="0 0 120 140" width="100" height="117" style="margin-left:24px;flex-shrink:0" aria-label="动爻示例六爻图">
+              <defs>
+                <radialGradient id="vermilion-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#B23A2A" stop-opacity="0.25"/>
+                  <stop offset="60%" stop-color="#B23A2A" stop-opacity="0.08"/>
+                  <stop offset="100%" stop-color="#B23A2A" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- 动爻光晕：第四爻位置 -->
+              <ellipse cx="55" cy="62" rx="48" ry="11" fill="url(#vermilion-glow)"/>
+              <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                <!-- 上爻 阴 -->
+                <line x1="15" y1="14" x2="45" y2="14"/>
+                <line x1="65" y1="14" x2="95" y2="14"/>
+                <!-- 五爻 阳 -->
+                <line x1="15" y1="34" x2="95" y2="34"/>
+                <!-- 三爻 阳 -->
+                <line x1="15" y1="82" x2="95" y2="82"/>
+                <!-- 二爻 阴 -->
+                <line x1="15" y1="102" x2="45" y2="102"/>
+                <line x1="65" y1="102" x2="95" y2="102"/>
+                <!-- 初爻 阴 -->
+                <line x1="15" y1="122" x2="45" y2="122"/>
+                <line x1="65" y1="122" x2="95" y2="122"/>
+              </g>
+              <!-- 动爻：四爻·阴（朱砂红） -->
+              <g stroke="#B23A2A" stroke-width="2.8" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                <line x1="15" y1="58" x2="45" y2="58"/>
+                <line x1="65" y1="58" x2="95" y2="58"/>
+              </g>
+              <!-- 动爻标签 -->
+              <text x="105" y="62" font-size="10" fill="#B23A2A" font-family="KaiTi,STKaiti,楷体,serif" letter-spacing="0.1em">四爻·动</text>
+              <!-- 静爻标签（淡墨） -->
+              <text x="105" y="17" font-size="9" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">上爻</text>
+              <text x="105" y="37" font-size="9" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">五爻</text>
+              <text x="105" y="85" font-size="9" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">三爻</text>
+              <text x="105" y="105" font-size="9" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">二爻</text>
+              <text x="105" y="125" font-size="9" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">初爻</text>
+            </svg>
             <div class="yao-desc">
               <strong>唯一动爻</strong><br>
               回顾第三步起卦所得动爻之位（初爻至上爻），以朱砂标出，为全卦之眼。<br>
