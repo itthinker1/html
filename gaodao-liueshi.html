@@ -2038,94 +2038,106 @@ tr:nth-child(even) td{
           <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:18px 0 8px">
             <!-- 例一：天地否 -->
             <div style="text-align:center">
-              <div style="display:inline-flex;align-items:center;gap:18px">
-                <svg viewBox="0 0 90 120" width="78" height="104" style="display:block;margin:0 auto" aria-label="天地否卦象">
-                  <defs>
-                    <filter id="brush-rou1" x="-10%" y="-10%" width="120%" height="120%">
-                      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="1"/>
-                      <feDisplacementMap in="SourceGraphic" scale="0.6"/>
-                    </filter>
-                  </defs>
-                  <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
-                    <!-- 上爻 阳 -->
-                    <line x1="10" y1="12" x2="80" y2="12"/>
-                    <!-- 五爻 阳 -->
-                    <line x1="10" y1="30" x2="80" y2="30"/>
-                    <!-- 四爻 阳 -->
-                    <line x1="10" y1="48" x2="80" y2="48"/>
-                    <!-- 三爻 阴 -->
-                    <line x1="10" y1="66" x2="38" y2="66"/>
-                    <line x1="52" y1="66" x2="80" y2="66"/>
-                    <!-- 二爻 阴 -->
-                    <line x1="10" y1="84" x2="38" y2="84"/>
-                    <line x1="52" y1="84" x2="80" y2="84"/>
-                    <!-- 初爻 阴 -->
-                    <line x1="10" y1="102" x2="38" y2="102"/>
-                    <line x1="52" y1="102" x2="80" y2="102"/>
-                  </g>
-                </svg>
-                <div style="text-align:left;font-size:14px;color:var(--ink-soft);line-height:1.9;white-space:nowrap">
-                  上乾（☰ 天）<br>下坤（☷ 地）
-                </div>
-              </div>
+              <svg viewBox="0 0 180 120" width="152" height="102" style="display:block;margin:0 auto" aria-label="天地否卦象">
+                <defs>
+                  <filter id="brush-rou1" x="-10%" y="-10%" width="120%" height="120%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="1"/>
+                    <feDisplacementMap in="SourceGraphic" scale="0.6"/>
+                  </filter>
+                </defs>
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阳 -->
+                  <line x1="10" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阴 -->
+                  <line x1="10" y1="66" x2="38" y2="66"/>
+                  <line x1="52" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阴 -->
+                  <line x1="10" y1="84" x2="38" y2="84"/>
+                  <line x1="52" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+                <!-- 上卦大括号：括住 上爻·五爻·四爻 三爻 -->
+                <g stroke="#B23A2A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
+                  <path d="M90 12 C102 16,102 21,90 30"/>
+                  <path d="M90 30 C102 38,102 43,90 48"/>
+                </g>
+                <!-- 上卦 文字：上乾（天） -->
+                <text x="109" y="33" font-size="13.5" fill="#2B2317" font-family="KaiTi,STKaiti,楷体,serif">上乾（天）</text>
+                <!-- 下卦 文字：下坤（地） -->
+                <text x="109" y="87" font-size="13.5" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">下坤（地）</text>
+              </svg>
               <p style="margin-top:10px;font-size:15px;">
                 <strong style="color:var(--ink)">天地否</strong>
               </p>
             </div>
             <!-- 例二：天水讼 -->
             <div style="text-align:center">
-              <div style="display:inline-flex;align-items:center;gap:18px">
-                <svg viewBox="0 0 90 120" width="78" height="104" style="display:block;margin:0 auto" aria-label="天水讼卦象">
-                  <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
-                    <!-- 上爻 阳 -->
-                    <line x1="10" y1="12" x2="80" y2="12"/>
-                    <!-- 五爻 阳 -->
-                    <line x1="10" y1="30" x2="80" y2="30"/>
-                    <!-- 四爻 阳 -->
-                    <line x1="10" y1="48" x2="80" y2="48"/>
-                    <!-- 三爻 阴 -->
-                    <line x1="10" y1="66" x2="38" y2="66"/>
-                    <line x1="52" y1="66" x2="80" y2="66"/>
-                    <!-- 二爻 阳 -->
-                    <line x1="10" y1="84" x2="80" y2="84"/>
-                    <!-- 初爻 阴 -->
-                    <line x1="10" y1="102" x2="38" y2="102"/>
-                    <line x1="52" y1="102" x2="80" y2="102"/>
-                  </g>
-                </svg>
-                <div style="text-align:left;font-size:14px;color:var(--ink-soft);line-height:1.9;white-space:nowrap">
-                  上乾（☰ 天）<br>下坎（☵ 水）
-                </div>
-              </div>
+              <svg viewBox="0 0 180 120" width="152" height="102" style="display:block;margin:0 auto" aria-label="天水讼卦象">
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阳 -->
+                  <line x1="10" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阴 -->
+                  <line x1="10" y1="66" x2="38" y2="66"/>
+                  <line x1="52" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阳 -->
+                  <line x1="10" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+                <!-- 上卦大括号：括住 上爻·五爻·四爻 三爻 -->
+                <g stroke="#B23A2A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
+                  <path d="M90 12 C102 16,102 21,90 30"/>
+                  <path d="M90 30 C102 38,102 43,90 48"/>
+                </g>
+                <!-- 上卦 文字：上乾（天） -->
+                <text x="109" y="33" font-size="13.5" fill="#2B2317" font-family="KaiTi,STKaiti,楷体,serif">上乾（天）</text>
+                <!-- 下卦 文字：下坎（水） -->
+                <text x="109" y="87" font-size="13.5" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">下坎（水）</text>
+              </svg>
               <p style="margin-top:10px;font-size:15px;">
                 <strong style="color:var(--ink)">天水讼</strong>
               </p>
             </div>
             <!-- 例三：火泽睽 -->
             <div style="text-align:center">
-              <div style="display:inline-flex;align-items:center;gap:18px">
-                <svg viewBox="0 0 90 120" width="78" height="104" style="display:block;margin:0 auto" aria-label="火泽睽卦象">
-                  <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
-                    <!-- 上爻 阳 -->
-                    <line x1="10" y1="12" x2="80" y2="12"/>
-                    <!-- 五爻 阴 -->
-                    <line x1="10" y1="30" x2="38" y2="30"/>
-                    <line x1="52" y1="30" x2="80" y2="30"/>
-                    <!-- 四爻 阳 -->
-                    <line x1="10" y1="48" x2="80" y2="48"/>
-                    <!-- 三爻 阳 -->
-                    <line x1="10" y1="66" x2="80" y2="66"/>
-                    <!-- 二爻 阳 -->
-                    <line x1="10" y1="84" x2="80" y2="84"/>
-                    <!-- 初爻 阴 -->
-                    <line x1="10" y1="102" x2="38" y2="102"/>
-                    <line x1="52" y1="102" x2="80" y2="102"/>
-                  </g>
-                </svg>
-                <div style="text-align:left;font-size:14px;color:var(--ink-soft);line-height:1.9;white-space:nowrap">
-                  上离（☲ 火）<br>下兑（☱ 泽）
-                </div>
-              </div>
+              <svg viewBox="0 0 180 120" width="152" height="102" style="display:block;margin:0 auto" aria-label="火泽睽卦象">
+                <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
+                  <!-- 上爻 阳 -->
+                  <line x1="10" y1="12" x2="80" y2="12"/>
+                  <!-- 五爻 阴 -->
+                  <line x1="10" y1="30" x2="38" y2="30"/>
+                  <line x1="52" y1="30" x2="80" y2="30"/>
+                  <!-- 四爻 阳 -->
+                  <line x1="10" y1="48" x2="80" y2="48"/>
+                  <!-- 三爻 阳 -->
+                  <line x1="10" y1="66" x2="80" y2="66"/>
+                  <!-- 二爻 阳 -->
+                  <line x1="10" y1="84" x2="80" y2="84"/>
+                  <!-- 初爻 阴 -->
+                  <line x1="10" y1="102" x2="38" y2="102"/>
+                  <line x1="52" y1="102" x2="80" y2="102"/>
+                </g>
+                <!-- 上卦大括号：括住 上爻·五爻·四爻 三爻 -->
+                <g stroke="#B23A2A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
+                  <path d="M90 12 C102 16,102 21,90 30"/>
+                  <path d="M90 30 C102 38,102 43,90 48"/>
+                </g>
+                <!-- 上卦 文字：上离（火） -->
+                <text x="109" y="33" font-size="13.5" fill="#2B2317" font-family="KaiTi,STKaiti,楷体,serif">上离（火）</text>
+                <!-- 下卦 文字：下兑（泽） -->
+                <text x="109" y="87" font-size="13.5" fill="#8A7B65" font-family="KaiTi,STKaiti,楷体,serif">下兑（泽）</text>
+              </svg>
               <p style="margin-top:10px;font-size:15px;">
                 <strong style="color:var(--ink)">火泽睽</strong>
               </p>
