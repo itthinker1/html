@@ -1674,19 +1674,6 @@ tr:nth-child(even) td{
           <div class="step-num">其　一</div>
           <h3 data-gua="☰">得 上 卦</h3>
 
-          <!-- 上卦爻象 + 说明 -->
-          <div class="yao-diagram">
-            <div class="yao-stack" style="margin-left:24px">
-              <div class="yao yang"><span class="yao-label">上爻</span></div>
-              <div class="yao yang"><span class="yao-label">五爻</span></div>
-              <div class="yao yang"><span class="yao-label">四爻</span></div>
-            </div>
-            <div class="yao-desc">
-              <strong>上卦（外卦）</strong><br>
-              屏息分蓍后，数左手蓍草数量，除以八取余数，对应先天八卦数，即为上卦。
-            </div>
-          </div>
-
           <ol>
             <li>屏息分蓍后，<strong>男子数左手那堆</strong>的数量，女子数右手那堆。</li>
             <li>用这个数<strong>除以八，取余数</strong>，对应先天八卦数：</li>
@@ -1725,18 +1712,6 @@ tr:nth-child(even) td{
           <div class="step-num">其　二</div>
           <h3 data-gua="☷">得 下 卦</h3>
 
-          <div class="yao-diagram">
-            <div class="yao-stack" style="margin-left:24px">
-              <div class="yao yin"><span class="yao-label">三爻</span></div>
-              <div class="yao yin"><span class="yao-label">二爻</span></div>
-              <div class="yao yin"><span class="yao-label">初爻</span></div>
-            </div>
-            <div class="yao-desc">
-              <strong>下卦（内卦）</strong><br>
-              重新合拢蓍草，再次屏息分蓍，数右手蓍草数量，除以八取余数，即为下卦。
-            </div>
-          </div>
-
           <ol>
             <li>将左右两堆蓍草重新合为<strong>四十九根</strong>，重复上述屏息凝神的流程，到气息极限时再次分蓍。</li>
             <li><strong>男子数右手那堆</strong>的数量，女子数左手那堆。</li>
@@ -1751,22 +1726,6 @@ tr:nth-child(even) td{
         <div class="step-card">
           <div class="step-num">其　三</div>
           <h3 data-gua="⚊">得 动 爻</h3>
-
-          <div class="yao-diagram">
-            <div class="yao-stack" style="margin-left:24px">
-              <div class="yao yin"><span class="yao-label">上爻</span></div>
-              <div class="yao yang"><span class="yao-label">五爻</span></div>
-              <div class="yao yin active"><span class="yao-label">四爻·动</span></div>
-              <div class="yao yang"><span class="yao-label">三爻</span></div>
-              <div class="yao yin"><span class="yao-label">二爻</span></div>
-              <div class="yao yin"><span class="yao-label">初爻</span></div>
-            </div>
-            <div class="yao-desc">
-              <strong>唯一动爻</strong><br>
-              第三次分蓍，数左手数量，除以六取余数，即为动爻之位。<br>
-              动爻以朱砂标出，高岛流占断<strong>唯以动爻爻辞为断</strong>。
-            </div>
-          </div>
 
           <ol>
             <li>再次将蓍草合为四十九根，重复屏息分蓍的仪式。</li>
@@ -2225,29 +2184,62 @@ tr:nth-child(even) td{
           <h3 data-gua="⚋">识 动 爻 之 位 · 确 位</h3>
 
           <div class="yao-diagram">
-            <svg viewBox="0 0 120 140" width="108" height="126" style="margin-left:6px;flex-shrink:0" aria-label="动爻示例六爻图">
+            <svg viewBox="0 0 400 140" width="375" height="131" style="margin-left:6px;flex-shrink:0" aria-label="动爻示例六爻图">
+              <!-- 左侧爻题标注 -->
+              <g font-family="KaiTi,STKaiti,楷体,serif" font-size="12" text-anchor="end">
+                <text x="85" y="18" fill="#8A7B65">上六</text>
+                <text x="85" y="37" fill="#8A7B65">九五</text>
+                <text x="85" y="53" fill="#E02E1F">六四（动爻）</text>
+                <text x="85" y="76" fill="#8A7B65">九三</text>
+                <text x="85" y="95" fill="#8A7B65">六二</text>
+                <text x="85" y="114" fill="#8A7B65">初六</text>
+              </g>
+              <!-- 六爻本卦（黑实线，阴爻断开） -->
               <g stroke="#2B2317" stroke-width="2.5" stroke-linecap="round" fill="none" filter="url(#brush-rou1)">
                 <!-- 上爻 阴 -->
-                <line x1="15" y1="16" x2="57" y2="16"/>
-                <line x1="66" y1="16" x2="108" y2="16"/>
+                <line x1="90" y1="16" x2="128" y2="16"/>
+                <line x1="138" y1="16" x2="176" y2="16"/>
                 <!-- 五爻 阳 -->
-                <line x1="15" y1="35" x2="108" y2="35"/>
+                <line x1="90" y1="35" x2="176" y2="35"/>
+                <!-- 四爻 阴(动) -->
+                <line x1="90" y1="51" x2="128" y2="51"/>
+                <line x1="138" y1="51" x2="176" y2="51"/>
                 <!-- 三爻 阳 -->
-                <line x1="15" y1="74" x2="108" y2="74"/>
+                <line x1="90" y1="74" x2="176" y2="74"/>
                 <!-- 二爻 阴 -->
-                <line x1="15" y1="93" x2="57" y2="93"/>
-                <line x1="66" y1="93" x2="108" y2="93"/>
+                <line x1="90" y1="93" x2="128" y2="93"/>
+                <line x1="138" y1="93" x2="176" y2="93"/>
                 <!-- 初爻 阴 -->
-                <line x1="15" y1="112" x2="57" y2="112"/>
-                <line x1="66" y1="112" x2="108" y2="112"/>
+                <line x1="90" y1="112" x2="128" y2="112"/>
+                <line x1="138" y1="112" x2="176" y2="112"/>
               </g>
-              <!-- 动爻：四爻·阴（亮红、粗实线、无滤镜，确保醒目可见） -->
+              <!-- 动爻：四爻·阴（亮红粗线，无滤镜，醒目可见） -->
               <g stroke="#E02E1F" stroke-width="4" stroke-linecap="round" fill="none">
-                <line x1="12" y1="51" x2="55" y2="51"/>
-                <line x1="67" y1="51" x2="111" y2="51"/>
+                <line x1="90" y1="51" x2="128" y2="51"/>
+                <line x1="138" y1="51" x2="176" y2="51"/>
               </g>
-              <!-- 动爻文字标记 -->
-              <text x="112" y="55" font-size="13" fill="#E02E1F" font-family="KaiTi,STKaiti,楷体,serif" letter-spacing="0.08em">动</text>
+              <!-- 右侧爻位标注 -->
+              <g font-family="KaiTi,STKaiti,楷体,serif" font-size="12" text-anchor="start">
+                <text x="190" y="18" fill="#8A7B65">上爻</text>
+                <text x="190" y="37" fill="#8A7B65">五爻</text>
+                <text x="190" y="53" fill="#E02E1F">四爻（动爻）</text>
+                <text x="190" y="76" fill="#8A7B65">三爻</text>
+                <text x="190" y="95" fill="#8A7B65">二爻</text>
+                <text x="190" y="114" fill="#8A7B65">初爻</text>
+              </g>
+              <!-- 右侧说明（表内「说　明」一栏） -->
+              <g font-family="KaiTi,STKaiti,楷体,serif" font-size="11" text-anchor="start" fill="#7A6E58">
+                <text x="272" y="18">事之终，穷极则变</text>
+                <text x="272" y="37">居外卦中，多功</text>
+                <text x="272" y="53" fill="#E02E1F">近君之位，多惧</text>
+                <text x="272" y="76">内外之交，多凶</text>
+                <text x="272" y="95">居内卦中，多誉</text>
+                <text x="272" y="114">事之始，萌芽发端</text>
+              </g>
+              <!-- 竖排分隔线：爻题 / 本卦 / 爻位说明 -->
+              <line x1="88" y1="8"  x2="88" y2="120" stroke="#C9B896" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="184" y1="8" x2="184" y2="120" stroke="#C9B896" stroke-width="1" stroke-dasharray="2 3"/>
+              <line x1="268" y1="8" x2="268" y2="120" stroke="#C9B896" stroke-width="1" stroke-dasharray="2 3"/>
             </svg>
           </div>
 
