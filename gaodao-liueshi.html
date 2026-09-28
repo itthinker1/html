@@ -665,68 +665,65 @@ h1.title{
   position: relative;
 }
 
-/* Tab 切换章节：深赭石暗面板 —— 与宣纸整体形成强烈"锦盒藏纸"反差 */
+/* Tab 切换章节：淡竹青底 —— 与宣纸暖米底形成温润色差，文字墨色清晰可读 */
 .section--tabbed{
-  background: #3E321F;  /* 深赭石墨褐色，暗而不黑，暖调古意 */
-  border-top: 1px solid var(--ochre);
-  border-bottom: 1px solid var(--ochre);
+  background: #E0E8DF;  /* 淡竹青/豆绿灰，低饱和偏灰，清雅不刺眼 */
+  border-top: 1px solid #A8B8A0;
+  border-bottom: 1px solid #A8B8A0;
   padding: 28px 24px 32px;
   margin: 16px -12px 52px;
   border-radius: 2px;
-  color: var(--paper-light);  /* 区块文字整体反白为宣纸色 */
-  /* 深色底上淡淡内阴影，增加"凹槽/锦盒"质感，克制不加 */
+  color: var(--ink);
 }
 /* 区块内主标题 */
 .section--tabbed .sec-title{
   margin-bottom: 18px;
-  color: var(--paper-light);
+  color: var(--ink);
 }
 .section--tabbed .sec-title::before,
 .section--tabbed .sec-title::after{
-  background: linear-gradient(90deg, transparent, var(--ochre-light), transparent);
+  background: linear-gradient(90deg, transparent, #A8B8A0, transparent);
 }
 .section--tabbed .sec-title .sec-num{
-  color: var(--ochre-light);
+  color: #5A7A5A;
 }
 /* 区块内三级标题 */
 .section--tabbed h3.sub-title{
-  color: var(--paper-light);
-  border-bottom-color: rgba(201,184,150,0.35);
+  color: var(--ink);
+  border-bottom-color: rgba(90,122,90,0.3);
 }
 /* 区块内正文段落、列表 */
 .section--tabbed p,
 .section--tabbed li,
 .section--tabbed ol,
 .section--tabbed ul{
-  color: var(--paper);
+  color: var(--ink-soft);
 }
-/* 区块内次要文字/注释（内联样式覆盖） */
-.section--tabbed [style*="--ink-faint"]{
-  color: var(--ochre-light) !important;
-}
-.section--tabbed [style*="--ink-soft"]{
-  color: var(--paper) !important;
-}
-/* Tab 栏适配深色底 */
+/* 区块内次要文字/注释 —— 浅底上沿用默认墨色层级，无需覆盖 */
+/* Tab 栏适配淡青底 */
 .section--tabbed .qigua-tabs{
-  border-bottom-color: rgba(201,184,150,0.3);
+  border-bottom-color: rgba(90,122,90,0.25);
 }
 .section--tabbed .qigua-tab{
-  color: var(--ochre-light);
+  color: var(--ink-faint);
 }
 .section--tabbed .qigua-tab:hover{
-  color: var(--paper-light);
+  color: var(--ink);
 }
 .section--tabbed .qigua-tab.is-active{
-  color: var(--vermilion-soft);
+  color: var(--vermilion);
 }
 .section--tabbed .qigua-tab.is-active::after{
-  background: var(--vermilion-soft);
+  background: var(--vermilion);
 }
-/* step-card 内卡片：浅宣纸色，形成"深底 + 浅卡"的锦盒效果 */
+/* step-card 内卡片：略亮于区块底的淡竹青，保持层次 */
+.section--tabbed .step-card{
+  background: #E8EFE5;
+  border-color: #B5C5AC;
+}
 .section--tabbed .step-card h3{
   color: var(--ink);
-  border-bottom-color: var(--ochre-light);
+  border-bottom-color: rgba(90,122,90,0.2);
 }
 .section--tabbed .step-card h3::before{
   color: var(--vermilion);
@@ -741,10 +738,10 @@ h1.title{
   color: var(--ink-soft);
 }
 
-/* 区块内爻象图 / 图示卡片：恢复浅底墨色 */
+/* 区块内爻象图 / 图示卡片：浅底墨色 */
 .section--tabbed .yao-diagram{
   background: var(--paper-light);
-  border-color: var(--ochre-light);
+  border-color: #B5C5AC;
   color: var(--ink);
 }
 .section--tabbed .yao-diagram p{
@@ -753,20 +750,20 @@ h1.title{
 
 /* 区块内表格 */
 .section--tabbed table{
-  background: var(--paper-light);
+  background: #E8EFE5;
   color: var(--ink-soft);
 }
 .section--tabbed th,
 .section--tabbed td{
   color: var(--ink-soft);
-  border-color: var(--ochre-light);
+  border-color: #B5C5AC;
 }
 .section--tabbed th{
-  background: rgba(178,58,42,0.08);
+  background: rgba(90,122,90,0.12);
   color: var(--ink);
 }
 .section--tabbed tr:nth-child(even) td{
-  background: rgba(184,154,94,0.1);
+  background: rgba(90,122,90,0.06);
 }
 .section--tabbed .gua-name,
 .section--tabbed .gua-symbol{
