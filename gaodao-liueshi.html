@@ -2607,6 +2607,134 @@ tr:nth-child(even) td{
         </div>
       </section>
 
+      <!-- ============== 意境插图：两筒抽签 ============== -->
+      <div class="illustration">
+        <svg width="340" height="180" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- 竹筒渐变 -->
+            <linearGradient id="bambooGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#D4B896"/>
+              <stop offset="50%" stop-color="#C9A86C"/>
+              <stop offset="100%" stop-color="#A08050"/>
+            </linearGradient>
+            <!-- 竹签渐变 -->
+            <linearGradient id="stickGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#E8D5A8"/>
+              <stop offset="100%" stop-color="#C9B896"/>
+            </linearGradient>
+            <!-- 笔触粗糙滤镜（与卦象图同款，独立id避免冲突） -->
+            <filter id="brush-illu5" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+              <feDisplacementMap in="SourceGraphic" scale="0.5"/>
+            </filter>
+          </defs>
+
+          <!-- 案台（淡淡一条） -->
+          <rect x="25" y="150" width="290" height="8" fill="#B89A5E" opacity="0.2" rx="2"/>
+
+          <!-- ===== 左：八签筒（定八卦） ===== -->
+          <g transform="translate(95, 108)">
+            <!-- 筒身（略俯视椭圆 + 柱身） -->
+            <ellipse cx="0" cy="-42" rx="28" ry="6" fill="url(#bambooGrad)" stroke="#5A4210" stroke-width="0.8" opacity="0.6"/>
+            <path d="M -28 -42 L -26 36 Q 0 40 26 36 L 28 -42"
+                  fill="url(#bambooGrad)" stroke="#5A4210" stroke-width="0.8" opacity="0.5"/>
+            <!-- 筒口内阴影 -->
+            <ellipse cx="0" cy="-42" rx="24" ry="4.5" fill="#2B2317" opacity="0.25"/>
+            <!-- 竹节纹 -->
+            <g stroke="#5A4210" stroke-width="0.6" fill="none" opacity="0.4">
+              <path d="M -26 -20 Q 0 -18 26 -20"/>
+              <path d="M -26 5 Q 0 7 26 5"/>
+              <path d="M -26 28 Q 0 30 26 28"/>
+            </g>
+            <!-- 筒身刻字：八卦符（小篆风简化，用卦符代替） -->
+            <text x="0" y="8" text-anchor="middle" font-size="11" fill="#5A4210"
+                  font-family="KaiTi,STKaiti,楷体,serif" opacity="0.55">八　卦</text>
+
+            <!-- 露出的竹签（八根，错落不齐） -->
+            <g stroke="url(#stickGrad)" stroke-width="2.2" stroke-linecap="round" opacity="0.8">
+              <line x1="-18" y1="-42" x2="-19" y2="-80"/>
+              <line x1="-12" y1="-42" x2="-11" y2="-88"/>
+              <line x1="-6" y1="-42" x2="-7" y2="-75"/>
+              <line x1="0" y1="-42" x2="1" y2="-92"/>
+              <line x1="6" y1="-42" x2="5" y2="-78"/>
+              <line x1="12" y1="-42" x2="13" y2="-85"/>
+              <line x1="18" y1="-42" x2="17" y2="-72"/>
+              <line x1="22" y1="-42" x2="23" y2="-82"/>
+            </g>
+            <!-- 竹签顶端卦符（极小字，朱砂色点缀） -->
+            <g font-size="6.5" fill="#B23A2A" font-family="KaiTi,STKaiti,楷体,serif" opacity="0.5" text-anchor="middle">
+              <text x="-11" y="-90">乾</text>
+              <text x="1" y="-94">坤</text>
+              <text x="13" y="-87">震</text>
+            </g>
+          </g>
+
+          <!-- ===== 右：六签筒（定动爻） ===== -->
+          <g transform="translate(245, 112)">
+            <!-- 筒身（略小一号） -->
+            <ellipse cx="0" cy="-36" rx="24" ry="5" fill="url(#bambooGrad)" stroke="#5A4210" stroke-width="0.8" opacity="0.6"/>
+            <path d="M -24 -36 L -22 32 Q 0 36 22 32 L 24 -36"
+                  fill="url(#bambooGrad)" stroke="#5A4210" stroke-width="0.8" opacity="0.5"/>
+            <ellipse cx="0" cy="-36" rx="20" ry="3.5" fill="#2B2317" opacity="0.25"/>
+            <!-- 竹节纹 -->
+            <g stroke="#5A4210" stroke-width="0.6" fill="none" opacity="0.4">
+              <path d="M -22 -16 Q 0 -14 22 -16"/>
+              <path d="M -22 8 Q 0 10 22 8"/>
+              <path d="M -22 26 Q 0 28 22 26"/>
+            </g>
+            <!-- 筒身刻字 -->
+            <text x="0" y="0" text-anchor="middle" font-size="10.5" fill="#5A4210"
+                  font-family="KaiTi,STKaiti,楷体,serif" opacity="0.55">六　爻</text>
+
+            <!-- 露出的竹签（六根） -->
+            <g stroke="url(#stickGrad)" stroke-width="2.2" stroke-linecap="round" opacity="0.8">
+              <line x1="-15" y1="-36" x2="-16" y2="-70"/>
+              <line x1="-9" y1="-36" x2="-8" y2="-78"/>
+              <line x1="-3" y1="-36" x2="-4" y2="-68"/>
+              <line x1="3" y1="-36" x2="4" y2="-82"/>
+              <line x1="9" y1="-36" x2="8" y2="-73"/>
+              <line x1="15" y1="-36" x2="16" y2="-76"/>
+            </g>
+            <!-- 竹签顶端数字（极小字，赭石色） -->
+            <g font-size="6" fill="#7A6E58" font-family="KaiTi,STKaiti,楷体,serif" opacity="0.6" text-anchor="middle">
+              <text x="-8" y="-80">二</text>
+              <text x="4" y="-84">五</text>
+              <text x="16" y="-78">上</text>
+            </g>
+          </g>
+
+          <!-- ===== 中间：飘落的签（被抽起的一根，朱砂动爻签） ===== -->
+          <g transform="translate(170, 40)">
+            <!-- 朱砂签（被抽起，倾斜） -->
+            <g transform="rotate(12)">
+              <rect x="-2" y="-30" width="4" height="60" rx="2" fill="url(#stickGrad)" stroke="#B23A2A" stroke-width="0.6" opacity="0.85"/>
+              <text x="0" y="5" text-anchor="middle" font-size="9" fill="#B23A2A"
+                    font-family="KaiTi,STKaiti,楷体,serif" opacity="0.8">三</text>
+            </g>
+            <!-- 签尖微光（极淡朱砂点） -->
+            <circle cx="8" cy="-30" r="1.5" fill="#B23A2A" opacity="0.3"/>
+          </g>
+
+          <!-- ===== 背景：淡墨太极（呼应断卦·动爻） ===== -->
+          <g transform="translate(170, 125)" opacity="0.12">
+            <circle cx="0" cy="0" r="32" fill="none" stroke="#2B2317" stroke-width="0.8"/>
+            <path d="M0 -30 A30 30 0 0 1 0 30 A15 15 0 0 1 0 0 A15 15 0 0 0 0 -30 Z"
+                  fill="#2B2317"/>
+            <circle cx="0" cy="-15" r="3" fill="#F2EBDD"/>
+            <circle cx="0" cy="15" r="3" fill="#2B2317"/>
+          </g>
+
+          <!-- 散落的小星点（极淡，呼应全篇星点风格） -->
+          <g fill="#B89A5E" opacity="0.25">
+            <circle cx="50" cy="35" r="0.8"/>
+            <circle cx="290" cy="30" r="0.6"/>
+            <circle cx="40" cy="80" r="0.5"/>
+            <circle cx="305" cy="90" r="0.7"/>
+          </g>
+        </svg>
+        <div class="caption">— 两 筒 抽 签 —</div>
+      </div>
+
       <!-- ============== 其五·晚年简化 ============== -->
       <section class="section">
         <h2 class="sec-title">
