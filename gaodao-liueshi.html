@@ -1256,6 +1256,66 @@ tr:nth-child(even) td{
   75%  { opacity: 0.34; transform: translateY(-15px) translateX(-1px); }
   100% { opacity: 0.10; transform: translateY(-20px) translateX(1.5px); }
 }
+
+/* ============================================================
+   双 Tab 切换（三步起卦 / 高岛略筮法）
+   极简克制，仅纯色 + 底线，无多余动效
+   ============================================================ */
+.qigua-tabs{
+  margin: 28px 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0;
+  border-bottom: 1px solid var(--ochre-light);
+  position: relative;
+}
+.qigua-tab{
+  padding: 10px 28px 12px;
+  font-family: "KaiTi","STKaiti","楷体",serif;
+  font-size: 17px;
+  letter-spacing: 0.35em;
+  color: var(--ink-faint);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+.qigua-tab:hover{
+  color: var(--ink-soft);
+}
+.qigua-tab.is-active{
+  color: var(--vermilion);
+}
+.qigua-tab.is-active::after{
+  content:"";
+  position:absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -1px;
+  height: 2px;
+  background: var(--vermilion);
+  border-radius: 1px;
+}
+.qigua-tab .tab-gua{
+  font-size: 14px;
+  margin-right: 6px;
+  vertical-align: 1px;
+  opacity: 0.8;
+}
+.qigua-panel{
+  display: none;
+}
+.qigua-panel.is-active{
+  display: block;
+}
+@media (max-width: 600px){
+  .qigua-tab{
+    padding: 8px 16px 10px;
+    font-size: 15px;
+    letter-spacing: 0.25em;
+  }
+}
 </style>
 </head>
 <body>
@@ -1665,6 +1725,20 @@ tr:nth-child(even) td{
           <span>其 三 · 三 步 起 卦</span>
           <span class="gua-mark">☴</span>
         </h2>
+
+        <!-- Tab 切换 -->
+        <div class="qigua-tabs">
+          <div class="qigua-tab is-active" data-tab="sanbu">
+            <span class="tab-gua">☰</span>三步起卦
+          </div>
+          <div class="qigua-tab" data-tab="lueshi">
+            <span class="tab-gua">☯</span>高岛略筮
+          </div>
+        </div>
+
+        <!-- ===== Tab 1：三步起卦（原有内容原样保留） ===== -->
+        <div class="qigua-panel is-active" id="tab-sanbu">
+
         <p class="no-indent" style="color:var(--ink-faint);font-size:14px;margin-bottom:20px;text-align:center">
           ※ 以下为男子规则，女子反之（左右手互换）。
         </p>
@@ -1746,6 +1820,114 @@ tr:nth-child(even) td{
           </ul>
           <p style="margin-top:10px">所得即为<em>唯一的动爻</em>，高岛流占断以该动爻的爻辞为核心依据。</p>
         </div>
+
+        </div><!-- /#tab-sanbu -->
+
+        <!-- ===== Tab 2：高岛略筮法（新增） ===== -->
+        <div class="qigua-panel" id="tab-lueshi">
+
+        <p class="no-indent" style="color:var(--ink-faint);font-size:14px;margin-bottom:8px;text-align:center">
+          ※ 《高岛易断》卷一起卦部分所载「三变略筮法」，非高岛发明，源出江户平泷流、新井白蛾一脉。
+        </p>
+        <p class="no-indent" style="color:var(--ink-soft);font-size:14px;margin-bottom:24px;text-align:center">
+          按原书操作顺序：<strong>第一次定下卦，第二次定上卦，第三次定动爻</strong>。
+        </p>
+
+        <!-- 取太极 -->
+        <div class="step-card">
+          <div class="step-num">取 太 极</div>
+          <h3 data-gua="☯">五 十 取 一</h3>
+          <p>准备五十根蓍筮竹，先抽出一根不用，放在一旁象征太极。真正参与分筮的是余下<strong>四十九根</strong>。</p>
+        </div>
+
+        <!-- 第一变 -->
+        <div class="step-card">
+          <div class="step-num">第 一 变</div>
+          <h3 data-gua="☷">定 下 卦</h3>
+          <ol>
+            <li>四十九根自然分成左右两份，从右边取一根为「<strong>挂一</strong>」。</li>
+            <li>左边按<strong>八根一数</strong>，最后余数加上挂一，得一至八。</li>
+            <li>这个数定<strong>下卦（内卦）</strong>，放在下方。</li>
+          </ol>
+        </div>
+
+        <!-- 第二变 -->
+        <div class="step-card">
+          <div class="step-num">第 二 变</div>
+          <h3 data-gua="☰">定 上 卦</h3>
+          <ol>
+            <li>四十九根合拢，太极那一根仍不用，照前法再做一次，得一至八。</li>
+            <li>这个数定<strong>上卦（外卦）</strong>，放在上方。</li>
+          </ol>
+          <div class="note" style="margin-top:16px">
+            上下卦相合，即得本卦。下卦为内、为主；上卦为外、为客。
+          </div>
+        </div>
+
+        <!-- 八卦数配卦表 -->
+        <div class="step-card">
+          <div class="step-num">附</div>
+          <h3 data-gua="☯">八 卦 数 配 卦 表</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:18%">数</th>
+                  <th style="width:26%">卦 名</th>
+                  <th style="width:26%">卦 符</th>
+                  <th>取 象</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>一</td><td class="gua-name">乾</td><td class="gua-symbol">☰</td><td>天</td></tr>
+                <tr><td>二</td><td class="gua-name">兑</td><td class="gua-symbol">☱</td><td>泽</td></tr>
+                <tr><td>三</td><td class="gua-name">离</td><td class="gua-symbol">☲</td><td>火</td></tr>
+                <tr><td>四</td><td class="gua-name">震</td><td class="gua-symbol">☳</td><td>雷</td></tr>
+                <tr><td>五</td><td class="gua-name">巽</td><td class="gua-symbol">☴</td><td>风</td></tr>
+                <tr><td>六</td><td class="gua-name">坎</td><td class="gua-symbol">☵</td><td>水</td></tr>
+                <tr><td>七</td><td class="gua-name">艮</td><td class="gua-symbol">☶</td><td>山</td></tr>
+                <tr><td>八</td><td class="gua-name">坤</td><td class="gua-symbol">☷</td><td>地</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 第三变 -->
+        <div class="step-card">
+          <div class="step-num">第 三 变</div>
+          <h3 data-gua="⚊">定 动 爻</h3>
+          <ol>
+            <li>再合拢四十九根，照样分二挂一。</li>
+            <li>这次按<strong>六根一数</strong>，余数加挂一，得一至六。</li>
+            <li><strong>一</strong>为初爻，<strong>六</strong>为上爻，略筮固定一爻动。</li>
+          </ol>
+        </div>
+
+        <!-- 举个例子 -->
+        <div class="step-card">
+          <div class="step-num">例</div>
+          <h3 data-gua="䷗">举 个 例 子</h3>
+          <p>第一次得四为震，放下；第二次得八为坤，放上，本卦即「<strong>地雷复</strong>」。第三次若得三，即三爻动。</p>
+          <p style="margin-top:10px">读卦先看复卦，再看复卦六三爻辞，之卦只作辅助。</p>
+        </div>
+
+        <!-- 拿到卦后（主次） -->
+        <div class="step-card">
+          <div class="step-num">主 次</div>
+          <h3 data-gua="☯">拿 到 卦 后</h3>
+          <ul style="margin-left:1.2em">
+            <li><strong>本卦是主轴</strong>：先读本卦卦辞，确认局面。</li>
+            <li><strong>动爻是焦点</strong>：略筮固定一爻动，该爻是占问重心。</li>
+            <li><strong>之卦是余势</strong>：看变化趋向，不覆盖本卦、不当第二个答案。</li>
+          </ul>
+        </div>
+
+        <!-- 备注 -->
+        <div class="note" style="margin-top:12px">
+          <strong>备　注</strong>　略筮法只做三次，省掉十八变漫长过程，仍保留五十取一、用四十九的蓍筮框架；第三次专定爻位，落在初爻至上爻间。可以等长竹签、木签练习；若临时替代可用随机数模拟（一至八、一至八、一至六），但那已非原书手上蓍筮作法。
+        </div>
+
+        </div><!-- /#tab-lueshi -->
       </section>
 
       <!-- 分隔 -->
@@ -2500,6 +2682,23 @@ tr:nth-child(even) td{
 
 <script>
 // （粒子系统已移除，全部动效由纯 SVG/CSS 承担）
+
+// ===== 三步起卦 / 高岛略筮 双 Tab 切换 =====
+(function(){
+  var tabs = document.querySelectorAll('.qigua-tab');
+  var panels = document.querySelectorAll('.qigua-panel');
+  if(!tabs.length || !panels.length) return;
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var target = tab.getAttribute('data-tab');
+      tabs.forEach(function(t){ t.classList.remove('is-active'); });
+      panels.forEach(function(p){ p.classList.remove('is-active'); });
+      tab.classList.add('is-active');
+      var panel = document.getElementById('tab-' + target);
+      if(panel) panel.classList.add('is-active');
+    });
+  });
+})();
 </script>
 
 </body>
