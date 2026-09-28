@@ -665,6 +665,26 @@ h1.title{
   position: relative;
 }
 
+/* Tab 切换章节：独立卦盘感 —— 淡赭石暖调底色 + 上下细描边 + 内边距 */
+.section--tabbed{
+  background: rgba(184,154,94,0.12);
+  border-top: 1px solid var(--ochre-light);
+  border-bottom: 1px solid var(--ochre-light);
+  padding: 28px 24px 32px;
+  margin: 16px -12px 52px;
+  border-radius: 2px;
+}
+.section--tabbed .sec-title{
+  margin-bottom: 18px;
+}
+
+@media (max-width: 600px){
+  .section--tabbed{
+    padding: 22px 14px 26px;
+    margin: 12px -6px 44px;
+  }
+}
+
 h2.sec-title{
   font-size: 22px;
   font-weight: 500;
@@ -1719,7 +1739,7 @@ tr:nth-child(even) td{
       </div>
 
       <!-- ============== 其三·三步起卦 ============== -->
-      <section class="section">
+      <section class="section section--tabbed">
         <h2 class="sec-title">
           <span class="gua-mark">☳</span>
           <span>其 三 · 三 步 起 卦</span>
