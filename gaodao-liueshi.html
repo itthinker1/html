@@ -1990,7 +1990,56 @@ tr:nth-child(even) td{
         <!-- 参考来源 -->
         <p class="no-indent" style="color:var(--ink-faint);font-size:14px;margin-top:16px;text-align:center">
           参考来源：<a href="https://gaodaoyijing.com/lueshifa-qigua/#primary-evidence" target="_blank" rel="noopener" style="color:var(--ink-accent);text-decoration:underline">高岛易断·略筮法起卦（出处文献清单）</a>
+          <span style="margin:0 6px;color:var(--ink-faint)">·</span>
+          <button type="button" id="btn-yuanzhu-zhiyi" onclick="toggleYuanzhuZhiyi()" style="background:none;border:none;padding:0;font:inherit;color:var(--ink-accent);text-decoration:underline;cursor:pointer;font-size:14px">原书直译 ▾</button>
         </p>
+
+        <!-- 原书直译 展开块 -->
+        <div id="yuanzhu-zhiyi-block" style="display:none;margin-top:16px;padding:20px 24px;border:1px solid rgba(178,58,42,0.15);background:rgba(178,58,42,0.04);border-radius:4px;line-height:1.9;color:var(--ink-strong);font-size:15px">
+          <h3 style="margin:0 0 16px 0;font-size:18px;font-weight:600;color:var(--ink-strong);text-align:center;letter-spacing:2px">易占筮仪（直译）</h3>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">凡易占之筮法，自古有种种异说，虽无一定，然今世现行之筮法，大别为本筮（十八变）、中筮（六变）、略筮（三变）三种。其本筮之法，《系辞传》中虽详，然仍有小异，并不一致。且就《系辞传》所云"十有八变而成卦，八卦而小成"而言，十八变而成者，乃所谓三画卦，欲成重画六爻之卦，须三十六变，等等，有此类之说，难以轻易辨其黑白。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">然此等议论暂且搁置，如今我辈平常所用，以三变之略筮法最为适当。毕竟筮是竭己之至诚、受神命之器，依何种法，只要能受神命，即为同一。然而常人全然不能断绝妄念杂虑，十八变的长时间里，必不能没有念虑之动。精神稍动，则决不能感通，故宁可说是略筮，亦贵在至诚专一，占筮之间精神充满，少无松懈。故我依数十年来之实验，断然用略筮，不敢求多。因此，现在并非说要教导有识者，只是为初学者示以略筮之大要。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">凡欲占问某事项而欲执筮时，先洗手漱口，净身静心，于闲室端坐，谨执筮竹。筮竹之数为五十本，即大衍之数。此五十本筮竹，于数理上成变化而行鬼神，乃神物也。而筮竹之取法，是从其全数五十本之中，除去一本不用。以此象太极，立于中央之筮筩。将剩下的四十九本，以左手握其根，末端略开成扇形，以右手拇指抵于筮竹略微张开之中段，其余四指自外抱之，执于额上。而后心中念所欲占问之事项，闭眼收息，诚意正心，恰如与神明额头相合而受教之观想中安住，精神专一，不夹一点私。于其至诚极致之时，以右手拇指，随手平分为二。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 1em;font-size:13.5px;color:var(--ink-faint);line-height:1.8">（小字夹注，辨识把握不大，大意：至诚极致之时，则与鬼神感通，正是其感格之时。感通之事，不容间发，如电气感于四肢。此乃难以名状之事，难以口言，难以笔记，唯占者自己修炼，方能达此妙境；亦须师徒面授。那禅宗所谓"以心传心""不立文字"，亦是此类境界。）</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">已分为二，此象天地阴阳两仪。接着将右边之策置于桌上，从其中取一本，夹于左手小指之间，以此象天地人三才。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">接着以右手数左手所执之筮竹。其数法是：二本一次，四次，即每八本，逐步数除，连同先前夹于小指间之一本也加上，数毕。</p>
+
+          <p style="text-indent:2em;margin:0 0 8px 0">依剩余之数，得卦如下：</p>
+          <ul style="margin:0 0 14px 2em;padding:0;list-style:disc">
+            <li style="margin:4px 0">剩一本，为乾之卦</li>
+            <li style="margin:4px 0">剩二本，为兑之卦</li>
+            <li style="margin:4px 0">剩三本，为离之卦</li>
+            <li style="margin:4px 0">剩四本，为震之卦</li>
+            <li style="margin:4px 0">剩五本，为巽之卦</li>
+            <li style="margin:4px 0">剩六本，为坎之卦</li>
+            <li style="margin:4px 0">剩七本，为艮之卦</li>
+            <li style="margin:4px 0">剩八本（八本之满数，无剩余时），为坤之卦</li>
+          </ul>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">即依次序为天、泽、火、雷、风、水、山、地之八象。如此，以最初之剩余数所得之卦，称为内卦，置于下；再次如前，分开筮而数之，以其剩余数所得之卦，称为外卦，置于上，始成重画六爻之一卦。六十四卦之中，无哪一卦不会出现。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">谨如，最初剩一本为乾，置于下；接着剩五本为巽，置于上；上下合而为风天小畜之卦。又，最初剩三本，接着剩七本，为山火贲之卦。最初剩二本，接着剩六本，为水泽节之卦。最初剩四本，接着剩八本，为地雷复之卦。六十四卦皆准此例而知。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">既已如前得卦之后，接着看爻之变。其筮竹之取法，一概如前，只是数筮时，求前面之卦用八本揲除，是因为卦有八卦之故。现在爻是六爻，故二本一次、三次，即以六本揲除，取其剩余之数。即剩一本为初爻，剩二本为二爻，逐步数去，最终若是六本之满数，则看作上爻。其一、二、三之位，自下逆数而上。故最下称为初，二、三、四、五如此数上，第六本称为上爻。至此，才定下何卦、何爻，即相当之卦已定。</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0;font-size:13.5px;color:var(--ink-faint)"><strong style="color:var(--ink-strong)">爻之图</strong>（自下而上：初、二、三、四、五、上；以下为初爻，以上为上爻）</p>
+
+          <p style="text-indent:2em;margin:0 0 14px 0">如上，卦既已决定之后，看卦辞（若是乾为天之卦，即指"乾，元亨利贞"之辞）、彖辞（"大哉乾元，万物资始"云云）、大象（"天行健，君子以自强不息"云云）之辞，以观其所占筮之事项的大体；再以所得之爻的爻辞，断一时之吉凶悔吝。此须就本爻之解释而判断。</p>
+
+          <hr style="border:none;border-top:1px solid rgba(43,35,23,0.12);margin:20px 0">
+
+          <p style="margin:0 0 6px 0"><strong style="color:var(--ink-strong)">说明：</strong></p>
+          <ol style="margin:0 0 0 2em;padding:0;font-size:13.5px;color:var(--ink-faint);line-height:1.8">
+            <li style="margin:4px 0">第二页中部的小字夹注排版复杂，有数处字迹难辨，上面只是据可辨认的部分作的推译。</li>
+            <li style="margin:4px 0">"二本ずつ四度（即八本ずつ）""二本ずつ三度（即六本ずつ）"一类表述，我按其算法意义译出。</li>
+          </ol>
+        </div>
 
         </div><!-- /#tab-lueshi -->
       </section>
@@ -2919,6 +2968,20 @@ tr:nth-child(even) td{
     });
   });
 })();
+
+// ===== 原书直译 展开/收起 =====
+function toggleYuanzhuZhiyi(){
+  var block = document.getElementById('yuanzhu-zhiyi-block');
+  var btn = document.getElementById('btn-yuanzhu-zhiyi');
+  if(!block || !btn) return;
+  if(block.style.display === 'none'){
+    block.style.display = 'block';
+    btn.innerHTML = '收起 ▴';
+  } else {
+    block.style.display = 'none';
+    btn.innerHTML = '原书直译 ▾';
+  }
+}
 </script>
 
 </body>
