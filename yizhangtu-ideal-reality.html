@@ -75,6 +75,10 @@
     margin: 56px 0 24px;
     color: var(--text);
     letter-spacing: 0.02em;
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
   }
 
   h2 .num {
@@ -91,6 +95,10 @@
     margin-top: 72px;
     padding-top: 40px;
     border-top: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    padding-left: 14px;
   }
 
   h2.ending .num {
@@ -126,6 +134,28 @@
 
   .quote p:last-child {
     margin-bottom: 0;
+  }
+
+  /* 金句/点睛句 —— 克制的左竖线强调块 */
+  .pull-quote {
+    margin: 2.2em 0;
+    padding: 0.6em 0 0.6em 1.2em;
+    border-left: 3px solid var(--accent);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1.02rem;
+    line-height: 1.8;
+    text-indent: 0;
+  }
+
+  /* 章节间细分隔线 */
+  hr.section-divider {
+    border: none;
+    height: 1px;
+    background: var(--line);
+    margin: 3em auto 1em;
+    width: 60%;
+    opacity: 0.7;
   }
 
   /* 问句列表（07节的六个问题） */
@@ -379,7 +409,11 @@
     html { font-size: 16px; }
     .container { padding: 40px 20px 72px; }
     h1 { font-size: 1.6rem; }
-    h2 { font-size: 1.15rem; margin: 40px 0 20px; }
+    h2 { font-size: 1.15rem; margin: 40px 0 20px; padding-left: 10px; border-left-width: 2px; padding-bottom: 8px; }
+    h2.ending { padding-top: 32px; padding-left: 10px; }
+
+    .pull-quote { font-size: 0.98rem; padding-left: 1em; margin: 1.8em 0; }
+    hr.section-divider { width: 50%; }
     header { margin-bottom: 40px; padding-bottom: 28px; }
 
     .compare-wrap {
@@ -524,7 +558,7 @@
 
       <p>地图背后，是数据怎样生产、由谁更新、按照什么规则共享；也是部门怎样协同、问题怎样流转、责任怎样落实。</p>
 
-      <p>理想很清楚，现实却没有那么简单。</p>
+      <div class="pull-quote">理想很清楚，现实却没有那么简单。</div>
 
       <h2><span class="num">01</span>大家说的，可能不是同一张图</h2>
 
@@ -536,7 +570,7 @@
 
       <p>问题在于，如果大家只站在自己熟悉的位置上理解它，最后很可能出现一种熟悉的结果：门户建起来了，数据也接进来了，应用场景一个不少，但各部门仍然在使用自己的系统，基层仍然重复报数，遇到跨部门问题时，仍然需要打电话、发文件、临时拉群协调。</p>
 
-      <p>表面上有了一张图，实际工作还是多张皮。</p>
+      <div class="pull-quote">表面上有了一张图，实际工作还是多张皮。</div>
 
       <!-- 理想 vs 现实对比 -->
       <div class="figure">
@@ -736,7 +770,7 @@
 
       <p>技术可以把接口接通，却不能自动形成共享意愿；平台可以生成预警，却不能代替部门作出处置决定；专班可以在短时间内集中解决问题，却不能永远依靠集中攻坚来维持日常运行。</p>
 
-      <p>方向正确，不代表落地会自然发生。</p>
+      <div class="pull-quote">方向正确，不代表落地会自然发生。</div>
 
       <h2><span class="num">06</span>百日能攻下什么</h2>
 
@@ -758,7 +792,7 @@
 
       <p>所以，百日攻坚真正需要攻下的，不应只是一个阶段性版本，还应包括几项过去长期解决不了的基础问题：哪些数据由谁负责，省市县各自建设什么，哪些公共能力必须复用，哪些场景值得优先打通，以及项目建成以后由谁持续运营。</p>
 
-      <p>百日可以打通一条路，但不能代替以后每天都有人维护这条路。</p>
+      <div class="pull-quote">百日可以打通一条路，但不能代替以后每天都有人维护这条路。</div>
 
       <h2><span class="num">07</span>判断一张图，不妨问几个朴素的问题</h2>
 
