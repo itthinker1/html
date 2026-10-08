@@ -393,13 +393,14 @@
   .tag-crit     {color:var(--tag-crit);    background:var(--tag-crit-bg);    border:1px solid var(--tag-crit-bd)}
 
   .item-title{
-    font-size:15.5px;
-    font-weight:500;
-    line-height:1.5;
-    color:var(--text);
+    font-size:17px;
+    font-weight:600;
+    line-height:1.55;
+    color:#1A1610;
     min-width:0;
     transition:color .15s;
     font-family:"Noto Serif SC","PingFang SC",serif;
+    letter-spacing:.2px;
   }
   .item:hover .item-title{
     color:var(--accent);
@@ -431,10 +432,10 @@
   }
   .item-desc{
     margin-left:calc(72px + 14px); /* 标签+gap */
-    margin-top:8px;
+    margin-top:10px;
     font-size:13px;
-    color:var(--muted);
-    line-height:1.7;
+    color:#7A7060;
+    line-height:1.75;
     display:-webkit-box;
     -webkit-line-clamp:1;
     -webkit-box-orient:vertical;
@@ -492,11 +493,11 @@
       gap:6px 12px;
     }
     .item-tag{order:1}
-    .item-title{order:3;grid-column:1 / -1}
+    .item-title{order:3;grid-column:1 / -1;font-size:16px;line-height:1.5}
     .item-date{order:2}
     .item-desc{
       margin-left:0;
-      margin-top:4px;
+      margin-top:6px;
       -webkit-line-clamp:2;
     }
     .toc{padding:14px 16px;gap:8px 16px}
