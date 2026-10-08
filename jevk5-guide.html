@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JevK5 本地部署指南：MacBook Pro M5 · llama.cpp + Metal</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fafbfc;
+  --bg-elevated: #ffffff;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --accent-border: #bfdbfe;
+  --code-bg: #1e293b;
+  --code-text: #e2e8f0;
+  --code-muted: #94a3b8;
+  --warning-bg: #fffbeb;
+  --warning-border: #fcd34d;
+  --warning-text: #92400e;
+  --table-head: #f3f4f6;
+  --table-stripe: #f9fafb;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Fira Mono", "Roboto Mono", "Source Han Sans SC", "Noto Sans Mono CJK SC", Consolas, "Courier New", monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg-elevated);
+  padding: 24px 0;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 48px 64px 96px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .sidebar { display: none; }
+  .main { padding: 32px 24px 64px; }
+}
+
+.toc {
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.toc-title {
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+  padding: 0 8px;
+}
+
+.toc ul { list-style: none; }
+
+.toc li a {
+  display: block;
+  padding: 5px 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
+  line-height: 1.5;
+}
+
+.toc li a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.toc li.toc-part > a {
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 12px;
+}
+
+.toc li.toc-sub > a {
+  padding-left: 24px;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.toc li.toc-sub > a:hover { color: var(--accent); }
+
+.toc li a.active {
+  color: var(--accent);
+  font-weight: 500;
+  background: var(--accent-soft);
+}
+
+.doc-header {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+}
+
+.doc-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.doc-header .subtitle {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.doc-header .meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.doc-header .meta-table td {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+}
+
+.doc-header .meta-table td:first-child {
+  width: 110px;
+  background: var(--table-stripe);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.doc-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  text-decoration: none;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+.btn svg { width: 16px; height: 16px; }
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  scroll-margin-top: 24px;
+}
+
+h1 { font-size: 26px; margin: 40px 0 16px; }
+h2 {
+  font-size: 22px;
+  margin: 48px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+h3 { font-size: 18px; margin: 32px 0 12px; }
+h4 { font-size: 16px; margin: 24px 0 10px; }
+
+p { margin: 0 0 16px; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+.part-heading {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 2px solid var(--text);
+  font-size: 24px;
+}
+
+ul, ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+li { margin-bottom: 6px; }
+
+li > ul, li > ol {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: #334155;
+}
+
+.code-block {
+  position: relative;
+  margin: 0 0 20px;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  box-shadow: var(--shadow-sm);
+}
+
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.1);
+  color: var(--code-muted);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+  opacity: 0;
+}
+
+.code-block:hover .copy-btn { opacity: 1; }
+
+.copy-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.copy-btn.copied {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+  opacity: 1;
+}
+
+blockquote {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--border-strong);
+  background: var(--table-stripe);
+  color: var(--text-muted);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 15px;
+}
+
+.callout {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid;
+  font-size: 15px;
+}
+
+.callout-warning {
+  background: var(--warning-bg);
+  border-color: var(--warning-border);
+  color: var(--warning-text);
+}
+
+.callout-warning strong { color: var(--warning-text); }
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 0 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
+  background: var(--table-head);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+tbody tr:last-child td { border-bottom: none; }
+
+tbody tr:nth-child(even) td { background: var(--table-stripe); }
+
+table code { font-size: 0.9em; }
+
+.doc-footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.doc-footer a { color: var(--text-muted); }
+
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+pre::-webkit-scrollbar { height: 6px; }
+pre::-webkit-scrollbar-track { background: transparent; }
+pre::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+@media print {
+  .sidebar { display: none; }
+  .main { max-width: none; padding: 0; }
+  .doc-actions { display: none; }
+  .copy-btn { display: none; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <aside class="sidebar">
+    <nav class="toc"><div class="toc-title">目录</div><ul>
+<li class="toc-part"><a href="#jevk5-本地部署指南-macbook-pro-m5-24-gb-llamacpp--metal">JevK5 本地部署指南：MacBook Pro M5 (24 GB) · llama.cpp + Metal</a></li>
+<li><a href="#目录">目录</a></li>
+<li><a href="#快速开始">快速开始</a></li>
+<li class="toc-part"><a href="#第一部分-概念与选型">第一部分　概念与选型</a></li>
+<li><a href="#1-方案概览">1. 方案概览</a></li>
+<li class="toc-sub"><a href="#11-jevk5-是什么">1.1 JevK5 是什么</a></li>
+<li class="toc-sub"><a href="#12-整体架构">1.2 整体架构</a></li>
+<li class="toc-sub"><a href="#13-为什么用-llamacpp-metal-而不是-mlx-或-pytorch-mps">1.3 为什么用 llama.cpp (Metal)，而不是 MLX 或 PyTorch (MPS)</a></li>
+<li><a href="#2-模型与校准参数选型">2. 模型与校准参数选型</a></li>
+<li class="toc-sub"><a href="#21-推荐模型">2.1 推荐模型</a></li>
+<li class="toc-sub"><a href="#22-可选文件一览">2.2 可选文件一览</a></li>
+<li class="toc-sub"><a href="#23-校准温度">2.3 校准温度</a></li>
+<li class="toc-part"><a href="#第二部分-安装">第二部分　安装</a></li>
+<li><a href="#3-前置检查">3. 前置检查</a></li>
+<li><a href="#4-安装-llamacpp">4. 安装 llama.cpp</a></li>
+<li class="toc-sub"><a href="#41-推荐-homebrew">4.1 推荐：Homebrew</a></li>
+<li class="toc-sub"><a href="#42-备选-官方-llamaapp-安装器">4.2 备选：官方 llama.app 安装器</a></li>
+<li class="toc-sub"><a href="#43-版本说明">4.3 版本说明</a></li>
+<li><a href="#5-启动-llama-server">5. 启动 llama-server</a></li>
+<li class="toc-sub"><a href="#51-启动命令">5.1 启动命令</a></li>
+<li class="toc-sub"><a href="#52-参数说明">5.2 参数说明</a></li>
+<li><a href="#6-验证-server-与-metal">6. 验证 server 与 Metal</a></li>
+<li><a href="#7-安装-jevk5-客户端">7. 安装 JevK5 客户端</a></li>
+<li class="toc-sub"><a href="#71-创建独立环境">7.1 创建独立环境</a></li>
+<li class="toc-sub"><a href="#72-选择版本标签并安装">7.2 选择版本标签并安装</a></li>
+<li class="toc-sub"><a href="#73-确认类的签名">7.3 确认类的签名</a></li>
+<li class="toc-part"><a href="#第三部分-使用">第三部分　使用</a></li>
+<li><a href="#8-第一次决策调用">8. 第一次决策调用</a></li>
+<li><a href="#9-三种问题类型">9. 三种问题类型</a></li>
+<li class="toc-sub"><a href="#91-noul-是--否">9.1 <code>noul</code>（是 / 否）</a></li>
+<li class="toc-sub"><a href="#92-choice-单选">9.2 <code>choice</code>（单选）</a></li>
+<li class="toc-sub"><a href="#93-score-评分">9.3 <code>score</code>（评分）</a></li>
+<li class="toc-sub"><a href="#94-写好问题的几点建议">9.4 写好问题的几点建议</a></li>
+<li><a href="#10-读出机制与使用限制">10. 读出机制与使用限制</a></li>
+<li class="toc-sub"><a href="#101-与普通-llm-的区别">10.1 与普通 LLM 的区别</a></li>
+<li class="toc-sub"><a href="#102-使用限制">10.2 使用限制</a></li>
+<li class="toc-sub"><a href="#103-读出细节-用于排查">10.3 读出细节（用于排查）</a></li>
+<li><a href="#11-对外提供-v1systemone">11. 对外提供 /v1/systemone</a></li>
+<li class="toc-sub"><a href="#111-先判断是否需要">11.1 先判断是否需要</a></li>
+<li class="toc-sub"><a href="#112-llamacpp-原生端点--jevk5">11.2 llama.cpp 原生端点 ≠ JevK5</a></li>
+<li class="toc-sub"><a href="#113-官方-jevk5-serve-不适用于-mac">11.3 官方 <code>jevk5-serve</code> 不适用于 Mac</a></li>
+<li class="toc-sub"><a href="#114-自建薄-adapter">11.4 自建薄 adapter</a></li>
+<li class="toc-sub"><a href="#115-测试">11.5 测试</a></li>
+<li class="toc-sub"><a href="#116-备选-现成的第三方封装">11.6 备选：现成的第三方封装</a></li>
+<li class="toc-sub"><a href="#117-通用聊天接口">11.7 通用聊天接口</a></li>
+<li class="toc-part"><a href="#第四部分-运维">第四部分　运维</a></li>
+<li><a href="#12-验收清单">12. 验收清单</a></li>
+<li><a href="#13-性能与资源">13. 性能与资源</a></li>
+<li class="toc-sub"><a href="#131-延迟预期">13.1 延迟预期</a></li>
+<li class="toc-sub"><a href="#132-内存">13.2 内存</a></li>
+<li class="toc-sub"><a href="#133-自己测一次延迟">13.3 自己测一次延迟</a></li>
+<li class="toc-sub"><a href="#134-优化顺序">13.4 优化顺序</a></li>
+<li><a href="#14-网络与安全">14. 网络与安全</a></li>
+<li><a href="#15-开机自启-launchd">15. 开机自启（launchd）</a></li>
+<li class="toc-sub"><a href="#151-llama-server-服务">15.1 llama-server 服务</a></li>
+<li class="toc-sub"><a href="#152-adapter-服务-可选">15.2 adapter 服务（可选）</a></li>
+<li class="toc-sub"><a href="#153-加载与管理">15.3 加载与管理</a></li>
+<li><a href="#16-日常操作-升级与卸载">16. 日常操作、升级与卸载</a></li>
+<li class="toc-sub"><a href="#161-日常命令">16.1 日常命令</a></li>
+<li class="toc-sub"><a href="#162-升级">16.2 升级</a></li>
+<li class="toc-sub"><a href="#163-卸载">16.3 卸载</a></li>
+<li><a href="#17-故障排查">17. 故障排查</a></li>
+<li class="toc-part"><a href="#附录">附录</a></li>
+<li><a href="#附录-a-改用-9b-模型">附录 A　改用 9B 模型</a></li>
+<li><a href="#附录-b-零依赖参考客户端">附录 B　零依赖参考客户端</a></li>
+<li><a href="#附录-c-参考资料">附录 C　参考资料</a></li>
+<li><a href="#附录-d-核对状态与待确认项">附录 D　核对状态与待确认项</a></li>
+<li class="toc-sub"><a href="#d1-已从公开资料核实">D.1 已从公开资料核实</a></li>
+<li class="toc-sub"><a href="#d2-待你在本机确认">D.2 待你在本机确认</a></li>
+</ul></nav>
+  </aside>
+  <main class="main">
+    <header class="doc-header">
+      <h1>JevK5 本地部署指南</h1>
+      <p class="subtitle">MacBook Pro M5 (24 GB) · llama.cpp + Metal</p>
+      <table class="meta-table">
+        <tr><td>适用设备</td><td>MacBook Pro，Apple M5，24 GB 统一内存，macOS</td></tr>
+        <tr><td>推荐技术栈</td><td><code>jevk5-4b-v0.3-Q8_0.gguf</code> + llama.cpp (Metal) + <code>jevk5</code> 的 <code>JevK5GGUF</code> 客户端</td></tr>
+        <tr><td>目标</td><td>在 M5 GPU 上本地运行 JevK5，并保留其 typed-decision（yes/no、单选、评分）与校准概率输出</td></tr>
+        <tr><td>文档日期</td><td>2026-10-08</td></tr>
+      </table>
+      <div class="doc-actions">
+        <a href="./JevK5安装使用指南.md" class="btn btn-primary" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          下载源文件 .md
+        </a>
+        <button class="btn" onclick="window.print()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          打印 / 导出 PDF
+        </button>
+      </div>
+      <p style="margin-top: 16px; font-size: 14px; color: var(--text-muted);">
+        <strong style="color: var(--text);">标记说明：</strong>文中 ⚠️ 表示该点编写时无法从公开资料直接核实，请按"附录 D"在本机确认。
+      </p>
+    </header>
+
+    <article class="content">
+      <h1 id="jevk5-本地部署指南-macbook-pro-m5-24-gb-llamacpp--metal">JevK5 本地部署指南：MacBook Pro M5 (24 GB) · llama.cpp + Metal</h1>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">项目</th><th style="text-align:left">内容</th></tr></thead><tbody><tr><td style="text-align:left">适用设备</td><td style="text-align:left">MacBook Pro，Apple M5，24 GB 统一内存，macOS</td></tr><tr><td style="text-align:left">推荐技术栈</td><td style="text-align:left"><code>jevk5-4b-v0.3-Q8_0.gguf</code> + llama.cpp (Metal) + <code>jevk5</code> 的 <code>JevK5GGUF</code> 客户端</td></tr><tr><td style="text-align:left">目标</td><td style="text-align:left">在 M5 GPU 上本地运行 JevK5，并保留其 typed-decision（yes/no、单选、评分）与校准概率输出</td></tr><tr><td style="text-align:left">文档日期</td><td style="text-align:left">2026-10-08（依赖的 llama.cpp、jevk5 迭代很快，命令以当日核对结果为准）</td></tr><tr><td style="text-align:left">读者</td><td style="text-align:left">有基础命令行与 Python 经验的开发者</td></tr></tbody></table></div>
+<div class="callout callout-warning"><strong>标记说明：</strong> 文中 ⚠️ 表示该点我在编写时无法从公开资料中直接核实，请在本机按"附录 D"确认。</div>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#快速开始">快速开始</a></li>
+<li><strong>第一部分　概念与选型</strong>
+<ul></li>
+<li><a href="#1-方案概览">1. 方案概览</a></li>
+<li><a href="#2-模型与校准参数选型">2. 模型与校准参数选型</a></li>
+</ul>
+<li><strong>第二部分　安装</strong>
+<ul></li>
+<li><a href="#3-前置检查">3. 前置检查</a></li>
+<li><a href="#4-安装-llamacpp">4. 安装 llama.cpp</a></li>
+<li><a href="#5-启动-llama-server">5. 启动 llama-server</a></li>
+<li><a href="#6-验证-server-与-metal">6. 验证 server 与 Metal</a></li>
+<li><a href="#7-安装-jevk5-客户端">7. 安装 JevK5 客户端</a></li>
+</ul>
+<li><strong>第三部分　使用</strong>
+<ul></li>
+<li><a href="#8-第一次决策调用">8. 第一次决策调用</a></li>
+<li><a href="#9-三种问题类型">9. 三种问题类型</a></li>
+<li><a href="#10-读出机制与使用限制">10. 读出机制与使用限制</a></li>
+<li><a href="#11-对外提供-v1systemone">11. 对外提供 /v1/systemone</a></li>
+</ul>
+<li><strong>第四部分　运维</strong>
+<ul></li>
+<li><a href="#12-验收清单">12. 验收清单</a></li>
+<li><a href="#13-性能与资源">13. 性能与资源</a></li>
+<li><a href="#14-网络与安全">14. 网络与安全</a></li>
+<li><a href="#15-开机自启launchd">15. 开机自启（launchd）</a></li>
+<li><a href="#16-日常操作升级与卸载">16. 日常操作、升级与卸载</a></li>
+<li><a href="#17-故障排查">17. 故障排查</a></li>
+</ul>
+<li><strong>附录</strong>
+<ul></li>
+<li><a href="#附录-a改用-9b-模型">附录 A　改用 9B 模型</a></li>
+<li><a href="#附录-b零依赖参考客户端">附录 B　零依赖参考客户端</a></li>
+<li><a href="#附录-c参考资料">附录 C　参考资料</a></li>
+<li><a href="#附录-d核对状态与待确认项">附录 D　核对状态与待确认项</a></li>
+</ul>
+</ul>
+<hr>
+<h2 id="快速开始">快速开始</h2>
+<p>已有 Homebrew、Python ≥ 3.10、git 的话，三步即可跑通。每一步的含义见后文对应章节。</p>
+<p><strong>终端 1：启动推理服务</strong>（首次会下载约 4.5 GB）</p>
+<div class="code-block"><pre><code class="lang-bash">brew install llama.cpp jq
+
+llama-server \
+  --hf-repo alibiserikbay/JevK5-GGUF \
+  --hf-file jevk5-4b-v0.3-Q8_0.gguf \
+  -c 8192 -ngl 99 -np 1 \
+  --host 127.0.0.1 --port 8080</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p><strong>终端 2：安装客户端并调用</strong></p>
+<div class="code-block"><pre><code class="lang-bash">mkdir -p ~/jevk5-gguf &amp;&amp; cd ~/jevk5-gguf
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -U pip
+
+# 先查最新 v0.3.x 标签，再替换下面的 TAG（见 §7）
+git ls-remote --tags --refs https://github.com/allebee/jevk5 | tail -5
+TAG=v0.3.3
+pip install --no-deps &quot;jevk5 @ git+https://github.com/allebee/jevk5@${TAG}&quot;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<div class="code-block"><pre><code class="lang-bash">cat &gt; test.py &lt;&lt;&#x27;EOF&#x27;
+from jevk5 import JevK5GGUF
+
+model = JevK5GGUF(url=&quot;http://127.0.0.1:8080&quot;,
+                  temperature=1.22, knockout_temperature=0.93)
+
+print(model.decide(
+    &quot;Order #7120 shows delivered to No. 17; the customer lives at No. 71.&quot;,
+    {&quot;type&quot;: &quot;choice&quot;,
+     &quot;instructions&quot;: &quot;What happened to the parcel?&quot;,
+     &quot;criteria&quot;: [&quot;delivered&quot;, &quot;misdelivered&quot;, &quot;unknown&quot;]},
+))
+EOF
+python test.py</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>能打印出带各选项概率的结果，即部署成功。</p>
+<hr>
+<h1 id="第一部分-概念与选型" class="part-heading">第一部分　概念与选型</h1>
+<h2 id="1-方案概览">1. 方案概览</h2>
+<h3 id="11-jevk5-是什么">1.1 JevK5 是什么</h3>
+<p>JevK5 是社区开源（Apache-2.0）的"决策模型"，基于 Qwen3.5 微调，<strong>不是聊天模型</strong>。你给它一段材料（state）和一个带选项的问题，它只做一次前向计算，读取各选项字母的下一 token 对数概率，经温度校准后输出每个选项的概率，<strong>不生成任何文本</strong>。它与 TypeSafe 的 Jev 无隶属关系。</p>
+<h3 id="12-整体架构">1.2 整体架构</h3>
+<div class="code-block"><pre><code class="lang-text">应用 / Agent
+    │  （可选）POST /v1/systemone  :8090
+    ▼
+HTTP adapter（FastAPI，§11）
+    │
+    ▼
+JevK5GGUF（jevk5 包：拼 prompt、取字母 logprobs、温度校准）
+    │  /tokenize + /completion
+    ▼
+llama-server  :8080
+    │
+    ▼
+llama.cpp → Metal → M5 GPU</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>各层职责：</p>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">层</th><th style="text-align:left">职责</th></tr></thead><tbody><tr><td style="text-align:left">llama.cpp / llama-server</td><td style="text-align:left">加载 GGUF，在 Metal 上推理，并返回字母 token 的 logprobs</td></tr><tr><td style="text-align:left"><code>JevK5GGUF</code></td><td style="text-align:left">JevK5 专有逻辑：prompt 格式、读出、校准温度、超过 16 个选项时的淘汰赛</td></tr><tr><td style="text-align:left">HTTP adapter</td><td style="text-align:left">仅在需要对外提供 HTTP 接口时才加；保持很薄</td></tr></tbody></table></div>
+<h3 id="13-为什么用-llamacpp-metal-而不是-mlx-或-pytorch-mps">1.3 为什么用 llama.cpp (Metal)，而不是 MLX 或 PyTorch (MPS)</h3>
+<ul>
+<li><strong>官方只提供 CUDA 路径与 GGUF 路径。</strong> 官方 <code>jevk5</code> 的 transformers 运行时面向 CUDA（性能数据也来自 H100 + CUDA graphs），而作者发布了 GGUF 供 llama.cpp 在 Apple GPU、CPU 等上运行。Mac 上走 GGUF 是有官方验证的路径。</li>
+<li><strong>没有 MLX 版本。</strong> 若用 MLX，需要自行转换权重并重写读出逻辑，且无法保证与官方结果一致。</li>
+<li><strong>不需要 MPS。</strong> MPS 是 PyTorch 的 Apple GPU 后端；本方案不安装 PyTorch，也不依赖 CUDA。llama.cpp 直接使用 Metal。</li>
+</ul>
+<blockquote>从硬件角度看，MLX 与 llama.cpp 都能用到 M5 GPU，差别在上层软件栈与模型格式，而不在 GPU 本身。</blockquote>
+<hr>
+<h2 id="2-模型与校准参数选型">2. 模型与校准参数选型</h2>
+<h3 id="21-推荐模型">2.1 推荐模型</h3>
+<p>24 GB 统一内存下，<strong>默认选 <code>jevk5-4b-v0.3-Q8_0.gguf</code></strong>（文件约 4.48 GB）。原因：</p>
+<ol>
+<li>作者本人对 4B 的建议是默认首选；9B 在作者的内部验证集上略好，但在 JevBench 公开题的困难档上反而更差，校准也更差，且更大更慢。</li>
+<li>Q8_0 对 bf16 的答案一致性很高，量化损失可忽略。</li>
+<li>占用小，留足内存给系统与其他应用。</li>
+</ol>
+<h3 id="22-可选文件一览">2.2 可选文件一览</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">文件</th><th style="text-align:right">约大小</th><th style="text-align:right">与 bf16 答案一致（231 道公开题）</th><th style="text-align:left">说明</th></tr></thead><tbody><tr><td style="text-align:left"><code>jevk5-4b-v0.3-Q8_0.gguf</code></td><td style="text-align:right">4.48 GB</td><td style="text-align:right">⚠️ 约 229 / 231</td><td style="text-align:left"><strong>推荐</strong>。文件大小已核实</td></tr><tr><td style="text-align:left"><code>jevk5-4b-v0.3-Q5_K_M.gguf</code></td><td style="text-align:right">⚠️ 约 3 GB</td><td style="text-align:right">⚠️ 未核实</td><td style="text-align:left">文件存在，指标待查</td></tr><tr><td style="text-align:left"><code>jevk5-4b-v0.3-Q4_K_M.gguf</code></td><td style="text-align:right">⚠️ 约 2.7 GB</td><td style="text-align:right">⚠️ 未核实（v0.2 版为 219 / 231）</td><td style="text-align:left">仅适合 8 GB 以下设备，24 GB 不必使用</td></tr><tr><td style="text-align:left"><code>jevk5-9b-v0.3-Q8_0.gguf</code></td><td style="text-align:right">⚠️ 约 9.5 GB</td><td style="text-align:right">229 / 231</td><td style="text-align:left">见<a href="#附录-a改用-9b-模型">附录 A</a></td></tr></tbody></table></div>
+<p>24 GB 设备没有压缩模型的必要，<strong>直接用 Q8_0</strong>。作者明确指出，更低的量化（如 9B 的 Q4_K_M、2B 的 Q4_K_M）会改变明显更多的答案。</p>
+<blockquote><strong>不要使用 HF 页面上的 <code>...GGUF:Q8_0</code> 简写。</strong> 该仓库里有多个 Q8_0 文件（如 2B v0.2 与 4B v0.3），简写可能匹配到错误的文件。本文一律用 <code>--hf-file</code> 显式指定。</blockquote>
+<h3 id="23-校准温度">2.3 校准温度</h3>
+<p>校准温度属于 <strong>JevK5 读出参数</strong>，与文本生成里的 sampling temperature 无关，且<strong>不存储在 GGUF 内</strong>，必须由客户端传入，并与模型版本对应：</p>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">模型文件</th><th style="text-align:right"><code>temperature</code>（≤16 选项）</th><th style="text-align:right"><code>knockout_temperature</code>（>16 选项）</th></tr></thead><tbody><tr><td style="text-align:left"><code>jevk5-4b-v0.3-Q8_0</code> / <code>Q5_K_M</code></td><td style="text-align:right">1.22</td><td style="text-align:right">0.93</td></tr><tr><td style="text-align:left"><code>jevk5-9b-v0.3-Q8_0</code></td><td style="text-align:right">1.049</td><td style="text-align:right">1.2</td></tr><tr><td style="text-align:left"><code>jevk5-2b-v0.2-Q8_0</code></td><td style="text-align:right">1.42</td><td style="text-align:right">0.77</td></tr></tbody></table></div>
+<p>用错温度不会报错，只会让概率"偏自信"或"偏保守"，需要特别留意。</p>
+<hr>
+<h1 id="第二部分-安装" class="part-heading">第二部分　安装</h1>
+<h2 id="3-前置检查">3. 前置检查</h2>
+<div class="code-block"><pre><code class="lang-bash">uname -m                              # 预期：arm64
+sw_vers -productVersion               # 记录 macOS 版本
+system_profiler SPHardwareDataType    # 确认 Apple M5、24 GB
+python3 --version                     # ⚠️ 建议 ≥ 3.10
+git --version                         # pip 从 GitHub 安装需要
+brew --version                        # 使用 Homebrew 安装 llama.cpp 时需要
+df -h ~                               # 预留 ≥ 10 GB 空间</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>补充说明：</p>
+<ul>
+<li>若 <code>python3</code> 低于 3.10（macOS 自带或 Xcode CLT 附带的版本可能较旧），先 <code>brew install python@3.12</code>，后文用 <code>python3.12</code> 代替 <code>python3</code>。⚠️ jevk5 的最低 Python 版本我未能核实，这是保守建议。</li>
+<li>若 <code>git</code> 提示需安装命令行工具，执行 <code>xcode-select --install</code>。</li>
+<li>首次部署需要访问 GitHub 与 Hugging Face。</li>
+</ul>
+<hr>
+<h2 id="4-安装-llamacpp">4. 安装 llama.cpp</h2>
+<h3 id="41-推荐-homebrew">4.1 推荐：Homebrew</h3>
+<div class="code-block"><pre><code class="lang-bash">brew install llama.cpp jq
+llama-server --version</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p><code>jq</code> 用于后文格式化 JSON 输出。</p>
+<h3 id="42-备选-官方-llamaapp-安装器">4.2 备选：官方 llama.app 安装器</h3>
+<p>模型卡给出的安装方式：</p>
+<div class="code-block"><pre><code class="lang-bash">curl -LsSf https://llama.app/install.sh | sh
+llama --version</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>该安装器提供统一的 <code>llama</code> 命令，启动服务的写法是 <code>llama serve -hf ...</code>（注意是 <code>serve</code>，不是 <code>server</code>）。⚠️ 它是否同时提供独立的 <code>llama-server</code> 命令、以及是否支持 <code>-ngl</code>、<code>-np</code> 等所有参数，我未能核实。<strong>为保证本文命令一致，建议使用 4.1。</strong>两种方式只保留一种，避免出现两套 llama.cpp。</p>
+<p>若命令找不到，检查 PATH：</p>
+<div class="code-block"><pre><code class="lang-bash">echo &#x27;export PATH=&quot;$HOME/.llama-app:$PATH&quot;&#x27; &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="43-版本说明">4.3 版本说明</h3>
+<p>llama.cpp 迭代很快，请以 <code>llama-server --version</code> 输出为准并记录下来，便于排查。截至本文日期，llama.cpp 已新增原生 <code>/v1/systemone</code> 端点，但它只支持特定的决策模型家族，<strong>JevK5 不在其列</strong>，详见 <a href="#11-对外提供-v1systemone">§11</a>。</p>
+<hr>
+<h2 id="5-启动-llama-server">5. 启动 llama-server</h2>
+<h3 id="51-启动命令">5.1 启动命令</h3>
+<div class="code-block"><pre><code class="lang-bash">llama-server \
+  --hf-repo alibiserikbay/JevK5-GGUF \
+  --hf-file jevk5-4b-v0.3-Q8_0.gguf \
+  -c 8192 \
+  -ngl 99 \
+  -np 1 \
+  --host 127.0.0.1 \
+  --port 8080</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>首次启动会下载模型并缓存，之后直接读取缓存。保持这个终端不关闭（后台常驻见 <a href="#15-开机自启launchd">§15</a>）。</p>
+<h3 id="52-参数说明">5.2 参数说明</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">参数</th><th style="text-align:left">含义</th></tr></thead><tbody><tr><td style="text-align:left"><code>--hf-repo</code> / <code>--hf-file</code></td><td style="text-align:left">指定 Hugging Face 仓库与具体 GGUF 文件</td></tr><tr><td style="text-align:left"><code>-c 8192</code></td><td style="text-align:left">上下文长度。JevK5 要把整份材料放进一次前向计算，材料过长会被截断或报错</td></tr><tr><td style="text-align:left"><code>-ngl 99</code></td><td style="text-align:left">最多把 99 层放到 GPU。这是<strong>层数上限</strong>，不是"GPU 使用率 99%"</td></tr><tr><td style="text-align:left"><code>-np 1</code></td><td style="text-align:left">并行槽位数设为 1。⚠️ 这是我加的保守设置：<code>-c</code> 是总上下文，若 server 默认开多个槽位，单次请求能用的上下文可能变小；单用户场景下 1 个槽位最稳妥</td></tr><tr><td style="text-align:left"><code>--host 127.0.0.1</code></td><td style="text-align:left">仅本机可访问</td></tr><tr><td style="text-align:left"><code>--port 8080</code></td><td style="text-align:left">HTTP 端口</td></tr></tbody></table></div>
+<blockquote>作者只在 <code>llama-server</code> 上测过。Ollama、LM Studio 等基于 llama.cpp 的应用可以加载这些文件，但 JevK5 的校准读出需要"对已分词的 prompt 返回答案字母 logprobs"的接口，这些应用是否提供，作者未验证。<strong>本文不推荐用它们替代 llama-server。</strong></blockquote>
+<hr>
+<h2 id="6-验证-server-与-metal">6. 验证 server 与 Metal</h2>
+<p>在第二个终端执行。</p>
+<div class="code-block"><pre><code class="lang-bash"># 健康检查（模型加载完成前可能返回 loading 状态）
+curl http://127.0.0.1:8080/health
+
+# 模型信息
+curl -s http://127.0.0.1:8080/v1/models | jq</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>浏览器打开 <code>http://127.0.0.1:8080</code> 可看到内置 Web UI，用于确认 server 正常。</p>
+<p><strong>确认 Metal 生效：</strong></p>
+<div class="code-block"><pre><code class="lang-bash">llama-server --list-devices</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>同时查看启动日志，应能看到 Metal 后端被初始化、识别到 Apple GPU，以及模型层被卸载到 GPU 的信息。如果日志显示全部在 CPU 上运行，参见 <a href="#17-故障排查">§17</a>。</p>
+<hr>
+<h2 id="7-安装-jevk5-客户端">7. 安装 JevK5 客户端</h2>
+<h3 id="71-创建独立环境">7.1 创建独立环境</h3>
+<div class="code-block"><pre><code class="lang-bash">mkdir -p ~/jevk5-gguf &amp;&amp; cd ~/jevk5-gguf
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -U pip</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="72-选择版本标签并安装">7.2 选择版本标签并安装</h3>
+<p>先查看仓库有哪些标签，选最新的 <code>v0.3.x</code>：</p>
+<div class="code-block"><pre><code class="lang-bash">git ls-remote --tags --refs https://github.com/allebee/jevk5 | tail -5</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>然后安装（把 <code>TAG</code> 换成上面查到的值）：</p>
+<div class="code-block"><pre><code class="lang-bash">TAG=v0.3.3
+pip install --no-deps &quot;jevk5 @ git+https://github.com/allebee/jevk5@${TAG}&quot;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>说明：</p>
+<ul>
+<li>用 <code>--no-deps</code> 是为了避免拉取 PyTorch、CUDA 等 Mac 上用不到的重型依赖；GGUF 路径只需要 <code>JevK5GGUF</code> 与向 llama-server 发 HTTP 请求。</li>
+<li>⚠️ 若导入时报 <code>ModuleNotFoundError</code>，按报错补装对应的轻量包即可（不要装 torch）。</li>
+<li>⚠️ 旧文档写的是 <code>@v0.3.0</code>。官方 9B 模型卡写明运行时需要"0.3.0 或更高"，但我无法确认 <code>JevK5GGUF</code> 是否从 0.3.0 就已包含，所以建议使用最新 v0.3.x。</li>
+<li>不要安装带 <code>[fast]</code> 的 extra：它面向 CUDA 的 flash-linear-attention，对本方案没有用。</li>
+</ul>
+<h3 id="73-确认类的签名">7.3 确认类的签名</h3>
+<p>构造参数名以你安装的版本为准：</p>
+<div class="code-block"><pre><code class="lang-bash">python -c &quot;from jevk5 import JevK5GGUF; help(JevK5GGUF)&quot;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>后文示例使用 <code>url=</code>、<code>temperature=</code>、<code>knockout_temperature=</code>。⚠️ 其中 <code>temperature</code>、<code>knockout_temperature</code> 已见于第三方项目的用法，<code>url</code> 这个参数名我未能核实，若不同请按 <code>help()</code> 的输出调整。</p>
+<hr>
+<h1 id="第三部分-使用" class="part-heading">第三部分　使用</h1>
+<h2 id="8-第一次决策调用">8. 第一次决策调用</h2>
+<p>确保终端 1 的 llama-server 在运行，然后：</p>
+<div class="code-block"><pre><code class="lang-bash">cd ~/jevk5-gguf
+source .venv/bin/activate</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>创建 <code>test.py</code>：</p>
+<div class="code-block"><pre><code class="lang-python">from jevk5 import JevK5GGUF
+
+model = JevK5GGUF(
+    url=&quot;http://127.0.0.1:8080&quot;,
+    temperature=1.22,
+    knockout_temperature=0.93,
+)
+
+result = model.decide(
+    &quot;Order #7120 shows delivered to No. 17; the customer lives at No. 71.&quot;,
+    {
+        &quot;type&quot;: &quot;choice&quot;,
+        &quot;instructions&quot;: &quot;What happened to the parcel?&quot;,
+        &quot;criteria&quot;: [&quot;delivered&quot;, &quot;misdelivered&quot;, &quot;unknown&quot;],
+    },
+)
+print(result)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>运行 <code>python test.py</code>。预期输出里包含最终选项、各选项概率与 confidence。这一步同时验证了完整链路：<code>JevK5GGUF → llama-server → Metal → M5 GPU</code>。</p>
+<hr>
+<h2 id="9-三种问题类型">9. 三种问题类型</h2>
+<p><code>decide(state, question)</code> 的 <code>question</code> 是一个字典，<code>type</code> 决定问题类型。</p>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">类型</th><th style="text-align:left">用途</th><th style="text-align:left"><code>criteria</code> 写法</th><th style="text-align:left">返回要点</th></tr></thead><tbody><tr><td style="text-align:left"><code>noul</code></td><td style="text-align:left">是 / 否</td><td style="text-align:left">可选，<code>{&quot;true&quot;: &quot;...&quot;, &quot;false&quot;: &quot;...&quot;}</code></td><td style="text-align:left"><code>noul</code>：为"真"的概率</td></tr><tr><td style="text-align:left"><code>choice</code></td><td style="text-align:left">单选</td><td style="text-align:left">字典 <code>{键: 描述}</code> 或键的列表</td><td style="text-align:left">最终选项、各选项概率、confidence</td></tr><tr><td style="text-align:left"><code>score</code></td><td style="text-align:left">等级评分</td><td style="text-align:left">列表，<strong>从低到高</strong>排列</td><td style="text-align:left">评分、各等级概率、confidence</td></tr></tbody></table></div>
+<h3 id="91-noul-是--否">9.1 <code>noul</code>（是 / 否）</h3>
+<div class="code-block"><pre><code class="lang-python">model.decide(
+    &quot;The customer bought the item 12 days ago but has no receipt.&quot;,
+    {
+        &quot;type&quot;: &quot;noul&quot;,
+        &quot;instructions&quot;: (&quot;Is the customer eligible for a refund under a policy &quot;
+                         &quot;requiring a receipt and a purchase within 30 days?&quot;),
+    },
+)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="92-choice-单选">9.2 <code>choice</code>（单选）</h3>
+<div class="code-block"><pre><code class="lang-python">model.decide(
+    &quot;The customer was charged twice and wants the duplicate charge refunded.&quot;,
+    {
+        &quot;type&quot;: &quot;choice&quot;,
+        &quot;instructions&quot;: &quot;Which team should handle this request?&quot;,
+        &quot;criteria&quot;: {
+            &quot;billing&quot;: &quot;Payments and refunds&quot;,
+            &quot;shipping&quot;: &quot;Delivery and parcel problems&quot;,
+            &quot;technical&quot;: &quot;Software bugs and outages&quot;,
+        },
+    },
+)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="93-score-评分">9.3 <code>score</code>（评分）</h3>
+<div class="code-block"><pre><code class="lang-python">model.decide(
+    &quot;The production server is down and the company is losing money.&quot;,
+    {
+        &quot;type&quot;: &quot;score&quot;,
+        &quot;instructions&quot;: &quot;How urgent is this incident?&quot;,
+        &quot;criteria&quot;: [&quot;can wait&quot;, &quot;this week&quot;, &quot;today&quot;, &quot;right now&quot;],
+    },
+)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="94-写好问题的几点建议">9.4 写好问题的几点建议</h3>
+<ul>
+<li>材料与问题用<strong>英文</strong>写：JevK5 目前只面向英文。</li>
+<li>给选项写清楚区分度高的描述，比只给一个名称更稳。</li>
+<li>不要把多个判断塞进一个问题；拆成多个问题分别提问。</li>
+<li>这类模型对日期与数字推理较弱（作者在已知弱点中明确列出），涉及精确计算的判断不要只依赖它。</li>
+</ul>
+<hr>
+<h2 id="10-读出机制与使用限制">10. 读出机制与使用限制</h2>
+<h3 id="101-与普通-llm-的区别">10.1 与普通 LLM 的区别</h3>
+<div class="code-block"><pre><code class="lang-text">普通 LLM：  prompt → 逐个生成 token → 文本回答
+
+JevK5：     state + 问题 + 选项字母
+              → 一次前向计算
+              → 取答案字母的下一 token logprobs
+              → softmax(logprob / 温度)
+              → 各选项概率</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>因此<strong>不要用 <code>/v1/chat/completions</code> 的普通聊天调用来代替 JevK5 的决策读出</strong>：那样得到的是生成文本，没有经过校准的概率。</p>
+<h3 id="102-使用限制">10.2 使用限制</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">项目</th><th style="text-align:left">说明</th></tr></thead><tbody><tr><td style="text-align:left">语言</td><td style="text-align:left">仅英文</td></tr><tr><td style="text-align:left">选项数</td><td style="text-align:left">≤ 16 个选项一次读出；更多时自动分组做淘汰赛（使用 <code>knockout_temperature</code>），最多 255 个，准确率与延迟都会受影响</td></tr><tr><td style="text-align:left">输入长度</td><td style="text-align:left">受 <code>-c</code> 限制。官方运行时对超过 16384 token 的输入会直接拒绝而不是截断；本方案的 <code>-c 8192</code> 更保守</td></tr><tr><td style="text-align:left">弱项</td><td style="text-align:left">日期与数字推理、长篇政策类材料、概率估计类问题（见作者模型卡"已知弱点"）</td></tr><tr><td style="text-align:left">真实业务效果</td><td style="text-align:left">作者说明未在真实工作流中对比过 Jev；上线前请用自己的标注数据评估</td></tr></tbody></table></div>
+<h3 id="103-读出细节-用于排查">10.3 读出细节（用于排查）</h3>
+<p><code>JevK5GGUF</code> 向 llama-server 请求 <code>n_probs=40</code> 的 top logprobs。如果某个选项字母没有出现在 top 40 里，会被赋予一个很低的兜底值（比已出现的最小值再低 2.0）。因此选项很多、或模型"完全不倾向"某个选项时，该选项概率会趋近于 0，这是正常现象。</p>
+<hr>
+<h2 id="11-对外提供-v1systemone">11. 对外提供 /v1/systemone</h2>
+<h3 id="111-先判断是否需要">11.1 先判断是否需要</h3>
+<ul>
+<li><strong>只在本机 Python 里用：</strong> 直接用 <code>JevK5GGUF.decide()</code>，不需要这一节。</li>
+<li><strong>其他程序要通过 HTTP 调用，或要兼容 TypeSafe 风格客户端：</strong> 需要一个 <code>/v1/systemone</code> 端点。</li>
+</ul>
+<h3 id="112-llamacpp-原生端点--jevk5">11.2 llama.cpp 原生端点 ≠ JevK5</h3>
+<p>llama.cpp 在近期版本中新增了原生的 <code>POST /v1/systemone</code>，但它<strong>只支持特定的决策模型家族</strong>，据版本说明为 laya、julia-1、lev、openjev、kev、nimble 等，<strong>未包含 JevK5</strong>；对不支持的模型会返回 501。⚠️ 此列表会随版本变化，请以你所装版本的说明为准。</p>
+<p>因此，要让 JevK5 获得完整、校准过的 typed-decision 行为，仍然应走：</p>
+<div class="code-block"><pre><code class="lang-text">llama-server → answer-letter logprobs → JevK5GGUF → JevK5 校准读出</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="113-官方-jevk5-serve-不适用于-mac">11.3 官方 <code>jevk5-serve</code> 不适用于 Mac</h3>
+<p>JevK5 官方文档里 <code>jevk5-serve --model ...</code> 可以起一个 <code>/v1/systemone</code> 服务，但它基于 transformers + CUDA 运行时，<strong>不是本方案的 GGUF 路径</strong>，在这台 Mac 上不要用。</p>
+<h3 id="114-自建薄-adapter">11.4 自建薄 adapter</h3>
+<p>adapter 只做 HTTP 协议转换，不重写任何概率逻辑。</p>
+<p><strong>安装依赖</strong></p>
+<div class="code-block"><pre><code class="lang-bash">cd ~/jevk5-gguf
+source .venv/bin/activate
+pip install -U fastapi uvicorn</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p><strong>创建 <code>server.py</code></strong></p>
+<div class="code-block"><pre><code class="lang-python">import os
+import urllib.request
+from typing import Any
+
+from fastapi import FastAPI, Header, HTTPException
+from pydantic import BaseModel
+
+from jevk5 import JevK5GGUF
+
+LLAMA_URL = os.getenv(&quot;LLAMA_URL&quot;, &quot;http://127.0.0.1:8080&quot;)
+MODEL_NAME = os.getenv(&quot;MODEL_NAME&quot;, &quot;jevk5-4b-v0.3-Q8_0&quot;)
+TEMPERATURE = float(os.getenv(&quot;JEVK5_TEMPERATURE&quot;, &quot;1.22&quot;))
+KNOCKOUT_TEMPERATURE = float(os.getenv(&quot;JEVK5_KNOCKOUT_TEMPERATURE&quot;, &quot;0.93&quot;))
+API_KEY = os.getenv(&quot;API_KEY&quot;)  # 可选；设置后要求 Bearer 认证
+
+app = FastAPI(title=&quot;Local JevK5 Decision API&quot;)
+
+model = JevK5GGUF(
+    url=LLAMA_URL,
+    temperature=TEMPERATURE,
+    knockout_temperature=KNOCKOUT_TEMPERATURE,
+)
+
+
+class SystemOneRequest(BaseModel):
+    state: Any
+    questions: dict
+
+
+def check_auth(authorization: str | None) -&gt; None:
+    if API_KEY and authorization != f&quot;Bearer {API_KEY}&quot;:
+        raise HTTPException(status_code=401, detail=&quot;unauthorized&quot;)
+
+
+@app.get(&quot;/health&quot;)
+def health():
+    try:
+        urllib.request.urlopen(f&quot;{LLAMA_URL}/health&quot;, timeout=2)
+        backend_ok = True
+    except Exception:
+        backend_ok = False
+    return {&quot;status&quot;: &quot;ok&quot; if backend_ok else &quot;backend_unavailable&quot;,
+            &quot;backend_llama_connected&quot;: backend_ok,
+            &quot;model&quot;: MODEL_NAME}
+
+
+@app.post(&quot;/v1/systemone&quot;)
+def systemone(req: SystemOneRequest, authorization: str | None = Header(default=None)):
+    check_auth(authorization)
+    try:
+        answers = {qid: model.decide(req.state, q) for qid, q in req.questions.items()}
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return {&quot;model&quot;: MODEL_NAME, &quot;answers&quot;: answers}</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<blockquote>这是一个最小实现。它返回的是 <code>JevK5GGUF.decide()</code> 的原始结构，<strong>不保证与 TypeSafe 官方响应逐字段一致</strong>（例如 <code>usage</code> 字段）。如果必须严格对齐，参见 11.6。</blockquote>
+<p><strong>启动</strong></p>
+<div class="code-block"><pre><code class="lang-bash">uvicorn server:app --host 127.0.0.1 --port 8090</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="115-测试">11.5 测试</h3>
+<div class="code-block"><pre><code class="lang-bash">curl http://127.0.0.1:8090/v1/systemone \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;state&quot;: &quot;The customer was charged twice for an order and wants the duplicate charge refunded.&quot;,
+    &quot;questions&quot;: {
+      &quot;team&quot;: {
+        &quot;type&quot;: &quot;choice&quot;,
+        &quot;instructions&quot;: &quot;Which team should handle this?&quot;,
+        &quot;criteria&quot;: {
+          &quot;billing&quot;: &quot;Payments and refunds&quot;,
+          &quot;shipping&quot;: &quot;Delivery problems&quot;,
+          &quot;technical&quot;: &quot;Software bugs&quot;
+        }
+      },
+      &quot;refund&quot;: {
+        &quot;type&quot;: &quot;noul&quot;,
+        &quot;instructions&quot;: &quot;Does the customer request a refund?&quot;
+      }
+    }
+  }&#x27; | jq</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="116-备选-现成的第三方封装">11.6 备选：现成的第三方封装</h3>
+<p>GitHub 上有第三方项目 <code>Code2qing/jevk5-typesafe-server</code>，同样基于 <code>JevK5GGUF</code> + llama-server，声称与 TypeSafe System One API 严格对齐，带 Bearer 鉴权、<code>/health</code>、<code>/v1/models</code>，以及 Docker Compose 部署。我没有审计过其代码与行为，使用前请自行评估；它的温度配置表与本文 §2.3 一致。</p>
+<h3 id="117-通用聊天接口">11.7 通用聊天接口</h3>
+<p>llama-server 还提供 OpenAI 风格的通用接口（如 <code>/v1/chat/completions</code>），较新版本可能还提供其他兼容接口，具体以 <code>llama-server --help</code> 与官方文档为准。这些接口适合普通文本生成，<strong>不能代替 JevK5 的决策读出</strong>。</p>
+<hr>
+<h1 id="第四部分-运维" class="part-heading">第四部分　运维</h1>
+<h2 id="12-验收清单">12. 验收清单</h2>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">检查项</th><th style="text-align:left">命令</th><th style="text-align:left">通过标准</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">架构</td><td style="text-align:left"><code>uname -m</code></td><td style="text-align:left"><code>arm64</code></td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">llama.cpp</td><td style="text-align:left"><code>llama-server --version</code></td><td style="text-align:left">正常输出版本</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">GPU</td><td style="text-align:left"><code>llama-server --list-devices</code> 与启动日志</td><td style="text-align:left">出现 Metal / Apple GPU，层已卸载到 GPU</td></tr><tr><td style="text-align:left">4</td><td style="text-align:left">Server</td><td style="text-align:left"><code>curl http://127.0.0.1:8080/health</code></td><td style="text-align:left">返回健康状态</td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">客户端导入</td><td style="text-align:left"><code>python -c &quot;from jevk5 import JevK5GGUF&quot;</code></td><td style="text-align:left">无报错</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left">决策调用</td><td style="text-align:left"><code>python test.py</code></td><td style="text-align:left">返回含概率的结构化结果</td></tr><tr><td style="text-align:left">7</td><td style="text-align:left">三类问题</td><td style="text-align:left">分别跑 <code>noul</code> / <code>choice</code> / <code>score</code></td><td style="text-align:left">至少各成功一次</td></tr><tr><td style="text-align:left">8</td><td style="text-align:left">概率合理</td><td style="text-align:left">各选项概率之和</td><td style="text-align:left">约等于 1</td></tr><tr><td style="text-align:left">9</td><td style="text-align:left">Adapter（如启用）</td><td style="text-align:left"><code>curl http://127.0.0.1:8090/health</code></td><td style="text-align:left"><code>status</code> 为 <code>ok</code></td></tr></tbody></table></div>
+<hr>
+<h2 id="13-性能与资源">13. 性能与资源</h2>
+<h3 id="131-延迟预期">13.1 延迟预期</h3>
+<p>作者公布的 4B Q8_0 实测：M1 Pro (Metal) 上约 0.6 秒/次（短文档，约 170 token），文档越长越慢。M5 的实测数据没有公开，<strong>不要拿 H100 上的 13 ms 作预期</strong>——那是 CUDA graphs 路径，本方案用不上。</p>
+<h3 id="132-内存">13.2 内存</h3>
+<p>4.48 GB 的模型文件对 24 GB 很宽裕。实际占用还包括 macOS、Metal 缓冲区、KV cache、Python 进程与其他应用。先用 <code>-c 8192</code> 建立基线，再调整。</p>
+<h3 id="133-自己测一次延迟">13.3 自己测一次延迟</h3>
+<div class="code-block"><pre><code class="lang-python">import time
+from jevk5 import JevK5GGUF
+
+model = JevK5GGUF(url=&quot;http://127.0.0.1:8080&quot;, temperature=1.22, knockout_temperature=0.93)
+q = {&quot;type&quot;: &quot;noul&quot;, &quot;instructions&quot;: &quot;Is this a refund request?&quot;}
+text = &quot;I was billed twice for order #4411. Please refund the duplicate charge today.&quot;
+
+model.decide(text, q)  # 预热，首次调用更慢
+ts = []
+for _ in range(20):
+    t = time.perf_counter()
+    model.decide(text, q)
+    ts.append(time.perf_counter() - t)
+ts.sort()
+print(f&quot;p50={ts[10]*1000:.0f} ms  p95={ts[18]*1000:.0f} ms&quot;)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>用你真实业务的材料长度来测，结果才有意义。</p>
+<h3 id="134-优化顺序">13.4 优化顺序</h3>
+<ol>
+<li>确认 Metal 与 GPU 卸载正常；</li>
+<li>缩短输入材料；</li>
+<li>一个材料有多个问题时，合并成一次 <code>/v1/systemone</code> 请求（同一份 state 共享）；</li>
+<li>最后才考虑上下文大小与并发。</li>
+</ol>
+<hr>
+<h2 id="14-网络与安全">14. 网络与安全</h2>
+<ul>
+<li><strong>默认只监听本机：</strong> 保持 <code>--host 127.0.0.1</code>（llama-server 与 adapter 都一样）。</li>
+<li><strong>需要局域网访问时：</strong> 才改为 <code>0.0.0.0</code>，并配合防火墙、API 密钥（adapter 已支持 <code>API_KEY</code>）、TLS 反向代理、请求大小与并发限制。</li>
+<li><strong>不要把未认证的服务暴露到公网。</strong></li>
+<li>JevK5 会读入外部文本（工单、邮件等），材料里可能夹带"忽略前面指令"之类的注入内容。它只输出选项概率，攻击面比聊天模型小，但<strong>不要把概率直接用于高风险自动决策</strong>，需要有阈值与人工兜底。</li>
+</ul>
+<hr>
+<h2 id="15-开机自启-launchd">15. 开机自启（launchd）</h2>
+<p>建议先<strong>手动运行稳定</strong>，再配置自启。拆成两个服务：llama-server 与 adapter。下面的路径需替换为你的实际用户名；plist 中不能使用 <code>~</code>。</p>
+<h3 id="151-llama-server-服务">15.1 llama-server 服务</h3>
+<p>文件：<code>~/Library/LaunchAgents/local.jevk5.llama.plist</code></p>
+<div class="code-block"><pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;local.jevk5.llama&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;/opt/homebrew/bin/llama-server&lt;/string&gt;
+    &lt;string&gt;--hf-repo&lt;/string&gt;&lt;string&gt;alibiserikbay/JevK5-GGUF&lt;/string&gt;
+    &lt;string&gt;--hf-file&lt;/string&gt;&lt;string&gt;jevk5-4b-v0.3-Q8_0.gguf&lt;/string&gt;
+    &lt;string&gt;-c&lt;/string&gt;&lt;string&gt;8192&lt;/string&gt;
+    &lt;string&gt;-ngl&lt;/string&gt;&lt;string&gt;99&lt;/string&gt;
+    &lt;string&gt;-np&lt;/string&gt;&lt;string&gt;1&lt;/string&gt;
+    &lt;string&gt;--host&lt;/string&gt;&lt;string&gt;127.0.0.1&lt;/string&gt;
+    &lt;string&gt;--port&lt;/string&gt;&lt;string&gt;8080&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;KeepAlive&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;StandardOutPath&lt;/key&gt;&lt;string&gt;/Users/你的用户名/jevk5-gguf/llama.log&lt;/string&gt;
+  &lt;key&gt;StandardErrorPath&lt;/key&gt;&lt;string&gt;/Users/你的用户名/jevk5-gguf/llama.err.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="152-adapter-服务-可选">15.2 adapter 服务（可选）</h3>
+<p>文件：<code>~/Library/LaunchAgents/local.jevk5.adapter.plist</code></p>
+<div class="code-block"><pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;local.jevk5.adapter&lt;/string&gt;
+  &lt;key&gt;WorkingDirectory&lt;/key&gt;&lt;string&gt;/Users/你的用户名/jevk5-gguf&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;/Users/你的用户名/jevk5-gguf/.venv/bin/uvicorn&lt;/string&gt;
+    &lt;string&gt;server:app&lt;/string&gt;
+    &lt;string&gt;--host&lt;/string&gt;&lt;string&gt;127.0.0.1&lt;/string&gt;
+    &lt;string&gt;--port&lt;/string&gt;&lt;string&gt;8090&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;KeepAlive&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;StandardOutPath&lt;/key&gt;&lt;string&gt;/Users/你的用户名/jevk5-gguf/adapter.log&lt;/string&gt;
+  &lt;key&gt;StandardErrorPath&lt;/key&gt;&lt;string&gt;/Users/你的用户名/jevk5-gguf/adapter.err.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<h3 id="153-加载与管理">15.3 加载与管理</h3>
+<div class="code-block"><pre><code class="lang-bash">launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.jevk5.llama.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.jevk5.adapter.plist
+
+launchctl kickstart -k gui/$(id -u)/local.jevk5.llama    # 重启
+launchctl bootout gui/$(id -u)/local.jevk5.llama         # 停止并卸载</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>说明：</p>
+<ul>
+<li>launchd 本身不保证启动顺序，adapter 靠 <code>KeepAlive</code> 重试；adapter 的 <code>/health</code> 会反映后端是否就绪。⚠️ <code>JevK5GGUF</code> 在后端未就绪时构造是否会失败，我没有验证，如失败则 <code>KeepAlive</code> 会在后端起来后自动重启它。</li>
+<li>首次必须先手动运行过一次，让模型下载进缓存；否则自启动时要在后台下载 4.5 GB。</li>
+<li>路径 <code>/opt/homebrew/bin/llama-server</code> 是 Apple Silicon 上 Homebrew 的默认位置，可用 <code>which llama-server</code> 确认。</li>
+</ul>
+<hr>
+<h2 id="16-日常操作-升级与卸载">16. 日常操作、升级与卸载</h2>
+<h3 id="161-日常命令">16.1 日常命令</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">操作</th><th style="text-align:left">命令</th></tr></thead><tbody><tr><td style="text-align:left">启动 llama-server</td><td style="text-align:left">见 <a href="#51-启动命令">§5.1</a></td></tr><tr><td style="text-align:left">启动 adapter</td><td style="text-align:left"><code>cd ~/jevk5-gguf &amp;&amp; source .venv/bin/activate &amp;&amp; uvicorn server:app --host 127.0.0.1 --port 8090</code></td></tr><tr><td style="text-align:left">检查后端</td><td style="text-align:left"><code>curl http://127.0.0.1:8080/health</code></td></tr><tr><td style="text-align:left">检查 adapter</td><td style="text-align:left"><code>curl http://127.0.0.1:8090/health</code></td></tr><tr><td style="text-align:left">前台停止</td><td style="text-align:left">在对应终端按 <code>Ctrl+C</code></td></tr></tbody></table></div>
+<h3 id="162-升级">16.2 升级</h3>
+<div class="code-block"><pre><code class="lang-bash">brew upgrade llama.cpp                       # 升级 llama.cpp 后重新跑 §12 验收
+cd ~/jevk5-gguf &amp;&amp; source .venv/bin/activate
+pip install --no-deps --upgrade &quot;jevk5 @ git+https://github.com/allebee/jevk5@&lt;新标签&gt;&quot;</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>更换模型版本（如 v0.3 → 更新版本）时，<strong>同步更换校准温度</strong>，并回到 §2.3 核对。</p>
+<h3 id="163-卸载">16.3 卸载</h3>
+<div class="code-block"><pre><code class="lang-bash">launchctl bootout gui/$(id -u)/local.jevk5.llama 2&gt;/dev/null
+launchctl bootout gui/$(id -u)/local.jevk5.adapter 2&gt;/dev/null
+rm -f ~/Library/LaunchAgents/local.jevk5.*.plist
+rm -rf ~/jevk5-gguf
+brew uninstall llama.cpp</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>模型缓存位置取决于 llama.cpp 版本，可用 <code>llama-server --help</code> 查看缓存目录相关说明后手动清理。</p>
+<hr>
+<h2 id="17-故障排查">17. 故障排查</h2>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">现象</th><th style="text-align:left">可能原因</th><th style="text-align:left">处理</th></tr></thead><tbody><tr><td style="text-align:left"><code>llama-server: command not found</code></td><td style="text-align:left">未安装或 PATH 未生效</td><td style="text-align:left"><code>brew install llama.cpp</code>；<code>which llama-server</code>；若用 llama.app 安装器，检查 <code>~/.llama-app</code> 是否在 PATH 中</td></tr><tr><td style="text-align:left">用 <code>llama server</code> 启动报错</td><td style="text-align:left">子命令写错</td><td style="text-align:left">llama.app 的子命令是 <code>llama serve</code></td></tr><tr><td style="text-align:left">启动日志显示全部在 CPU</td><td style="text-align:left">Metal 未启用或 <code>-ngl</code> 未生效</td><td style="text-align:left">确认启动命令含 <code>-ngl 99</code>；用 <code>llama-server --list-devices</code> 检查设备；升级 llama.cpp</td></tr><tr><td style="text-align:left">下载了错误的模型文件</td><td style="text-align:left">用了 <code>:Q8_0</code> 简写</td><td style="text-align:left">改用 <code>--hf-repo</code> + <code>--hf-file</code> 显式指定</td></tr><tr><td style="text-align:left"><code>/health</code> 长时间非健康</td><td style="text-align:left">模型仍在下载或加载</td><td style="text-align:left">查看启动日志；首次下载约 4.5 GB</td></tr><tr><td style="text-align:left"><code>pip install</code> 找不到标签</td><td style="text-align:left">标签不存在</td><td style="text-align:left">用 <code>git ls-remote --tags --refs</code> 查实际标签</td></tr><tr><td style="text-align:left"><code>ImportError</code> / <code>ModuleNotFoundError</code></td><td style="text-align:left"><code>--no-deps</code> 漏装轻量依赖</td><td style="text-align:left">按报错补装缺失包，不要装 torch</td></tr><tr><td style="text-align:left"><code>JevK5GGUF(...)</code> 参数报错</td><td style="text-align:left">版本间参数名不同</td><td style="text-align:left"><code>help(JevK5GGUF)</code> 查看签名</td></tr><tr><td style="text-align:left">概率异常自信或异常保守</td><td style="text-align:left">温度与模型版本不匹配</td><td style="text-align:left">对照 §2.3 修正</td></tr><tr><td style="text-align:left">结果与官方报告差异大</td><td style="text-align:left">绕过了 <code>JevK5GGUF</code>，或用了聊天接口</td><td style="text-align:left">只通过 <code>JevK5GGUF</code> 调用</td></tr><tr><td style="text-align:left">超长材料报错或结果变差</td><td style="text-align:left">超出 <code>-c</code></td><td style="text-align:left">缩短材料，或适当调大 <code>-c</code> 并复测</td></tr><tr><td style="text-align:left"><code>/v1/systemone</code>（8080）返回 501</td><td style="text-align:left">llama.cpp 原生端点不支持 JevK5</td><td style="text-align:left">属预期，改走 §11.4 的 adapter（8090）</td></tr><tr><td style="text-align:left">延迟偏高</td><td style="text-align:left">GPU 未生效、上下文过大、内存压力、并发过高</td><td style="text-align:left">逐项检查 §13.4，并用 §13.3 的脚本复测</td></tr></tbody></table></div>
+<hr>
+<h1 id="附录" class="part-heading">附录</h1>
+<h2 id="附录-a-改用-9b-模型">附录 A　改用 9B 模型</h2>
+<p>仅在需要处理<strong>选项很多</strong>的场景（>16 个，如数十至上百类的意图分类）时考虑。作者数据显示 9B 在这类任务上比 4B 高约 8 个百分点。其余场景作者建议默认用 4B。</p>
+<p>要点：</p>
+<ul>
+<li>文件：<code>jevk5-9b-v0.3-Q8_0.gguf</code>，⚠️ 约 9.5 GB，24 GB 内存可承受。</li>
+<li>与 bf16 答案一致：Q8_0 为 229/231，Q5_K_M 为 225/231。</li>
+<li>温度：<code>temperature=1.049</code>，<code>knockout_temperature=1.2</code>（务必同步修改，见 §2.3）。</li>
+<li>速度：约比 4B 慢 2–3 倍。</li>
+<li>缺点：在 JevBench 公开题困难档上准确率与校准都不如 4B。</li>
+<li>不要使用 9B 的 bf16（约 19 GB），在 24 GB 机器上过于吃紧。</li>
+</ul>
+<p>启动命令只需把文件名换掉：</p>
+<div class="code-block"><pre><code class="lang-bash">llama-server \
+  --hf-repo alibiserikbay/JevK5-GGUF \
+  --hf-file jevk5-9b-v0.3-Q8_0.gguf \
+  -c 8192 -ngl 99 -np 1 \
+  --host 127.0.0.1 --port 8080</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<div class="code-block"><pre><code class="lang-python">model = JevK5GGUF(url=&quot;http://127.0.0.1:8080&quot;,
+                  temperature=1.049, knockout_temperature=1.2)</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<hr>
+<h2 id="附录-b-零依赖参考客户端">附录 B　零依赖参考客户端</h2>
+<p>用作 <code>JevK5GGUF</code> 的交叉验证，或在不想安装 jevk5 包时使用。<strong>只用 Python 标准库</strong>，仅支持 ≤16 个选项。逻辑来自作者的 GGUF 模型卡，我把温度改成了 v0.3 4B 的 1.22（模型卡该示例的原始值对应的是更早的版本）。</p>
+<div class="code-block"><pre><code class="lang-python">import json, math, urllib.request
+
+URL = &quot;http://127.0.0.1:8080&quot;   # llama-server
+T = 1.22                         # v0.3 4B；9B 用 1.049（见 §2.3）
+LETTERS = &quot;ABCDEFGHIJKLMNOP&quot;
+SYSTEM = (&quot;Apply the supplied criterion to the supplied evidence. Choose exactly one listed option. &quot;
+          &quot;Respond with only its uppercase letter, with no explanation or reasoning.&quot;)
+
+def post(path, body):
+    req = urllib.request.Request(URL + path, json.dumps(body).encode(),
+                                 {&quot;Content-Type&quot;: &quot;application/json&quot;})
+    return json.load(urllib.request.urlopen(req))
+
+def decide(evidence, criterion: str, options: dict) -&gt; dict:
+    &quot;&quot;&quot;options: {id: description}；返回每个 id 的校准概率。&quot;&quot;&quot;
+    ids = list(options)
+    user = json.dumps({&quot;evidence&quot;: evidence, &quot;criterion&quot;: criterion,
+                       &quot;options&quot;: [{&quot;letter&quot;: LETTERS[i], &quot;description&quot;: f&quot;{k}: {options[k]}&quot;}
+                                   for i, k in enumerate(ids)]}, ensure_ascii=False)
+    prompt = (f&quot;&lt;|im_start|&gt;system\n{SYSTEM}&lt;|im_end|&gt;\n&lt;|im_start|&gt;user\n{user}&lt;|im_end|&gt;\n&quot;
+              &quot;&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n&quot;)
+    tokens = post(&quot;/tokenize&quot;, {&quot;content&quot;: prompt, &quot;add_special&quot;: False,
+                                &quot;parse_special&quot;: True})[&quot;tokens&quot;]
+    top = post(&quot;/completion&quot;, {&quot;prompt&quot;: tokens, &quot;n_predict&quot;: 1, &quot;n_probs&quot;: 40,
+                               &quot;temperature&quot;: 0, &quot;cache_prompt&quot;: False}
+               )[&quot;completion_probabilities&quot;][0][&quot;top_logprobs&quot;]
+    seen = {t[&quot;token&quot;]: t[&quot;logprob&quot;] for t in top}
+    z = [seen.get(LETTERS[i], min(seen.values()) - 2.0) for i in range(len(ids))]
+    w = [math.exp((v - max(z)) / T) for v in z]
+    return {k: x / sum(w) for k, x in zip(ids, w)}
+
+print(decide(&quot;I was billed twice for order #4411. Please refund the duplicate charge today.&quot;,
+             &quot;Which team should handle this?&quot;,
+             {&quot;billing&quot;: &quot;Payments and refunds&quot;, &quot;tech&quot;: &quot;Bugs&quot;, &quot;sales&quot;: &quot;New purchases&quot;}))</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
+<p>约定（来自模型卡）：</p>
+<ul>
+<li>是/否问题：选项按顺序传 <code>{&quot;true&quot;: &quot;...&quot;, &quot;false&quot;: &quot;...&quot;}</code>。</li>
+<li>评分问题：按等级顺序传 <code>{&quot;0&quot;: &quot;...&quot;, &quot;1&quot;: &quot;...&quot;, ...}</code>。</li>
+<li>prompt 必须以 <code>parse_special: true</code> 分词，聊天标记才能保持为单个 token。</li>
+</ul>
+<p>用它与 <code>JevK5GGUF.decide()</code> 对同一输入各跑一次，两者概率应基本一致；明显不一致时，先怀疑温度或 jevk5 版本。⚠️ 该示例的 prompt 格式与第三方项目对 v0.3 的移植一致，但我没有在 v0.3 上亲自跑过。</p>
+<hr>
+<h2 id="附录-c-参考资料">附录 C　参考资料</h2>
+<ul>
+<li>JevK5 运行时与说明：https://github.com/allebee/jevk5</li>
+<li>JevK5 4B 模型：https://huggingface.co/alibiserikbay/JevK5</li>
+<li>JevK5 9B 模型：https://huggingface.co/alibiserikbay/JevK5-9B</li>
+<li>JevK5 GGUF 文件：https://huggingface.co/alibiserikbay/JevK5-GGUF</li>
+<li>llama.cpp：https://github.com/ggml-org/llama.cpp</li>
+<li>llama.cpp 发布页：https://github.com/ggml-org/llama.cpp/releases</li>
+<li>第三方 System One 封装（未审计）：https://github.com/Code2qing/jevk5-typesafe-server</li>
+<li>JevBench：https://github.com/fstandhartinger/jevbench</li>
+</ul>
+<hr>
+<h2 id="附录-d-核对状态与待确认项">附录 D　核对状态与待确认项</h2>
+<h3 id="d1-已从公开资料核实">D.1 已从公开资料核实</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">内容</th><th style="text-align:left">依据</th></tr></thead><tbody><tr><td style="text-align:left">模型是基于 Qwen3.5 的决策模型，一次前向输出各选项概率，无生成</td><td style="text-align:left">官方模型卡</td></tr><tr><td style="text-align:left">官方运行时面向 CUDA；GGUF 供 llama.cpp 在 Apple GPU 等运行</td><td style="text-align:left">官方模型卡</td></tr><tr><td style="text-align:left"><code>jevk5-4b-v0.3-Q8_0.gguf</code>，4,482,402,720 字节 (≈4.48 GB)</td><td style="text-align:left">第三方打包项目记录的哈希与大小</td></tr><tr><td style="text-align:left">4B v0.3 温度 1.22 / 0.93；9B 1.049 / 1.2</td><td style="text-align:left">第三方封装配置表；官方 9B 卡</td></tr><tr><td style="text-align:left">9B Q8_0 与 bf16 答案一致 229/231，Q5_K_M 为 225/231</td><td style="text-align:left">官方 9B 卡</td></tr><tr><td style="text-align:left"><code>llama-server</code> 的 <code>--hf-repo</code>、<code>--hf-file</code>、<code>-c</code>、<code>-ngl</code>、<code>/health</code>、<code>/v1/models</code>、<code>/tokenize</code>、<code>/completion</code>、<code>n_probs</code></td><td style="text-align:left">llama.cpp 与官方 GGUF 卡的用法</td></tr><tr><td style="text-align:left">llama.cpp 原生 <code>/v1/systemone</code> 存在，但仅支持特定模型家族</td><td style="text-align:left">llama.cpp 版本说明及相关文章</td></tr><tr><td style="text-align:left">作者只测过 <code>llama-server</code>，其它基于 llama.cpp 的应用未验证</td><td style="text-align:left">官方 GGUF 卡</td></tr><tr><td style="text-align:left">4B Q8_0 在 M1 Pro Metal 上约 0.6 秒/次</td><td style="text-align:left">官方 GGUF 卡</td></tr></tbody></table></div>
+<h3 id="d2-待你在本机确认">D.2 待你在本机确认</h3>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">待确认项</th><th style="text-align:left">如何确认</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">4B v0.3 Q8_0 / Q5_K_M / Q4_K_M 与 bf16 的答案一致数</td><td style="text-align:left">看 HF 上 GGUF 仓库的最新模型卡</td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">9B Q8_0 文件大小</td><td style="text-align:left">HF 文件页</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">可用的 jevk5 标签；<code>JevK5GGUF</code> 从哪个版本起提供</td><td style="text-align:left"><code>git ls-remote --tags --refs ...</code></td></tr><tr><td style="text-align:left">4</td><td style="text-align:left"><code>JevK5GGUF</code> 构造参数名（尤其 <code>url</code>）</td><td style="text-align:left"><code>help(JevK5GGUF)</code></td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">jevk5 的最低 Python 版本，以及 <code>--no-deps</code> 是否需要补装包</td><td style="text-align:left">安装后 <code>import</code> 测试</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left">llama.app 是否提供独立 <code>llama-server</code> 及参数是否完整</td><td style="text-align:left"><code>llama --help</code></td></tr><tr><td style="text-align:left">7</td><td style="text-align:left"><code>-np 1</code> 是否必要</td><td style="text-align:left">看你所用版本 <code>--help</code> 对 <code>-np</code> 默认值的说明</td></tr><tr><td style="text-align:left">8</td><td style="text-align:left"><code>JevK5GGUF</code> 在 llama-server 未就绪时构造是否失败（影响自启顺序）</td><td style="text-align:left">先停 server 再 <code>python test.py</code></td></tr><tr><td style="text-align:left">9</td><td style="text-align:left">M5 上的真实延迟</td><td style="text-align:left">§13.3 脚本</td></tr><tr><td style="text-align:left">10</td><td style="text-align:left">新版 llama.cpp 是否已加入对 JevK5 的原生 <code>/v1/systemone</code> 支持</td><td style="text-align:left">查看版本说明</td></tr></tbody></table></div>
+    </article>
+
+    <footer class="doc-footer">
+      <span>JevK5 本地部署指南 · 2026-10-08</span>
+      <a href="./JevK5安装使用指南.md" download>下载 Markdown 源文件</a>
+    </footer>
+  </main>
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre code');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '已复制';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '复制';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+const tocLinks = document.querySelectorAll('.toc a[href^="#"]');
+const headings = [];
+tocLinks.forEach(link => {
+  const id = link.getAttribute('href').substring(1);
+  const el = document.getElementById(id);
+  if (el) headings.push({ el, link });
+});
+
+function updateActiveToc() {
+  const scrollPos = window.scrollY + 120;
+  let current = null;
+  for (const h of headings) {
+    if (h.el.offsetTop <= scrollPos) {
+      current = h;
+    }
+  }
+  tocLinks.forEach(l => l.classList.remove('active'));
+  if (current) current.link.classList.add('active');
+}
+
+window.addEventListener('scroll', updateActiveToc, { passive: true });
+updateActiveToc();
+</script>
+</body>
+</html>
