@@ -127,33 +127,6 @@
   .toc a:hover{color:var(--accent)}
   .toc .count{color:var(--faint);font-size:12px;margin-left:2px;font-variant-numeric:tabular-nums}
 
-  /* ===== 切换按钮 ===== */
-  .switch-row{
-    display:flex;
-    gap:10px;
-    margin-top:18px;
-    flex-wrap:wrap;
-  }
-  .switch-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:6px 14px;
-    border-radius:8px;
-    font-size:13px;
-    text-decoration:none;
-    border:1px solid var(--border);
-    color:var(--muted);
-    background:var(--surface);
-    transition:all .2s;
-  }
-  .switch-btn:hover{
-    color:var(--text);
-    border-color:var(--border-strong);
-    background:var(--bg-soft);
-  }
-  .switch-btn svg{flex-shrink:0}
-
   /* ===== 栏目区块 ===== */
   .section{
     margin-top:48px;
@@ -189,7 +162,7 @@
   #tech .section-head .bar{background:var(--tech)}
   #think .section-head .bar{background:var(--think)}
   #travel .section-head .bar{background:var(--travel)}
-  #drive-film .section-head .bar{background:var(--drive)}
+  #drive-film .section-head .bar{background:var(--film)}
 
   /* ===== 列表式（单列·每行一篇） ===== */
   .list{
@@ -325,19 +298,8 @@
         <span class="toc-label">目录</span>
         <a href="#tech">技术与开发<span class="count">(6)</span></a>
         <a href="#think">思辩与随笔<span class="count">(4)</span></a>
-        <a href="#travel">云南旅行<span class="count">(8)</span></a>
-        <a href="#drive-film">自驾与影视<span class="count">(3)</span></a>
-      </div>
-
-      <div class="switch-row">
-        <a class="switch-btn" href="index.html" title="切换到深色卡片风格">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          卡片墙
-        </a>
-        <a class="switch-btn" href="index2.html" title="切换到便签墙风格">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-          便签墙
-        </a>
+        <a href="#travel">诗和远方<span class="count">(9)</span></a>
+        <a href="#drive-film">影视<span class="count">(2)</span></a>
       </div>
     </header>
 
@@ -455,12 +417,12 @@
       </div>
     </section>
 
-    <!-- ===== 栏目 3：云南旅行 ===== -->
+    <!-- ===== 栏目 3：诗和远方 ===== -->
     <section class="section" id="travel">
       <div class="section-head">
         <span class="bar"></span>
-        <h2>云南旅行</h2>
-        <span class="num">08 篇</span>
+        <h2>诗和远方</h2>
+        <span class="num">09 篇</span>
       </div>
       <div class="list">
 
@@ -536,18 +498,6 @@
           <div class="item-desc">贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</div>
         </a>
 
-      </div>
-    </section>
-
-    <!-- ===== 栏目 4：自驾与影视 ===== -->
-    <section class="section" id="drive-film">
-      <div class="section-head">
-        <span class="bar"></span>
-        <h2>自驾与影视</h2>
-        <span class="num">03 篇</span>
-      </div>
-      <div class="list">
-
         <a class="item" href="shiyan-xian-guide.html">
           <div class="item-row">
             <span class="item-tag tag-drive">自驾攻略</span>
@@ -556,6 +506,18 @@
           </div>
           <div class="item-desc">一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</div>
         </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 4：影视 ===== -->
+    <section class="section" id="drive-film">
+      <div class="section-head">
+        <span class="bar"></span>
+        <h2>影视</h2>
+        <span class="num">02 篇</span>
+      </div>
+      <div class="list">
 
         <a class="item" href="tiandao-guide.html">
           <div class="item-row">
