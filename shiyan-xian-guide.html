@@ -351,7 +351,7 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
   <div class="route-card">
     <svg class="route-svg" viewBox="0 0 1000 340" role="img" aria-label="十堰到西安自驾路线动画：途经郧西、漫川关、山阳、商洛、蓝田，终点西安">
       <defs>
-        <linearGradient id="roadGrad" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="roadGrad" x1="1" y1="0" x2="0" y2="0">
           <stop offset="0" stop-color="#6B9B7A"/>
           <stop offset=".25" stop-color="#4A7A8C"/>
           <stop offset=".55" stop-color="#C9A227"/>
@@ -372,27 +372,27 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
       <!-- 背景秦岭山形（三层，远近叠） -->
       <g class="mtn" fill="none" stroke="#E8DCCB" stroke-width="2" stroke-linecap="round">
-        <path d="M40 260 L 110 170 L 180 250 L 260 150 L 340 245 L 420 165 L 500 250 L 580 155 L 660 245 L 740 170 L 820 255 L 900 180 L 960 250" opacity=".4"/>
+        <path d="M 960 260 L 890 170 L 820 250 L 740 150 L 660 245 L 580 165 L 500 250 L 420 155 L 340 245 L 260 170 L 180 255 L 100 180 L 40 250" opacity=".4"/>
       </g>
       <g class="mtn" fill="none" stroke="#DDD5C7" stroke-width="2.2" stroke-linecap="round">
-        <path d="M60 275 L 140 200 L 220 270 L 300 190 L 380 268 L 460 200 L 540 272 L 620 195 L 700 270 L 780 210 L 860 272 L 940 205"/>
+        <path d="M 940 275 L 860 200 L 780 270 L 700 190 L 620 268 L 540 200 L 460 272 L 380 195 L 300 270 L 220 210 L 140 272 L 60 205"/>
       </g>
       <g class="mtn" fill="none" stroke="#D4C8B5" stroke-width="1.8" stroke-linecap="round" opacity=".7">
-        <path d="M80 285 L 160 230 L 240 282 L 320 225 L 400 280 L 480 230 L 560 284 L 640 228 L 720 282 L 800 235 L 880 282 L 930 240"/>
+        <path d="M 920 285 L 840 230 L 760 282 L 680 225 L 600 280 L 520 230 L 440 284 L 360 228 L 280 282 L 200 235 L 120 282 L 70 240"/>
       </g>
 
       <!-- 标题 -->
       <text x="500" y="60" text-anchor="middle" font-size="13" fill="#B9AE9C" letter-spacing="8" font-family="Noto Serif SC, Songti SC, serif">秦 岭 腹 地 · 自 驾 穿 越</text>
-      <line x1="400" y1="74" x2="600" y2="74" stroke="#E8DCCB" stroke-width="1"/>
+      <line x1="600" y1="74" x2="400" y2="74" stroke="#E8DCCB" stroke-width="1"/>
 
       <!-- 主路线（底色阴影） -->
-      <path d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
+      <path d="M 920 270 C 830 262 790 235 710 220 S 580 200 510 185 S 370 155 300 142 S 160 110 90 95"
             fill="none" stroke="#E8DCCB" stroke-width="9" stroke-linecap="round" opacity=".6"/>
       <!-- 主路线（描边动画） -->
-      <path id="routePath" d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
+      <path id="routePath" d="M 920 270 C 830 262 790 235 710 220 S 580 200 510 185 S 370 155 300 142 S 160 110 90 95"
             fill="none" stroke="url(#roadGrad)" stroke-width="5" stroke-linecap="round"/>
       <!-- 路线中线虚线 -->
-      <path d="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"
+      <path d="M 920 270 C 830 262 790 235 710 220 S 580 200 510 185 S 370 155 300 142 S 160 110 90 95"
             fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 8" stroke-linecap="round" opacity=".5"/>
 
       <!-- 汽车（SMIL 沿路径移动） -->
@@ -416,79 +416,79 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
           <circle cx="9" cy="6" r="4" fill="#2A2A2A"/>
           <circle cx="9" cy="6" r="1.8" fill="#F8F5F0"/>
           <animateMotion dur="10s" begin="1.5s" repeatCount="indefinite" rotate="auto"
-            path="M80 270 C 170 262, 210 235, 290 220 S 420 200, 490 185 S 630 155, 700 142 S 840 110, 910 95"/>
+            path="M 920 270 C 830 262 790 235 710 220 S 580 200 510 185 S 370 155 300 142 S 160 110 90 95"/>
         </g>
       </g>
 
       <!-- 节点：起点 十堰 -->
       <g class="node" style="animation-delay:.5s">
-        <circle cx="80" cy="270" r="16" fill="url(#nodeGlow)" opacity=".6"/>
-        <circle cx="80" cy="270" r="10" fill="#6B9B7A" class="dot"/>
-        <circle cx="80" cy="270" r="4.5" fill="#F8F5F0"/>
-        <text x="80" y="305" text-anchor="middle" class="node-label" font-size="14" font-weight="700">十堰</text>
-        <text x="80" y="322" text-anchor="middle" class="node-sub">起点 · 武当山下</text>
+        <circle cx="920" cy="270" r="16" fill="url(#nodeGlow)" opacity=".6"/>
+        <circle cx="920" cy="270" r="10" fill="#6B9B7A" class="dot"/>
+        <circle cx="920" cy="270" r="4.5" fill="#F8F5F0"/>
+        <text x="920" y="305" text-anchor="middle" class="node-label" font-size="14" font-weight="700">十堰</text>
+        <text x="920" y="322" text-anchor="middle" class="node-sub">起点 · 武当山下</text>
       </g>
       <!-- 郧西 -->
       <g class="node" style="animation-delay:1.3s">
-        <circle cx="290" cy="220" r="8" fill="#4A7A8C" class="dot"/>
-        <circle cx="290" cy="220" r="3.5" fill="#F8F5F0"/>
-        <text x="290" y="252" text-anchor="middle" class="node-label" font-size="13">郧西</text>
-        <text x="290" y="268" text-anchor="middle" class="node-sub">樱花 · 五龙河</text>
+        <circle cx="710" cy="220" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="710" cy="220" r="3.5" fill="#F8F5F0"/>
+        <text x="710" y="252" text-anchor="middle" class="node-label" font-size="13">郧西</text>
+        <text x="710" y="268" text-anchor="middle" class="node-sub">樱花 · 五龙河</text>
       </g>
       <!-- 漫川关 -->
       <g class="node" style="animation-delay:2s">
-        <circle cx="410" cy="198" r="14" fill="url(#nodeGlow)" opacity=".5"/>
-        <circle cx="410" cy="198" r="8.5" fill="#C9A227" class="dot"/>
-        <circle cx="410" cy="198" r="3.5" fill="#F8F5F0"/>
-        <text x="410" y="168" text-anchor="middle" class="node-label" font-size="13" font-weight="600">漫川关</text>
-        <text x="410" y="184" text-anchor="middle" class="node-sub">陕鄂界 · 朝秦暮楚</text>
+        <circle cx="590" cy="198" r="14" fill="url(#nodeGlow)" opacity=".5"/>
+        <circle cx="590" cy="198" r="8.5" fill="#C9A227" class="dot"/>
+        <circle cx="590" cy="198" r="3.5" fill="#F8F5F0"/>
+        <text x="590" y="168" text-anchor="middle" class="node-label" font-size="13" font-weight="600">漫川关</text>
+        <text x="590" y="184" text-anchor="middle" class="node-sub">陕鄂界 · 朝秦暮楚</text>
       </g>
       <!-- 山阳 -->
       <g class="node" style="animation-delay:2.7s">
-        <circle cx="520" cy="178" r="8" fill="#4A7A8C" class="dot"/>
-        <circle cx="520" cy="178" r="3.5" fill="#F8F5F0"/>
-        <text x="520" y="210" text-anchor="middle" class="node-label" font-size="13">山阳</text>
-        <text x="520" y="226" text-anchor="middle" class="node-sub">天竺山</text>
+        <circle cx="480" cy="178" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="480" cy="178" r="3.5" fill="#F8F5F0"/>
+        <text x="480" y="210" text-anchor="middle" class="node-label" font-size="13">山阳</text>
+        <text x="480" y="226" text-anchor="middle" class="node-sub">天竺山</text>
       </g>
       <!-- 商洛 -->
       <g class="node" style="animation-delay:3.4s">
-        <circle cx="655" cy="152" r="8" fill="#4A7A8C" class="dot"/>
-        <circle cx="655" cy="152" r="3.5" fill="#F8F5F0"/>
-        <text x="655" y="122" text-anchor="middle" class="node-label" font-size="13">商洛</text>
-        <text x="655" y="138" text-anchor="middle" class="node-sub">红叶大道</text>
+        <circle cx="345" cy="152" r="8" fill="#4A7A8C" class="dot"/>
+        <circle cx="345" cy="152" r="3.5" fill="#F8F5F0"/>
+        <text x="345" y="122" text-anchor="middle" class="node-label" font-size="13">商洛</text>
+        <text x="345" y="138" text-anchor="middle" class="node-sub">红叶大道</text>
       </g>
       <!-- 蓝田 -->
       <g class="node" style="animation-delay:4.1s">
-        <circle cx="770" cy="125" r="8" fill="#C4704F" class="dot"/>
-        <circle cx="770" cy="125" r="3.5" fill="#F8F5F0"/>
-        <text x="770" y="158" text-anchor="middle" class="node-label" font-size="13">蓝田</text>
-        <text x="770" y="174" text-anchor="middle" class="node-sub">汤峪 · 王顺山</text>
+        <circle cx="230" cy="125" r="8" fill="#C4704F" class="dot"/>
+        <circle cx="230" cy="125" r="3.5" fill="#F8F5F0"/>
+        <text x="230" y="158" text-anchor="middle" class="node-label" font-size="13">蓝田</text>
+        <text x="230" y="174" text-anchor="middle" class="node-sub">汤峪 · 王顺山</text>
       </g>
       <!-- 终点 西安 -->
       <g class="node" style="animation-delay:4.8s">
-        <circle cx="910" cy="95" r="20" fill="url(#nodeGlow)" opacity=".5"/>
-        <circle cx="910" cy="95" r="13" fill="#8E4A2F" class="dot"/>
-        <circle cx="910" cy="95" r="5.5" fill="#F8F5F0"/>
-        <text x="910" y="65" text-anchor="middle" class="node-label" font-size="16" font-weight="700">西安</text>
-        <text x="910" y="48" text-anchor="middle" class="node-sub">终点 · 十三朝古都</text>
+        <circle cx="90" cy="95" r="20" fill="url(#nodeGlow)" opacity=".5"/>
+        <circle cx="90" cy="95" r="13" fill="#8E4A2F" class="dot"/>
+        <circle cx="90" cy="95" r="5.5" fill="#F8F5F0"/>
+        <text x="90" y="65" text-anchor="middle" class="node-label" font-size="16" font-weight="700">西安</text>
+        <text x="90" y="48" text-anchor="middle" class="node-sub">终点 · 十三朝古都</text>
       </g>
 
       <!-- 装饰：飞鸟 -->
       <g stroke="#B9AE9C" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7">
-        <path d="M200 100 q 5 -5 10 0 q 5 -5 10 0"/>
-        <path d="M225 110 q 4 -4 8 0 q 4 -4 8 0"/>
-        <path d="M700 90 q 5 -5 10 0 q 5 -5 10 0"/>
+        <path d="M 800 100 q -5 -5 -10 0 q -5 -5 -10 0"/>
+        <path d="M 775 110 q -4 -4 -8 0 q -4 -4 -8 0"/>
+        <path d="M 300 90 q -5 -5 -10 0 q -5 -5 -10 0"/>
       </g>
 
       <!-- 装饰：小红叶点缀 -->
       <g fill="#C4704F" opacity=".3">
-        <path d="M150 140 l 1.5 3.5 4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z"/>
-        <path d="M800 70 l 1.5 3.5 4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z" transform="scale(.8) translate(800, 70)"/>
+        <path d="M 850 140 l -1.5 3.5 -4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z"/>
+        <path d="M800 70 l 1.5 3.5 4 -1 -.6 4 3.5 2 -3.5 2.5 1.5 3.5 -4 -1 -1.5 3.5 -1.5 -3.5 -4 1 1.5 -3.5 -3.5 -2 3.5 -2.5 -.6 -4 4 1 z" transform="scale(.8) translate(450, 70)"/>
       </g>
 
       <!-- 里程标注 -->
       <g>
-        <text x="495" y="295" text-anchor="middle" font-size="11" fill="#8E4A2F" letter-spacing="2" font-family="serif">
+        <text x="505" y="295" text-anchor="middle" font-size="11" fill="#8E4A2F" letter-spacing="2" font-family="serif">
           全程约 297 km · 4.5 小时车程
         </text>
       </g>
@@ -1500,13 +1500,13 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
           <linearGradient id="rmBg" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#FCF4EC"/><stop offset="1" stop-color="#FBF9F5"/>
           </linearGradient>
-          <linearGradient id="rmLineA" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="rmLineA" x1="1" y1="0" x2="0" y2="0">
             <stop offset="0" stop-color="#B85A35"/><stop offset="1" stop-color="#8E4A2F"/>
           </linearGradient>
-          <linearGradient id="rmLineB" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="rmLineB" x1="1" y1="0" x2="0" y2="0">
             <stop offset="0" stop-color="#E89A3C"/><stop offset="1" stop-color="#C4704F"/>
           </linearGradient>
-          <linearGradient id="rmLineC" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="rmLineC" x1="1" y1="0" x2="0" y2="0">
             <stop offset="0" stop-color="#5C3A28"/><stop offset=".5" stop-color="#8E4A2F"/><stop offset="1" stop-color="#5C3A28"/>
           </linearGradient>
           <radialGradient id="rmGlow" cx=".5" cy=".5" r=".5">
@@ -1517,131 +1517,131 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
 
         <!-- 标题 -->
         <text x="500" y="30" text-anchor="middle" font-size="14" fill="#5C3A28" letter-spacing="6" font-family="Noto Serif SC, Songti SC, serif" font-weight="700">秦 岭 赏 秋 · 三 条 串 联 路 线</text>
-        <line x1="410" y1="42" x2="590" y2="42" stroke="#D8C4B0" stroke-width="1"/>
+        <line x1="590" y1="42" x2="410" y2="42" stroke="#D8C4B0" stroke-width="1"/>
 
         <!-- 淡山形背景（多层叠） -->
         <g fill="none" stroke="#EBD4C2" stroke-width="1.6" opacity=".5">
-          <path d="M40 190 L 120 120 L 200 190 L 280 130 L 360 190 L 440 125 L 520 190 L 600 135 L 680 190 L 760 125 L 840 190 L 920 130 L 960 185"/>
+          <path d="M 960 190 L 880 120 L 800 190 L 720 130 L 640 190 L 560 125 L 480 190 L 400 135 L 320 190 L 240 125 L 160 190 L 80 130 L 40 185"/>
         </g>
         <g fill="none" stroke="#EAD0BA" stroke-width="1.2" opacity=".35">
-          <path d="M40 220 L 120 170 L 200 220 L 280 160 L 360 220 L 440 175 L 520 220 L 600 165 L 680 220 L 760 170 L 840 220 L 920 165 L 960 215"/>
+          <path d="M 960 220 L 880 170 L 800 220 L 720 160 L 640 220 L 560 175 L 480 220 L 400 165 L 320 220 L 240 170 L 160 220 L 80 165 L 40 215"/>
         </g>
 
         <!-- ===== 路线 A（橙红，2 日）: 十堰 → 金丝峡 → 漫川关 → 西安 ===== -->
         <path class="route-line" stroke="url(#rmLineA)" stroke-width="4.5" fill="none" stroke-linecap="round"
-              d="M100 305 Q 220 270 310 255 Q 420 242 510 215 Q 640 175 760 130 Q 840 100 900 75"/>
+              d="M 900 305 Q 780 270 690 255 Q 580 242 490 215 Q 360 175 240 130 Q 160 100 100 75"/>
         <!-- 路线 A 虚线装饰 -->
         <path stroke="#fff" stroke-width="1.5" stroke-dasharray="6 8" fill="none" stroke-linecap="round" opacity=".6"
-              d="M100 305 Q 220 270 310 255 Q 420 242 510 215 Q 640 175 760 130 Q 840 100 900 75"/>
+              d="M 900 305 Q 780 270 690 255 Q 580 242 490 215 Q 360 175 240 130 Q 160 100 100 75"/>
 
         <!-- 节点：十堰（起点） -->
         <g class="rm-node">
-          <circle cx="100" cy="305" r="11" fill="#B85A35"/>
-          <circle cx="100" cy="305" r="4.5" fill="#FCF4EC"/>
-          <circle cx="100" cy="305" r="18" fill="url(#rmGlow)" opacity=".5"/>
-          <text x="100" y="332" text-anchor="middle" class="rm-label" font-size="13" font-weight="700" fill="#5C3A28">十堰</text>
-          <text x="100" y="347" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 出发</text>
+          <circle cx="900" cy="305" r="11" fill="#B85A35"/>
+          <circle cx="900" cy="305" r="4.5" fill="#FCF4EC"/>
+          <circle cx="900" cy="305" r="18" fill="url(#rmGlow)" opacity=".5"/>
+          <text x="900" y="332" text-anchor="middle" class="rm-label" font-size="13" font-weight="700" fill="#5C3A28">十堰</text>
+          <text x="900" y="347" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 出发</text>
         </g>
         <!-- 节点：金丝峡 -->
         <g class="rm-node n2">
-          <circle cx="310" cy="255" r="8.5" fill="#B85A35"/>
-          <circle cx="310" cy="255" r="3.5" fill="#FCF4EC"/>
-          <text x="310" y="235" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">金丝峡</text>
-          <text x="310" y="278" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 全天</text>
+          <circle cx="690" cy="255" r="8.5" fill="#B85A35"/>
+          <circle cx="690" cy="255" r="3.5" fill="#FCF4EC"/>
+          <text x="690" y="235" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">金丝峡</text>
+          <text x="690" y="278" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D1 全天</text>
         </g>
         <!-- 节点：漫川关 -->
         <g class="rm-node n3">
-          <circle cx="510" cy="215" r="8.5" fill="#B85A35"/>
-          <circle cx="510" cy="215" r="3.5" fill="#FCF4EC"/>
-          <text x="510" y="195" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">漫川关</text>
-          <text x="510" y="238" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 上午</text>
+          <circle cx="490" cy="215" r="8.5" fill="#B85A35"/>
+          <circle cx="490" cy="215" r="3.5" fill="#FCF4EC"/>
+          <text x="490" y="195" text-anchor="middle" class="rm-label" font-size="12.5" font-weight="600" fill="#5C3A28">漫川关</text>
+          <text x="490" y="238" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 上午</text>
         </g>
         <!-- 节点：西安（终点A线） -->
         <g class="rm-node n4">
-          <circle cx="900" cy="75" r="13" fill="#5C3A28"/>
-          <circle cx="900" cy="75" r="5.5" fill="#FCF4EC"/>
-          <circle cx="900" cy="75" r="20" fill="url(#rmGlow)" opacity=".4"/>
-          <text x="900" y="52" text-anchor="middle" class="rm-label" font-size="14" font-weight="700" fill="#5C3A28">西 安</text>
-          <text x="900" y="98" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 下午抵达</text>
+          <circle cx="100" cy="75" r="13" fill="#5C3A28"/>
+          <circle cx="100" cy="75" r="5.5" fill="#FCF4EC"/>
+          <circle cx="100" cy="75" r="20" fill="url(#rmGlow)" opacity=".4"/>
+          <text x="100" y="52" text-anchor="middle" class="rm-label" font-size="14" font-weight="700" fill="#5C3A28">西 安</text>
+          <text x="100" y="98" text-anchor="middle" class="rm-day" font-size="10.5" fill="#8E4A2F">D2 下午抵达</text>
         </g>
 
         <!-- A 线标签 -->
-        <g transform="translate(70, 60)">
+        <g transform="translate(930, 60)">
           <rect x="0" y="0" width="160" height="26" rx="13" fill="#fff" stroke="#B85A35" stroke-width="1.5"/>
           <text x="80" y="17" text-anchor="middle" font-size="12" fill="#B85A35" font-weight="700" letter-spacing="1">A 线 · 商洛红叶经典（2 日）</text>
         </g>
 
         <!-- ===== 路线 B（金黄，1—2 日）: 西安 → 圭峰山 → 太平/翠华山 ===== -->
         <path class="route-line" stroke="url(#rmLineB)" stroke-width="4" fill="none" stroke-linecap="round"
-              d="M855 115 Q 790 155 755 178 Q 715 198 685 210 Q 655 220 625 228"/>
+              d="M 145 115 Q 210 155 245 178 Q 285 198 315 210 Q 345 220 375 228"/>
         <path stroke="#fff" stroke-width="1.2" stroke-dasharray="5 7" fill="none" stroke-linecap="round" opacity=".55"
-              d="M855 115 Q 790 155 755 178 Q 715 198 685 210 Q 655 220 625 228"/>
+              d="M 145 115 Q 210 155 245 178 Q 285 198 315 210 Q 345 220 375 228"/>
 
         <g class="rm-node n2">
-          <circle cx="855" cy="115" r="7" fill="#E89A3C"/>
-          <circle cx="855" cy="115" r="3" fill="#FCF4EC"/>
-          <text x="855" y="138" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">西安</text>
+          <circle cx="145" cy="115" r="7" fill="#E89A3C"/>
+          <circle cx="145" cy="115" r="3" fill="#FCF4EC"/>
+          <text x="145" y="138" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">西安</text>
         </g>
         <g class="rm-node n3">
-          <circle cx="755" cy="178" r="7" fill="#E89A3C"/>
-          <circle cx="755" cy="178" r="3" fill="#FCF4EC"/>
-          <text x="755" y="158" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">圭峰山</text>
+          <circle cx="245" cy="178" r="7" fill="#E89A3C"/>
+          <circle cx="245" cy="178" r="3" fill="#FCF4EC"/>
+          <text x="245" y="158" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">圭峰山</text>
         </g>
         <g class="rm-node n4">
-          <circle cx="625" cy="228" r="7" fill="#E89A3C"/>
-          <circle cx="625" cy="228" r="3" fill="#FCF4EC"/>
-          <text x="625" y="252" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">太平 / 翠华山</text>
+          <circle cx="375" cy="228" r="7" fill="#E89A3C"/>
+          <circle cx="375" cy="228" r="3" fill="#FCF4EC"/>
+          <text x="375" y="252" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">太平 / 翠华山</text>
         </g>
 
         <!-- B 线标签 -->
-        <g transform="translate(740, 60)">
+        <g transform="translate(260, 60)">
           <rect x="0" y="0" width="180" height="26" rx="13" fill="#fff" stroke="#E89A3C" stroke-width="1.5"/>
           <text x="90" y="17" text-anchor="middle" font-size="12" fill="#C4704F" font-weight="700" letter-spacing="1">B 线 · 终南山秋色（1—2 日）</text>
         </g>
 
         <!-- ===== 路线 C（深棕，3—4 日环线）: 西安 → 太白 → 黄柏塬 → 留坝 → 汉中 → 十堰 ===== -->
         <path class="route-line" stroke="url(#rmLineC)" stroke-width="3.5" fill="none" stroke-linecap="round"
-              d="M830 95 Q 740 55 670 65 Q 580 78 520 115 Q 455 155 390 188 Q 310 225 240 270 Q 175 300 115 312"/>
+              d="M 170 95 Q 260 55 330 65 Q 420 78 480 115 Q 545 155 610 188 Q 690 225 760 270 Q 825 300 885 312"/>
         <path stroke="#fff" stroke-width="1" stroke-dasharray="4 6" fill="none" stroke-linecap="round" opacity=".45"
-              d="M830 95 Q 740 55 670 65 Q 580 78 520 115 Q 455 155 390 188 Q 310 225 240 270 Q 175 300 115 312"/>
+              d="M 170 95 Q 260 55 330 65 Q 420 78 480 115 Q 545 155 610 188 Q 690 225 760 270 Q 825 300 885 312"/>
 
         <g class="rm-node n3">
-          <circle cx="670" cy="65" r="7" fill="#5C3A28"/>
-          <circle cx="670" cy="65" r="3" fill="#FCF4EC"/>
-          <text x="670" y="47" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">太白·黄柏塬</text>
+          <circle cx="330" cy="65" r="7" fill="#5C3A28"/>
+          <circle cx="330" cy="65" r="3" fill="#FCF4EC"/>
+          <text x="330" y="47" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">太白·黄柏塬</text>
         </g>
         <g class="rm-node n4">
-          <circle cx="520" cy="115" r="7" fill="#5C3A28"/>
-          <circle cx="520" cy="115" r="3" fill="#FCF4EC"/>
-          <text x="520" y="97" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">留坝·紫柏山</text>
+          <circle cx="480" cy="115" r="7" fill="#5C3A28"/>
+          <circle cx="480" cy="115" r="3" fill="#FCF4EC"/>
+          <text x="480" y="97" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">留坝·紫柏山</text>
         </g>
         <g class="rm-node n5">
-          <circle cx="390" cy="188" r="7" fill="#5C3A28"/>
-          <circle cx="390" cy="188" r="3" fill="#FCF4EC"/>
-          <text x="390" y="210" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">汉中</text>
+          <circle cx="610" cy="188" r="7" fill="#5C3A28"/>
+          <circle cx="610" cy="188" r="3" fill="#FCF4EC"/>
+          <text x="610" y="210" text-anchor="middle" class="rm-label" font-size="12" font-weight="600" fill="#5C3A28">汉中</text>
         </g>
         <g class="rm-node n6">
-          <circle cx="240" cy="270" r="7" fill="#5C3A28"/>
-          <circle cx="240" cy="270" r="3" fill="#FCF4EC"/>
-          <text x="240" y="292" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">安康方向</text>
+          <circle cx="760" cy="270" r="7" fill="#5C3A28"/>
+          <circle cx="760" cy="270" r="3" fill="#FCF4EC"/>
+          <text x="760" y="292" text-anchor="middle" class="rm-label" font-size="11.5" font-weight="600" fill="#5C3A28">安康方向</text>
         </g>
 
         <!-- C 线标签 -->
-        <g transform="translate(380, 55)">
+        <g transform="translate(620, 55)">
           <rect x="0" y="0" width="200" height="26" rx="13" fill="#fff" stroke="#5C3A28" stroke-width="1.5"/>
           <text x="100" y="17" text-anchor="middle" font-size="12" fill="#5C3A28" font-weight="700" letter-spacing="1">C 线 · 秦岭西段深度环线（3—4 日）</text>
         </g>
 
         <!-- 装饰枫叶 -->
         <g>
-          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#C4704F" opacity=".4" transform="translate(30,300) scale(.8)"/>
-          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E89A3C" opacity=".35" transform="translate(960,320) scale(.7)"/>
-          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#F5DE81" opacity=".3" transform="translate(500,60) scale(.6)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#C4704F" opacity=".4" transform="translate(970, 300) scale(.8)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#E89A3C" opacity=".35" transform="translate(40, 320) scale(.7)"/>
+          <path d="M0 0 l 2 5 6 -1 -1 6 5 3 -5 4 2 6 -6 -1 -2 6 -2 -6 -6 1 2 -6 -5 -4 5 -3 -1 -6 6 1 z" fill="#F5DE81" opacity=".3" transform="translate(500, 60) scale(.6)"/>
         </g>
 
         <!-- 图例（底部） -->
         <g transform="translate(500, 340)">
-          <g transform="translate(-200, 0)">
+          <g transform="translate(1200, 0)">
             <circle cx="-10" cy="0" r="5" fill="#B85A35"/>
             <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">A 线 2 日 · 商洛方向</text>
           </g>
@@ -1649,7 +1649,7 @@ footer .fin{font-family:var(--display);font-size:19px;color:var(--ink);margin-bo
             <circle cx="-10" cy="0" r="5" fill="#E89A3C"/>
             <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">B 线 1—2 日 · 终南山</text>
           </g>
-          <g transform="translate(220, 0)">
+          <g transform="translate(780, 0)">
             <circle cx="-10" cy="0" r="5" fill="#5C3A28"/>
             <text x="2" y="4" font-size="11" fill="#5C3A28" font-weight="600">C 线 3—4 日 · 西段大环线</text>
           </g>
