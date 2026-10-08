@@ -53,7 +53,7 @@
 
   /* ===== 布局 ===== */
   .wrap{
-    max-width:1080px;
+    max-width:920px;
     margin:0 auto;
     padding:56px 28px 80px;
   }
@@ -162,7 +162,7 @@
     display:flex;
     align-items:center;
     gap:14px;
-    margin-bottom:20px;
+    margin-bottom:4px;
   }
   .section-head h2{
     font-size:20px;
@@ -191,36 +191,37 @@
   #travel .section-head .bar{background:var(--travel)}
   #drive-film .section-head .bar{background:var(--drive)}
 
-  /* ===== 卡片网格（blog 分格） ===== */
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:16px;
+  /* ===== 列表式（单列·每行一篇） ===== */
+  .list{
+    display:flex;
+    flex-direction:column;
+    border-top:1px solid var(--border);
   }
-  .card{
+  .item{
     display:block;
     text-decoration:none;
     color:inherit;
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius-lg);
-    padding:18px 18px 16px;
-    transition:all .25s ease;
+    padding:18px 4px;
+    border-bottom:1px solid var(--border);
+    transition:background .2s;
     position:relative;
   }
-  .card:hover{
-    transform:translateY(-2px);
-    border-color:var(--border-strong);
-    box-shadow:0 8px 24px -12px rgba(43,35,23,.15);
+  .item:hover{
+    background:var(--surface);
   }
-  .card-tag{
+  .item-row{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+  }
+  .item-tag{
+    flex-shrink:0;
     display:inline-block;
     font-size:11.5px;
     padding:3px 9px;
     border-radius:6px;
     letter-spacing:.3px;
     font-weight:500;
-    margin-bottom:10px;
   }
   /* 标签色（低饱和浅底 + 深字） */
   .tag-tech{color:var(--tech);background:var(--tech-bg);border:1px solid var(--tech-border)}
@@ -229,48 +230,35 @@
   .tag-drive{color:var(--drive);background:var(--drive-bg);border:1px solid var(--drive-border)}
   .tag-film{color:var(--film);background:var(--film-bg);border:1px solid var(--film-border)}
 
-  .card-title{
-    font-size:15px;
+  .item-title{
+    flex:1;
+    font-size:15.5px;
     font-weight:600;
     line-height:1.5;
-    margin-bottom:8px;
     color:var(--text);
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
+    min-width:0;
   }
-  .card-desc{
+  .item:hover .item-title{
+    color:var(--accent);
+  }
+  .item-date{
+    flex-shrink:0;
+    font-size:12.5px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    padding-top:2px;
+  }
+  .item-desc{
+    margin-left:calc(70px + 14px); /* 标签宽度 + gap */
+    margin-top:6px;
     font-size:13px;
     color:var(--muted);
     line-height:1.6;
     display:-webkit-box;
-    -webkit-line-clamp:2;
+    -webkit-line-clamp:1;
     -webkit-box-orient:vertical;
     overflow:hidden;
-    margin-bottom:12px;
-    min-height:42px;
-  }
-  .card-meta{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:12px;
-    color:var(--faint);
-    padding-top:10px;
-    border-top:1px dashed var(--border);
-  }
-  .card-date{
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    font-variant-numeric:tabular-nums;
-  }
-  .card-arrow{
-    color:var(--faint);
-    transition:transform .2s,color .2s;
-  }
-  .card:hover .card-arrow{
-    color:var(--accent);
-    transform:translateX(2px);
   }
 
   /* ===== 页脚 ===== */
@@ -303,14 +291,21 @@
   }
 
   /* ===== 响应式 ===== */
-  @media (max-width:900px){
-    .grid{grid-template-columns:repeat(2,1fr)}
-  }
-  @media (max-width:640px){
+  @media (max-width:720px){
     .wrap{padding:36px 18px 60px}
-    .grid{grid-template-columns:1fr;gap:14px}
+    .item-row{
+      flex-wrap:wrap;
+      gap:8px 12px;
+    }
+    .item-tag{order:1}
+    .item-title{order:2;flex-basis:100%}
+    .item-date{order:3;margin-left:auto}
+    .item-desc{
+      margin-left:0;
+      margin-top:4px;
+      -webkit-line-clamp:2;
+    }
     .toc{font-size:12.5px;gap:4px 12px;padding:12px 14px}
-    .card-desc{min-height:auto}
     h1{font-size:28px}
   }
   @media (prefers-reduced-motion:reduce){
@@ -353,66 +348,60 @@
         <h2>技术与开发</h2>
         <span class="num">06 篇</span>
       </div>
-      <div class="grid">
+      <div class="list">
 
-        <a class="card" href="jevk5-guide.html">
-          <span class="card-tag tag-tech">本地部署</span>
-          <div class="card-title">JevK5 本地部署指南</div>
-          <div class="card-desc">MacBook Pro M5 · llama.cpp + Metal，含 MLX 版，一次前向即出各选项校准概率。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-10-08</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="jevk5-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">本地部署</span>
+            <div class="item-title">JevK5 本地部署指南</div>
+            <div class="item-date">2026-10-08</div>
           </div>
+          <div class="item-desc">MacBook Pro M5 · llama.cpp + Metal，含 MLX 版，一次前向即出各选项校准概率。</div>
         </a>
 
-        <a class="card" href="netlify-deploy-guide.html">
-          <span class="card-tag tag-tech">技术工具</span>
-          <div class="card-title">Netlify 三种部署模式完全指南</div>
-          <div class="card-desc">从零到上线，三种部署方式全讲解。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-04</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="netlify-deploy-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">技术工具</span>
+            <div class="item-title">Netlify 三种部署模式完全指南</div>
+            <div class="item-date">2026-08-04</div>
           </div>
+          <div class="item-desc">从零到上线，三种部署方式全讲解。</div>
         </a>
 
-        <a class="card" href="ipv6-infographic.html">
-          <span class="card-tag tag-tech">网络科普</span>
-          <div class="card-title">IPv6 一图看懂</div>
-          <div class="card-desc">下一代互联网协议。128 位地址、无需 NAT、内置 IPsec、SLAAC——物联网与未来互联网的基石。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-25</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="ipv6-infographic.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">网络科普</span>
+            <div class="item-title">IPv6 一图看懂</div>
+            <div class="item-date">2026-08-25</div>
           </div>
+          <div class="item-desc">下一代互联网协议。128 位地址、无需 NAT、内置 IPsec、SLAAC——物联网与未来互联网的基石。</div>
         </a>
 
-        <a class="card" href="model-showdown.html">
-          <span class="card-tag tag-tech">大模型对比</span>
-          <div class="card-title">三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</div>
-          <div class="card-desc">2026 年 8 月"上中等"梯队三强对决——指令遵循、综合基准、速度与成本，九场对阵一场平局。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-15</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="model-showdown.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">大模型对比</span>
+            <div class="item-title">三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</div>
+            <div class="item-date">2026-08-15</div>
           </div>
+          <div class="item-desc">2026 年 8 月"上中等"梯队三强对决——指令遵循、综合基准、速度与成本，九场对阵一场平局。</div>
         </a>
 
-        <a class="card" href="kimi-k3-vs-glm-5.2.html">
-          <span class="card-tag tag-tech">大模型对比</span>
-          <div class="card-title">Kimi K3 vs GLM 5.2</div>
-          <div class="card-desc">国产开源大模型巅峰对决，一文看懂差异。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="kimi-k3-vs-glm-5.2.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">大模型对比</span>
+            <div class="item-title">Kimi K3 vs GLM 5.2</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">国产开源大模型巅峰对决，一文看懂差异。</div>
         </a>
 
-        <a class="card" href="vibe-coding.html">
-          <span class="card-tag tag-tech">首页 / 落地页</span>
-          <div class="card-title">随时随地，vibe coding</div>
-          <div class="card-desc">我做的 vibe coding 落地页，打开即见。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="vibe-coding.html">
+          <div class="item-row">
+            <span class="item-tag tag-tech">首页 / 落地页</span>
+            <div class="item-title">随时随地，vibe coding</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">我做的 vibe coding 落地页，打开即见。</div>
         </a>
 
       </div>
@@ -425,46 +414,42 @@
         <h2>思辩与随笔</h2>
         <span class="num">04 篇</span>
       </div>
-      <div class="grid">
+      <div class="list">
 
-        <a class="card" href="yizhangtu-ideal-reality.html">
-          <span class="card-tag tag-think">政务数字化</span>
-          <div class="card-title">一张图的理想与现实</div>
-          <div class="card-desc">政务"一张图"数字化建设思辨长文 · 简洁阅读版。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-10-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="yizhangtu-ideal-reality.html">
+          <div class="item-row">
+            <span class="item-tag tag-think">政务数字化</span>
+            <div class="item-title">一张图的理想与现实</div>
+            <div class="item-date">2026-10-05</div>
           </div>
+          <div class="item-desc">政务"一张图"数字化建设思辨长文 · 简洁阅读版。</div>
         </a>
 
-        <a class="card" href="gaodao-liueshi.html">
-          <span class="card-tag tag-think">易学占筮</span>
-          <div class="card-title">高岛流略筮法 · 起卦步骤</div>
-          <div class="card-desc">卷轴古风易学手册，太极八卦圆阵、六爻爻象逐爻展开、星图隐现与纯SVG动效交织。</div>
-          <div class="card-meta">
-            <span class="card-date">—</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="gaodao-liueshi.html">
+          <div class="item-row">
+            <span class="item-tag tag-think">易学占筮</span>
+            <div class="item-title">高岛流略筮法 · 起卦步骤</div>
+            <div class="item-date">—</div>
           </div>
+          <div class="item-desc">卷轴古风易学手册，太极八卦圆阵、六爻爻象逐爻展开、星图隐现与纯SVG动效交织。</div>
         </a>
 
-        <a class="card" href="laolingdao-4truewords.html">
-          <span class="card-tag tag-think">职场随笔</span>
-          <div class="card-title">四句真话，读懂职场的人情与规矩</div>
-          <div class="card-desc">技术只是入场券，做人才是护身符。老李在烧烤摊教给技术总工的四句职场真话。</div>
-          <div class="card-meta">
-            <span class="card-date">—</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="laolingdao-4truewords.html">
+          <div class="item-row">
+            <span class="item-tag tag-think">职场随笔</span>
+            <div class="item-title">四句真话，读懂职场的人情与规矩</div>
+            <div class="item-date">—</div>
           </div>
+          <div class="item-desc">技术只是入场券，做人才是护身符。老李在烧烤摊教给技术总工的四句职场真话。</div>
         </a>
 
-        <a class="card" href="zhengdao-chengshi.html">
-          <span class="card-tag tag-think">职场随笔</span>
-          <div class="card-title">走正道的人，为什么成事更难？</div>
-          <div class="card-desc">宏哥说管理 · 五现象四机制三路径，从「立身之本」到「成事之器」的结构化突围。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-10-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="zhengdao-chengshi.html">
+          <div class="item-row">
+            <span class="item-tag tag-think">职场随笔</span>
+            <div class="item-title">走正道的人，为什么成事更难？</div>
+            <div class="item-date">2026-10-05</div>
           </div>
+          <div class="item-desc">宏哥说管理 · 五现象四机制三路径，从「立身之本」到「成事之器」的结构化突围。</div>
         </a>
 
       </div>
@@ -477,86 +462,78 @@
         <h2>云南旅行</h2>
         <span class="num">08 篇</span>
       </div>
-      <div class="grid">
+      <div class="list">
 
-        <a class="card" href="yunnan-travel-guide.html">
-          <span class="card-tag tag-travel">云南旅游</span>
-          <div class="card-title">云南 · 大理丽江沙溪旅行攻略合集</div>
-          <div class="card-desc">7 张实用手帖打包：丽江古城漫游+美食、洱海环湖13景+3条路线、沙溪古镇慢行全指南。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-24</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="yunnan-travel-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">云南旅游</span>
+            <div class="item-title">云南 · 大理丽江沙溪旅行攻略合集</div>
+            <div class="item-date">2026-08-24</div>
           </div>
+          <div class="item-desc">7 张实用手帖打包：丽江古城漫游+美食、洱海环湖13景+3条路线、沙溪古镇慢行全指南。</div>
         </a>
 
-        <a class="card" href="erhai-full.html">
-          <span class="card-tag tag-travel">大理洱海</span>
-          <div class="card-title">环湖攻略 · 完整版</div>
-          <div class="card-desc">洱海环湖全攻略，路线景点一次到位。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="erhai-full.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">大理洱海</span>
+            <div class="item-title">环湖攻略 · 完整版</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">洱海环湖全攻略，路线景点一次到位。</div>
         </a>
 
-        <a class="card" href="erhai-detailed-guide.html">
-          <span class="card-tag tag-travel">大理洱海</span>
-          <div class="card-title">洱海 · 景点详细攻略</div>
-          <div class="card-desc">洱海景点详细拆解，深度游必备。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="erhai-detailed-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">大理洱海</span>
+            <div class="item-title">洱海 · 景点详细攻略</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">洱海景点详细拆解，深度游必备。</div>
         </a>
 
-        <a class="card" href="erhai-east.html">
-          <span class="card-tag tag-travel">大理洱海</span>
-          <div class="card-title">东线 · 海东秘境攻略</div>
-          <div class="card-desc">东线海东秘境，避开人潮的小众玩法。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="erhai-east.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">大理洱海</span>
+            <div class="item-title">东线 · 海东秘境攻略</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">东线海东秘境，避开人潮的小众玩法。</div>
         </a>
 
-        <a class="card" href="shaxi-dense-morandi.html">
-          <span class="card-tag tag-travel">沙溪古镇</span>
-          <div class="card-title">莫兰迪手账</div>
-          <div class="card-desc">沙溪古镇莫兰迪色系手账风页面。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="shaxi-dense-morandi.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">沙溪古镇</span>
+            <div class="item-title">莫兰迪手账</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">沙溪古镇莫兰迪色系手账风页面。</div>
         </a>
 
-        <a class="card" href="shaxi-bento-craft.html">
-          <span class="card-tag tag-travel">沙溪古镇</span>
-          <div class="card-title">手绘网格</div>
-          <div class="card-desc">沙溪古镇手绘网格风，手账感十足。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="shaxi-bento-craft.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">沙溪古镇</span>
+            <div class="item-title">手绘网格</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">沙溪古镇手绘网格风，手账感十足。</div>
         </a>
 
-        <a class="card" href="shaxi-roadmap-watercolor.html">
-          <span class="card-tag tag-travel">沙溪古镇</span>
-          <div class="card-title">水彩路线图</div>
-          <div class="card-desc">沙溪古镇水彩风路线图，一眼看懂怎么逛。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="shaxi-roadmap-watercolor.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">沙溪古镇</span>
+            <div class="item-title">水彩路线图</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">沙溪古镇水彩风路线图，一眼看懂怎么逛。</div>
         </a>
 
-        <a class="card" href="guizhou-travel.html">
-          <span class="card-tag tag-travel">贵州旅游</span>
-          <div class="card-title">多彩贵州 · 山水人文全指南</div>
-          <div class="card-desc">贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="guizhou-travel.html">
+          <div class="item-row">
+            <span class="item-tag tag-travel">贵州旅游</span>
+            <div class="item-title">多彩贵州 · 山水人文全指南</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</div>
         </a>
 
       </div>
@@ -569,36 +546,33 @@
         <h2>自驾与影视</h2>
         <span class="num">03 篇</span>
       </div>
-      <div class="grid">
+      <div class="list">
 
-        <a class="card" href="shiyan-xian-guide.html">
-          <span class="card-tag tag-drive">自驾攻略</span>
-          <div class="card-title">十堰 → 西安 自驾全攻略</div>
-          <div class="card-desc">一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-05</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="shiyan-xian-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-drive">自驾攻略</span>
+            <div class="item-title">十堰 → 西安 自驾全攻略</div>
+            <div class="item-date">2026-08-05</div>
           </div>
+          <div class="item-desc">一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</div>
         </a>
 
-        <a class="card" href="tiandao-guide.html">
-          <span class="card-tag tag-film">影视下载</span>
-          <div class="card-title">《天道》完整下载指南</div>
-          <div class="card-desc">导演张前、王志文主演，豆瓣 9.2，网盘+磁力全源实测有效。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-15</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="tiandao-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-film">影视下载</span>
+            <div class="item-title">《天道》完整下载指南</div>
+            <div class="item-date">2026-08-15</div>
           </div>
+          <div class="item-desc">导演张前、王志文主演，豆瓣 9.2，网盘+磁力全源实测有效。</div>
         </a>
 
-        <a class="card" href="tiandao-xiaoyawen.html">
-          <span class="card-tag tag-film">影视赏析</span>
-          <div class="card-title">《天道》肖亚文台词 · 语言艺术深度分析</div>
-          <div class="card-desc">14 条经典台词逐条拆解，水墨禅意风格。分寸感与留白的语言艺术。</div>
-          <div class="card-meta">
-            <span class="card-date">2026-08-21</span>
-            <svg class="card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        <a class="item" href="tiandao-xiaoyawen.html">
+          <div class="item-row">
+            <span class="item-tag tag-film">影视赏析</span>
+            <div class="item-title">《天道》肖亚文台词 · 语言艺术深度分析</div>
+            <div class="item-date">2026-08-21</div>
           </div>
+          <div class="item-desc">14 条经典台词逐条拆解，水墨禅意风格。分寸感与留白的语言艺术。</div>
         </a>
 
       </div>
@@ -613,7 +587,7 @@
 
 <script>
   document.getElementById('total').textContent =
-    document.querySelectorAll('.card').length;
+    document.querySelectorAll('.item').length;
 </script>
 </body>
 </html>
