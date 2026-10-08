@@ -18,42 +18,14 @@
     --muted:#6B6151;         /* 次级文字 */
     --faint:#A29988;         /* 更淡辅助 */
 
-    /* 栏目主色（低饱和莫兰迪） */
-    --tech:#2F5D6B;          /* 技术：青墨 */
-    --tech-bg:#E3ECEE;
-    --tech-border:#B8CDD2;
-    --think:#644A78;         /* 思辨：酱紫 */
-    --think-bg:#E8E1EE;
-    --think-border:#CDBFD8;
-    --travel:#4E6B45;        /* 旅行：苔绿 */
-    --travel-bg:#E1E9DD;
-    --travel-border:#BCCEB4;
-    --film:#8A3E4E;          /* 影视：曙红 */
-    --film-bg:#ECDDDF;
-    --film-border:#D4B6BC;
+    /* 栏目主色（标题用·低饱和不刺眼） */
+    --tech-title:#A33428;       /* 技术：砖红/朱砂 */
+    --think-title:#6B4E7A;      /* 思辨：香芋酱紫（沉静） */
+    --travel-title:#4A6B45;     /* 旅行：苔绿/深青绿 */
+    --film-title:#1A1610;       /* 影视：近墨炭黑 */
 
-    /* 技术子类（青墨系） */
-    --tag-deploy:#285460;  --tag-deploy-bg:#DCE7EA;  --tag-deploy-bd:#AFC7CC;
-    --tag-tool:#30616E;    --tag-tool-bg:#DFE9EC;    --tag-tool-bd:#B3C9CE;
-    --tag-net:#3A6D7A;     --tag-net-bg:#E2EBEF;     --tag-net-bd:#B8CCD1;
-    --tag-model:#33627E;   --tag-model-bg:#DDE7ED;   --tag-model-bd:#AEC6D3;
-    --tag-landing:#48646D; --tag-landing-bg:#E0E6E8; --tag-landing-bd:#B9C6CB;
-
-    /* 思辨子类（酱紫系） */
-    --tag-gov:#5E4272;     --tag-gov-bg:#E5DDEC;     --tag-gov-bd:#C5B4D1;
-    --tag-yi:#6E4E63;      --tag-yi-bg:#E7DFE5;      --tag-yi-bd:#C8B8C3;
-    --tag-work:#5C4E70;    --tag-work-bg:#E4DEEC;    --tag-work-bd:#C3B7D0;
-
-    /* 旅行子类（苔绿系 + 赭石自驾） */
-    --tag-yunnan:#45663E;  --tag-yunnan-bg:#DCE5D9;  --tag-yunnan-bd:#B2C5AB;
-    --tag-erhai:#4E7A5D;   --tag-erhai-bg:#DAE4DE;   --tag-erhai-bd:#AEC6B7;
-    --tag-shaxi:#5E7140;   --tag-shaxi-bg:#E1E5D6;   --tag-shaxi-bd:#BCC4A8;
-    --tag-guizhou:#3D624E; --tag-guizhou-bg:#D8E2DD; --tag-guizhou-bd:#A9BFB4;
-    --tag-drive:#8C582D;   --tag-drive-bg:#EEDFCB;   --tag-drive-bd:#D4B890;
-
-    /* 影视子类（曙红系） */
-    --tag-dl:#7D3746;      --tag-dl-bg:#E8D6D9;      --tag-dl-bd:#CCA9AF;
-    --tag-crit:#8C4554;    --tag-crit-bg:#E9D9DD;    --tag-crit-bd:#D1B1B8;
+    /* 统一中性色（标签/日期/简介整页统一，不随栏目变色） */
+    --tag-text:#6B6151;         /* #标签文字色，与 muted 同级 */
 
     --accent:#A33428;      /* 朱砂，更收敛 */
     --accent-bg:#F2DED8;
@@ -263,10 +235,10 @@
     border-radius:50%;
     flex-shrink:0;
   }
-  .toc a[href="#tech"]::before{background:var(--tech)}
-  .toc a[href="#think"]::before{background:var(--think)}
-  .toc a[href="#travel"]::before{background:var(--travel)}
-  .toc a[href="#drive-film"]::before{background:var(--film)}
+  .toc a[href="#tech"]::before{background:var(--tech-title)}
+  .toc a[href="#think"]::before{background:var(--think-title)}
+  .toc a[href="#travel"]::before{background:var(--travel-title)}
+  .toc a[href="#drive-film"]::before{background:var(--film-title)}
   .toc a:hover{color:var(--text);border-bottom-color:var(--text)}
   .toc .count{
     color:var(--faint);
@@ -300,10 +272,10 @@
     align-self:end;
     padding-bottom:2px;
   }
-  #tech .section-num{color:var(--tech)}
-  #think .section-num{color:var(--think)}
-  #travel .section-num{color:var(--travel)}
-  #drive-film .section-num{color:var(--film)}
+  #tech .section-num{color:var(--tech-title)}
+  #think .section-num{color:var(--think-title)}
+  #travel .section-num{color:var(--travel-title)}
+  #drive-film .section-num{color:var(--film-title)}
 
   .section-title-wrap{
     display:flex;
@@ -316,8 +288,11 @@
     font-weight:700;
     letter-spacing:.5px;
     font-family:"Noto Serif SC","Songti SC",serif;
-    color:var(--text);
   }
+  #tech .section-title-wrap h2{color:var(--tech-title)}
+  #think .section-title-wrap h2{color:var(--think-title)}
+  #travel .section-title-wrap h2{color:var(--travel-title)}
+  #drive-film .section-title-wrap h2{color:var(--film-title)}
   .section-sub{
     font-size:10.5px;
     letter-spacing:3px;
@@ -369,42 +344,34 @@
   .item-tag{
     flex-shrink:0;
     display:inline-block;
-    font-size:11px;
-    padding:3px 8px;
-    border-radius:3px;
-    letter-spacing:.3px;
+    font-size:12px;
+    letter-spacing:.2px;
     font-weight:500;
+    color:var(--tag-text);
+    padding:0;
+    background:transparent;
+    border:none;
+    font-family:"Noto Serif SC","PingFang SC",serif;
   }
-  /* 标签色 */
-  .tag-deploy   {color:var(--tag-deploy);  background:var(--tag-deploy-bg);  border:1px solid var(--tag-deploy-bd)}
-  .tag-tool     {color:var(--tag-tool);    background:var(--tag-tool-bg);    border:1px solid var(--tag-tool-bd)}
-  .tag-net      {color:var(--tag-net);     background:var(--tag-net-bg);     border:1px solid var(--tag-net-bd)}
-  .tag-model    {color:var(--tag-model);   background:var(--tag-model-bg);   border:1px solid var(--tag-model-bd)}
-  .tag-landing  {color:var(--tag-landing); background:var(--tag-landing-bg); border:1px solid var(--tag-landing-bd)}
-  .tag-gov      {color:var(--tag-gov);     background:var(--tag-gov-bg);     border:1px solid var(--tag-gov-bd)}
-  .tag-yi       {color:var(--tag-yi);      background:var(--tag-yi-bg);      border:1px solid var(--tag-yi-bd)}
-  .tag-work     {color:var(--tag-work);    background:var(--tag-work-bg);    border:1px solid var(--tag-work-bd)}
-  .tag-yunnan   {color:var(--tag-yunnan);  background:var(--tag-yunnan-bg);  border:1px solid var(--tag-yunnan-bd)}
-  .tag-erhai    {color:var(--tag-erhai);   background:var(--tag-erhai-bg);   border:1px solid var(--tag-erhai-bd)}
-  .tag-shaxi    {color:var(--tag-shaxi);   background:var(--tag-shaxi-bg);   border:1px solid var(--tag-shaxi-bd)}
-  .tag-guizhou  {color:var(--tag-guizhou); background:var(--tag-guizhou-bg); border:1px solid var(--tag-guizhou-bd)}
-  .tag-drive    {color:var(--tag-drive);   background:var(--tag-drive-bg);   border:1px solid var(--tag-drive-bd)}
-  .tag-dl       {color:var(--tag-dl);      background:var(--tag-dl-bg);      border:1px solid var(--tag-dl-bd)}
-  .tag-crit     {color:var(--tag-crit);    background:var(--tag-crit-bg);    border:1px solid var(--tag-crit-bd)}
 
   .item-title{
     font-size:17px;
     font-weight:600;
     line-height:1.55;
-    color:var(--accent);
     min-width:0;
     transition:color .15s;
     font-family:"Noto Serif SC","PingFang SC",serif;
     letter-spacing:.2px;
   }
-  .item:hover .item-title{
-    color:#7E281D;
-  }
+  /* 各栏目条目标题用对应栏目色 */
+  #tech .item-title{color:var(--tech-title)}
+  #think .item-title{color:var(--think-title)}
+  #travel .item-title{color:var(--travel-title)}
+  #drive-film .item-title{color:var(--film-title)}
+  #tech .item:hover .item-title{color:#7E281D}
+  #think .item:hover .item-title{color:#4E395A}
+  #travel .item:hover .item-title{color:#365033}
+  #drive-film .item:hover .item-title{color:#000}
   .item-date{
     flex-shrink:0;
     font-size:12px;
@@ -557,7 +524,7 @@
 
         <a class="item" href="jevk5-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-deploy">本地部署</span>
+            <span class="item-tag tag-deploy">#本地部署</span>
             <div class="item-title">JevK5 本地部署指南</div>
             <div class="item-date"><span class="badge-new">NEW</span>2026-10-08</div>
           </div>
@@ -566,7 +533,7 @@
 
         <a class="item" href="netlify-deploy-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-tool">技术工具</span>
+            <span class="item-tag tag-tool">#技术工具</span>
             <div class="item-title">Netlify 三种部署模式完全指南</div>
             <div class="item-date">2026-08-04</div>
           </div>
@@ -575,7 +542,7 @@
 
         <a class="item" href="ipv6-infographic.html">
           <div class="item-row">
-            <span class="item-tag tag-net">网络科普</span>
+            <span class="item-tag tag-net">#网络科普</span>
             <div class="item-title">IPv6 一图看懂</div>
             <div class="item-date">2026-08-25</div>
           </div>
@@ -584,7 +551,7 @@
 
         <a class="item" href="model-showdown.html">
           <div class="item-row">
-            <span class="item-tag tag-model">大模型对比</span>
+            <span class="item-tag tag-model">#大模型对比</span>
             <div class="item-title">三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</div>
             <div class="item-date">2026-08-15</div>
           </div>
@@ -593,7 +560,7 @@
 
         <a class="item" href="kimi-k3-vs-glm-5.2.html">
           <div class="item-row">
-            <span class="item-tag tag-model">大模型对比</span>
+            <span class="item-tag tag-model">#大模型对比</span>
             <div class="item-title">Kimi K3 vs GLM 5.2</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -602,7 +569,7 @@
 
         <a class="item" href="vibe-coding.html">
           <div class="item-row">
-            <span class="item-tag tag-landing">首页 / 落地页</span>
+            <span class="item-tag tag-landing">#首页 / 落地页</span>
             <div class="item-title">随时随地，vibe coding</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -626,7 +593,7 @@
 
         <a class="item" href="yizhangtu-ideal-reality.html">
           <div class="item-row">
-            <span class="item-tag tag-gov">政务数字化</span>
+            <span class="item-tag tag-gov">#政务数字化</span>
             <div class="item-title">一张图的理想与现实</div>
             <div class="item-date"><span class="badge-new">NEW</span>2026-10-05</div>
           </div>
@@ -635,7 +602,7 @@
 
         <a class="item" href="gaodao-liueshi.html">
           <div class="item-row">
-            <span class="item-tag tag-yi">易学占筮</span>
+            <span class="item-tag tag-yi">#易学占筮</span>
             <div class="item-title">高岛流略筮法 · 起卦步骤</div>
             <div class="item-date">—</div>
           </div>
@@ -644,7 +611,7 @@
 
         <a class="item" href="laolingdao-4truewords.html">
           <div class="item-row">
-            <span class="item-tag tag-work">职场随笔</span>
+            <span class="item-tag tag-work">#职场随笔</span>
             <div class="item-title">四句真话，读懂职场的人情与规矩</div>
             <div class="item-date">—</div>
           </div>
@@ -653,7 +620,7 @@
 
         <a class="item" href="zhengdao-chengshi.html">
           <div class="item-row">
-            <span class="item-tag tag-work">职场随笔</span>
+            <span class="item-tag tag-work">#职场随笔</span>
             <div class="item-title">走正道的人，为什么成事更难？</div>
             <div class="item-date"><span class="badge-new">NEW</span>2026-10-05</div>
           </div>
@@ -677,7 +644,7 @@
 
         <a class="item" href="yunnan-travel-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-yunnan">云南旅游</span>
+            <span class="item-tag tag-yunnan">#云南旅游</span>
             <div class="item-title">云南 · 大理丽江沙溪旅行攻略合集</div>
             <div class="item-date">2026-08-24</div>
           </div>
@@ -686,7 +653,7 @@
 
         <a class="item" href="erhai-full.html">
           <div class="item-row">
-            <span class="item-tag tag-erhai">大理洱海</span>
+            <span class="item-tag tag-erhai">#大理洱海</span>
             <div class="item-title">环湖攻略 · 完整版</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -695,7 +662,7 @@
 
         <a class="item" href="erhai-detailed-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-erhai">大理洱海</span>
+            <span class="item-tag tag-erhai">#大理洱海</span>
             <div class="item-title">洱海 · 景点详细攻略</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -704,7 +671,7 @@
 
         <a class="item" href="erhai-east.html">
           <div class="item-row">
-            <span class="item-tag tag-erhai">大理洱海</span>
+            <span class="item-tag tag-erhai">#大理洱海</span>
             <div class="item-title">东线 · 海东秘境攻略</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -713,7 +680,7 @@
 
         <a class="item" href="shaxi-dense-morandi.html">
           <div class="item-row">
-            <span class="item-tag tag-shaxi">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">#沙溪古镇</span>
             <div class="item-title">莫兰迪手账</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -722,7 +689,7 @@
 
         <a class="item" href="shaxi-bento-craft.html">
           <div class="item-row">
-            <span class="item-tag tag-shaxi">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">#沙溪古镇</span>
             <div class="item-title">手绘网格</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -731,7 +698,7 @@
 
         <a class="item" href="shaxi-roadmap-watercolor.html">
           <div class="item-row">
-            <span class="item-tag tag-shaxi">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">#沙溪古镇</span>
             <div class="item-title">水彩路线图</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -740,7 +707,7 @@
 
         <a class="item" href="guizhou-travel.html">
           <div class="item-row">
-            <span class="item-tag tag-guizhou">贵州旅游</span>
+            <span class="item-tag tag-guizhou">#贵州旅游</span>
             <div class="item-title">多彩贵州 · 山水人文全指南</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -749,7 +716,7 @@
 
         <a class="item" href="shiyan-xian-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-drive">自驾攻略</span>
+            <span class="item-tag tag-drive">#自驾攻略</span>
             <div class="item-title">十堰 → 西安 自驾全攻略</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -773,7 +740,7 @@
 
         <a class="item" href="tiandao-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-dl">影视下载</span>
+            <span class="item-tag tag-dl">#影视下载</span>
             <div class="item-title">《天道》完整下载指南</div>
             <div class="item-date">2026-08-15</div>
           </div>
@@ -782,7 +749,7 @@
 
         <a class="item" href="tiandao-xiaoyawen.html">
           <div class="item-row">
-            <span class="item-tag tag-crit">影视赏析</span>
+            <span class="item-tag tag-crit">#影视赏析</span>
             <div class="item-title">《天道》肖亚文台词 · 语言艺术深度分析</div>
             <div class="item-date"><span class="badge-new">NEW</span>2026-08-21</div>
           </div>
