@@ -17,24 +17,45 @@
     --muted:#7A6F5E;       /* 次级文字 */
     --faint:#A89E8D;       /* 更淡的辅助色 */
 
-    /* 栏目色（低饱和浅调） */
+    /* 栏目主色（低饱和） */
     --tech:#3B7A8A;        /* 技术：青墨 */
     --tech-bg:#EAF2F4;
     --tech-border:#C8DCE1;
-    --think:#7B5E8A;       /* 思辨：酱紫 */
-    --think-bg:#F0EBF3;
-    --think-border:#D8CCE0;
+    --think:#6F5786;       /* 思辨：酱紫 */
+    --think-bg:#EFEAF3;
+    --think-border:#D5CAE0;
     --travel:#5A7D52;      /* 旅行：苔绿 */
     --travel-bg:#E8EFE5;
     --travel-border:#C8D9C2;
-    --drive:#A06A3C;       /* 自驾：赭石 */
-    --drive-bg:#F4E9DE;
-    --drive-border:#E4CBAF;
-    --film:#9C4A5A;        /* 影视：曙红 */
-    --film-bg:#F3E2E5;
-    --film-border:#E2C0C7;
+    --film:#944555;        /* 影视：曙红 */
+    --film-bg:#F1E0E3;
+    --film-border:#DEC0C6;
+
+    /* 技术子类（青墨系，由深到浅差异化） */
+    --tag-deploy:#2E6B7A;  --tag-deploy-bg:#E4EFF2;  --tag-deploy-bd:#BCD9DF;
+    --tag-tool:#3A7A8A;    --tag-tool-bg:#E8F1F3;    --tag-tool-bd:#C5DCE1;
+    --tag-net:#468796;     --tag-net-bg:#EAF2F4;     --tag-net-bd:#CDDFE3;
+    --tag-model:#3D6F8C;   --tag-model-bg:#E6EEF3;   --tag-model-bd:#BFD3DE;
+    --tag-landing:#54717A; --tag-landing-bg:#E9EEF0; --tag-landing-bd:#CBD5D9;
+
+    /* 思辨子类（酱紫系） */
+    --tag-gov:#6C4F80;     --tag-gov-bg:#ECE6F1;     --tag-gov-bd:#CFBFD9;
+    --tag-yi:#7A5A6D;      --tag-yi-bg:#EFE8ED;      --tag-yi-bd:#D2C2CC;
+    --tag-work:#6A5B7D;    --tag-work-bg:#EDE8F2;    --tag-work-bd:#CDC3D9;
+
+    /* 旅行子类（苔绿系 + 赭石自驾） */
+    --tag-yunnan:#4E7A48;  --tag-yunnan-bg:#E5EEE3;  --tag-yunnan-bd:#BFD3B9;
+    --tag-erhai:#578A6A;   --tag-erhai-bg:#E4EEE8;   --tag-erhai-bd:#BCD9C6;
+    --tag-shaxi:#6A7F4C;   --tag-shaxi-bg:#E9EEE1;   --tag-shaxi-bd:#C7D2B3;
+    --tag-guizhou:#476E5C; --tag-guizhou-bg:#E2ECE7; --tag-guizhou-bd:#B6CDBF;
+    --tag-drive:#9A6436;   --tag-drive-bg:#F3E8DA;   --tag-drive-bd:#E0C4A2;
+
+    /* 影视子类（曙红系） */
+    --tag-dl:#8A3E50;      --tag-dl-bg:#EFDEE2;      --tag-dl-bd:#DAB9C0;
+    --tag-crit:#9A5060;    --tag-crit-bg:#F0E1E4;    --tag-crit-bd:#DDBFC5;
 
     --accent:#B23A2A;      /* 朱砂，用于强调 */
+    --accent-bg:#F8E7E3;
     --radius:10px;
     --radius-lg:14px;
   }
@@ -123,7 +144,20 @@
     text-decoration:none;
     transition:color .2s;
     position:relative;
+    padding-left:12px;
   }
+  .toc a::before{
+    content:"";
+    position:absolute;
+    left:0;top:50%;
+    width:6px;height:6px;
+    border-radius:50%;
+    transform:translateY(-50%);
+  }
+  .toc a[href="#tech"]::before{background:var(--tech)}
+  .toc a[href="#think"]::before{background:var(--think)}
+  .toc a[href="#travel"]::before{background:var(--travel)}
+  .toc a[href="#drive-film"]::before{background:var(--film)}
   .toc a:hover{color:var(--accent)}
   .toc .count{color:var(--faint);font-size:12px;margin-left:2px;font-variant-numeric:tabular-nums}
 
@@ -134,35 +168,54 @@
   .section-head{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:12px;
     margin-bottom:4px;
+    padding:12px 18px;
+    border-radius:8px;
+    border-left:4px solid transparent;
   }
   .section-head h2{
-    font-size:20px;
+    font-size:19px;
     font-weight:700;
     letter-spacing:.3px;
     font-family:"Noto Serif SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;
   }
   .section-head .num{
     font-size:12.5px;
-    color:var(--faint);
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     padding:2px 8px;
-    border:1px solid var(--border);
     border-radius:999px;
-    background:var(--surface);
+    margin-left:auto;
+    font-variant-numeric:tabular-nums;
   }
-  .section-head .bar{
-    width:4px;
-    height:22px;
-    border-radius:2px;
-    flex-shrink:0;
+  /* 各栏目色块 */
+  #tech .section-head{
+    background:var(--tech-bg);
+    border-left-color:var(--tech);
   }
-  /* 各栏目色条 */
-  #tech .section-head .bar{background:var(--tech)}
-  #think .section-head .bar{background:var(--think)}
-  #travel .section-head .bar{background:var(--travel)}
-  #drive-film .section-head .bar{background:var(--film)}
+  #tech .section-head h2{color:var(--tech)}
+  #tech .section-head .num{background:#fff;color:var(--tech);border:1px solid var(--tech-border)}
+
+  #think .section-head{
+    background:var(--think-bg);
+    border-left-color:var(--think);
+  }
+  #think .section-head h2{color:var(--think)}
+  #think .section-head .num{background:#fff;color:var(--think);border:1px solid var(--think-border)}
+
+  #travel .section-head{
+    background:var(--travel-bg);
+    border-left-color:var(--travel);
+  }
+  #travel .section-head h2{color:var(--travel)}
+  #travel .section-head .num{background:#fff;color:var(--travel);border:1px solid var(--travel-border)}
+
+  #drive-film .section-head{
+    background:var(--film-bg);
+    border-left-color:var(--film);
+  }
+  #drive-film .section-head h2{color:var(--film)}
+  #drive-film .section-head .num{background:#fff;color:var(--film);border:1px solid var(--film-border)}
 
   /* ===== 列表式（单列·每行一篇） ===== */
   .list{
@@ -196,12 +249,29 @@
     letter-spacing:.3px;
     font-weight:500;
   }
-  /* 标签色（低饱和浅底 + 深字） */
-  .tag-tech{color:var(--tech);background:var(--tech-bg);border:1px solid var(--tech-border)}
-  .tag-think{color:var(--think);background:var(--think-bg);border:1px solid var(--think-border)}
-  .tag-travel{color:var(--travel);background:var(--travel-bg);border:1px solid var(--travel-border)}
-  .tag-drive{color:var(--drive);background:var(--drive-bg);border:1px solid var(--drive-border)}
-  .tag-film{color:var(--film);background:var(--film-bg);border:1px solid var(--film-border)}
+  /* 标签色（15 个具体标签 · 低饱和浅底深字 · 大类同心跨类可分） */
+  /* 技术类（青墨系） */
+  .tag-deploy   {color:var(--tag-deploy);  background:var(--tag-deploy-bg);  border:1px solid var(--tag-deploy-bd)}
+  .tag-tool     {color:var(--tag-tool);    background:var(--tag-tool-bg);    border:1px solid var(--tag-tool-bd)}
+  .tag-net      {color:var(--tag-net);     background:var(--tag-net-bg);     border:1px solid var(--tag-net-bd)}
+  .tag-model    {color:var(--tag-model);   background:var(--tag-model-bg);   border:1px solid var(--tag-model-bd)}
+  .tag-landing  {color:var(--tag-landing); background:var(--tag-landing-bg); border:1px solid var(--tag-landing-bd)}
+
+  /* 思辨类（酱紫系） */
+  .tag-gov      {color:var(--tag-gov);     background:var(--tag-gov-bg);     border:1px solid var(--tag-gov-bd)}
+  .tag-yi       {color:var(--tag-yi);      background:var(--tag-yi-bg);      border:1px solid var(--tag-yi-bd)}
+  .tag-work     {color:var(--tag-work);    background:var(--tag-work-bg);    border:1px solid var(--tag-work-bd)}
+
+  /* 旅行类（苔绿系） */
+  .tag-yunnan   {color:var(--tag-yunnan);  background:var(--tag-yunnan-bg);  border:1px solid var(--tag-yunnan-bd)}
+  .tag-erhai    {color:var(--tag-erhai);   background:var(--tag-erhai-bg);   border:1px solid var(--tag-erhai-bd)}
+  .tag-shaxi    {color:var(--tag-shaxi);   background:var(--tag-shaxi-bg);   border:1px solid var(--tag-shaxi-bd)}
+  .tag-guizhou  {color:var(--tag-guizhou); background:var(--tag-guizhou-bg); border:1px solid var(--tag-guizhou-bd)}
+  .tag-drive    {color:var(--tag-drive);   background:var(--tag-drive-bg);   border:1px solid var(--tag-drive-bd)}
+
+  /* 影视类（曙红系） */
+  .tag-dl       {color:var(--tag-dl);      background:var(--tag-dl-bg);      border:1px solid var(--tag-dl-bd)}
+  .tag-crit     {color:var(--tag-crit);    background:var(--tag-crit-bg);    border:1px solid var(--tag-crit-bd)}
 
   .item-title{
     flex:1;
@@ -221,6 +291,23 @@
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-variant-numeric:tabular-nums;
     padding-top:2px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  /* 「新」小徽章（朱砂，克制使用） */
+  .badge-new{
+    display:inline-block;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.5px;
+    padding:1px 6px;
+    border-radius:4px;
+    background:var(--accent-bg);
+    color:var(--accent);
+    border:1px solid #E8C0B8;
+    line-height:1.5;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   .item-desc{
     margin-left:calc(70px + 14px); /* 标签宽度 + gap */
@@ -291,7 +378,6 @@
     <!-- ===== 栏目 1：技术与开发 ===== -->
     <section class="section" id="tech">
       <div class="section-head">
-        <span class="bar"></span>
         <h2>技术与开发</h2>
         <span class="num">06 篇</span>
       </div>
@@ -299,16 +385,16 @@
 
         <a class="item" href="jevk5-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">本地部署</span>
+            <span class="item-tag tag-deploy">本地部署</span>
             <div class="item-title">JevK5 本地部署指南</div>
-            <div class="item-date">2026-10-08</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-10-08</div>
           </div>
           <div class="item-desc">MacBook Pro M5 · llama.cpp + Metal，含 MLX 版，一次前向即出各选项校准概率。</div>
         </a>
 
         <a class="item" href="netlify-deploy-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">技术工具</span>
+            <span class="item-tag tag-tool">技术工具</span>
             <div class="item-title">Netlify 三种部署模式完全指南</div>
             <div class="item-date">2026-08-04</div>
           </div>
@@ -317,7 +403,7 @@
 
         <a class="item" href="ipv6-infographic.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">网络科普</span>
+            <span class="item-tag tag-net">网络科普</span>
             <div class="item-title">IPv6 一图看懂</div>
             <div class="item-date">2026-08-25</div>
           </div>
@@ -326,7 +412,7 @@
 
         <a class="item" href="model-showdown.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">大模型对比</span>
+            <span class="item-tag tag-model">大模型对比</span>
             <div class="item-title">三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8</div>
             <div class="item-date">2026-08-15</div>
           </div>
@@ -335,7 +421,7 @@
 
         <a class="item" href="kimi-k3-vs-glm-5.2.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">大模型对比</span>
+            <span class="item-tag tag-model">大模型对比</span>
             <div class="item-title">Kimi K3 vs GLM 5.2</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -344,7 +430,7 @@
 
         <a class="item" href="vibe-coding.html">
           <div class="item-row">
-            <span class="item-tag tag-tech">首页 / 落地页</span>
+            <span class="item-tag tag-landing">首页 / 落地页</span>
             <div class="item-title">随时随地，vibe coding</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -357,7 +443,6 @@
     <!-- ===== 栏目 2：思辩与随笔 ===== -->
     <section class="section" id="think">
       <div class="section-head">
-        <span class="bar"></span>
         <h2>思辩与随笔</h2>
         <span class="num">04 篇</span>
       </div>
@@ -365,16 +450,16 @@
 
         <a class="item" href="yizhangtu-ideal-reality.html">
           <div class="item-row">
-            <span class="item-tag tag-think">政务数字化</span>
+            <span class="item-tag tag-gov">政务数字化</span>
             <div class="item-title">一张图的理想与现实</div>
-            <div class="item-date">2026-10-05</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-10-05</div>
           </div>
           <div class="item-desc">政务"一张图"数字化建设思辨长文 · 简洁阅读版。</div>
         </a>
 
         <a class="item" href="gaodao-liueshi.html">
           <div class="item-row">
-            <span class="item-tag tag-think">易学占筮</span>
+            <span class="item-tag tag-yi">易学占筮</span>
             <div class="item-title">高岛流略筮法 · 起卦步骤</div>
             <div class="item-date">—</div>
           </div>
@@ -383,7 +468,7 @@
 
         <a class="item" href="laolingdao-4truewords.html">
           <div class="item-row">
-            <span class="item-tag tag-think">职场随笔</span>
+            <span class="item-tag tag-work">职场随笔</span>
             <div class="item-title">四句真话，读懂职场的人情与规矩</div>
             <div class="item-date">—</div>
           </div>
@@ -392,9 +477,9 @@
 
         <a class="item" href="zhengdao-chengshi.html">
           <div class="item-row">
-            <span class="item-tag tag-think">职场随笔</span>
+            <span class="item-tag tag-work">职场随笔</span>
             <div class="item-title">走正道的人，为什么成事更难？</div>
-            <div class="item-date">2026-10-05</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-10-05</div>
           </div>
           <div class="item-desc">宏哥说管理 · 五现象四机制三路径，从「立身之本」到「成事之器」的结构化突围。</div>
         </a>
@@ -405,7 +490,6 @@
     <!-- ===== 栏目 3：诗和远方 ===== -->
     <section class="section" id="travel">
       <div class="section-head">
-        <span class="bar"></span>
         <h2>诗和远方</h2>
         <span class="num">09 篇</span>
       </div>
@@ -413,7 +497,7 @@
 
         <a class="item" href="yunnan-travel-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">云南旅游</span>
+            <span class="item-tag tag-yunnan">云南旅游</span>
             <div class="item-title">云南 · 大理丽江沙溪旅行攻略合集</div>
             <div class="item-date">2026-08-24</div>
           </div>
@@ -422,7 +506,7 @@
 
         <a class="item" href="erhai-full.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">大理洱海</span>
+            <span class="item-tag tag-erhai">大理洱海</span>
             <div class="item-title">环湖攻略 · 完整版</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -431,7 +515,7 @@
 
         <a class="item" href="erhai-detailed-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">大理洱海</span>
+            <span class="item-tag tag-erhai">大理洱海</span>
             <div class="item-title">洱海 · 景点详细攻略</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -440,7 +524,7 @@
 
         <a class="item" href="erhai-east.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">大理洱海</span>
+            <span class="item-tag tag-erhai">大理洱海</span>
             <div class="item-title">东线 · 海东秘境攻略</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -449,7 +533,7 @@
 
         <a class="item" href="shaxi-dense-morandi.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">沙溪古镇</span>
             <div class="item-title">莫兰迪手账</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -458,7 +542,7 @@
 
         <a class="item" href="shaxi-bento-craft.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">沙溪古镇</span>
             <div class="item-title">手绘网格</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -467,7 +551,7 @@
 
         <a class="item" href="shaxi-roadmap-watercolor.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">沙溪古镇</span>
+            <span class="item-tag tag-shaxi">沙溪古镇</span>
             <div class="item-title">水彩路线图</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -476,7 +560,7 @@
 
         <a class="item" href="guizhou-travel.html">
           <div class="item-row">
-            <span class="item-tag tag-travel">贵州旅游</span>
+            <span class="item-tag tag-guizhou">贵州旅游</span>
             <div class="item-title">多彩贵州 · 山水人文全指南</div>
             <div class="item-date">2026-08-05</div>
           </div>
@@ -498,7 +582,6 @@
     <!-- ===== 栏目 4：影视 ===== -->
     <section class="section" id="drive-film">
       <div class="section-head">
-        <span class="bar"></span>
         <h2>影视</h2>
         <span class="num">02 篇</span>
       </div>
@@ -506,7 +589,7 @@
 
         <a class="item" href="tiandao-guide.html">
           <div class="item-row">
-            <span class="item-tag tag-film">影视下载</span>
+            <span class="item-tag tag-dl">影视下载</span>
             <div class="item-title">《天道》完整下载指南</div>
             <div class="item-date">2026-08-15</div>
           </div>
@@ -515,9 +598,9 @@
 
         <a class="item" href="tiandao-xiaoyawen.html">
           <div class="item-row">
-            <span class="item-tag tag-film">影视赏析</span>
+            <span class="item-tag tag-crit">影视赏析</span>
             <div class="item-title">《天道》肖亚文台词 · 语言艺术深度分析</div>
-            <div class="item-date">2026-08-21</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-08-21</div>
           </div>
           <div class="item-desc">14 条经典台词逐条拆解，水墨禅意风格。分寸感与留白的语言艺术。</div>
         </a>
