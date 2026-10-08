@@ -5,288 +5,408 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>随时随地，vibe coding · 成果导航</title>
 <style>
-  /* ===== Design Tokens ===== */
+  /* ===== Design Tokens — 编辑感·莫兰迪暖灰系 ===== */
   :root{
-    /* 底色与文字 */
-    --bg:#FAF7F2;          /* 象牙米白 */
-    --bg-soft:#F3EEE6;     /* 略深浅米，用于区块底 */
-    --surface:#FFFFFF;     /* 卡片白底 */
-    --border:#E5DFD3;      /* 浅米色描边 */
-    --border-strong:#D4CCBC;
-    --text:#2B2317;        /* 墨色深字 */
-    --muted:#7A6F5E;       /* 次级文字 */
-    --faint:#A89E8D;       /* 更淡的辅助色 */
+    /* 底色与文字（暖米白+纸质感） */
+    --bg:#F5F0E8;            /* 暖米白底 */
+    --bg-2:#EDE7DC;          /* 次暖米，区块分离 */
+    --surface:#FBF8F3;       /* 卡片/条目底 */
+    --surface-hover:#F6F1E8; /* hover 微深 */
+    --border:#DDD4C3;        /* 浅米描边 */
+    --border-faint:#E8E0D1;  /* 更淡分割线 */
+    --text:#2A241B;          /* 墨色深字 */
+    --muted:#6B6151;         /* 次级文字 */
+    --faint:#A29988;         /* 更淡辅助 */
 
-    /* 栏目主色（低饱和） */
-    --tech:#3B7A8A;        /* 技术：青墨 */
-    --tech-bg:#EAF2F4;
-    --tech-border:#C8DCE1;
-    --think:#6F5786;       /* 思辨：酱紫 */
-    --think-bg:#EFEAF3;
-    --think-border:#D5CAE0;
-    --travel:#5A7D52;      /* 旅行：苔绿 */
-    --travel-bg:#E8EFE5;
-    --travel-border:#C8D9C2;
-    --film:#944555;        /* 影视：曙红 */
-    --film-bg:#F1E0E3;
-    --film-border:#DEC0C6;
+    /* 栏目主色（低饱和莫兰迪） */
+    --tech:#2F5D6B;          /* 技术：青墨 */
+    --tech-bg:#E3ECEE;
+    --tech-border:#B8CDD2;
+    --think:#644A78;         /* 思辨：酱紫 */
+    --think-bg:#E8E1EE;
+    --think-border:#CDBFD8;
+    --travel:#4E6B45;        /* 旅行：苔绿 */
+    --travel-bg:#E1E9DD;
+    --travel-border:#BCCEB4;
+    --film:#8A3E4E;          /* 影视：曙红 */
+    --film-bg:#ECDDDF;
+    --film-border:#D4B6BC;
 
-    /* 技术子类（青墨系，由深到浅差异化） */
-    --tag-deploy:#2E6B7A;  --tag-deploy-bg:#E4EFF2;  --tag-deploy-bd:#BCD9DF;
-    --tag-tool:#3A7A8A;    --tag-tool-bg:#E8F1F3;    --tag-tool-bd:#C5DCE1;
-    --tag-net:#468796;     --tag-net-bg:#EAF2F4;     --tag-net-bd:#CDDFE3;
-    --tag-model:#3D6F8C;   --tag-model-bg:#E6EEF3;   --tag-model-bd:#BFD3DE;
-    --tag-landing:#54717A; --tag-landing-bg:#E9EEF0; --tag-landing-bd:#CBD5D9;
+    /* 技术子类（青墨系） */
+    --tag-deploy:#285460;  --tag-deploy-bg:#DCE7EA;  --tag-deploy-bd:#AFC7CC;
+    --tag-tool:#30616E;    --tag-tool-bg:#DFE9EC;    --tag-tool-bd:#B3C9CE;
+    --tag-net:#3A6D7A;     --tag-net-bg:#E2EBEF;     --tag-net-bd:#B8CCD1;
+    --tag-model:#33627E;   --tag-model-bg:#DDE7ED;   --tag-model-bd:#AEC6D3;
+    --tag-landing:#48646D; --tag-landing-bg:#E0E6E8; --tag-landing-bd:#B9C6CB;
 
     /* 思辨子类（酱紫系） */
-    --tag-gov:#6C4F80;     --tag-gov-bg:#ECE6F1;     --tag-gov-bd:#CFBFD9;
-    --tag-yi:#7A5A6D;      --tag-yi-bg:#EFE8ED;      --tag-yi-bd:#D2C2CC;
-    --tag-work:#6A5B7D;    --tag-work-bg:#EDE8F2;    --tag-work-bd:#CDC3D9;
+    --tag-gov:#5E4272;     --tag-gov-bg:#E5DDEC;     --tag-gov-bd:#C5B4D1;
+    --tag-yi:#6E4E63;      --tag-yi-bg:#E7DFE5;      --tag-yi-bd:#C8B8C3;
+    --tag-work:#5C4E70;    --tag-work-bg:#E4DEEC;    --tag-work-bd:#C3B7D0;
 
     /* 旅行子类（苔绿系 + 赭石自驾） */
-    --tag-yunnan:#4E7A48;  --tag-yunnan-bg:#E5EEE3;  --tag-yunnan-bd:#BFD3B9;
-    --tag-erhai:#578A6A;   --tag-erhai-bg:#E4EEE8;   --tag-erhai-bd:#BCD9C6;
-    --tag-shaxi:#6A7F4C;   --tag-shaxi-bg:#E9EEE1;   --tag-shaxi-bd:#C7D2B3;
-    --tag-guizhou:#476E5C; --tag-guizhou-bg:#E2ECE7; --tag-guizhou-bd:#B6CDBF;
-    --tag-drive:#9A6436;   --tag-drive-bg:#F3E8DA;   --tag-drive-bd:#E0C4A2;
+    --tag-yunnan:#45663E;  --tag-yunnan-bg:#DCE5D9;  --tag-yunnan-bd:#B2C5AB;
+    --tag-erhai:#4E7A5D;   --tag-erhai-bg:#DAE4DE;   --tag-erhai-bd:#AEC6B7;
+    --tag-shaxi:#5E7140;   --tag-shaxi-bg:#E1E5D6;   --tag-shaxi-bd:#BCC4A8;
+    --tag-guizhou:#3D624E; --tag-guizhou-bg:#D8E2DD; --tag-guizhou-bd:#A9BFB4;
+    --tag-drive:#8C582D;   --tag-drive-bg:#EEDFCB;   --tag-drive-bd:#D4B890;
 
     /* 影视子类（曙红系） */
-    --tag-dl:#8A3E50;      --tag-dl-bg:#EFDEE2;      --tag-dl-bd:#DAB9C0;
-    --tag-crit:#9A5060;    --tag-crit-bg:#F0E1E4;    --tag-crit-bd:#DDBFC5;
+    --tag-dl:#7D3746;      --tag-dl-bg:#E8D6D9;      --tag-dl-bd:#CCA9AF;
+    --tag-crit:#8C4554;    --tag-crit-bg:#E9D9DD;    --tag-crit-bd:#D1B1B8;
 
-    --accent:#B23A2A;      /* 朱砂，用于强调 */
-    --accent-bg:#F8E7E3;
-    --radius:10px;
-    --radius-lg:14px;
+    --accent:#A33428;      /* 朱砂，更收敛 */
+    --accent-bg:#F2DED8;
+    --accent-border:#D9A89E;
+
+    --radius:6px;
+    --radius-sm:4px;
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Serif SC",serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     background:var(--bg);
     color:var(--text);
     min-height:100vh;
     line-height:1.7;
     font-size:15px;
     -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+
+  /* 纸质纹理：极淡网点叠加（纯CSS, 无外部资源） */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.35;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(180,160,120,.08) 0, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(160,140,110,.07) 0, transparent 50%);
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.04;
+    background-image:
+      linear-gradient(rgba(0,0,0,.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.5) 1px, transparent 1px);
+    background-size:3px 3px;
+  }
+
+  /* ===== 左侧装饰轴线 ===== */
+  .axis{
+    position:fixed;
+    left:clamp(16px, 4vw, 48px);
+    top:0;bottom:0;
+    width:1px;
+    background:linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    z-index:1;
+    pointer-events:none;
+  }
+  .axis::before{
+    content:"";
+    position:absolute;
+    top:60px;left:-3px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+  .axis::after{
+    content:"";
+    position:absolute;
+    bottom:60px;left:-3px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
   }
 
   /* ===== 布局 ===== */
   .wrap{
-    max-width:920px;
+    max-width:880px;
     margin:0 auto;
-    padding:56px 28px 80px;
+    padding:64px 28px 80px;
+    position:relative;
+    z-index:2;
   }
 
-  /* ===== 头部 ===== */
+  /* ===== 头部 · 编辑感 ===== */
   header{
-    margin-bottom:48px;
-    padding-bottom:32px;
+    margin-bottom:56px;
+    position:relative;
+  }
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:36px;
+    padding-bottom:28px;
     border-bottom:1px solid var(--border);
     position:relative;
   }
-  header::after{
+  .masthead::before{
     content:"";
     position:absolute;
-    left:0;bottom:-2px;
-    width:48px;height:2px;
+    left:0;bottom:-1px;
+    width:64px;height:2px;
     background:var(--accent);
   }
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:10px;
-    font-size:12px;color:var(--muted);letter-spacing:2px;
+  .masthead-label{
+    font-size:11px;
+    letter-spacing:3px;
     text-transform:uppercase;
-    margin-bottom:16px;
+    color:var(--faint);
     font-weight:500;
+    margin-top:4px;
   }
-  .eyebrow .dot{
-    width:7px;height:7px;border-radius:50%;
-    background:var(--accent);
+  .masthead-date{
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    margin-top:4px;
   }
+
   h1{
-    font-size:clamp(30px,5vw,46px);
+    font-size:clamp(36px,6vw,56px);
     font-weight:700;
-    letter-spacing:-.2px;
-    line-height:1.25;
-    margin-bottom:12px;
+    letter-spacing:-1px;
+    line-height:1.15;
+    margin-bottom:20px;
     color:var(--text);
-    font-family:"Noto Serif SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;
+    font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
+    font-feature-settings:"palt";
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--accent);
+    font-weight:400;
+    font-size:.85em;
+    margin-left:8px;
+  }
+  .hero-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px 32px;
+    margin-bottom:24px;
+    padding-bottom:24px;
+    border-bottom:1px dashed var(--border);
+  }
+  .hero-meta div{
+    font-size:12.5px;
+    color:var(--muted);
+    letter-spacing:.3px;
+  }
+  .hero-meta strong{
+    color:var(--text);
+    font-weight:600;
+    font-size:14px;
+    margin-left:4px;
+    font-family:"Noto Serif SC",serif;
   }
   .desc{
     color:var(--muted);
-    font-size:15.5px;
-    max-width:620px;
-    line-height:1.8;
+    font-size:15px;
+    max-width:600px;
+    line-height:1.85;
+  }
+  .desc strong{
+    color:var(--text);
+    font-weight:500;
   }
 
-  /* ===== 顶部目录 ===== */
+  /* ===== 顶部目录 · 编辑感 ===== */
   .toc{
     display:flex;
     flex-wrap:wrap;
-    gap:4px 18px;
-    margin:22px 0 0;
-    padding:14px 18px;
+    gap:0;
+    margin-top:32px;
+    padding:18px 24px;
     background:var(--surface);
     border:1px solid var(--border);
-    border-radius:var(--radius);
-    font-size:13.5px;
+    border-left:3px solid var(--accent);
+    font-size:13px;
   }
   .toc-label{
     color:var(--faint);
-    letter-spacing:.5px;
-    margin-right:6px;
+    letter-spacing:2px;
+    margin-right:20px;
     flex-shrink:0;
-    font-weight:500;
+    font-weight:600;
+    font-size:11.5px;
+    text-transform:uppercase;
+    align-self:center;
   }
   .toc a{
     color:var(--muted);
     text-decoration:none;
-    transition:color .2s;
     position:relative;
-    padding-left:12px;
+    padding:4px 0;
+    margin-right:24px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:color .15s;
+    border-bottom:1px solid transparent;
   }
   .toc a::before{
     content:"";
-    position:absolute;
-    left:0;top:50%;
-    width:6px;height:6px;
+    width:4px;height:4px;
     border-radius:50%;
-    transform:translateY(-50%);
+    flex-shrink:0;
   }
   .toc a[href="#tech"]::before{background:var(--tech)}
   .toc a[href="#think"]::before{background:var(--think)}
   .toc a[href="#travel"]::before{background:var(--travel)}
   .toc a[href="#drive-film"]::before{background:var(--film)}
-  .toc a:hover{color:var(--accent)}
-  .toc .count{color:var(--faint);font-size:12px;margin-left:2px;font-variant-numeric:tabular-nums}
-
-  /* ===== 栏目区块 ===== */
-  .section{
-    margin-top:48px;
-  }
-  .section-head{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:4px;
-    padding:12px 18px;
-    border-radius:8px;
-    border-left:4px solid transparent;
-  }
-  .section-head h2{
-    font-size:19px;
-    font-weight:700;
-    letter-spacing:.3px;
-    font-family:"Noto Serif SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;
-  }
-  .section-head .num{
-    font-size:12.5px;
+  .toc a:hover{color:var(--text);border-bottom-color:var(--text)}
+  .toc .count{
+    color:var(--faint);
+    font-size:11.5px;
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    padding:2px 8px;
-    border-radius:999px;
-    margin-left:auto;
     font-variant-numeric:tabular-nums;
   }
-  /* 各栏目色块 */
-  #tech .section-head{
-    background:var(--tech-bg);
-    border-left-color:var(--tech);
-  }
-  #tech .section-head h2{color:var(--tech)}
-  #tech .section-head .num{background:#fff;color:var(--tech);border:1px solid var(--tech-border)}
 
-  #think .section-head{
-    background:var(--think-bg);
-    border-left-color:var(--think);
+  /* ===== 栏目区块 · 编号编辑感 ===== */
+  .section{
+    margin-top:64px;
+    position:relative;
   }
-  #think .section-head h2{color:var(--think)}
-  #think .section-head .num{background:#fff;color:var(--think);border:1px solid var(--think-border)}
-
-  #travel .section-head{
-    background:var(--travel-bg);
-    border-left-color:var(--travel);
+  .section-head{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:end;
+    gap:16px;
+    margin-bottom:8px;
+    padding-bottom:16px;
+    border-bottom:1.5px solid var(--text);
+    position:relative;
   }
-  #travel .section-head h2{color:var(--travel)}
-  #travel .section-head .num{background:#fff;color:var(--travel);border:1px solid var(--travel-border)}
-
-  #drive-film .section-head{
-    background:var(--film-bg);
-    border-left-color:var(--film);
+  .section-num{
+    font-family:"Noto Serif SC",serif;
+    font-size:48px;
+    font-weight:700;
+    line-height:.9;
+    letter-spacing:-1px;
+    opacity:.15;
+    align-self:end;
+    padding-bottom:2px;
   }
-  #drive-film .section-head h2{color:var(--film)}
-  #drive-film .section-head .num{background:#fff;color:var(--film);border:1px solid var(--film-border)}
+  #tech .section-num{color:var(--tech)}
+  #think .section-num{color:var(--think)}
+  #travel .section-num{color:var(--travel)}
+  #drive-film .section-num{color:var(--film)}
 
-  /* ===== 列表式（单列·每行一篇） ===== */
+  .section-title-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding-bottom:2px;
+  }
+  .section-title-wrap h2{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.5px;
+    font-family:"Noto Serif SC","Songti SC",serif;
+    color:var(--text);
+  }
+  .section-sub{
+    font-size:10.5px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:500;
+  }
+  .section-count{
+    font-size:12px;
+    color:var(--muted);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    padding-bottom:6px;
+  }
+  .section-count strong{
+    color:var(--text);
+    font-weight:600;
+    font-size:14px;
+    margin-right:2px;
+    font-family:"Noto Serif SC",serif;
+  }
+
+  /* ===== 列表式（单列·每行一篇·编辑感） ===== */
   .list{
     display:flex;
     flex-direction:column;
-    border-top:1px solid var(--border);
   }
   .item{
     display:block;
     text-decoration:none;
     color:inherit;
-    padding:18px 4px;
-    border-bottom:1px solid var(--border);
-    transition:background .2s;
+    padding:20px 6px;
+    border-bottom:1px solid var(--border-faint);
+    transition:background .15s;
     position:relative;
   }
   .item:hover{
-    background:var(--surface);
+    background:var(--surface-hover);
+    margin:0 -6px;
+    padding:20px 12px;
+    border-radius:var(--radius-sm);
   }
   .item-row{
-    display:flex;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
     align-items:baseline;
     gap:14px;
   }
   .item-tag{
     flex-shrink:0;
     display:inline-block;
-    font-size:11.5px;
-    padding:3px 9px;
-    border-radius:6px;
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:3px;
     letter-spacing:.3px;
     font-weight:500;
   }
-  /* 标签色（15 个具体标签 · 低饱和浅底深字 · 大类同心跨类可分） */
-  /* 技术类（青墨系） */
+  /* 标签色 */
   .tag-deploy   {color:var(--tag-deploy);  background:var(--tag-deploy-bg);  border:1px solid var(--tag-deploy-bd)}
   .tag-tool     {color:var(--tag-tool);    background:var(--tag-tool-bg);    border:1px solid var(--tag-tool-bd)}
   .tag-net      {color:var(--tag-net);     background:var(--tag-net-bg);     border:1px solid var(--tag-net-bd)}
   .tag-model    {color:var(--tag-model);   background:var(--tag-model-bg);   border:1px solid var(--tag-model-bd)}
   .tag-landing  {color:var(--tag-landing); background:var(--tag-landing-bg); border:1px solid var(--tag-landing-bd)}
-
-  /* 思辨类（酱紫系） */
   .tag-gov      {color:var(--tag-gov);     background:var(--tag-gov-bg);     border:1px solid var(--tag-gov-bd)}
   .tag-yi       {color:var(--tag-yi);      background:var(--tag-yi-bg);      border:1px solid var(--tag-yi-bd)}
   .tag-work     {color:var(--tag-work);    background:var(--tag-work-bg);    border:1px solid var(--tag-work-bd)}
-
-  /* 旅行类（苔绿系） */
   .tag-yunnan   {color:var(--tag-yunnan);  background:var(--tag-yunnan-bg);  border:1px solid var(--tag-yunnan-bd)}
   .tag-erhai    {color:var(--tag-erhai);   background:var(--tag-erhai-bg);   border:1px solid var(--tag-erhai-bd)}
   .tag-shaxi    {color:var(--tag-shaxi);   background:var(--tag-shaxi-bg);   border:1px solid var(--tag-shaxi-bd)}
   .tag-guizhou  {color:var(--tag-guizhou); background:var(--tag-guizhou-bg); border:1px solid var(--tag-guizhou-bd)}
   .tag-drive    {color:var(--tag-drive);   background:var(--tag-drive-bg);   border:1px solid var(--tag-drive-bd)}
-
-  /* 影视类（曙红系） */
   .tag-dl       {color:var(--tag-dl);      background:var(--tag-dl-bg);      border:1px solid var(--tag-dl-bd)}
   .tag-crit     {color:var(--tag-crit);    background:var(--tag-crit-bg);    border:1px solid var(--tag-crit-bd)}
 
   .item-title{
-    flex:1;
     font-size:15.5px;
-    font-weight:600;
+    font-weight:500;
     line-height:1.5;
     color:var(--text);
     min-width:0;
+    transition:color .15s;
+    font-family:"Noto Serif SC","PingFang SC",serif;
   }
   .item:hover .item-title{
     color:var(--accent);
   }
   .item-date{
     flex-shrink:0;
-    font-size:12.5px;
+    font-size:12px;
     color:var(--faint);
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-variant-numeric:tabular-nums;
@@ -294,64 +414,95 @@
     display:inline-flex;
     align-items:center;
     gap:6px;
+    white-space:nowrap;
   }
-  /* 「新」小徽章（朱砂，克制使用） */
+  /* 「新」小徽章（朱砂，克制） */
   .badge-new{
     display:inline-block;
-    font-size:10px;
+    font-size:9.5px;
     font-weight:700;
-    letter-spacing:.5px;
-    padding:1px 6px;
-    border-radius:4px;
-    background:var(--accent-bg);
-    color:var(--accent);
-    border:1px solid #E8C0B8;
+    letter-spacing:1px;
+    padding:1px 5px;
+    border-radius:2px;
+    background:var(--accent);
+    color:#fff;
     line-height:1.5;
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   .item-desc{
-    margin-left:calc(70px + 14px); /* 标签宽度 + gap */
-    margin-top:6px;
+    margin-left:calc(72px + 14px); /* 标签+gap */
+    margin-top:8px;
     font-size:13px;
     color:var(--muted);
-    line-height:1.6;
+    line-height:1.7;
     display:-webkit-box;
     -webkit-line-clamp:1;
     -webkit-box-orient:vertical;
     overflow:hidden;
   }
 
-  /* ===== 页脚 ===== */
+  /* ===== 页脚 · 编辑感 ===== */
   footer{
-    margin-top:64px;
+    margin-top:72px;
     padding-top:28px;
-    border-top:1px solid var(--border);
+    border-top:1.5px solid var(--text);
     text-align:center;
     color:var(--faint);
-    font-size:13px;
+    font-size:12.5px;
+    position:relative;
+  }
+  footer::before{
+    content:"";
+    position:absolute;
+    top:-9px;left:50%;
+    transform:translateX(-50%);
+    width:16px;height:16px;
+    background:var(--bg);
+    border:1.5px solid var(--text);
+    border-radius:50%;
   }
   footer .total{
     color:var(--accent);
     font-weight:700;
+    font-family:"Noto Serif SC",serif;
+    font-size:14px;
+  }
+  .footer-mark{
+    margin-top:16px;
+    font-size:10px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    opacity:.6;
   }
 
   /* ===== 响应式 ===== */
   @media (max-width:720px){
-    .wrap{padding:36px 18px 60px}
+    .axis{display:none}
+    .wrap{padding:40px 18px 60px}
+    .masthead{flex-direction:column;gap:8px;margin-bottom:28px;padding-bottom:20px}
+    .section-head{
+      grid-template-columns:auto 1fr;
+      grid-template-rows:auto auto;
+      gap:4px 12px;
+    }
+    .section-num{font-size:36px;grid-row:span 2}
+    .section-count{grid-column:2;padding-bottom:0}
     .item-row{
-      flex-wrap:wrap;
-      gap:8px 12px;
+      grid-template-columns:auto 1fr;
+      gap:6px 12px;
     }
     .item-tag{order:1}
-    .item-title{order:2;flex-basis:100%}
-    .item-date{order:3;margin-left:auto}
+    .item-title{order:3;grid-column:1 / -1}
+    .item-date{order:2}
     .item-desc{
       margin-left:0;
       margin-top:4px;
       -webkit-line-clamp:2;
     }
-    .toc{font-size:12.5px;gap:4px 12px;padding:12px 14px}
-    h1{font-size:28px}
+    .toc{padding:14px 16px;gap:8px 16px}
+    .toc-label{margin-right:0;flex-basis:100%;margin-bottom:4px}
+    h1{font-size:32px;letter-spacing:-.5px}
+    .hero-meta{gap:12px 20px}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition:none!important;animation:none!important}
@@ -360,26 +511,46 @@
 </style>
 </head>
 <body>
+  <div class="axis" aria-hidden="true"></div>
+
   <main class="wrap">
     <header>
-      <div class="eyebrow"><span class="dot"></span>VIBE CODING · 成果导航</div>
-      <h1>随时随地，vibe coding</h1>
-      <p class="desc">我的 vibe coding 成果合集 —— 用手机微信 + hermes 快速做出来的一个个小页面，按栏目归档，方便查找。</p>
-
-      <div class="toc" role="navigation" aria-label="栏目目录">
-        <span class="toc-label">目录</span>
-        <a href="#tech">技术与开发<span class="count">(6)</span></a>
-        <a href="#think">思辩与随笔<span class="count">(4)</span></a>
-        <a href="#travel">诗和远方<span class="count">(9)</span></a>
-        <a href="#drive-film">影视<span class="count">(2)</span></a>
+      <div class="masthead">
+        <span class="masthead-label">Vibe Coding · 成果集</span>
+        <span class="masthead-date">VOL. 01 &nbsp;·&nbsp; 2026</span>
       </div>
+
+      <h1>随时随地，<em>vibe coding</em></h1>
+
+      <div class="hero-meta">
+        <div>栏目<strong>4</strong> 个</div>
+        <div>成果<strong>21</strong> 篇</div>
+        <div>技术 · 思辩 · 旅行 · 影视</div>
+      </div>
+
+      <p class="desc">
+        我的 vibe coding 成果合集 —— 用手机微信 + hermes 快速做出来的一个个小页面，
+        <strong>按栏目归档，方便查找</strong>。随手做，慢慢攒，时间长了就是一本小册子。
+      </p>
+
+      <nav class="toc" aria-label="栏目目录">
+        <span class="toc-label">目录 Contents</span>
+        <a href="#tech">技术与开发 <span class="count">06</span></a>
+        <a href="#think">思辩与随笔 <span class="count">04</span></a>
+        <a href="#travel">诗和远方 <span class="count">09</span></a>
+        <a href="#drive-film">影视 <span class="count">02</span></a>
+      </nav>
     </header>
 
-    <!-- ===== 栏目 1：技术与开发 ===== -->
+    <!-- ===== 栏目 01：技术与开发 ===== -->
     <section class="section" id="tech">
       <div class="section-head">
-        <h2>技术与开发</h2>
-        <span class="num">06 篇</span>
+        <div class="section-num">01</div>
+        <div class="section-title-wrap">
+          <h2>技术与开发</h2>
+          <span class="section-sub">Technology &amp; Development</span>
+        </div>
+        <div class="section-count"><strong>06</strong> 篇</div>
       </div>
       <div class="list">
 
@@ -440,11 +611,15 @@
       </div>
     </section>
 
-    <!-- ===== 栏目 2：思辩与随笔 ===== -->
+    <!-- ===== 栏目 02：思辩与随笔 ===== -->
     <section class="section" id="think">
       <div class="section-head">
-        <h2>思辩与随笔</h2>
-        <span class="num">04 篇</span>
+        <div class="section-num">02</div>
+        <div class="section-title-wrap">
+          <h2>思辩与随笔</h2>
+          <span class="section-sub">Essays &amp; Reflections</span>
+        </div>
+        <div class="section-count"><strong>04</strong> 篇</div>
       </div>
       <div class="list">
 
@@ -487,11 +662,15 @@
       </div>
     </section>
 
-    <!-- ===== 栏目 3：诗和远方 ===== -->
+    <!-- ===== 栏目 03：诗和远方 ===== -->
     <section class="section" id="travel">
       <div class="section-head">
-        <h2>诗和远方</h2>
-        <span class="num">09 篇</span>
+        <div class="section-num">03</div>
+        <div class="section-title-wrap">
+          <h2>诗和远方</h2>
+          <span class="section-sub">Poetry &amp; Distant Places</span>
+        </div>
+        <div class="section-count"><strong>09</strong> 篇</div>
       </div>
       <div class="list">
 
@@ -579,11 +758,15 @@
       </div>
     </section>
 
-    <!-- ===== 栏目 4：影视 ===== -->
+    <!-- ===== 栏目 04：影视 ===== -->
     <section class="section" id="drive-film">
       <div class="section-head">
-        <h2>影视</h2>
-        <span class="num">02 篇</span>
+        <div class="section-num">04</div>
+        <div class="section-title-wrap">
+          <h2>影视</h2>
+          <span class="section-sub">Film &amp; Television</span>
+        </div>
+        <div class="section-count"><strong>02</strong> 篇</div>
       </div>
       <div class="list">
 
@@ -611,6 +794,7 @@
     <!-- ===== 页脚 ===== -->
     <footer>
       <p>共 <span class="total" id="total">0</span> 篇成果 · 分 <span class="total">4</span> 个栏目 · 随时新增，随时 vibe coding</p>
+      <div class="footer-mark">VIBE CODING · ISSUE 01</div>
     </footer>
   </main>
 
