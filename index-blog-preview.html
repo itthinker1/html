@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>随时随地，vibe coding · 成果导航（Blog 风预览）</title>
+<style>
+  :root{
+    --bg:#070a14;
+    --surface:rgba(255,255,255,.035);
+    --surface-hover:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.08);
+    --border-strong:rgba(255,255,255,.14);
+    --text:#e8ecf7;
+    --muted:#8b93ab;
+    --faint:#5a6278;
+    --cyan:#22d3ee;
+    --violet:#a78bfa;
+    --pink:#f472b6;
+    --green:#6ee7b7;
+    --orange:#fdba74;
+    --yellow:#fbbf24;
+    --grad:linear-gradient(135deg,#22d3ee,#a78bfa 55%,#f472b6);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    line-height:1.6;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-2;
+    background-image:
+      linear-gradient(rgba(120,140,200,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(120,140,200,.05) 1px,transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 70% 50% at 50% 0%,#000 30%,transparent 100%);
+    -webkit-mask-image:radial-gradient(ellipse 70% 50% at 50% 0%,#000 30%,transparent 100%);
+  }
+
+  /* ===== 布局 ===== */
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 80px;
+  }
+
+  /* ===== 头部 ===== */
+  header{
+    margin-bottom:40px;
+    padding-bottom:28px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;color:var(--muted);letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--grad)}
+  h1{
+    font-size:clamp(28px,4.5vw,40px);
+    font-weight:800;
+    letter-spacing:-.3px;
+    line-height:1.25;
+    margin-bottom:10px;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .desc{
+    color:var(--muted);
+    font-size:15px;
+    max-width:600px;
+  }
+
+  /* ===== 顶部目录（小且克制） ===== */
+  .toc{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 14px;
+    margin:20px 0 0;
+    padding:12px 16px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:13px;
+  }
+  .toc-label{
+    color:var(--faint);
+    letter-spacing:.5px;
+    margin-right:4px;
+    flex-shrink:0;
+  }
+  .toc a{
+    color:var(--muted);
+    text-decoration:none;
+    transition:color .2s;
+  }
+  .toc a:hover{color:var(--cyan)}
+  .toc .count{color:var(--faint);font-size:11px;margin-left:2px}
+
+  /* ===== 切换按钮 ===== */
+  .switch-row{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .switch-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 14px;
+    border-radius:8px;
+    font-size:13px;
+    text-decoration:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    background:var(--surface);
+    transition:all .2s;
+  }
+  .switch-btn:hover{
+    color:var(--text);
+    border-color:var(--border-strong);
+    background:var(--surface-hover);
+  }
+  .switch-btn svg{flex-shrink:0}
+
+  /* ===== 栏目 ===== */
+  .section{
+    margin-top:40px;
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-head h2{
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+  .section-head .num{
+    font-size:12px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  .section-head .bar{
+    width:3px;
+    height:18px;
+    border-radius:2px;
+    background:var(--grad);
+    flex-shrink:0;
+  }
+
+  /* ===== 列表项 ===== */
+  .list{
+    display:flex;
+    flex-direction:column;
+  }
+  .item{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:14px 4px;
+    text-decoration:none;
+    color:inherit;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    transition:background .2s;
+    border-radius:6px;
+  }
+  .item:hover{
+    background:var(--surface-hover);
+    padding-left:10px;
+    padding-right:10px;
+    margin-left:-6px;
+    margin-right:-6px;
+  }
+  .item:last-child{border-bottom:none}
+
+  .item-main{
+    flex:1;
+    min-width:0;
+  }
+  .item-title{
+    font-size:15.5px;
+    font-weight:600;
+    margin-bottom:3px;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .item-title .arrow{
+    opacity:0;
+    transform:translateX(-4px);
+    transition:all .2s;
+    color:var(--cyan);
+    flex-shrink:0;
+  }
+  .item:hover .item-title .arrow{
+    opacity:1;
+    transform:translateX(0);
+  }
+  .item-desc{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.5;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+  }
+  .item-meta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+    font-size:12px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    white-space:nowrap;
+  }
+  .item-path{
+    color:var(--faint);
+  }
+
+  /* 标签 */
+  .tag{
+    display:inline-block;
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:4px;
+    letter-spacing:.3px;
+    font-weight:500;
+    flex-shrink:0;
+  }
+  .tag-tech{color:#67e8f9;background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.25)}
+  .tag-think{color:#c4b5fd;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28)}
+  .tag-travel{color:#6ee7b7;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.28)}
+  .tag-drive{color:#fdba74;background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.28)}
+  .tag-film{color:#f472b6;background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.28)}
+
+  /* 日期右列 */
+  .item-date{
+    color:var(--faint);
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ===== 页脚 ===== */
+  footer{
+    margin-top:56px;
+    padding-top:24px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    color:var(--faint);
+    font-size:13px;
+  }
+  footer .total{
+    color:var(--cyan);
+    font-weight:700;
+  }
+  .preview-banner{
+    margin-top:20px;
+    padding:14px 18px;
+    background:rgba(251,191,36,.08);
+    border:1px solid rgba(251,191,36,.25);
+    border-radius:10px;
+    color:#fcd34d;
+    font-size:13.5px;
+    text-align:center;
+    font-weight:500;
+  }
+  .preview-banner::before{
+    content:"⚠";
+    margin-right:8px;
+  }
+
+  @media (max-width:640px){
+    .wrap{padding:32px 16px 60px}
+    .item-meta{display:none}
+    .item-desc{-webkit-line-clamp:2}
+    .toc{font-size:12px;gap:4px 10px;padding:10px 12px}
+  }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="eyebrow"><span class="dot"></span>VIBE CODING · 成果导航</div>
+      <h1>随时随地，vibe coding</h1>
+      <p class="desc">我的 vibe coding 成果合集 —— 用手机微信 + hermes 快速做出来的一个个小页面，按栏目归档，方便查找。</p>
+
+      <div class="toc" role="navigation" aria-label="栏目目录">
+        <span class="toc-label">目录</span>
+        <a href="#tech">技术与开发<span class="count">(6)</span></a>
+        <a href="#think">思辩与随笔<span class="count">(4)</span></a>
+        <a href="#travel">云南旅行<span class="count">(8)</span></a>
+        <a href="#drive-film">自驾与影视<span class="count">(3)</span></a>
+      </div>
+
+      <div class="switch-row">
+        <a class="switch-btn" href="index.html" title="切换到深色卡片风格">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          卡片墙
+        </a>
+        <a class="switch-btn" href="index2.html" title="切换到便签墙风格">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          便签墙
+        </a>
+      </div>
+    </header>
+
+    <!-- ===== 栏目 1：技术与开发 ===== -->
+    <section class="section" id="tech">
+      <div class="section-head">
+        <span class="bar"></span>
+        <h2>技术与开发</h2>
+        <span class="num">06 篇</span>
+      </div>
+      <div class="list">
+
+        <a class="item" href="jevk5-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              JevK5 本地部署指南
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">MacBook Pro M5 · llama.cpp + Metal，含 MLX 版，一次前向即出各选项校准概率。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">本地部署</span>
+            <span class="item-date">2026-10-08</span>
+          </div>
+        </a>
+
+        <a class="item" href="netlify-deploy-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              Netlify 三种部署模式完全指南
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">从零到上线，三种部署方式全讲解。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">技术工具</span>
+            <span class="item-date">2026-08-04</span>
+          </div>
+        </a>
+
+        <a class="item" href="ipv6-infographic.html">
+          <div class="item-main">
+            <div class="item-title">
+              IPv6 一图看懂
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">下一代互联网协议。128 位地址、无需 NAT、内置 IPsec、SLAAC——物联网与未来互联网的基石。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">网络科普</span>
+            <span class="item-date">2026-08-25</span>
+          </div>
+        </a>
+
+        <a class="item" href="model-showdown.html">
+          <div class="item-main">
+            <div class="item-title">
+              三强对决 · 特效版 · GLM-5.2 vs GPT-5.6 vs Claude Opus 4.8
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">2026 年 8 月"上中等"梯队三强对决——指令遵循、综合基准、速度与成本，九场对阵一场平局。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">大模型对比</span>
+            <span class="item-date">2026-08-15</span>
+          </div>
+        </a>
+
+        <a class="item" href="kimi-k3-vs-glm-5.2.html">
+          <div class="item-main">
+            <div class="item-title">
+              Kimi K3 vs GLM 5.2
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">国产开源大模型巅峰对决，一文看懂差异。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">大模型对比</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="vibe-coding.html">
+          <div class="item-main">
+            <div class="item-title">
+              随时随地，vibe coding
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">我做的 vibe coding 落地页，打开即见。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-tech">首页 / 落地页</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 2：思辩与随笔 ===== -->
+    <section class="section" id="think">
+      <div class="section-head">
+        <span class="bar"></span>
+        <h2>思辩与随笔</h2>
+        <span class="num">04 篇</span>
+      </div>
+      <div class="list">
+
+        <a class="item" href="yizhangtu-ideal-reality.html">
+          <div class="item-main">
+            <div class="item-title">
+              一张图的理想与现实
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">政务"一张图"数字化建设思辨长文 · 简洁阅读版。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-think">政务数字化</span>
+            <span class="item-date">2026-10-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="gaodao-liueshi.html">
+          <div class="item-main">
+            <div class="item-title">
+              高岛流略筮法 · 起卦步骤
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">卷轴古风易学手册，太极八卦圆阵、六爻爻象逐爻展开、星图隐现与纯SVG动效交织。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-think">易学占筮</span>
+            <span class="item-date">—</span>
+          </div>
+        </a>
+
+        <a class="item" href="laolingdao-4truewords.html">
+          <div class="item-main">
+            <div class="item-title">
+              四句真话，读懂职场的人情与规矩
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">技术只是入场券，做人才是护身符。老李在烧烤摊教给技术总工的四句职场真话。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-think">职场随笔</span>
+            <span class="item-date">—</span>
+          </div>
+        </a>
+
+        <a class="item" href="zhengdao-chengshi.html">
+          <div class="item-main">
+            <div class="item-title">
+              走正道的人，为什么成事更难？
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">宏哥说管理 · 五现象四机制三路径，从「立身之本」到「成事之器」的结构化突围。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-think">职场随笔</span>
+            <span class="item-date">2026-10-05</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 3：云南旅行 ===== -->
+    <section class="section" id="travel">
+      <div class="section-head">
+        <span class="bar"></span>
+        <h2>云南旅行</h2>
+        <span class="num">08 篇</span>
+      </div>
+      <div class="list">
+
+        <a class="item" href="yunnan-travel-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              云南 · 大理丽江沙溪旅行攻略合集
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">7 张实用手帖打包：丽江古城漫游+美食、洱海环湖13景+3条路线、沙溪古镇慢行全指南。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">云南旅游</span>
+            <span class="item-date">2026-08-24</span>
+          </div>
+        </a>
+
+        <a class="item" href="erhai-full.html">
+          <div class="item-main">
+            <div class="item-title">
+              环湖攻略 · 完整版
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">洱海环湖全攻略，路线景点一次到位。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">大理洱海</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="erhai-detailed-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              洱海 · 景点详细攻略
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">洱海景点详细拆解，深度游必备。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">大理洱海</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="erhai-east.html">
+          <div class="item-main">
+            <div class="item-title">
+              东线 · 海东秘境攻略
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">东线海东秘境，避开人潮的小众玩法。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">大理洱海</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="shaxi-dense-morandi.html">
+          <div class="item-main">
+            <div class="item-title">
+              莫兰迪手账
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">沙溪古镇莫兰迪色系手账风页面。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">沙溪古镇</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="shaxi-bento-craft.html">
+          <div class="item-main">
+            <div class="item-title">
+              手绘网格
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">沙溪古镇手绘网格风，手账感十足。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">沙溪古镇</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="shaxi-roadmap-watercolor.html">
+          <div class="item-main">
+            <div class="item-title">
+              水彩路线图
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">沙溪古镇水彩风路线图，一眼看懂怎么逛。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">沙溪古镇</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="guizhou-travel.html">
+          <div class="item-main">
+            <div class="item-title">
+              多彩贵州 · 山水人文全指南
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">贵州旅游全攻略，带 SVG 山水动画的沉浸式指南页。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-travel">贵州旅游</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 4：自驾与影视 ===== -->
+    <section class="section" id="drive-film">
+      <div class="section-head">
+        <span class="bar"></span>
+        <h2>自驾与影视</h2>
+        <span class="num">03 篇</span>
+      </div>
+      <div class="list">
+
+        <a class="item" href="shiyan-xian-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              十堰 → 西安 自驾全攻略
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">一条路穿过秦岭，四个季节四种玩法，含秦岭赏秋深度版。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-drive">自驾攻略</span>
+            <span class="item-date">2026-08-05</span>
+          </div>
+        </a>
+
+        <a class="item" href="tiandao-guide.html">
+          <div class="item-main">
+            <div class="item-title">
+              《天道》完整下载指南
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">导演张前、王志文主演，豆瓣 9.2，网盘+磁力全源实测有效。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-film">影视下载</span>
+            <span class="item-date">2026-08-15</span>
+          </div>
+        </a>
+
+        <a class="item" href="tiandao-xiaoyawen.html">
+          <div class="item-main">
+            <div class="item-title">
+              《天道》肖亚文台词 · 语言艺术深度分析
+              <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </div>
+            <div class="item-desc">14 条经典台词逐条拆解，水墨禅意风格。分寸感与留白的语言艺术。</div>
+          </div>
+          <div class="item-meta">
+            <span class="tag tag-film">影视赏析</span>
+            <span class="item-date">2026-08-21</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer>
+      <p>共 <span class="total" id="total">0</span> 篇成果 · 分 <span class="total">4</span> 个栏目 · 随时新增，随时 vibe coding</p>
+      <div class="preview-banner">本页为 blog 风改版预览，确认后替换</div>
+    </footer>
+  </main>
+
+<script>
+  // 统计总条目数
+  document.getElementById('total').textContent =
+    document.querySelectorAll('.item').length;
+</script>
+</body>
+</html>
