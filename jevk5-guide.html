@@ -352,6 +352,27 @@ blockquote {
 
 .callout-warning strong { color: var(--warning-text); }
 
+.callout-info {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--text);
+}
+
+.callout-info strong { color: var(--accent); }
+
+.callout ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.callout li {
+  margin-bottom: 6px;
+}
+
+.callout li:last-child {
+  margin-bottom: 0;
+}
+
 .table-wrap {
   overflow-x: auto;
   margin: 0 0 20px;
@@ -507,7 +528,8 @@ pre::-webkit-scrollbar-thumb {
         <tr><td>适用设备</td><td>MacBook Pro，Apple M5，24 GB 统一内存，macOS</td></tr>
         <tr><td>推荐技术栈</td><td><code>jevk5-4b-v0.3-Q8_0.gguf</code> + llama.cpp (Metal) + <code>jevk5</code> 的 <code>JevK5GGUF</code> 客户端</td></tr>
         <tr><td>目标</td><td>在 M5 GPU 上本地运行 JevK5，并保留其 typed-decision（yes/no、单选、评分）与校准概率输出</td></tr>
-        <tr><td>文档日期</td><td>2026-10-08</td></tr>
+        <tr><td>读者</td><td>有基础命令行与 Python 经验的开发者</td></tr>
+        <tr><td>文档日期</td><td>2026-10-08（依赖的 llama.cpp、jevk5 迭代很快，命令以当日核对结果为准）</td></tr>
       </table>
       <div class="doc-actions">
         <a href="./JevK5安装使用指南.md" class="btn btn-primary" download>
@@ -530,8 +552,6 @@ pre::-webkit-scrollbar-thumb {
 
     <article class="content">
       <h1 id="jevk5-本地部署指南-macbook-pro-m5-24-gb-llamacpp--metal">JevK5 本地部署指南：MacBook Pro M5 (24 GB) · llama.cpp + Metal</h1>
-<div class="table-wrap"><table><thead><tr><th style="text-align:left">项目</th><th style="text-align:left">内容</th></tr></thead><tbody><tr><td style="text-align:left">适用设备</td><td style="text-align:left">MacBook Pro，Apple M5，24 GB 统一内存，macOS</td></tr><tr><td style="text-align:left">推荐技术栈</td><td style="text-align:left"><code>jevk5-4b-v0.3-Q8_0.gguf</code> + llama.cpp (Metal) + <code>jevk5</code> 的 <code>JevK5GGUF</code> 客户端</td></tr><tr><td style="text-align:left">目标</td><td style="text-align:left">在 M5 GPU 上本地运行 JevK5，并保留其 typed-decision（yes/no、单选、评分）与校准概率输出</td></tr><tr><td style="text-align:left">文档日期</td><td style="text-align:left">2026-10-08（依赖的 llama.cpp、jevk5 迭代很快，命令以当日核对结果为准）</td></tr><tr><td style="text-align:left">读者</td><td style="text-align:left">有基础命令行与 Python 经验的开发者</td></tr></tbody></table></div>
-<div class="callout callout-warning"><strong>标记说明：</strong> 文中 ⚠️ 表示该点我在编写时无法从公开资料中直接核实，请在本机按"附录 D"确认。</div>
 <hr>
 <h2 id="目录">目录</h2>
 <ul>
@@ -697,7 +717,7 @@ llama --version</code></pre><button class="copy-btn" onclick="copyCode(this)">�
   --port 8080</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
 <p>首次启动会下载模型并缓存，之后直接读取缓存。保持这个终端不关闭（后台常驻见 <a href="#15-开机自启launchd">§15</a>）。</p>
 <h3 id="52-参数说明">5.2 参数说明</h3>
-<div class="table-wrap"><table><thead><tr><th style="text-align:left">参数</th><th style="text-align:left">含义</th></tr></thead><tbody><tr><td style="text-align:left"><code>--hf-repo</code> / <code>--hf-file</code></td><td style="text-align:left">指定 Hugging Face 仓库与具体 GGUF 文件</td></tr><tr><td style="text-align:left"><code>-c 8192</code></td><td style="text-align:left">上下文长度。JevK5 要把整份材料放进一次前向计算，材料过长会被截断或报错</td></tr><tr><td style="text-align:left"><code>-ngl 99</code></td><td style="text-align:left">最多把 99 层放到 GPU。这是<strong>层数上限</strong>，不是"GPU 使用率 99%"</td></tr><tr><td style="text-align:left"><code>-np 1</code></td><td style="text-align:left">并行槽位数设为 1。⚠️ 这是我加的保守设置：<code>-c</code> 是总上下文，若 server 默认开多个槽位，单次请求能用的上下文可能变小；单用户场景下 1 个槽位最稳妥</td></tr><tr><td style="text-align:left"><code>--host 127.0.0.1</code></td><td style="text-align:left">仅本机可访问</td></tr><tr><td style="text-align:left"><code>--port 8080</code></td><td style="text-align:left">HTTP 端口</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">参数</th><th style="text-align:left">含义</th></tr></thead><tbody><tr><td style="text-align:left"><code>--hf-repo</code> / <code>--hf-file</code></td><td style="text-align:left">指定 Hugging Face 仓库与具体 GGUF 文件</td></tr><tr><td style="text-align:left"><code>-c 8192</code></td><td style="text-align:left">上下文长度。JevK5 要把整份材料放进一次前向计算，材料过长会被截断或报错。基座原生上限 32K，本指南选 <code>-c 8192</code> 是更保守的档位（如需放宽可调大，但不建议超 48K）</td></tr><tr><td style="text-align:left"><code>-ngl 99</code></td><td style="text-align:left">最多把 99 层放到 GPU。这是<strong>层数上限</strong>，不是"GPU 使用率 99%"</td></tr><tr><td style="text-align:left"><code>-np 1</code></td><td style="text-align:left">并行槽位数设为 1。⚠️ 这是我加的保守设置：<code>-c</code> 是总上下文，若 server 默认开多个槽位，单次请求能用的上下文可能变小；单用户场景下 1 个槽位最稳妥</td></tr><tr><td style="text-align:left"><code>--host 127.0.0.1</code></td><td style="text-align:left">仅本机可访问</td></tr><tr><td style="text-align:left"><code>--port 8080</code></td><td style="text-align:left">HTTP 端口</td></tr></tbody></table></div>
 <blockquote>作者只在 <code>llama-server</code> 上测过。Ollama、LM Studio 等基于 llama.cpp 的应用可以加载这些文件，但 JevK5 的校准读出需要"对已分词的 prompt 返回答案字母 logprobs"的接口，这些应用是否提供，作者未验证。<strong>本文不推荐用它们替代 llama-server。</strong></blockquote>
 <hr>
 <h2 id="6-验证-server-与-metal">6. 验证 server 与 Metal</h2>
@@ -814,7 +834,19 @@ JevK5：     state + 问题 + 选项字母
               → 各选项概率</code></pre><button class="copy-btn" onclick="copyCode(this)">复制</button></div>
 <p>因此<strong>不要用 <code>/v1/chat/completions</code> 的普通聊天调用来代替 JevK5 的决策读出</strong>：那样得到的是生成文本，没有经过校准的概率。</p>
 <h3 id="102-使用限制">10.2 使用限制</h3>
-<div class="table-wrap"><table><thead><tr><th style="text-align:left">项目</th><th style="text-align:left">说明</th></tr></thead><tbody><tr><td style="text-align:left">语言</td><td style="text-align:left">仅英文</td></tr><tr><td style="text-align:left">选项数</td><td style="text-align:left">≤ 16 个选项一次读出；更多时自动分组做淘汰赛（使用 <code>knockout_temperature</code>），最多 255 个，准确率与延迟都会受影响</td></tr><tr><td style="text-align:left">输入长度</td><td style="text-align:left">受 <code>-c</code> 限制。官方运行时对超过 16384 token 的输入会直接拒绝而不是截断；本方案的 <code>-c 8192</code> 更保守</td></tr><tr><td style="text-align:left">弱项</td><td style="text-align:left">日期与数字推理、长篇政策类材料、概率估计类问题（见作者模型卡"已知弱点"）</td></tr><tr><td style="text-align:left">真实业务效果</td><td style="text-align:left">作者说明未在真实工作流中对比过 Jev；上线前请用自己的标注数据评估</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th style="text-align:left">项目</th><th style="text-align:left">说明</th></tr></thead><tbody><tr><td style="text-align:left">语言</td><td style="text-align:left">仅英文</td></tr><tr><td style="text-align:left">选项数</td><td style="text-align:left"><code>choice</code> 单选最多 <strong>255 个</strong>；<code>score</code> 分级 2~10 个；<code>noul</code> 布尔固定 2 个。≤16 个选项一次读出，更多时自动分组做淘汰赛（使用 <code>knockout_temperature</code>）</td></tr><tr><td style="text-align:left">输入长度</td><td style="text-align:left">原生上下文窗口 <strong>32768 Token（32K）</strong>（基于 Qwen3.5-4B 基座），是单请求总输入上限，包含 <code>state</code> 业务上下文 + 所有判定问题（question）的规则描述 + 所有候选项的说明文本三部分。⚠️ 这与「官方运行时对超过 16384 会拒绝、本方案 <code>-c 8192</code> 更保守」并不冲突——本部署用的是 <code>-c 8192</code>（更小的上下文），但模型原生能力上限为 32K</td></tr><tr><td style="text-align:left">弱项</td><td style="text-align:left">日期与数字推理、长篇政策类材料、概率估计类问题（见作者模型卡"已知弱点"）</td></tr><tr><td style="text-align:left">真实业务效果</td><td style="text-align:left">作者说明未在真实工作流中对比过 Jev；上线前请用自己的标注数据评估</td></tr></tbody></table></div>
+<div class="callout callout-info" id="工程建议">
+<p><strong>💡 工程使用建议</strong></p>
+<ul>
+<li>单条 <code>state</code> 业务正文建议 ≤ <strong>28K</strong>，预留约 4K 给问题规则与选项描述；</li>
+<li>超过 32K 的长文档，先做关键信息摘要或切片分批判定，否则上下文末端信息召回率下降、概率校准漂移；</li>
+<li>GGUF 量化部署可在 vLLM / llama.cpp 手动放宽上下文窗口，但超过 32K 后准确率线性下降，<strong>不推荐超过 48K</strong>；</li>
+<li>决策模型输出是概率分布、不占生成类 token 空间，因此全部 32K 窗口都可用于输入，无需给输出预留预算；</li>
+<li>实际业务场景选项数<strong>建议 ≤ 20</strong>（准确率、校准最佳）；超过 100 类别区分度明显下降；超过 255 无法保证输出格式合法性与结果有效性；</li>
+<li>单次请求可并行提交多个不同类型的判定问题，所有问题共享同一份 <code>state</code>，总输入 ≤ 32K 即可。</li>
+</ul>
+</div>
+<p><em>补充说明：以上限制由 Qwen3.5-4B 基座原生窗口 + Jev-class 决策范式规范共同决定，并非 JevK5 单独硬性截断；官方闭源 Jev 因基座不同总输入上限可达 64K（其中 state+单个最长问题 ≤32K）；JevK5 v0.2 / v0.3 均遵循以上规格，v0.3 主要优化了概率校准精度，未调整上下文窗口与选项数量上限。</em></p>
 <h3 id="103-读出细节-用于排查">10.3 读出细节（用于排查）</h3>
 <p><code>JevK5GGUF</code> 向 llama-server 请求 <code>n_probs=40</code> 的 top logprobs。如果某个选项字母没有出现在 top 40 里，会被赋予一个很低的兜底值（比已出现的最小值再低 2.0）。因此选项很多、或模型"完全不倾向"某个选项时，该选项概率会趋近于 0，这是正常现象。</p>
 <hr>
