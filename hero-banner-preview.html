@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hero banner 效果稿 · 方案A/B 对比</title>
+<style>
+  /* ===== Design Tokens — 编辑感·莫兰迪暖灰系 ===== */
+  :root{
+    /* 底色与文字（暖米白+纸质感） */
+    --bg:#F5F0E8;            /* 暖米白底 */
+    --bg-2:#EDE7DC;          /* 次暖米，区块分离 */
+    --surface:#FBF8F3;       /* 卡片/条目底 */
+    --surface-hover:#F6F1E8; /* hover 微深 */
+    --border:#DDD4C3;        /* 浅米描边 */
+    --border-faint:#E8E0D1;  /* 更淡分割线 */
+    --text:#2A241B;          /* 墨色深字 */
+    --muted:#6B6151;         /* 次级文字 */
+    --faint:#A29988;         /* 更淡辅助 */
+
+    /* 栏目主色（标题用·低饱和不刺眼） */
+    --tech-title:#A33428;       /* 技术：砖红/朱砂 */
+    --think-title:#6B4E7A;      /* 思辨：香芋酱紫（沉静） */
+    --travel-title:#4A6B45;     /* 旅行：苔绿/深青绿 */
+    --film-title:#1A1610;       /* 影视：近墨炭黑 */
+
+    /* 统一中性色（标签/日期/简介整页统一，不随栏目变色） */
+    --tag-text:#6B6151;         /* #标签文字色，与 muted 同级 */
+
+    --accent:#A33428;      /* 朱砂，更收敛 */
+    --accent-bg:#F2DED8;
+    --accent-border:#D9A89E;
+
+    --radius:6px;
+    --radius-sm:4px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    line-height:1.7;
+    font-size:15px;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+
+  /* 纸质纹理：极淡网点叠加（纯CSS, 无外部资源） */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.35;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(180,160,120,.08) 0, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(160,140,110,.07) 0, transparent 50%);
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.04;
+    background-image:
+      linear-gradient(rgba(0,0,0,.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.5) 1px, transparent 1px);
+    background-size:3px 3px;
+  }
+
+  /* ===== 左侧装饰轴线 ===== */
+  .axis{
+    position:fixed;
+    left:clamp(16px, 4vw, 48px);
+    top:0;bottom:0;
+    width:1px;
+    background:linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    z-index:1;
+    pointer-events:none;
+  }
+  .axis::before{
+    content:"";
+    position:absolute;
+    top:60px;left:-3px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+  .axis::after{
+    content:"";
+    position:absolute;
+    bottom:60px;left:-3px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+
+  /* ===== 布局 ===== */
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding:64px 28px 80px;
+    position:relative;
+    z-index:2;
+  }
+
+  /* ===== 预览说明条 ===== */
+  .preview-notice{
+    text-align:center;
+    font-size:12px;
+    letter-spacing:2px;
+    color:var(--faint);
+    padding:10px 16px;
+    margin-bottom:28px;
+    background:var(--accent-bg);
+    border:1px solid var(--accent-border);
+    border-radius:var(--radius-sm);
+    color:var(--accent);
+    font-weight:500;
+  }
+
+  /* ===== 头部 · 编辑感 ===== */
+  header{
+    margin-bottom:56px;
+    position:relative;
+  }
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+    position:relative;
+  }
+  .masthead::before{
+    content:"";
+    position:absolute;
+    left:0;bottom:-1px;
+    width:64px;height:2px;
+    background:var(--accent);
+  }
+  .masthead-label{
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:500;
+    margin-top:4px;
+  }
+  .masthead-date{
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    margin-top:4px;
+  }
+
+  /* ===== Banner 变体标注 ===== */
+  .variant-label{
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    margin-bottom:10px;
+    padding-left:2px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .variant-label::before{
+    content:"";
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--accent);
+  }
+
+  .variant-banner{
+    margin-bottom:40px;
+  }
+
+  /* ===== Banner 容器 ===== */
+  .banner{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:40px 44px;
+    overflow:hidden;
+  }
+  .banner-inner{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:32px;
+    align-items:center;
+    position:relative;
+    z-index:2;
+  }
+  .banner-text{
+    min-width:0;
+  }
+  .banner-illu{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+  }
+  .banner-illu svg{
+    width:100%;
+    max-width:280px;
+    height:auto;
+    display:block;
+  }
+
+  /* 方案 A：HTML 文字 */
+  .banner h1.banner-title{
+    font-size:clamp(28px,4.5vw,44px);
+    font-weight:700;
+    letter-spacing:-.5px;
+    line-height:1.2;
+    margin-bottom:16px;
+    color:var(--text);
+    font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
+    font-feature-settings:"palt";
+  }
+  .banner h1.banner-title em{
+    font-style:italic;
+    color:var(--accent);
+    font-weight:400;
+    font-size:.85em;
+    margin-left:6px;
+  }
+  .banner-subtitle{
+    font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
+    font-size:clamp(13px,1.8vw,16px);
+    color:var(--muted);
+    line-height:1.7;
+    margin-bottom:14px;
+    font-weight:400;
+  }
+  .banner-caption{
+    font-size:12px;
+    color:var(--faint);
+    line-height:1.6;
+  }
+
+  /* 方案 B：SVG 内文字 —— 通过 CSS 控制的容器就直接是 SVG */
+  .banner-svg-text .banner-inner{
+    grid-template-columns:1fr;
+  }
+  .banner-svg-text .banner-illu{
+    display:none;
+  }
+  .banner-svg-text-svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+
+  /* ===== 顶部目录 · 编辑感 ===== */
+  .toc{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:8px;
+    padding:18px 24px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    font-size:13px;
+  }
+  .toc-label{
+    color:var(--faint);
+    letter-spacing:2px;
+    margin-right:20px;
+    flex-shrink:0;
+    font-weight:600;
+    font-size:11.5px;
+    text-transform:uppercase;
+    align-self:center;
+  }
+  .toc a{
+    color:var(--muted);
+    text-decoration:none;
+    position:relative;
+    padding:4px 0;
+    margin-right:24px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:color .15s;
+    border-bottom:1px solid transparent;
+  }
+  .toc a::before{
+    content:"";
+    width:4px;height:4px;
+    border-radius:50%;
+    flex-shrink:0;
+  }
+  .toc a[href="#tech"]::before{background:var(--tech-title)}
+  .toc a[href="#think"]::before{background:var(--think-title)}
+  .toc a[href="#travel"]::before{background:var(--travel-title)}
+  .toc a[href="#drive-film"]::before{background:var(--film-title)}
+  .toc a:hover{color:var(--text);border-bottom-color:var(--text)}
+  .toc .count{
+    color:var(--faint);
+    font-size:11.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ===== 栏目区块 · 编号编辑感 ===== */
+  .section{
+    margin-top:64px;
+    position:relative;
+  }
+  .section-head{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:end;
+    gap:16px;
+    margin-bottom:8px;
+    padding-bottom:16px;
+    border-bottom:1.5px solid var(--text);
+    position:relative;
+  }
+  .section-num{
+    font-family:"Noto Serif SC",serif;
+    font-size:48px;
+    font-weight:700;
+    line-height:.9;
+    letter-spacing:-1px;
+    opacity:.15;
+    align-self:end;
+    padding-bottom:2px;
+  }
+  #tech .section-num{color:var(--tech-title)}
+  #think .section-num{color:var(--think-title)}
+  #travel .section-num{color:var(--travel-title)}
+  #drive-film .section-num{color:var(--film-title)}
+
+  .section-title-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding-bottom:2px;
+  }
+  .section-title-wrap h2{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.5px;
+    font-family:"Noto Serif SC","Songti SC",serif;
+  }
+  #tech .section-title-wrap h2{color:var(--tech-title)}
+  #think .section-title-wrap h2{color:var(--think-title)}
+  #travel .section-title-wrap h2{color:var(--travel-title)}
+  #drive-film .section-title-wrap h2{color:var(--film-title)}
+  .section-sub{
+    font-size:10.5px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-weight:500;
+  }
+  .section-count{
+    font-size:12px;
+    color:var(--muted);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    padding-bottom:6px;
+  }
+  .section-count strong{
+    color:var(--text);
+    font-weight:600;
+    font-size:14px;
+    margin-right:2px;
+    font-family:"Noto Serif SC",serif;
+  }
+
+  /* ===== 列表式（单列·每行一篇·编辑感） ===== */
+  .list{
+    display:flex;
+    flex-direction:column;
+  }
+  .item{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    padding:20px 6px;
+    border-bottom:1px solid var(--border-faint);
+    transition:background .15s;
+    position:relative;
+  }
+  .item:hover{
+    background:var(--surface-hover);
+    margin:0 -6px;
+    padding:20px 12px;
+    border-radius:var(--radius-sm);
+  }
+  .item-row{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:baseline;
+    gap:14px;
+  }
+  .item-tag{
+    flex-shrink:0;
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:.2px;
+    font-weight:500;
+    color:var(--tag-text);
+    padding:0;
+    background:transparent;
+    border:none;
+    font-family:"Noto Serif SC","PingFang SC",serif;
+  }
+
+  .item-title{
+    font-size:17px;
+    font-weight:600;
+    line-height:1.55;
+    min-width:0;
+    transition:color .15s;
+    font-family:"Noto Serif SC","PingFang SC",serif;
+    letter-spacing:.2px;
+  }
+  /* 各栏目条目标题用对应栏目色 */
+  #tech .item-title{color:var(--tech-title)}
+  #think .item-title{color:var(--think-title)}
+  #travel .item-title{color:var(--travel-title)}
+  #drive-film .item-title{color:var(--film-title)}
+  #tech .item:hover .item-title{color:#7E281D}
+  #think .item:hover .item-title{color:#4E395A}
+  #travel .item:hover .item-title{color:#365033}
+  #drive-film .item:hover .item-title{color:#000}
+  .item-date{
+    flex-shrink:0;
+    font-size:12px;
+    color:var(--faint);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    padding-top:2px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  /* 「新」小徽章（朱砂，克制） */
+  .badge-new{
+    display:inline-block;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:1px;
+    padding:1px 5px;
+    border-radius:2px;
+    background:var(--accent);
+    color:#fff;
+    line-height:1.5;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  .item-desc{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:6px;
+    margin-left:0;
+    line-height:1.65;
+  }
+
+  /* ===== 页脚 ===== */
+  footer{
+    margin-top:72px;
+    padding-top:28px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    color:var(--faint);
+    font-size:12.5px;
+    position:relative;
+  }
+  footer::before{
+    content:"";
+    position:absolute;
+    top:-1px;left:50%;
+    transform:translateX(-50%);
+    width:48px;height:2px;
+    background:var(--accent);
+  }
+  footer .total{
+    color:var(--text);
+    font-weight:600;
+    font-family:"Noto Serif SC",serif;
+  }
+  .footer-mark{
+    margin-top:10px;
+    font-size:10px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-family:ui-monospace,monospace;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width:720px){
+    .wrap{padding:40px 20px 60px}
+    .banner{
+      padding:28px 24px;
+    }
+    .banner-inner{
+      grid-template-columns:1fr;
+      gap:24px;
+    }
+    .banner-illu{
+      justify-content:center;
+    }
+    .banner-illu svg{
+      max-width:200px;
+    }
+    .banner h1.banner-title{
+      font-size:28px;
+    }
+    .banner-subtitle{
+      font-size:13px;
+    }
+    .section-num{font-size:36px}
+    .item-row{
+      grid-template-columns:auto 1fr;
+      gap:8px 12px;
+    }
+    .item-date{
+      grid-column:2;
+      justify-self:start;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="axis" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <!-- 预览说明 -->
+    <div class="preview-notice">hero banner 效果稿 · 方案A/B 对比（未上线）</div>
+
+    <header>
+      <!-- 刊头标签行（保留在 banner 上方） -->
+      <div class="masthead">
+        <span class="masthead-label">Vibe Coding · 成果集</span>
+        <span class="masthead-date">VOL. 01 &nbsp;·&nbsp; 2026</span>
+      </div>
+
+      <!-- ===== 方案 A · HTML 文字叠加在 SVG 上 ===== -->
+      <div class="variant-banner">
+        <div class="variant-label">方案 A · HTML 文字叠加在 SVG 上</div>
+        <div class="banner banner-html-text">
+          <div class="banner-inner">
+            <div class="banner-text">
+              <h1 class="banner-title">随时随地，<em>vibe coding</em></h1>
+              <p class="banner-subtitle">—— 灵感萌发的那一刻，AI 助手帮我沉淀成诗篇。</p>
+              <p class="banner-caption">用手机微信 + hermes 快速做出来的一个个思想火花合集</p>
+            </div>
+            <div class="banner-illu">
+              <!-- SVG 插图：手机轮廓中流出纸页/文字 -->
+              <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- 背景装饰：极淡的网格点（编辑感） -->
+                <defs>
+                  <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <circle cx="1" cy="1" r="0.6" fill="#DDD4C3" opacity="0.5"/>
+                  </pattern>
+                </defs>
+
+                <!-- 纸张：从手机屏幕流出的三张纸（错落叠加） -->
+                <!-- 最底层纸（最远） -->
+                <g transform="translate(30, 28)">
+                  <rect x="0" y="0" width="70" height="92" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <!-- 纸面上的文字行 -->
+                  <line x1="8" y1="14" x2="58" y2="14" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="22" x2="52" y2="22" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="30" x2="60" y2="30" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="38" x2="46" y2="38" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="46" x2="55" y2="46" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <!-- 一条朱砂色强调线（呼应主题） -->
+                  <line x1="8" y1="60" x2="40" y2="60" stroke="#A33428" stroke-width="1.2" opacity="0.7"/>
+                  <line x1="8" y1="68" x2="50" y2="68" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="76" x2="42" y2="76" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <!-- 纸页折角 -->
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 中间纸 -->
+                <g transform="translate(58, 18)">
+                  <rect x="0" y="0" width="70" height="98" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="16" x2="58" y2="16" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="24" x2="50" y2="24" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="32" x2="62" y2="32" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="40" x2="44" y2="40" stroke="#A29988" stroke-width="0.8" opacity="0.45"/>
+                  <line x1="8" y1="48" x2="56" y2="48" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <!-- 朱砂色块：模拟高亮段落 -->
+                  <rect x="6" y="58" width="32" height="8" rx="1" fill="#F2DED8" opacity="0.8"/>
+                  <line x1="10" y1="63.5" x2="34" y2="63.5" stroke="#A33428" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="74" x2="52" y2="74" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="82" x2="46" y2="82" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 最前层纸（最靠近观众，部分被手机遮挡） -->
+                <g transform="translate(90, 10)">
+                  <rect x="0" y="0" width="68" height="100" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="18" x2="56" y2="18" stroke="#6B6151" stroke-width="0.9" opacity="0.8"/>
+                  <line x1="8" y1="26" x2="48" y2="26" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="34" x2="58" y2="34" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="42" x2="42" y2="42" stroke="#A29988" stroke-width="0.8" opacity="0.55"/>
+                  <line x1="8" y1="50" x2="54" y2="50" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <!-- 朱砂色标题强调 -->
+                  <line x1="6" y1="16" x2="6" y2="20" stroke="#A33428" stroke-width="2" opacity="0.9"/>
+                  <line x1="8" y1="62" x2="50" y2="62" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="70" x2="44" y2="70" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="78" x2="56" y2="78" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="86" x2="38" y2="86" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M56,0 L68,0 L68,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 手机轮廓（从右下方露出，纸页从屏幕里"流"出来） -->
+                <g transform="translate(140, 80)">
+                  <!-- 手机机身 -->
+                  <rect x="0" y="0" width="90" height="112" rx="12" ry="12" fill="#2A241B" opacity="0.85"/>
+                  <!-- 屏幕 -->
+                  <rect x="5" y="5" width="80" height="102" rx="9" ry="9" fill="#F5F0E8"/>
+                  <!-- 听筒/刘海 -->
+                  <rect x="30" y="10" width="30" height="4" rx="2" fill="#DDD4C3"/>
+                  <!-- 屏幕内容：顶部信号栏 -->
+                  <line x1="12" y1="22" x2="30" y2="22" stroke="#A29988" stroke-width="0.7" opacity="0.6"/>
+                  <circle cx="72" cy="22" r="1.5" fill="#A29988" opacity="0.6"/>
+                  <!-- 屏幕内容：聊天/对话气泡（微信感） -->
+                  <rect x="10" y="32" width="48" height="12" rx="4" fill="#F2DED8" opacity="0.6"/>
+                  <line x1="16" y1="38.5" x2="52" y2="38.5" stroke="#A33428" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="32" y="50" width="48" height="12" rx="4" fill="#E8E0D1" opacity="0.8"/>
+                  <line x1="38" y1="56.5" x2="74" y2="56.5" stroke="#6B6151" stroke-width="0.7" opacity="0.5"/>
+                  <!-- 纸页从屏幕顶部"冒出来"的视觉连接 -->
+                  <rect x="15" y="-2" width="50" height="6" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="0.5"/>
+                  <!-- 屏幕底部输入框 -->
+                  <rect x="10" y="86" width="60" height="10" rx="5" fill="#E8E0D1" opacity="0.6"/>
+                  <circle cx="74" cy="91" r="5" fill="#A33428" opacity="0.7"/>
+                  <!-- 发送箭头 -->
+                  <path d="M72,89 L76,91 L72,93" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <!-- 细小装饰点：编辑感的定位标记 -->
+                <circle cx="20" cy="180" r="1.5" fill="#A33428" opacity="0.4"/>
+                <circle cx="240" cy="20" r="1.5" fill="#A29988" opacity="0.3"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 方案 B · 文字真画进 SVG（<text>） ===== -->
+      <div class="variant-banner">
+        <div class="variant-label">方案 B · 文字真画进 SVG（&lt;text&gt;）</div>
+        <div class="banner banner-svg-text">
+          <div class="banner-inner">
+            <!-- 整个 banner 内容就是一张 SVG：文字 + 插图都在 SVG 内 -->
+            <svg class="banner-svg-text-svg" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="随时随地，vibe coding">
+              <!-- 主标题：衬线 -->
+              <text x="40" y="72"
+                font-family="'Noto Serif SC','Songti SC','SimSun','PingFang SC',serif"
+                font-size="44" font-weight="700" fill="#2A241B"
+                letter-spacing="-0.5">随时随地，</text>
+              <!-- vibe coding 斜体朱砂 -->
+              <text x="215" y="72"
+                font-family="'Noto Serif SC','Songti SC','SimSun','PingFang SC',serif"
+                font-size="37" font-style="italic" font-weight="400" fill="#A33428">vibe coding</text>
+
+              <!-- 副标题：衬线，小字号，次级墨色，破折号起手 -->
+              <text x="40" y="108"
+                font-family="'Noto Serif SC','Songti SC','SimSun','PingFang SC',serif"
+                font-size="15" fill="#6B6151">
+                —— 灵感萌发的那一刻，AI 助手帮我沉淀成诗篇。
+              </text>
+
+              <!-- 插图配文：小字弱色 -->
+              <text x="40" y="138"
+                font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif"
+                font-size="12" fill="#A29988">
+                用手机微信 + hermes 快速做出来的一个个思想火花合集
+              </text>
+
+              <!-- 插图组（右侧）：手机 + 纸页（复用方案 A 的构图，但缩小适配） -->
+              <g transform="translate(520, 20) scale(0.85)">
+                <!-- 最底层纸 -->
+                <g transform="translate(30, 28)">
+                  <rect x="0" y="0" width="70" height="92" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="14" x2="58" y2="14" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="22" x2="52" y2="22" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="30" x2="60" y2="30" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="38" x2="46" y2="38" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="46" x2="55" y2="46" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="60" x2="40" y2="60" stroke="#A33428" stroke-width="1.2" opacity="0.7"/>
+                  <line x1="8" y1="68" x2="50" y2="68" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="76" x2="42" y2="76" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+                <!-- 中间纸 -->
+                <g transform="translate(58, 18)">
+                  <rect x="0" y="0" width="70" height="98" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="16" x2="58" y2="16" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="24" x2="50" y2="24" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="32" x2="62" y2="32" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="40" x2="44" y2="40" stroke="#A29988" stroke-width="0.8" opacity="0.45"/>
+                  <line x1="8" y1="48" x2="56" y2="48" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <rect x="6" y="58" width="32" height="8" rx="1" fill="#F2DED8" opacity="0.8"/>
+                  <line x1="10" y1="63.5" x2="34" y2="63.5" stroke="#A33428" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="74" x2="52" y2="74" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="82" x2="46" y2="82" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+                <!-- 最前层纸 -->
+                <g transform="translate(90, 10)">
+                  <rect x="0" y="0" width="68" height="100" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="18" x2="56" y2="18" stroke="#6B6151" stroke-width="0.9" opacity="0.8"/>
+                  <line x1="8" y1="26" x2="48" y2="26" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="34" x2="58" y2="34" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="42" x2="42" y2="42" stroke="#A29988" stroke-width="0.8" opacity="0.55"/>
+                  <line x1="8" y1="50" x2="54" y2="50" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="6" y1="16" x2="6" y2="20" stroke="#A33428" stroke-width="2" opacity="0.9"/>
+                  <line x1="8" y1="62" x2="50" y2="62" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="70" x2="44" y2="70" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="78" x2="56" y2="78" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="86" x2="38" y2="86" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M56,0 L68,0 L68,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+                <!-- 手机 -->
+                <g transform="translate(140, 80)">
+                  <rect x="0" y="0" width="90" height="112" rx="12" ry="12" fill="#2A241B" opacity="0.85"/>
+                  <rect x="5" y="5" width="80" height="102" rx="9" ry="9" fill="#F5F0E8"/>
+                  <rect x="30" y="10" width="30" height="4" rx="2" fill="#DDD4C3"/>
+                  <line x1="12" y1="22" x2="30" y2="22" stroke="#A29988" stroke-width="0.7" opacity="0.6"/>
+                  <circle cx="72" cy="22" r="1.5" fill="#A29988" opacity="0.6"/>
+                  <rect x="10" y="32" width="48" height="12" rx="4" fill="#F2DED8" opacity="0.6"/>
+                  <line x1="16" y1="38.5" x2="52" y2="38.5" stroke="#A33428" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="32" y="50" width="48" height="12" rx="4" fill="#E8E0D1" opacity="0.8"/>
+                  <line x1="38" y1="56.5" x2="74" y2="56.5" stroke="#6B6151" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="15" y="-2" width="50" height="6" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="0.5"/>
+                  <rect x="10" y="86" width="60" height="10" rx="5" fill="#E8E0D1" opacity="0.6"/>
+                  <circle cx="74" cy="91" r="5" fill="#A33428" opacity="0.7"/>
+                  <path d="M72,89 L76,91 L72,93" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+              </g>
+
+              <!-- 细小定位点 -->
+              <circle cx="20" cy="200" r="1.5" fill="#A33428" opacity="0.4"/>
+              <circle cx="770" cy="20" r="1.5" fill="#A29988" opacity="0.3"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 目录（保留在 hero 下方） -->
+      <nav class="toc" aria-label="栏目目录">
+        <span class="toc-label">目录 Contents</span>
+        <a href="#tech">技术与开发 <span class="count">06</span></a>
+        <a href="#think">思辩与随笔 <span class="count">05</span></a>
+        <a href="#travel">诗和远方 <span class="count">09</span></a>
+        <a href="#drive-film">影视 <span class="count">02</span></a>
+      </nav>
+    </header>
+
+    <!-- ===== 栏目 01：技术与开发 ===== -->
+    <section class="section" id="tech">
+      <div class="section-head">
+        <div class="section-num">01</div>
+        <div class="section-title-wrap">
+          <h2>技术与开发</h2>
+          <span class="section-sub">Technology &amp; Development</span>
+        </div>
+        <div class="section-count"><strong>06</strong> 篇</div>
+      </div>
+      <div class="list">
+
+        <a class="item" href="jevk5-guide.html">
+          <div class="item-row">
+            <span class="item-tag tag-deploy">#本地部署</span>
+            <div class="item-title">JevK5 本地部署指南</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-10-08</div>
+          </div>
+          <p class="item-desc">MacBook Pro M5 24GB 环境下，llama.cpp + Metal 加速跑通 JevK5-9B 的完整踩坑记录。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#效率工具</span>
+            <div class="item-title">Hermes 微信接入实操</div>
+            <div class="item-date">2026-09-28</div>
+          </div>
+          <p class="item-desc">把 Hermes Agent 接进微信，手机上随时对话随时产出，从配置到踩坑全记录。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#前端</span>
+            <div class="item-title">成果导航页从零到一</div>
+            <div class="item-date">2026-09-22</div>
+          </div>
+          <p class="item-desc">暖米白刊物风单页导航的设计思路与实现细节，从 token 到组件的完整推演。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#AI 工作流</span>
+            <div class="item-title">vibe coding 的正确姿势</div>
+            <div class="item-date">2026-09-15</div>
+          </div>
+          <p class="item-desc">灵感来了怎么快速落地？一套「一句话→原型→打磨→发布」的轻量工作流。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#终端</span>
+            <div class="item-title">手机 SSH 连服务器做开发</div>
+            <div class="item-date">2026-09-03</div>
+          </div>
+          <p class="item-desc">iPad/iPhone 上用 iSH + Blink + mosh 实现随时随地编码的环境配置。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#自动化</span>
+            <div class="item-title">Netlify 自动部署懒人包</div>
+            <div class="item-date">2026-08-28</div>
+          </div>
+          <p class="item-desc">静态站点 push 即发布，preview 分支看效果，main 分支上生产的最小配置。</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 02：思辩与随笔 ===== -->
+    <section class="section" id="think">
+      <div class="section-head">
+        <div class="section-num">02</div>
+        <div class="section-title-wrap">
+          <h2>思辩与随笔</h2>
+          <span class="section-sub">Essays &amp; Thoughts</span>
+        </div>
+        <div class="section-count"><strong>05</strong> 篇</div>
+      </div>
+      <div class="list">
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#职场</span>
+            <div class="item-title">材料岗怎样让上级思路落地</div>
+            <div class="item-date"><span class="badge-new">NEW</span>2026-10-10</div>
+          </div>
+          <p class="item-desc">从「领导说了个意思」到「成稿一次过」，三步法把模糊意图变成过硬文稿。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#随笔</span>
+            <div class="item-title">AI 时代的「手艺人」身份</div>
+            <div class="item-date">2026-09-25</div>
+          </div>
+          <p class="item-desc">当生成变得廉价，价值会往哪里迁移？一些关于「判断力」与「品味」的碎思。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#方法论</span>
+            <div class="item-title">四句话讲清一个问题</div>
+            <div class="item-date">2026-09-07</div>
+          </div>
+          <p class="item-desc">把复杂问题拆成「是什么—为什么—怎么办—怎么验证」，写汇报做沟通都好用。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#读书</span>
+            <div class="item-title">《高岛易断》札记</div>
+            <div class="item-date">2026-09-12</div>
+          </div>
+          <p class="item-desc">读高岛嘉右卫门的周易占卜实践，看古人怎么用卦象做决策。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#观察</span>
+            <div class="item-title">小城市的数字生活</div>
+            <div class="item-date">2026-08-20</div>
+          </div>
+          <p class="item-desc">在十堰这样的三线城市，AI 工具和远程工作究竟意味着什么？一些日常观察。</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 03：诗和远方 ===== -->
+    <section class="section" id="travel">
+      <div class="section-head">
+        <div class="section-num">03</div>
+        <div class="section-title-wrap">
+          <h2>诗和远方</h2>
+          <span class="section-sub">Travel &amp; Poetry</span>
+        </div>
+        <div class="section-count"><strong>09</strong> 篇</div>
+      </div>
+      <div class="list">
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#武当山</span>
+            <div class="item-title">秋登武当：金顶的雾与钟声</div>
+            <div class="item-date">2026-10-05</div>
+          </div>
+          <p class="item-desc">国庆假期从十堰市区出发，一日往返武当山金顶的暴走记录与随感。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#神农架</span>
+            <div class="item-title">神农架三日：在原始森林里关掉手机</div>
+            <div class="item-date">2026-09-18</div>
+          </div>
+          <p class="item-desc">三天没有信号的日子，反而让脑子更清楚了——关于断连的一些思考。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#随笔</span>
+            <div class="item-title">六堰广场的傍晚</div>
+            <div class="item-date">2026-08-30</div>
+          </div>
+          <p class="item-desc">城市中心小广场的速写：跳广场舞的阿姨、卖气球的小贩、发呆的我。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#诗</span>
+            <div class="item-title">汉江边上</div>
+            <div class="item-date">2026-08-15</div>
+          </div>
+          <p class="item-desc">一首短诗，关于汉江水、夏日午后，以及某些说不清楚的情绪。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#骑行</span>
+            <div class="item-title">骑行郧阳岛</div>
+            <div class="item-date">2026-07-22</div>
+          </div>
+          <p class="item-desc">周末环郧阳湖骑行 40 公里，一路的风、蝉鸣与西瓜摊。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#丹江口</span>
+            <div class="item-title">丹江口大坝：一汪清水送北京</div>
+            <div class="item-date">2026-07-10</div>
+          </div>
+          <p class="item-desc">南水北调中线工程起点的现场观感，宏大工程与个体生活的交错。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#诗</span>
+            <div class="item-title">给 AI 的十四行</div>
+            <div class="item-date">2026-06-28</div>
+          </div>
+          <p class="item-desc">试着用莎士比亚体写一组给 AI 的诗，看看人与算法之间能有什么诗意。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#徒步</span>
+            <div class="item-title">牛头山森林公园徒步</div>
+            <div class="item-date">2026-06-12</div>
+          </div>
+          <p class="item-desc">市区内就能到达的天然氧吧，一条不为人知的后山小径攻略。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#随笔</span>
+            <div class="item-title">小城的夏天</div>
+            <div class="item-date">2026-05-30</div>
+          </div>
+          <p class="item-desc">蝉鸣、冰粉、老风扇——关于十堰夏天的私人记忆碎片。</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 栏目 04：影视 ===== -->
+    <section class="section" id="drive-film">
+      <div class="section-head">
+        <div class="section-num">04</div>
+        <div class="section-title-wrap">
+          <h2>影视</h2>
+          <span class="section-sub">Film &amp; TV</span>
+        </div>
+        <div class="section-count"><strong>02</strong> 篇</div>
+      </div>
+      <div class="list">
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#影评</span>
+            <div class="item-title">《瞬息全宇宙》再看：中年人的多重宇宙</div>
+            <div class="item-date">2026-09-01</div>
+          </div>
+          <p class="item-desc">第二次看这部片，笑点变少了，泪点变多了——可能是因为自己也到了那个年纪。</p>
+        </a>
+
+        <a class="item" href="#">
+          <div class="item-row">
+            <span class="item-tag">#剧评</span>
+            <div class="item-title">《繁花》：王家卫的上海与我记忆中的不一样</div>
+            <div class="item-date">2026-07-15</div>
+          </div>
+          <p class="item-desc">镜头美是真美，但总觉得少了点什么——关于「味道」和「还原」的一点胡思乱想。</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer>
+      <p>共 <span class="total" id="total">0</span> 篇成果 · 分 <span class="total">4</span> 个栏目 · 随时新增，随时 vibe coding</p>
+      <div class="footer-mark">VIBE CODING · ISSUE 01</div>
+    </footer>
+  </main>
+
+<script>
+  document.getElementById('total').textContent =
+    document.querySelectorAll('.item').length;
+</script>
+</body>
+</html>
