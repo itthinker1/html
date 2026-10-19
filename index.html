@@ -171,8 +171,10 @@
     background:var(--surface);
     border:1px solid var(--border);
     border-radius:var(--radius);
-    padding:40px 44px;
+    padding:36px 40px;
     overflow:hidden;
+    box-shadow: 0 1px 0 rgba(59,52,64,.03),
+                0 8px 24px rgba(194,67,107,.06);
   }
   .banner-inner{
     display:grid;
@@ -195,7 +197,7 @@
     display:block;
   }
   .banner h1.banner-title{
-    font-size:clamp(26px,3.6vw,38px);
+    font-size:clamp(30px,4.2vw,46px);
     font-weight:700;
     letter-spacing:-.5px;
     line-height:1.2;
@@ -326,7 +328,7 @@
     font-weight:700;
     line-height:.9;
     letter-spacing:-1px;
-    opacity:.40;
+    opacity:.55;
     align-self:center;
   }
   #tech .section-num{color:var(--tech-title)}
@@ -397,7 +399,23 @@
   .list{
     display:flex;
     flex-direction:column;
-    padding:8px 32px 24px;
+    padding:14px 32px 24px;
+  }
+  .list-group-sep{
+    height:1px;
+    margin:18px 0 6px;
+    background:var(--border);
+    position:relative;
+    opacity:.75;
+  }
+  .list-group-sep::after{
+    content:"";
+    position:absolute;
+    left:50%; top:-2px;
+    width:5px; height:5px;
+    border-radius:50%;
+    background:var(--border);
+    transform:translateX(-50%);
   }
   .item{
     display:grid;
@@ -493,7 +511,7 @@
 
   /* ===== 页脚 · 编辑感 ===== */
   footer{
-    margin-top:72px;
+    margin-top:112px;
     padding-top:28px;
     border-top:1.5px solid var(--text);
     text-align:center;
@@ -543,7 +561,7 @@
     }
     .section-illu{width:52px;height:52px}
     .section-count{grid-column:auto;padding-bottom:0}
-    .list{padding:6px 16px 20px}
+    .list{padding:12px 16px 20px}
     .item{
       grid-template-columns:1fr auto;
       gap:6px 12px;
@@ -557,6 +575,7 @@
       margin-top:2px;
       -webkit-line-clamp:2;
     }
+    footer{margin-top:80px}
     .toc{padding:14px 16px;gap:8px 16px}
     .toc-label{margin-right:0;flex-basis:100%;margin-bottom:4px}
     h1{font-size:32px;letter-spacing:-.5px}
@@ -588,6 +607,8 @@
           <div class="banner-illu">
             <!-- SVG 插图：手机轮廓中流出纸页/文字 -->
             <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- 淡粉色底色块：让线稿有"面"的视觉重量 -->
+                <rect x="6" y="8" width="248" height="184" rx="16" fill="#FBE0EA" opacity="0.55"/>
                 <!-- 背景装饰：极淡的网格点（编辑感） -->
                 <defs>
                   <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -914,6 +935,8 @@
           <div class="item-desc">东线海东秘境，避开人潮的小众玩法。</div>
         </a>
 
+        <div class="list-group-sep" aria-hidden="true"></div>
+
         <a class="item" href="shaxi-dense-morandi.html">
           <div class="item-row">
             <span class="item-tag tag-shaxi">#沙溪古镇</span>
@@ -940,6 +963,8 @@
           </div>
           <div class="item-desc">沙溪古镇水彩风路线图，一眼看懂怎么逛。</div>
         </a>
+
+        <div class="list-group-sep" aria-hidden="true"></div>
 
         <a class="item" href="guizhou-travel.html">
           <div class="item-row">
