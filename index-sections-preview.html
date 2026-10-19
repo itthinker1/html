@@ -301,29 +301,28 @@
     margin-top:48px;
     position:relative;
     border-radius:10px;
-    padding:28px 32px 24px;
     border:1px solid var(--border);
+    overflow:hidden;
   }
-  /* 四栏目淡底分卷 */
-  #tech.section{background:var(--tech-bg);border-color:rgba(163,52,40,.18)}
-  #think.section{background:var(--think-bg);border-color:rgba(107,78,122,.18)}
-  #travel.section{background:var(--travel-bg);border-color:rgba(74,107,69,.18)}
-  #drive-film.section{background:var(--film-bg);border-color:rgba(26,22,16,.18)}
+  /* 四栏目描边色（底色已移到 .section-head，整栏透明） */
+  #tech.section{border-color:rgba(163,52,40,.18)}
+  #think.section{border-color:rgba(107,78,122,.18)}
+  #travel.section{border-color:rgba(74,107,69,.18)}
+  #drive-film.section{border-color:rgba(26,22,16,.18)}
 
   .section-head{
     display:grid;
     grid-template-columns:auto 1fr auto;
     align-items:center;
     gap:16px;
-    margin-bottom:16px;
-    padding-bottom:20px;
+    padding:20px 32px;
     position:relative;
   }
-  /* 栏目头底线改为各栏主色细线 */
-  #tech .section-head{border-bottom:1.5px solid rgba(163,52,40,.35)}
-  #think .section-head{border-bottom:1.5px solid rgba(107,78,122,.35)}
-  #travel .section-head{border-bottom:1.5px solid rgba(74,107,69,.35)}
-  #drive-film .section-head{border-bottom:1.5px solid rgba(26,22,16,.3)}
+  /* 栏目头色条（各栏目淡底色 + 底部主色细分隔线） */
+  #tech .section-head{background:var(--tech-bg);border-bottom:1px solid rgba(163,52,40,.18)}
+  #think .section-head{background:var(--think-bg);border-bottom:1px solid rgba(107,78,122,.18)}
+  #travel .section-head{background:var(--travel-bg);border-bottom:1px solid rgba(74,107,69,.18)}
+  #drive-film .section-head{background:var(--film-bg);border-bottom:1px solid rgba(26,22,16,.15)}
 
   .section-num{
     font-family:"Noto Serif SC",serif;
@@ -400,6 +399,7 @@
   .list{
     display:flex;
     flex-direction:column;
+    padding:8px 32px 24px;
   }
   .item{
     display:block;
@@ -538,6 +538,7 @@
       grid-template-columns:auto 1fr auto;
       grid-template-rows:auto auto;
       gap:4px 12px;
+      padding:18px 18px;
     }
     .section-num{font-size:36px;grid-row:span 2}
     .section-head-right{
@@ -546,6 +547,7 @@
     }
     .section-illu{width:52px;height:52px}
     .section-count{grid-column:auto;padding-bottom:0}
+    .list{padding:6px 16px 20px}
     .item-row{
       grid-template-columns:auto 1fr;
       gap:6px 12px;
