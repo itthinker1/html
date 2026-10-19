@@ -164,35 +164,78 @@
     font-size:.85em;
     margin-left:8px;
   }
-  .hero-meta{
+  /* ===== Hero Banner ===== */
+  .banner{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:40px 44px;
+    overflow:hidden;
+  }
+  .banner-inner{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:32px;
+    align-items:center;
+    position:relative;
+    z-index:2;
+  }
+  .banner-text{ min-width:0; }
+  .banner-illu{
     display:flex;
-    flex-wrap:wrap;
-    gap:20px 32px;
-    margin-bottom:24px;
-    padding-bottom:24px;
-    border-bottom:1px dashed var(--border);
+    justify-content:flex-end;
+    align-items:center;
   }
-  .hero-meta div{
-    font-size:12.5px;
-    color:var(--muted);
-    letter-spacing:.3px;
+  .banner-illu svg{
+    width:100%;
+    max-width:280px;
+    height:auto;
+    display:block;
   }
-  .hero-meta strong{
+  .banner h1.banner-title{
+    font-size:clamp(26px,3.6vw,38px);
+    font-weight:700;
+    letter-spacing:-.5px;
+    line-height:1.2;
+    margin-bottom:16px;
     color:var(--text);
-    font-weight:600;
-    font-size:14px;
-    margin-left:4px;
-    font-family:"Noto Serif SC",serif;
+    font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
+    font-feature-settings:"palt";
+    white-space:nowrap;
+    overflow:hidden;
   }
-  .desc{
+  .banner h1.banner-title em{
+    font-style:italic;
+    color:var(--accent);
+    font-weight:400;
+    font-size:.85em;
+    margin-left:6px;
+  }
+  .banner-subtitle{
+    font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
+    font-size:clamp(13px,1.8vw,16px);
     color:var(--muted);
-    font-size:15px;
-    max-width:600px;
-    line-height:1.85;
+    line-height:1.7;
+    margin-bottom:14px;
+    font-weight:400;
   }
-  .desc strong{
-    color:var(--text);
-    font-weight:500;
+  .banner-caption{
+    font-size:12px;
+    color:var(--faint);
+    line-height:1.6;
+  }
+  @media (max-width:720px){
+    .banner{ padding:28px 24px; }
+    .banner-inner{ grid-template-columns:1fr; gap:24px; }
+    .banner-illu{ justify-content:center; }
+    .banner-illu svg{ max-width:200px; }
+    .banner h1.banner-title{ font-size:24px; }
+    .banner-subtitle{ font-size:13px; }
+  }
+  @media (max-width:480px){
+    .banner h1.banner-title{ font-size:20px; }
+    .banner{ padding:22px 18px; }
   }
 
   /* ===== 顶部目录 · 编辑感 ===== */
@@ -470,7 +513,6 @@
     .toc{padding:14px 16px;gap:8px 16px}
     .toc-label{margin-right:0;flex-basis:100%;margin-bottom:4px}
     h1{font-size:32px;letter-spacing:-.5px}
-    .hero-meta{gap:12px 20px}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition:none!important;animation:none!important}
@@ -488,18 +530,94 @@
         <span class="masthead-date">VOL. 01 &nbsp;·&nbsp; 2026</span>
       </div>
 
-      <h1>随时随地，<em>vibe coding</em></h1>
+      <!-- ===== Hero Banner（方案A：HTML 文字叠加在 SVG 上） ===== -->
+      <div class="banner">
+        <div class="banner-inner">
+          <div class="banner-text">
+            <h1 class="banner-title">随时随地，<em>vibe coding</em></h1>
+            <p class="banner-subtitle">—— 灵感萌发的那一刻，AI 助手帮我沉淀成诗篇。</p>
+            <p class="banner-caption">用手机微信 + hermes 快速做出来的一个个思想火花合集</p>
+          </div>
+          <div class="banner-illu">
+            <!-- SVG 插图：手机轮廓中流出纸页/文字 -->
+            <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- 背景装饰：极淡的网格点（编辑感） -->
+                <defs>
+                  <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <circle cx="1" cy="1" r="0.6" fill="#DDD4C3" opacity="0.5"/>
+                  </pattern>
+                </defs>
 
-      <div class="hero-meta">
-        <div>栏目<strong>4</strong> 个</div>
-        <div>成果<strong>22</strong> 篇</div>
-        <div>技术 · 思辩 · 旅行 · 影视</div>
+                <!-- 纸张：从手机屏幕流出的三张纸（错落叠加） -->
+                <!-- 最底层纸（最远） -->
+                <g transform="translate(30, 28)">
+                  <rect x="0" y="0" width="70" height="92" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="14" x2="58" y2="14" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="22" x2="52" y2="22" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="30" x2="60" y2="30" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="38" x2="46" y2="38" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="46" x2="55" y2="46" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="60" x2="40" y2="60" stroke="#A33428" stroke-width="1.2" opacity="0.7"/>
+                  <line x1="8" y1="68" x2="50" y2="68" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="76" x2="42" y2="76" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 中间纸 -->
+                <g transform="translate(58, 18)">
+                  <rect x="0" y="0" width="70" height="98" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="16" x2="58" y2="16" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="24" x2="50" y2="24" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="32" x2="62" y2="32" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="40" x2="44" y2="40" stroke="#A29988" stroke-width="0.8" opacity="0.45"/>
+                  <line x1="8" y1="48" x2="56" y2="48" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <rect x="6" y="58" width="32" height="8" rx="1" fill="#F2DED8" opacity="0.8"/>
+                  <line x1="10" y1="63.5" x2="34" y2="63.5" stroke="#A33428" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="74" x2="52" y2="74" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="82" x2="46" y2="82" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 最前层纸（最靠近观众，部分被手机遮挡） -->
+                <g transform="translate(90, 10)">
+                  <rect x="0" y="0" width="68" height="100" rx="2" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="1"/>
+                  <line x1="8" y1="18" x2="56" y2="18" stroke="#6B6151" stroke-width="0.9" opacity="0.8"/>
+                  <line x1="8" y1="26" x2="48" y2="26" stroke="#A29988" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="34" x2="58" y2="34" stroke="#A29988" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="42" x2="42" y2="42" stroke="#A29988" stroke-width="0.8" opacity="0.55"/>
+                  <line x1="8" y1="50" x2="54" y2="50" stroke="#A29988" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="6" y1="16" x2="6" y2="20" stroke="#A33428" stroke-width="2" opacity="0.9"/>
+                  <line x1="8" y1="62" x2="50" y2="62" stroke="#A29988" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="70" x2="44" y2="70" stroke="#A29988" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="78" x2="56" y2="78" stroke="#A29988" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="86" x2="38" y2="86" stroke="#A29988" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M56,0 L68,0 L68,12 Z" fill="#E8E0D1" stroke="#DDD4C3" stroke-width="0.5"/>
+                </g>
+
+                <!-- 手机轮廓（从右下方露出，纸页从屏幕里"流"出来） -->
+                <g transform="translate(140, 80)">
+                  <rect x="0" y="0" width="90" height="112" rx="12" ry="12" fill="#2A241B" opacity="0.85"/>
+                  <rect x="5" y="5" width="80" height="102" rx="9" ry="9" fill="#F5F0E8"/>
+                  <rect x="30" y="10" width="30" height="4" rx="2" fill="#DDD4C3"/>
+                  <line x1="12" y1="22" x2="30" y2="22" stroke="#A29988" stroke-width="0.7" opacity="0.6"/>
+                  <circle cx="72" cy="22" r="1.5" fill="#A29988" opacity="0.6"/>
+                  <rect x="10" y="32" width="48" height="12" rx="4" fill="#F2DED8" opacity="0.6"/>
+                  <line x1="16" y1="38.5" x2="52" y2="38.5" stroke="#A33428" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="32" y="50" width="48" height="12" rx="4" fill="#E8E0D1" opacity="0.8"/>
+                  <line x1="38" y1="56.5" x2="74" y2="56.5" stroke="#6B6151" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="15" y="-2" width="50" height="6" fill="#FBF8F3" stroke="#DDD4C3" stroke-width="0.5"/>
+                  <rect x="10" y="86" width="60" height="10" rx="5" fill="#E8E0D1" opacity="0.6"/>
+                  <circle cx="74" cy="91" r="5" fill="#A33428" opacity="0.7"/>
+                  <path d="M72,89 L76,91 L72,93" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+
+                <!-- 细小装饰点：编辑感的定位标记 -->
+                <circle cx="20" cy="180" r="1.5" fill="#A33428" opacity="0.4"/>
+                <circle cx="240" cy="20" r="1.5" fill="#A29988" opacity="0.3"/>
+              </svg>
+          </div>
+        </div>
       </div>
-
-      <p class="desc">
-        我的 vibe coding 成果合集 —— 用手机微信 + hermes 快速做出来的一个个小页面，
-        <strong>按栏目归档，方便查找</strong>。灵感萌发的那一刻，AI 助手帮我沉淀成诗篇。
-      </p>
 
       <nav class="toc" aria-label="栏目目录">
         <span class="toc-label">目录 Contents</span>
