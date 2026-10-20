@@ -8,35 +8,35 @@
   /* ===== Design Tokens — 马卡龙色系（派生规则：HSL 同色相·仅调明度） ===== */
   :root{
     /* 底色与文字（奶油马卡龙底+深紫墨字） */
-    --bg:#FCF7F3;            /* 奶油马卡龙底（页面） */
-    --bg-2:#F6EDF1;          /* 次底，粉紫调 */
-    --surface:#FFFDFB;       /* 卡片/条目底（白卡） */
-    --surface-hover:#F8F0F4; /* hover 微深粉 */
-    --border:#D5C5D1;        /* 浅粉紫描边（CR 1.62，可见但克制） */
-    --border-faint:#DFD0DB;  /* 更淡分割线（CR 1.46） */
-    --text:#3B3440;          /* 深紫墨深字（CR 11.82） */
-    --muted:#5E5366;         /* 次级文字（CR 7.12） */
-    --faint:#6E5F75;         /* 更淡辅助（CR 5.82，五底色全过 AA） */
+    --bg:#F8FAF9;            /* 奶油马卡龙底（页面） */
+    --bg-2:#F1F4F3;          /* 次底，粉紫调 */
+    --surface:#FFFEFD;       /* 卡片/条目底（白卡） */
+    --surface-hover:#F1F5F3; /* hover 微深粉 */
+    --border:#C9D2CE;        /* 浅粉紫描边（CR 1.62，可见但克制） */
+    --border-faint:#D8DFDC;  /* 更淡分割线（CR 1.46） */
+    --text:#2F3A38;          /* 深紫墨深字（CR 11.82） */
+    --muted:#4F5C59;         /* 次级文字（CR 7.12） */
+    --faint:#5D6964;         /* 更淡辅助（CR 5.82，五底色全过 AA） */
 
     /* 栏目主色（马卡龙四色·标题用，白卡与淡底双场景均 ≥4.55） */
     /* 派生规则：主色 L≈45%，淡底 L≈90% S-10%，hover 深 8-10%，SVG 线条 0.6–0.8 opacity */
-    --tech-title:#B23760;       /* 技术：马卡龙玫红（白卡 5.74 / 粉底 4.56） */
-    --think-title:#74549C;      /* 思辨：马卡龙紫（白卡 5.93 / 紫底 4.59） */
+    --tech-title:#2E6E7E;       /* 技术：马卡龙玫红（白卡 5.74 / 粉底 4.56） */
+    --think-title:#5A4A7A;      /* 思辨：马卡龙紫（白卡 5.93 / 紫底 4.59） */
     --travel-title:#33745C;     /* 旅行：马卡龙薄荷绿（白卡 5.46 / 绿底 4.58） */
     --film-title:#356B99;       /* 影视：马卡龙天蓝（白卡 5.57 / 蓝底 4.60） */
 
     /* 栏目淡底色（分卷卡片头色条·马卡龙浅面色） */
-    --tech-bg:#FADCE7;          /* 技术：马卡龙粉底 */
-    --think-bg:#E8DCF7;         /* 思辨：马卡龙紫底 */
-    --travel-bg:#D4F0E4;        /* 旅行：马卡龙薄荷底 */
-    --film-bg:#D9EAF9;          /* 影视：马卡龙天蓝底 */
+    --tech-bg:#E7F0F2;          /* 技术：马卡龙粉底 */
+    --think-bg:#ECEAEF;         /* 思辨：马卡龙紫底 */
+    --travel-bg:#E8F1EE;        /* 旅行：马卡龙薄荷底 */
+    --film-bg:#E7EDF2;          /* 影视：马卡龙天蓝底 */
 
     /* 统一中性色（标签/日期/简介整页统一，不随栏目变色） */
-    --tag-text:#6E5F75;         /* #标签文字色，faint 级（三级信息） */
+    --tag-text:#5D6964;         /* #标签文字色，faint 级（三级信息） */
 
-    --accent:#C2436B;      /* 马卡龙玫红强调色（白字 CR 4.87） */
-    --accent-bg:#FBE0EA;
-    --accent-border:#EFB6CB;
+    --accent:#2F4F6F;      /* 马卡龙玫红强调色（白字 CR 4.87） */
+    --accent-bg:#E3EAEF;
+    --accent-border:#C4D0DA;
 
     --radius:6px;
     --radius-sm:4px;
@@ -63,9 +63,7 @@
     pointer-events:none;
     z-index:0;
     opacity:.35;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(217,83,126,.06) 0, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(124,91,166,.05) 0, transparent 50%);
+    background-image:none;
   }
   body::after{display:none}
 
@@ -76,7 +74,9 @@
     width:1px;
     /* 定位：wrap 左边缘 - 20px（相对 wrap 的左侧外 20px） */
     left:calc(50% - 440px - 20px);
-    background:linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    background:var(--border);
+    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    mask-image:linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
     z-index:1;
     pointer-events:none;
   }
@@ -174,11 +174,11 @@
     padding:36px 40px;
     overflow:hidden;
     box-shadow: 0 1px 0 rgba(59,52,64,.03),
-                0 8px 24px rgba(194,67,107,.06);
+                0 8px 24px rgba(47,79,111,.07);
   }
   .banner-inner{
     display:grid;
-    grid-template-columns:1.2fr 1fr;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
     gap:32px;
     align-items:center;
     position:relative;
@@ -205,7 +205,7 @@
     color:var(--text);
     font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
     font-feature-settings:"palt";
-    max-width:20ch;
+    max-width:none;
   }
   .banner h1.banner-title em{
     font-style:italic;
@@ -213,6 +213,11 @@
     font-weight:400;
     font-size:.85em;
     margin-left:6px;
+    display:inline-block;
+    white-space:nowrap;
+  }
+  .banner h1.banner-title .hero-line{
+    display:inline-block;
   }
   .banner-subtitle{
     font-family:"Noto Serif SC","Songti SC","SimSun","PingFang SC",serif;
@@ -301,8 +306,8 @@
     overflow:hidden;
   }
   /* 四栏目描边色（底色已移到 .section-head，整栏透明）——30% 透明度强化分卷边界 */
-  #tech.section{border-color:rgba(178,55,96,.30)}
-  #think.section{border-color:rgba(116,84,156,.30)}
+  #tech.section{border-color:rgba(46,110,126,.30)}
+  #think.section{border-color:rgba(90,74,122,.30)}
   #travel.section{border-color:rgba(51,116,92,.30)}
   #film.section{border-color:rgba(53,107,153,.30)}
   #drive-film.section{border-color:rgba(53,107,153,.30)} /* 旧 id 兼容 */
@@ -316,8 +321,8 @@
     position:relative;
   }
   /* 栏目头色条（各栏目淡底色 + 底部主色细分隔线） */
-  #tech .section-head{background:var(--tech-bg);border-bottom:1px solid rgba(178,55,96,.30)}
-  #think .section-head{background:var(--think-bg);border-bottom:1px solid rgba(116,84,156,.30)}
+  #tech .section-head{background:var(--tech-bg);border-bottom:1px solid rgba(46,110,126,.30)}
+  #think .section-head{background:var(--think-bg);border-bottom:1px solid rgba(90,74,122,.30)}
   #travel .section-head{background:var(--travel-bg);border-bottom:1px solid rgba(51,116,92,.30)}
   #film .section-head{background:var(--film-bg);border-bottom:1px solid rgba(53,107,153,.25)}
   #drive-film .section-head{background:var(--film-bg);border-bottom:1px solid rgba(53,107,153,.25)} /* 旧 id 兼容 */
@@ -466,11 +471,11 @@
   #travel .item-title{color:var(--travel-title)}
   #film .item-title{color:var(--film-title)}
   #drive-film .item-title{color:var(--film-title)} /* 旧 id 兼容 */
-  #tech .item:hover .item-title{color:#8A2A4D}
-  #think .item:hover .item-title{color:#5A3E7A}
-  #travel .item:hover .item-title{color:#265946}
-  #film .item:hover .item-title{color:#28557A}
-  #drive-film .item:hover .item-title{color:#28557A} /* 旧 id 兼容 */
+  #tech .item:hover .item-title{color:#276070}
+  #think .item:hover .item-title{color:#4E3F69}
+  #travel .item:hover .item-title{color:#2B6550}
+  #film .item:hover .item-title{color:#2E5E85}
+  #drive-film .item:hover .item-title{color:#2E5E85} /* 旧 id 兼容 */
   .item-date{
     flex-shrink:0;
     font-size:12px;
@@ -600,7 +605,7 @@
       <div class="banner">
         <div class="banner-inner">
           <div class="banner-text">
-            <h1 class="banner-title">随时随地，<em>vibe coding</em></h1>
+            <h1 class="banner-title"><span class="hero-line">随时随地，</span><em>vibe coding</em></h1>
             <p class="banner-subtitle">—— 灵感萌发的那一刻，AI 助手帮我沉淀成诗篇。</p>
             <p class="banner-caption">用手机微信 + hermes 快速做出来的一个个思想火花合集</p>
           </div>
@@ -608,80 +613,80 @@
             <!-- SVG 插图：手机轮廓中流出纸页/文字 -->
             <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <!-- 淡粉色底色块：让线稿有"面"的视觉重量 -->
-                <rect x="6" y="8" width="248" height="184" rx="16" fill="#FBE0EA" opacity="0.55"/>
+                <rect x="6" y="8" width="248" height="184" rx="16" fill="#E3EAEF" opacity="0.55"/>
                 <!-- 背景装饰：极淡的网格点（编辑感） -->
                 <defs>
                   <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                    <circle cx="1" cy="1" r="0.6" fill="#E8DCE4" opacity="0.5"/>
+                    <circle cx="1" cy="1" r="0.6" fill="#C9D2CE" opacity="0.5"/>
                   </pattern>
                 </defs>
 
                 <!-- 纸张：从手机屏幕流出的三张纸（错落叠加） -->
                 <!-- 最底层纸（最远） -->
                 <g transform="translate(30, 28)">
-                  <rect x="0" y="0" width="70" height="92" rx="2" fill="#FFFDFB" stroke="#E8DCE4" stroke-width="1"/>
-                  <line x1="8" y1="14" x2="58" y2="14" stroke="#A99EB0" stroke-width="0.8" opacity="0.6"/>
-                  <line x1="8" y1="22" x2="52" y2="22" stroke="#A99EB0" stroke-width="0.8" opacity="0.5"/>
-                  <line x1="8" y1="30" x2="60" y2="30" stroke="#A99EB0" stroke-width="0.8" opacity="0.4"/>
-                  <line x1="8" y1="38" x2="46" y2="38" stroke="#A99EB0" stroke-width="0.8" opacity="0.4"/>
-                  <line x1="8" y1="46" x2="55" y2="46" stroke="#A99EB0" stroke-width="0.8" opacity="0.3"/>
-                  <line x1="8" y1="60" x2="40" y2="60" stroke="#C2436B" stroke-width="1.2" opacity="0.7"/>
-                  <line x1="8" y1="68" x2="50" y2="68" stroke="#A99EB0" stroke-width="0.8" opacity="0.3"/>
-                  <line x1="8" y1="76" x2="42" y2="76" stroke="#A99EB0" stroke-width="0.8" opacity="0.25"/>
-                  <path d="M58,0 L70,0 L70,12 Z" fill="#F0E6EC" stroke="#E8DCE4" stroke-width="0.5"/>
+                  <rect x="0" y="0" width="70" height="92" rx="2" fill="#FFFEFD" stroke="#C9D2CE" stroke-width="1"/>
+                  <line x1="8" y1="14" x2="58" y2="14" stroke="#8C9995" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="22" x2="52" y2="22" stroke="#8C9995" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="30" x2="60" y2="30" stroke="#8C9995" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="38" x2="46" y2="38" stroke="#8C9995" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="46" x2="55" y2="46" stroke="#8C9995" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="60" x2="40" y2="60" stroke="#2F4F6F" stroke-width="1.2" opacity="0.7"/>
+                  <line x1="8" y1="68" x2="50" y2="68" stroke="#8C9995" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="76" x2="42" y2="76" stroke="#8C9995" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#D8DFDC" stroke="#C9D2CE" stroke-width="0.5"/>
                 </g>
 
                 <!-- 中间纸 -->
                 <g transform="translate(58, 18)">
-                  <rect x="0" y="0" width="70" height="98" rx="2" fill="#FFFDFB" stroke="#E8DCE4" stroke-width="1"/>
-                  <line x1="8" y1="16" x2="58" y2="16" stroke="#A99EB0" stroke-width="0.8" opacity="0.7"/>
-                  <line x1="8" y1="24" x2="50" y2="24" stroke="#A99EB0" stroke-width="0.8" opacity="0.6"/>
-                  <line x1="8" y1="32" x2="62" y2="32" stroke="#A99EB0" stroke-width="0.8" opacity="0.5"/>
-                  <line x1="8" y1="40" x2="44" y2="40" stroke="#A99EB0" stroke-width="0.8" opacity="0.45"/>
-                  <line x1="8" y1="48" x2="56" y2="48" stroke="#A99EB0" stroke-width="0.8" opacity="0.4"/>
-                  <rect x="6" y="58" width="32" height="8" rx="1" fill="#FBE0EA" opacity="0.8"/>
-                  <line x1="10" y1="63.5" x2="34" y2="63.5" stroke="#C2436B" stroke-width="0.8" opacity="0.6"/>
-                  <line x1="8" y1="74" x2="52" y2="74" stroke="#A99EB0" stroke-width="0.8" opacity="0.35"/>
-                  <line x1="8" y1="82" x2="46" y2="82" stroke="#A99EB0" stroke-width="0.8" opacity="0.3"/>
-                  <path d="M58,0 L70,0 L70,12 Z" fill="#F0E6EC" stroke="#E8DCE4" stroke-width="0.5"/>
+                  <rect x="0" y="0" width="70" height="98" rx="2" fill="#FFFEFD" stroke="#C9D2CE" stroke-width="1"/>
+                  <line x1="8" y1="16" x2="58" y2="16" stroke="#8C9995" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="24" x2="50" y2="24" stroke="#8C9995" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="32" x2="62" y2="32" stroke="#8C9995" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="8" y1="40" x2="44" y2="40" stroke="#8C9995" stroke-width="0.8" opacity="0.45"/>
+                  <line x1="8" y1="48" x2="56" y2="48" stroke="#8C9995" stroke-width="0.8" opacity="0.4"/>
+                  <rect x="6" y="58" width="32" height="8" rx="1" fill="#E3EAEF" opacity="0.8"/>
+                  <line x1="10" y1="63.5" x2="34" y2="63.5" stroke="#2F4F6F" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="74" x2="52" y2="74" stroke="#8C9995" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="82" x2="46" y2="82" stroke="#8C9995" stroke-width="0.8" opacity="0.3"/>
+                  <path d="M58,0 L70,0 L70,12 Z" fill="#D8DFDC" stroke="#C9D2CE" stroke-width="0.5"/>
                 </g>
 
                 <!-- 最前层纸（最靠近观众，部分被手机遮挡） -->
                 <g transform="translate(90, 10)">
-                  <rect x="0" y="0" width="68" height="100" rx="2" fill="#FFFDFB" stroke="#E8DCE4" stroke-width="1"/>
-                  <line x1="8" y1="18" x2="56" y2="18" stroke="#6E5F75" stroke-width="0.9" opacity="0.8"/>
-                  <line x1="8" y1="26" x2="48" y2="26" stroke="#A99EB0" stroke-width="0.8" opacity="0.7"/>
-                  <line x1="8" y1="34" x2="58" y2="34" stroke="#A99EB0" stroke-width="0.8" opacity="0.6"/>
-                  <line x1="8" y1="42" x2="42" y2="42" stroke="#A99EB0" stroke-width="0.8" opacity="0.55"/>
-                  <line x1="8" y1="50" x2="54" y2="50" stroke="#A99EB0" stroke-width="0.8" opacity="0.5"/>
-                  <line x1="6" y1="16" x2="6" y2="20" stroke="#C2436B" stroke-width="2" opacity="0.9"/>
-                  <line x1="8" y1="62" x2="50" y2="62" stroke="#A99EB0" stroke-width="0.8" opacity="0.4"/>
-                  <line x1="8" y1="70" x2="44" y2="70" stroke="#A99EB0" stroke-width="0.8" opacity="0.35"/>
-                  <line x1="8" y1="78" x2="56" y2="78" stroke="#A99EB0" stroke-width="0.8" opacity="0.3"/>
-                  <line x1="8" y1="86" x2="38" y2="86" stroke="#A99EB0" stroke-width="0.8" opacity="0.25"/>
-                  <path d="M56,0 L68,0 L68,12 Z" fill="#F0E6EC" stroke="#E8DCE4" stroke-width="0.5"/>
+                  <rect x="0" y="0" width="68" height="100" rx="2" fill="#FFFEFD" stroke="#C9D2CE" stroke-width="1"/>
+                  <line x1="8" y1="18" x2="56" y2="18" stroke="#5D6964" stroke-width="0.9" opacity="0.8"/>
+                  <line x1="8" y1="26" x2="48" y2="26" stroke="#8C9995" stroke-width="0.8" opacity="0.7"/>
+                  <line x1="8" y1="34" x2="58" y2="34" stroke="#8C9995" stroke-width="0.8" opacity="0.6"/>
+                  <line x1="8" y1="42" x2="42" y2="42" stroke="#8C9995" stroke-width="0.8" opacity="0.55"/>
+                  <line x1="8" y1="50" x2="54" y2="50" stroke="#8C9995" stroke-width="0.8" opacity="0.5"/>
+                  <line x1="6" y1="16" x2="6" y2="20" stroke="#2F4F6F" stroke-width="2" opacity="0.9"/>
+                  <line x1="8" y1="62" x2="50" y2="62" stroke="#8C9995" stroke-width="0.8" opacity="0.4"/>
+                  <line x1="8" y1="70" x2="44" y2="70" stroke="#8C9995" stroke-width="0.8" opacity="0.35"/>
+                  <line x1="8" y1="78" x2="56" y2="78" stroke="#8C9995" stroke-width="0.8" opacity="0.3"/>
+                  <line x1="8" y1="86" x2="38" y2="86" stroke="#8C9995" stroke-width="0.8" opacity="0.25"/>
+                  <path d="M56,0 L68,0 L68,12 Z" fill="#D8DFDC" stroke="#C9D2CE" stroke-width="0.5"/>
                 </g>
 
                 <!-- 手机轮廓（从右下方露出，纸页从屏幕里"流"出来） -->
                 <g transform="translate(140, 80)">
-                  <rect x="0" y="0" width="90" height="112" rx="12" ry="12" fill="#3B3440" opacity="0.85"/>
-                  <rect x="5" y="5" width="80" height="102" rx="9" ry="9" fill="#FCF7F3"/>
-                  <rect x="30" y="10" width="30" height="4" rx="2" fill="#E8DCE4"/>
-                  <line x1="12" y1="22" x2="30" y2="22" stroke="#A99EB0" stroke-width="0.7" opacity="0.6"/>
-                  <circle cx="72" cy="22" r="1.5" fill="#A99EB0" opacity="0.6"/>
-                  <rect x="10" y="32" width="48" height="12" rx="4" fill="#FBE0EA" opacity="0.6"/>
-                  <line x1="16" y1="38.5" x2="52" y2="38.5" stroke="#C2436B" stroke-width="0.7" opacity="0.5"/>
-                  <rect x="32" y="50" width="48" height="12" rx="4" fill="#F0E6EC" opacity="0.8"/>
-                  <line x1="38" y1="56.5" x2="74" y2="56.5" stroke="#6E5F75" stroke-width="0.7" opacity="0.5"/>
-                  <rect x="15" y="-2" width="50" height="6" fill="#FFFDFB" stroke="#E8DCE4" stroke-width="0.5"/>
-                  <rect x="10" y="86" width="60" height="10" rx="5" fill="#F0E6EC" opacity="0.6"/>
-                  <circle cx="74" cy="91" r="5" fill="#C2436B" opacity="0.7"/>
+                  <rect x="0" y="0" width="90" height="112" rx="12" ry="12" fill="#2F3A38" opacity="0.85"/>
+                  <rect x="5" y="5" width="80" height="102" rx="9" ry="9" fill="#F8FAF9"/>
+                  <rect x="30" y="10" width="30" height="4" rx="2" fill="#C9D2CE"/>
+                  <line x1="12" y1="22" x2="30" y2="22" stroke="#8C9995" stroke-width="0.7" opacity="0.6"/>
+                  <circle cx="72" cy="22" r="1.5" fill="#8C9995" opacity="0.6"/>
+                  <rect x="10" y="32" width="48" height="12" rx="4" fill="#E3EAEF" opacity="0.6"/>
+                  <line x1="16" y1="38.5" x2="52" y2="38.5" stroke="#2F4F6F" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="32" y="50" width="48" height="12" rx="4" fill="#D8DFDC" opacity="0.8"/>
+                  <line x1="38" y1="56.5" x2="74" y2="56.5" stroke="#5D6964" stroke-width="0.7" opacity="0.5"/>
+                  <rect x="15" y="-2" width="50" height="6" fill="#FFFEFD" stroke="#C9D2CE" stroke-width="0.5"/>
+                  <rect x="10" y="86" width="60" height="10" rx="5" fill="#D8DFDC" opacity="0.6"/>
+                  <circle cx="74" cy="91" r="5" fill="#2F4F6F" opacity="0.7"/>
                   <path d="M72,89 L76,91 L72,93" fill="none" stroke="#fff" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
 
                 <!-- 细小装饰点：编辑感的定位标记 -->
-                <circle cx="20" cy="180" r="1.5" fill="#C2436B" opacity="0.4"/>
-                <circle cx="240" cy="20" r="1.5" fill="#A99EB0" opacity="0.3"/>
+                <circle cx="20" cy="180" r="1.5" fill="#2F4F6F" opacity="0.4"/>
+                <circle cx="240" cy="20" r="1.5" fill="#8C9995" opacity="0.3"/>
               </svg>
           </div>
         </div>
@@ -708,16 +713,16 @@
           <div class="section-illu" aria-hidden="true">
             <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
               <!-- 代码窗口：极简线条风 -->
-              <rect x="8" y="14" width="56" height="44" rx="4" fill="none" stroke="#B23760" stroke-width="1.5" opacity="0.7"/>
-              <circle cx="14" cy="22" r="2" fill="#B23760" opacity="0.5"/>
-              <circle cx="20" cy="22" r="2" fill="#B23760" opacity="0.35"/>
-              <circle cx="26" cy="22" r="2" fill="#B23760" opacity="0.25"/>
-              <line x1="8" y1="28" x2="64" y2="28" stroke="#B23760" stroke-width="0.8" opacity="0.3"/>
+              <rect x="8" y="14" width="56" height="44" rx="4" fill="none" stroke="#2E6E7E" stroke-width="1.5" opacity="0.7"/>
+              <circle cx="14" cy="22" r="2" fill="#2E6E7E" opacity="0.5"/>
+              <circle cx="20" cy="22" r="2" fill="#2E6E7E" opacity="0.35"/>
+              <circle cx="26" cy="22" r="2" fill="#2E6E7E" opacity="0.25"/>
+              <line x1="8" y1="28" x2="64" y2="28" stroke="#2E6E7E" stroke-width="0.8" opacity="0.3"/>
               <!-- 代码行：尖括号缩进 -->
-              <polyline points="16,38 22,34 28,38" fill="none" stroke="#B23760" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
-              <line x1="34" y1="38" x2="52" y2="38" stroke="#B23760" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-              <polyline points="44,48 50,52 56,48" fill="none" stroke="#B23760" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
-              <line x1="16" y1="48" x2="38" y2="48" stroke="#B23760" stroke-width="0.8" stroke-linecap="round" opacity="0.45"/>
+              <polyline points="16,38 22,34 28,38" fill="none" stroke="#2E6E7E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+              <line x1="34" y1="38" x2="52" y2="38" stroke="#2E6E7E" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+              <polyline points="44,48 50,52 56,48" fill="none" stroke="#2E6E7E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+              <line x1="16" y1="48" x2="38" y2="48" stroke="#2E6E7E" stroke-width="0.8" stroke-linecap="round" opacity="0.45"/>
             </svg>
           </div>
           <div class="section-count"><strong>06</strong> 篇</div>
@@ -795,24 +800,24 @@
             <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
               <!-- 书页 + 灯泡：思辨/灵感 -->
               <!-- 摊开的书页 -->
-              <path d="M12,22 Q36,16 60,22 L60,54 Q36,48 12,54 Z" fill="none" stroke="#74549C" stroke-width="1.5" opacity="0.7"/>
-              <line x1="36" y1="19" x2="36" y2="51" stroke="#74549C" stroke-width="0.8" opacity="0.4"/>
+              <path d="M12,22 Q36,16 60,22 L60,54 Q36,48 12,54 Z" fill="none" stroke="#5A4A7A" stroke-width="1.5" opacity="0.7"/>
+              <line x1="36" y1="19" x2="36" y2="51" stroke="#5A4A7A" stroke-width="0.8" opacity="0.4"/>
               <!-- 左页文字线 -->
-              <line x1="18" y1="30" x2="32" y2="30" stroke="#74549C" stroke-width="0.8" opacity="0.5"/>
-              <line x1="18" y1="36" x2="30" y2="36" stroke="#74549C" stroke-width="0.8" opacity="0.4"/>
-              <line x1="18" y1="42" x2="32" y2="42" stroke="#74549C" stroke-width="0.8" opacity="0.35"/>
+              <line x1="18" y1="30" x2="32" y2="30" stroke="#5A4A7A" stroke-width="0.8" opacity="0.5"/>
+              <line x1="18" y1="36" x2="30" y2="36" stroke="#5A4A7A" stroke-width="0.8" opacity="0.4"/>
+              <line x1="18" y1="42" x2="32" y2="42" stroke="#5A4A7A" stroke-width="0.8" opacity="0.35"/>
               <!-- 右页文字线 -->
-              <line x1="40" y1="30" x2="54" y2="30" stroke="#74549C" stroke-width="0.8" opacity="0.5"/>
-              <line x1="40" y1="36" x2="52" y2="36" stroke="#74549C" stroke-width="0.8" opacity="0.4"/>
+              <line x1="40" y1="30" x2="54" y2="30" stroke="#5A4A7A" stroke-width="0.8" opacity="0.5"/>
+              <line x1="40" y1="36" x2="52" y2="36" stroke="#5A4A7A" stroke-width="0.8" opacity="0.4"/>
               <!-- 灯泡：灵感之光 -->
-              <path d="M36,14 Q30,14 30,20 Q30,24 33,27 L39,27 Q42,24 42,20 Q42,14 36,14 Z" fill="none" stroke="#74549C" stroke-width="1.2" opacity="0.85"/>
-              <line x1="34" y1="29" x2="34" y2="31" stroke="#74549C" stroke-width="1" opacity="0.7"/>
-              <line x1="38" y1="29" x2="38" y2="31" stroke="#74549C" stroke-width="1" opacity="0.7"/>
-              <line x1="36" y1="30" x2="36" y2="32" stroke="#74549C" stroke-width="1" opacity="0.7"/>
+              <path d="M36,14 Q30,14 30,20 Q30,24 33,27 L39,27 Q42,24 42,20 Q42,14 36,14 Z" fill="none" stroke="#5A4A7A" stroke-width="1.2" opacity="0.85"/>
+              <line x1="34" y1="29" x2="34" y2="31" stroke="#5A4A7A" stroke-width="1" opacity="0.7"/>
+              <line x1="38" y1="29" x2="38" y2="31" stroke="#5A4A7A" stroke-width="1" opacity="0.7"/>
+              <line x1="36" y1="30" x2="36" y2="32" stroke="#5A4A7A" stroke-width="1" opacity="0.7"/>
               <!-- 光线 -->
-              <line x1="24" y1="10" x2="27" y2="12" stroke="#74549C" stroke-width="0.8" opacity="0.4"/>
-              <line x1="45" y1="10" x2="48" y2="12" stroke="#74549C" stroke-width="0.8" opacity="0.4"/>
-              <line x1="36" y1="6" x2="36" y2="9" stroke="#74549C" stroke-width="0.8" opacity="0.5"/>
+              <line x1="24" y1="10" x2="27" y2="12" stroke="#5A4A7A" stroke-width="0.8" opacity="0.4"/>
+              <line x1="45" y1="10" x2="48" y2="12" stroke="#5A4A7A" stroke-width="0.8" opacity="0.4"/>
+              <line x1="36" y1="6" x2="36" y2="9" stroke="#5A4A7A" stroke-width="0.8" opacity="0.5"/>
             </svg>
           </div>
           <div class="section-count"><strong>05</strong> 篇</div>
