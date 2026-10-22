@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>设计师与 AI 时代 — Case Study</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS — Case Study Proposal Style
+   ============================================================ */
+:root {
+  --bg: #FAFAF7;
+  --ink: #1A1A1A;
+  --ink-2: #5A5A50;
+  --ink-3: #8A8A80;
+  --line: #E0E0D8;
+  --line-2: #EDEDE6;
+
+  /* 5 accent colors, cycling across sections */
+  --c1: #FF5A1F;   /* 橙红 */
+  --c2: #0066FF;   /* 蓝 */
+  --c3: #00A86B;   /* 绿 */
+  --c4: #8B5CF6;   /* 紫 */
+  --c5: #FFB800;   /* 黄 */
+
+  --gutter: clamp(16px, 4vw, 40px);
+  --content-max: 720px;
+  --wide-max: 1080px;
+
+  --fs-body: 18px;
+  --lh-body: 1.9;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+               "Segoe UI", Roboto, sans-serif;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* 全局标尺装饰 — 提案稿质感，移动端隐藏 */
+.ruler { display: none; }
+
+@media (min-width: 1024px) {
+  .ruler {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    pointer-events: none;
+    z-index: 10;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .ruler--left { left: 0; border-right: 1px solid var(--line-2); }
+  .ruler--right { right: 0; border-left: 1px solid var(--line-2); }
+  .ruler__tick {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--line-2);
+  }
+  .ruler__tick--major { height: 1px; background: var(--line); }
+  .ruler__label {
+    position: absolute;
+    left: 8px;
+    transform: translateY(-50%);
+    letter-spacing: 0.05em;
+  }
+  /* 只画关键 tick，不用 JS */
+  .ruler__tick:nth-child(1)  { top:  80px; }
+  .ruler__tick:nth-child(2)  { top: 160px; }
+  .ruler__tick:nth-child(3)  { top: 240px; }
+  .ruler__tick:nth-child(4)  { top: 320px; }
+  .ruler__tick:nth-child(5)  { top: 400px; }
+  .ruler__tick:nth-child(6)  { top: 480px; }
+  .ruler__tick:nth-child(7)  { top: 560px; }
+  .ruler__tick:nth-child(8)  { top: 640px; }
+  .ruler__tick:nth-child(9)  { top: 720px; }
+  .ruler__tick:nth-child(10) { top: 800px; }
+  .ruler__tick:nth-child(11) { top: 880px; }
+  .ruler__tick:nth-child(12) { top: 960px; }
+  .ruler__label:nth-child(13) { top:  80px; }
+  .ruler__label:nth-child(14) { top: 240px; }
+  .ruler__label:nth-child(15) { top: 400px; }
+  .ruler__label:nth-child(16) { top: 560px; }
+  .ruler__label:nth-child(17) { top: 720px; }
+  .ruler__label:nth-child(18) { top: 880px; }
+}
+
+/* ============================================================
+   COVER / HERO
+   ============================================================ */
+.cover {
+  position: relative;
+  padding: clamp(48px, 10vw, 120px) var(--gutter) clamp(40px, 8vw, 80px);
+  border-bottom: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+.cover__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: clamp(40px, 8vw, 100px);
+}
+.cover__mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.cover__mark::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--c1);
+}
+
+.cover__eyebrow {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c1);
+  font-weight: 600;
+  margin-bottom: clamp(16px, 3vw, 28px);
+}
+
+.cover__title {
+  font-size: clamp(32px, 7vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 clamp(24px, 4vw, 48px);
+  max-width: 14ch;
+}
+.cover__title em {
+  display: block;
+  font-style: normal;
+  color: var(--c1);
+  margin-top: 0.08em;
+}
+
+.cover__deck {
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.7;
+  color: var(--ink-2);
+  max-width: 52ch;
+  margin: 0 0 clamp(40px, 8vw, 80px);
+}
+
+/* 元信息表 */
+.cover__meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  max-width: var(--content-max);
+}
+@media (min-width: 600px) {
+  .cover__meta {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cover__meta-row:nth-child(odd) { border-right: 1px solid var(--line); }
+}
+.cover__meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-2);
+}
+.cover__meta-row:last-child,
+.cover__meta-row:nth-last-child(2):nth-child(odd) {
+  border-bottom: none;
+}
+@media (min-width: 600px) {
+  .cover__meta-row:nth-last-child(-n+2) { border-bottom: none; }
+}
+.cover__meta-label {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.cover__meta-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ============================================================
+   SECTION — 核心结构：色条 + 大编号 + caption + 标题 + 正文
+   ============================================================ */
+.section {
+  position: relative;
+  padding: clamp(56px, 10vw, 120px) var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+
+/* 章节色条 — 左侧 12px 实心条 */
+.section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: var(--sec-color, var(--c1));
+}
+
+.section__inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  position: relative;
+  padding-left: clamp(8px, 2vw, 24px);
+}
+
+/* 章节编号 — 超大号，作为视觉骨架 */
+.section__num {
+  font-size: clamp(64px, 14vw, 160px);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--sec-color, var(--c1));
+  margin-bottom: clamp(8px, 2vw, 16px);
+  font-variant-numeric: tabular-nums;
+  /* 编号透明度控制 — 偏实色，保留强视觉冲击 */
+  opacity: 1;
+  position: relative;
+}
+
+/* Caption — 提案式标签 */
+.section__fig {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: clamp(12px, 2.5vw, 20px);
+  padding: 4px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.section__fig::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--sec-color, var(--c1));
+  flex-shrink: 0;
+}
+
+/* 章节标题 */
+.section__title {
+  font-size: clamp(22px, 3.5vw, 36px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 clamp(20px, 4vw, 36px);
+  color: var(--ink);
+}
+
+/* 正文段落 */
+.section .body {
+  margin: 0 0 1.3em;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+.section .body:last-child { margin-bottom: 0; }
+
+/* Pull Quote — 关键句抽出 */
+.pull-quote {
+  position: relative;
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+  margin: clamp(28px, 5vw, 56px) 0;
+  padding: clamp(20px, 4vw, 36px) clamp(20px, 4vw, 40px);
+  background: var(--sec-color, var(--c1));
+  color: var(--bg);
+}
+.pull-quote::before {
+  content: "PULL QUOTE";
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+.pull-quote p {
+  margin: 0;
+  padding-top: 8px;
+}
+
+/* NOTE 块 — 图注式说明 */
+.note {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 16px;
+  padding: 16px 0;
+  margin: clamp(24px, 4vw, 40px) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.note__label {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sec-color, var(--c1));
+  font-weight: 700;
+  padding-top: 2px;
+}
+.note__body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  margin: 0;
+}
+@media (max-width: 480px) {
+  .note { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* DATA FIGURE — 数据/图表占位块（caption 在上方） */
+.figure {
+  margin: clamp(28px, 5vw, 56px) 0;
+}
+.figure__caption {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.figure__caption strong {
+  color: var(--sec-color, var(--c1));
+  font-weight: 700;
+}
+.figure__box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--line-2);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+/* SVG 网格占位 */
+.figure__box svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.figure__box-label {
+  position: relative;
+  z-index: 1;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--line-2);
+  padding: 4px 12px;
+}
+
+/* ============================================================
+   10 个章节的颜色循环
+   ============================================================ */
+.section[data-sec="1"]  { --sec-color: var(--c1); }
+.section[data-sec="2"]  { --sec-color: var(--c2); }
+.section[data-sec="3"]  { --sec-color: var(--c3); }
+.section[data-sec="4"]  { --sec-color: var(--c4); }
+.section[data-sec="5"]  { --sec-color: var(--c5); }
+.section[data-sec="6"]  { --sec-color: var(--c1); }
+.section[data-sec="7"]  { --sec-color: var(--c2); }
+.section[data-sec="8"]  { --sec-color: var(--c3); }
+.section[data-sec="9"]  { --sec-color: var(--c4); }
+.section[data-sec="10"] { --sec-color: var(--c5); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  padding: clamp(40px, 6vw, 72px) var(--gutter);
+  background: var(--ink);
+  color: var(--bg);
+  position: relative;
+}
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--c1);
+}
+.footer__inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.footer__meta {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+.footer__end {
+  font-size: 14px;
+  color: var(--ink-3);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* ============================================================
+   动画 — 滚动淡入，极简
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .fade-in.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 无障碍：焦点态 */
+:focus-visible {
+  outline: 3px solid var(--c2);
+  outline-offset: 2px;
+}
+
+/* 确保 320px 不溢出 — 兜底 */
+@media (max-width: 360px) {
+  .section__num { font-size: clamp(48px, 18vw, 72px); }
+  .cover__title { font-size: clamp(28px, 8vw, 40px); }
+}
+</style>
+</head>
+<body>
+
+<!-- 双侧标尺（提案稿质感，桌面端可见） -->
+<aside class="ruler ruler--left" aria-hidden="true">
+  <div class="ruler__tick"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick ruler__tick--major"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick ruler__tick--major"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick ruler__tick--major"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick ruler__tick--major"></div>
+  <span class="ruler__label">80</span>
+  <span class="ruler__label">240</span>
+  <span class="ruler__label">400</span>
+  <span class="ruler__label">560</span>
+  <span class="ruler__label">720</span>
+  <span class="ruler__label">880</span>
+</aside>
+<aside class="ruler ruler--right" aria-hidden="true">
+  <div class="ruler__tick"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick ruler__tick--major"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick ruler__tick--major"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick ruler__tick--major"></div><div class="ruler__tick"></div>
+  <div class="ruler__tick"></div><div class="ruler__tick ruler__tick--major"></div>
+  <span class="ruler__label">80</span>
+  <span class="ruler__label">240</span>
+  <span class="ruler__label">400</span>
+  <span class="ruler__label">560</span>
+  <span class="ruler__label">720</span>
+  <span class="ruler__label">880</span>
+</aside>
+
+<!-- ============ COVER ============ -->
+<header class="cover" role="banner">
+  <div class="cover__topbar">
+    <span class="cover__mark">CASE STUDY / 001</span>
+    <span>CONCEPT PROPOSAL</span>
+  </div>
+
+  <p class="cover__eyebrow">PROJECT — 设计师与 AI 时代</p>
+
+  <h1 class="cover__title">
+    当设计遇见<em>智能时代的命题</em>
+  </h1>
+
+  <p class="cover__deck">
+    这是一份关于设计职业在人工智能浪潮下如何重新定位的行业观察提案。
+    从工具、流程到身份认知，每一个环节都在被重新书写。
+  </p>
+
+  <dl class="cover__meta">
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">PROJECT</dt>
+      <dd class="cover__meta-value">设计师与 AI 时代</dd>
+    </div>
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">TYPE</dt>
+      <dd class="cover__meta-value">行业观察</dd>
+    </div>
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">YEAR</dt>
+      <dd class="cover__meta-value">2026</dd>
+    </div>
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">LENGTH</dt>
+      <dd class="cover__meta-value">10 章</dd>
+    </div>
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">FORMAT</dt>
+      <dd class="cover__meta-value">长文 / 深度</dd>
+    </div>
+    <div class="cover__meta-row">
+      <dt class="cover__meta-label">STATUS</dt>
+      <dd class="cover__meta-value">DRAFT v0.1</dd>
+    </div>
+  </dl>
+</header>
+
+<main>
+
+<!-- ============ SECTION 01 ============ -->
+<section class="section fade-in" data-sec="1">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 01 — OBSERVATION</div>
+    <div class="section__num">01</div>
+    <h2 class="section__title">章节标题一</h2>
+
+    <p class="body">
+      这里是第一节正文的占位内容，用于检验中文正文在当前栏宽与行高下的阅读节奏。
+      每一行的字数、段落之间的间距、行高带来的呼吸感，都是排版设计需要反复推敲的细节。
+      当读者的视线从左到右再到下一行，这条无形的路径是否顺畅，决定了他们能否沉浸其中。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：设计的本质从未改变，改变的只是抵达它的路径。</p>
+    </blockquote>
+
+    <p class="body">
+      这里继续填充占位文字。提案式排版的核心在于结构感——读者一眼就能看出哪里是标题、
+      哪里是正文、哪里是补充说明。编号、色块、标签共同构成了一套视觉语法，
+      让信息的层级像建筑的梁柱一样清晰可见。
+    </p>
+
+    <div class="note">
+      <span class="note__label">NOTE</span>
+      <p class="note__body">
+        占位说明文字：本节讨论的范围仅限于视觉设计领域，交互设计与服务设计的情况略有不同，
+        将在后续章节单独展开。数据来源基于 2025 年行业调研样本。
+      </p>
+    </div>
+
+    <p class="body">
+      最后一段占位内容。好的排版不是让读者注意到排版本身，而是让他们在不知不觉中读完了所有内容，
+      然后回想起来觉得"读起来很舒服"。这正是 Case Study 版式追求的目标——
+      专业、克制、有结构感，但不喧宾夺主。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 02 ============ -->
+<section class="section fade-in" data-sec="2">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 02 — CONTEXT</div>
+    <div class="section__num">02</div>
+    <h2 class="section__title">章节标题二</h2>
+
+    <p class="body">
+      第二节的正文占位内容。每一节用不同的主色调区分，这是 Case Study 常用的手法——
+      颜色不仅是装饰，更是章节的身份标识。读者翻到某一页，看到色条就知道自己在哪一部分。
+    </p>
+
+    <div class="figure">
+      <div class="figure__caption">
+        <strong>FIG. 02.1</strong>
+        <span>示意图占位 · 数据对比</span>
+      </div>
+      <div class="figure__box" aria-hidden="true">
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#E0E0D8" stroke-width="1">
+            <line x1="0" y1="50" x2="800" y2="50"/>
+            <line x1="0" y1="150" x2="800" y2="150"/>
+            <line x1="0" y1="250" x2="800" y2="250"/>
+            <line x1="0" y1="350" x2="800" y2="350"/>
+            <line x1="100" y1="0" x2="100" y2="450"/>
+            <line x1="300" y1="0" x2="300" y2="450"/>
+            <line x1="500" y1="0" x2="500" y2="450"/>
+            <line x1="700" y1="0" x2="700" y2="450"/>
+          </g>
+          <rect x="140" y="180" width="40" height="220" fill="#0066FF"/>
+          <rect x="200" y="120" width="40" height="280" fill="#0066FF" opacity="0.6"/>
+          <rect x="340" y="100" width="40" height="300" fill="#0066FF"/>
+          <rect x="400" y="60" width="40" height="340" fill="#0066FF" opacity="0.6"/>
+          <rect x="540" y="40" width="40" height="360" fill="#0066FF"/>
+          <rect x="600" y="20" width="40" height="380" fill="#0066FF" opacity="0.6"/>
+        </svg>
+        <span class="figure__box-label">FIGURE · PLACEHOLDER</span>
+      </div>
+    </div>
+
+    <p class="body">
+      继续第二段。图表占位块展示了数据可视化在提案中的位置——上面有编号和说明，
+      下面是正文解读。这种排布在设计提案和咨询报告中非常常见，
+      因为它让读者先看到结论的支撑，再看到详细的分析。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：工具迭代的速度，正在超过大多数人学习的速度。</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ SECTION 03 ============ -->
+<section class="section fade-in" data-sec="3">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 03 — INSIGHT</div>
+    <div class="section__num">03</div>
+    <h2 class="section__title">章节标题三</h2>
+
+    <p class="body">
+      第三节正文占位。绿色系的章节通常用来表示"洞察"或"发现"，这是一种约定俗成的色彩语义。
+      当然，在实际项目中颜色的选择要和品牌系统保持一致，但作为提案草稿，
+      用高饱和度的纯色做区分是最直接的方式。
+    </p>
+
+    <div class="note">
+      <span class="note__label">DATA</span>
+      <p class="note__body">
+        数据来源：2025 年全球设计行业调研报告，样本量 N=2,847，覆盖 12 个国家和地区。
+        调研对象以从业 3 年以上的设计师为主。
+      </p>
+    </div>
+
+    <p class="body">
+      再写一段占位文字。NOTE 块和 PULL QUOTE 的区别在于：前者是补充信息，读者可以跳过；
+      后者是核心观点，必须被看到。这种功能上的差异通过视觉重量的不同来体现——
+      一个用细线框，低调内敛；一个用满版色块，强势出击。
+    </p>
+
+    <p class="body">
+      最后一段。Case Study 的阅读体验就像参观一个策展清晰的展览——每走进一个房间，
+      墙壁的颜色变了，灯光变了，你知道自己进入了一个新的主题。
+      章节之间的颜色切换制造了这种心理上的"换房间"感。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 04 ============ -->
+<section class="section fade-in" data-sec="4">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 04 — FRAMEWORK</div>
+    <div class="section__num">04</div>
+    <h2 class="section__title">章节标题四</h2>
+
+    <p class="body">
+      第四节正文占位。紫色系，常用于表示框架、模型、方法论这类偏抽象的内容。
+      提案的中段往往是理论最密集的部分，这时候视觉上的节奏感就更加重要——
+      每隔几段就有一个色块、一个引用、一个图表，让眼睛有地方可以"落脚"。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：真正的壁垒不是会不会用工具，而是知道什么时候不该用。</p>
+    </blockquote>
+
+    <div class="figure">
+      <div class="figure__caption">
+        <strong>FIG. 04.1</strong>
+        <span>框架图占位 · 四层模型</span>
+      </div>
+      <div class="figure__box" aria-hidden="true">
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#8B5CF6" stroke-width="2" fill="none">
+            <rect x="150" y="60" width="500" height="70" stroke-width="3"/>
+            <rect x="180" y="150" width="440" height="60"/>
+            <rect x="220" y="230" width="360" height="55"/>
+            <rect x="270" y="305" width="260" height="50"/>
+          </g>
+          <g fill="#8B5CF6" font-family="monospace" font-size="14" font-weight="bold">
+            <text x="400" y="100" text-anchor="middle">STRATEGY</text>
+            <text x="400" y="187" text-anchor="middle" opacity="0.8">SYSTEM</text>
+            <text x="400" y="263" text-anchor="middle" opacity="0.6">PROCESS</text>
+            <text x="400" y="335" text-anchor="middle" opacity="0.4">TOOLS</text>
+          </g>
+        </svg>
+        <span class="figure__box-label">FIGURE · PLACEHOLDER</span>
+      </div>
+    </div>
+
+    <p class="body">
+      继续填充占位文字。读完这一节，读者应该对整个论述的框架有了清晰的认知。
+      在提案中，框架图的作用就是"一页讲清结构"——哪怕读者什么都不记得，
+      至少记住这张图的形状，也算达到了目的。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 05 ============ -->
+<section class="section fade-in" data-sec="5">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 05 — EVIDENCE</div>
+    <div class="section__num">05</div>
+    <h2 class="section__title">章节标题五</h2>
+
+    <p class="body">
+      第五节正文占位。黄色系，明亮、醒目，适合放证据、数据、案例这些"干货"内容。
+      黄色在视觉上有"警示"和"重点"的语义，用来标注关键数据再合适不过。
+    </p>
+
+    <div class="note">
+      <span class="note__label">SOURCE</span>
+      <p class="note__body">
+        案例引用：某头部互联网设计团队 2025 年内部分享，经脱敏处理后引用。
+        具体数据点已获授权使用。
+      </p>
+    </div>
+
+    <p class="body">
+      第二段占位。到了文章中段，读者的注意力往往开始下降，这时候更需要用强烈的视觉元素
+      把他们拉回来——大段的纯文字是排版的大忌，尤其是在屏幕上阅读时。
+      每两到三段就插入一个视觉锚点，是保持阅读节奏的基本技巧。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：效率提升了三倍，但没人谈论代价是什么。</p>
+    </blockquote>
+
+    <p class="body">
+      最后一段占位。前五章构成了提案的上半部分——从观察到背景，到洞察，到框架，到证据。
+      下半部分将转向更具体的应对策略和行动建议。这个结构本身就是经典的咨询提案逻辑：
+      先让读者认同"发生了什么"，再讨论"该怎么办"。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 06 ============ -->
+<section class="section fade-in" data-sec="6">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 06 — STRATEGY</div>
+    <div class="section__num">06</div>
+    <h2 class="section__title">章节标题六</h2>
+
+    <p class="body">
+      第六节正文占位，回到橙红色系。从这一章开始，内容从"分析"转向"策略"。
+      颜色的循环不是简单的重复，而是暗示内容结构的对称性——前半段的观察与后半段的行动
+      形成一种呼应关系。
+    </p>
+
+    <p class="body">
+      继续第二段占位文字。策略章节的核心是给出可执行的方向，而不是空泛的口号。
+      在提案排版中，策略点通常会用编号列表或卡片的形式呈现，让每一条建议都有足够的视觉重量。
+      这里用纯段落加 pull quote 的组合来测试连续阅读的舒适度。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：不要问 AI 能做什么，要问你想做什么。</p>
+    </blockquote>
+
+    <div class="figure">
+      <div class="figure__caption">
+        <strong>FIG. 06.1</strong>
+        <span>策略矩阵占位 · 四象限</span>
+      </div>
+      <div class="figure__box" aria-hidden="true">
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+          <line x1="400" y1="40" x2="400" y2="410" stroke="#FF5A1F" stroke-width="2"/>
+          <line x1="80" y1="225" x2="720" y2="225" stroke="#FF5A1F" stroke-width="2"/>
+          <g fill="#FF5A1F" font-family="monospace" font-size="12" font-weight="bold">
+            <text x="240" y="80" text-anchor="middle">HIGH VALUE</text>
+            <text x="560" y="80" text-anchor="middle">LEVERAGE</text>
+            <text x="240" y="400" text-anchor="middle">AUTOMATE</text>
+            <text x="560" y="400" text-anchor="middle">LOW VALUE</text>
+          </g>
+          <g stroke="#FF5A1F" stroke-width="1" stroke-dasharray="4,4" fill="none">
+            <rect x="120" y="100" width="200" height="100"/>
+            <rect x="480" y="100" width="200" height="100"/>
+            <rect x="120" y="260" width="200" height="100"/>
+            <rect x="480" y="260" width="200" height="100"/>
+          </g>
+        </svg>
+        <span class="figure__box-label">FIGURE · PLACEHOLDER</span>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="note__label">TIP</span>
+      <p class="note__body">
+        实操建议：先从低价值高重复性的工作开始试错，逐步建立团队对 AI 工具的信任，
+        再向高价值环节渗透。不要一上来就用在最核心的创意产出上。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 07 ============ -->
+<section class="section fade-in" data-sec="7">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 07 — PROCESS</div>
+    <div class="section__num">07</div>
+    <h2 class="section__title">章节标题七</h2>
+
+    <p class="body">
+      第七节正文占位，蓝色系，聚焦流程与方法。讨论到具体怎么做的时候，
+      读者需要的是清晰的步骤和可参照的范例，而不是抽象的论述。
+      这时候排版的任务就是把复杂的流程拆解成可消化的单元。
+    </p>
+
+    <p class="body">
+      第二段占位文字。一个典型的误区是把 AI 当作终点而不是起点——
+      以为按下按钮就能得到成品。实际上，AI 产出的质量高度取决于输入的质量，
+      而"如何提出好问题"本身就是一种需要训练的能力。设计师过去的训练集中在"如何给出好答案"，
+      现在可能要反过来练习"如何提出好问题"。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：Prompt engineering 是这个时代的手绘基本功。</p>
+    </blockquote>
+
+    <p class="body">
+      最后一段。流程再造不是简单地在某个环节插入一个新工具，
+      而是重新思考每个环节的输入输出关系、责任归属和质量标准。
+      当工具变了，围绕工具建立的整个工作流都需要重新设计。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 08 ============ -->
+<section class="section fade-in" data-sec="8">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 08 — CULTURE</div>
+    <div class="section__num">08</div>
+    <h2 class="section__title">章节标题八</h2>
+
+    <p class="body">
+      第八节正文占位，绿色系，讨论组织文化与团队心态。技术的问题往往最后都不是技术问题，
+      而是人的问题。工具引入容易，改变一个团队的工作习惯和评价体系很难。
+    </p>
+
+    <div class="figure">
+      <div class="figure__caption">
+        <strong>FIG. 08.1</strong>
+        <span>组织成熟度模型占位</span>
+      </div>
+      <div class="figure__box" aria-hidden="true">
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#E0E0D8" stroke-width="1">
+            <line x1="80" y1="60" x2="720" y2="60"/>
+            <line x1="80" y1="140" x2="720" y2="140"/>
+            <line x1="80" y1="220" x2="720" y2="220"/>
+            <line x1="80" y1="300" x2="720" y2="300"/>
+            <line x1="80" y1="380" x2="720" y2="380"/>
+          </g>
+          <g fill="#00A86B">
+            <rect x="100" y="355" width="100" height="20"/>
+            <rect x="240" y="275" width="100" height="100"/>
+            <rect x="380" y="195" width="100" height="180"/>
+            <rect x="520" y="115" width="100" height="260"/>
+            <rect x="660" y="35" width="40" height="340" opacity="0.5"/>
+          </g>
+          <g fill="#5A5A50" font-family="monospace" font-size="11">
+            <text x="150" y="410" text-anchor="middle">RESIST</text>
+            <text x="290" y="410" text-anchor="middle">ADOPT</text>
+            <text x="430" y="410" text-anchor="middle">INTEGRATE</text>
+            <text x="570" y="410" text-anchor="middle">INNOVATE</text>
+            <text x="680" y="410" text-anchor="middle">LEAD</text>
+          </g>
+        </svg>
+        <span class="figure__box-label">FIGURE · PLACEHOLDER</span>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="note__label">CASE</span>
+      <p class="note__body">
+        案例参考：某设计团队用了三个月时间，把 AI 工具从"个人偷偷用"变成"团队标准流程"，
+        关键不是培训，而是调整了绩效考核标准——不再考核产出数量，而是考核判断质量。
+      </p>
+    </div>
+
+    <p class="body">
+      最后一段占位文字。文化的改变是最慢的，但也是最根本的。
+      当一个组织真正拥抱了新的工作方式，它就不再是"用 AI 的设计团队"，
+      而是"AI 原生的设计团队"——这两者之间有本质的区别。
+    </p>
+  </div>
+</section>
+
+<!-- ============ SECTION 09 ============ -->
+<section class="section fade-in" data-sec="9">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 09 — RISKS</div>
+    <div class="section__num">09</div>
+    <h2 class="section__title">章节标题九</h2>
+
+    <p class="body">
+      第九节正文占位，紫色系，讨论风险与边界。任何一份负责任的提案都不会只讲好处不讲风险。
+      把潜在的问题和不确定性坦诚地摆出来，反而增加了整个论述的可信度。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：最大的风险不是被取代，而是变得可有可无。</p>
+    </blockquote>
+
+    <p class="body">
+      第二段占位文字。风险章节的排版需要保持冷静和客观，避免用过于情绪化的视觉语言。
+      紫色在这里的作用就是"严肃"和"审慎"——它不像红色那么警报，
+      也不像蓝色那么中性，正好介于两者之间。
+    </p>
+
+    <p class="body">
+      第三段。风险不是用来吓唬人的，而是用来做预案的。每列出一个风险，
+      最好跟着一个应对思路。这样读者读完不会感到焦虑，而是感到"虽然难，但有路可走"。
+      好的分析应该给予力量，而不是剥夺力量。
+    </p>
+
+    <div class="note">
+      <span class="note__label">WARN</span>
+      <p class="note__body">
+        特别提醒：版权、数据安全、伦理风险这三个领域的法规正在快速变化，
+        所有策略都需要定期复核，不能一劳永逸。建议每季度做一次合规审查。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 10 ============ -->
+<section class="section fade-in" data-sec="10">
+  <div class="section__inner">
+    <div class="section__fig">FIG. 10 — OUTLOOK</div>
+    <div class="section__num">10</div>
+    <h2 class="section__title">章节标题十</h2>
+
+    <p class="body">
+      第十节，也是最后一节，黄色系，展望未来。黄色作为最后一个颜色，
+      有"光明"和"希望"的语义，适合用来收束全文，给读者一个向前看的结尾。
+    </p>
+
+    <p class="body">
+      第二段占位。一份好的行业观察，结尾不应该是标准答案，而应该是好问题。
+      把读者的思考引向更深的地方，比给出一个草率的结论更有价值。
+      设计这个职业的未来不会由任何单一力量决定，它是每一个从业者每天选择的总和。
+    </p>
+
+    <blockquote class="pull-quote">
+      <p>关键句占位：设计的终点不是产出，而是判断。</p>
+    </blockquote>
+
+    <div class="figure">
+      <div class="figure__caption">
+        <strong>FIG. 10.1</strong>
+        <span>时间线展望 · 2026–2030</span>
+      </div>
+      <div class="figure__box" aria-hidden="true">
+        <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+          <line x1="60" y1="225" x2="740" y2="225" stroke="#FFB800" stroke-width="3"/>
+          <g fill="#FFB800">
+            <circle cx="120" cy="225" r="12"/>
+            <circle cx="280" cy="225" r="12"/>
+            <circle cx="440" cy="225" r="12"/>
+            <circle cx="600" cy="225" r="12"/>
+            <circle cx="720" cy="225" r="12" fill="none" stroke="#FFB800" stroke-width="3"/>
+          </g>
+          <g fill="#5A5A50" font-family="monospace" font-size="11" font-weight="bold">
+            <text x="120" y="180" text-anchor="middle">2026</text>
+            <text x="280" y="180" text-anchor="middle">2027</text>
+            <text x="440" y="180" text-anchor="middle">2028</text>
+            <text x="600" y="180" text-anchor="middle">2029</text>
+            <text x="720" y="180" text-anchor="middle">2030</text>
+          </g>
+          <g fill="#8A8A80" font-family="monospace" font-size="10">
+            <text x="120" y="265" text-anchor="middle">工具普及</text>
+            <text x="280" y="265" text-anchor="middle">流程重组</text>
+            <text x="440" y="265" text-anchor="middle">角色分化</text>
+            <text x="600" y="265" text-anchor="middle">新标准形成</text>
+            <text x="720" y="265" text-anchor="middle">未知</text>
+          </g>
+        </svg>
+        <span class="figure__box-label">FIGURE · PLACEHOLDER</span>
+      </div>
+    </div>
+
+    <p class="body">
+      最后一段占位文字。到这里，十章的结构就完整了——从观察到策略，
+      从流程到文化，从风险到展望。每一章有自己的颜色、自己的节奏、自己的重点，
+      但都服务于同一个核心命题：设计师在 AI 时代该如何自处。
+      当读者翻到最后一页，他们带走的不应该只是信息，而是一种新的看问题的方式。
+    </p>
+
+    <div class="note">
+      <span class="note__label">END</span>
+      <p class="note__body">
+        全文完。本提案为风格草案，正文内容全部为占位符。
+        风格确认后将填入真实稿件。
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__meta">CASE STUDY PROPOSAL · VARIANT C · DRAFT v0.1 · 2026</div>
+    <div class="footer__end">— END OF DOCUMENT —</div>
+  </div>
+</footer>
+
+<script>
+// 极简滚动淡入动画
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var els = document.querySelectorAll('.fade-in');
+  if (!('IntersectionObserver' in window)) {
+    // 不支持就直接显示
+    for (var i = 0; i < els.length; i++) els[i].classList.add('is-visible');
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  els.forEach(function(el) { io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
