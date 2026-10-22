@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计师与 AI 时代</title>
+<style>
+  /* ===== Reset & Base ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #12110F;
+    --bg-soft: #1A1815;
+    --text: #E8E3DA;
+    --text-dim: #9A9286;
+    --accent: #FFD23F;
+    --accent-deep: #D9531E;
+    --line: #3A3732;
+    --line-soft: #26231F;
+
+    --font-serif: "Songti SC", "Noto Serif SC", SimSun, Georgia, serif;
+    --font-sans: -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+
+    --body-size: 18px;
+    --body-lh: 1.95;
+    --col-max: 720px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ===== Reading Progress Bar ===== */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  /* ===== Layout ===== */
+  .page {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  /* Left vertical accent line (axis) */
+  .axis {
+    position: fixed;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+    z-index: 1;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: var(--col-max);
+    margin: 0 auto;
+    padding: 0 24px 0 56px;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (min-width: 768px) {
+    .axis {
+      left: calc(50% - var(--col-max) / 2 + 24px);
+    }
+    .container {
+      padding-left: 56px;
+      padding-right: 24px;
+    }
+  }
+
+  /* ===== Hero / Header ===== */
+  .hero {
+    padding: 100px 0 80px;
+    position: relative;
+  }
+
+  .hero__eyebrow {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero__eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .hero__title {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 8vw, 64px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero__subtitle {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+
+  .hero__meta {
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    color: var(--text-dim);
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .hero__meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero__meta-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0.7;
+  }
+
+  .hero__meta-value {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Register mark — 印刷套准标记，签名元素 */
+  .register-mark {
+    position: absolute;
+    top: 100px;
+    left: -38px;
+    width: 16px;
+    height: 16px;
+    z-index: 3;
+  }
+
+  @media (max-width: 767px) {
+    .register-mark { display: none; }
+  }
+
+  /* ===== Section / Chapter ===== */
+  .content {
+    padding: 20px 0 120px;
+  }
+
+  section[data-sec] {
+    position: relative;
+    padding: 48px 0 16px;
+  }
+
+  /* Chapter number watermark */
+  .sec__number {
+    position: absolute;
+    left: -52px;
+    top: 42px;
+    font-family: var(--font-serif);
+    font-size: 80px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.08;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 767px) {
+    .sec__number {
+      left: 0;
+      top: 16px;
+      font-size: 48px;
+      opacity: 0.06;
+    }
+  }
+
+  .sec__heading {
+    font-family: var(--font-serif);
+    font-size: clamp(24px, 4.5vw, 32px);
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 24px;
+    padding-left: 0;
+    position: relative;
+  }
+
+  /* Heading accent bar */
+  .sec__heading::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 1.1em;
+    background: var(--accent);
+    margin-right: 14px;
+    vertical-align: -0.1em;
+    border-radius: 1px;
+  }
+
+  .sec__body + .sec__body {
+    margin-top: 1.5em;
+  }
+
+  .sec__body {
+    color: var(--text);
+    font-size: var(--body-size);
+    line-height: var(--body-lh);
+    text-align: justify;
+    text-justify: inter-ideograph;
+  }
+
+  /* 段首缩进，第一段不缩进 */
+  .sec__body + .sec__body {
+    text-indent: 2em;
+  }
+
+  /* ===== Divider between sections ===== */
+  .sec-divider {
+    height: 1px;
+    background: var(--line-soft);
+    margin: 32px 0 0;
+    border: none;
+  }
+
+  /* ===== Ending / Footer ===== */
+  .ending {
+    padding: 80px 0 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .ending__mark {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin: 0 auto 32px;
+  }
+
+  .ending__text {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* ===== Back to top ===== */
+  .back-top {
+    position: fixed;
+    right: 20px;
+    bottom: 28px;
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    z-index: 50;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .back-top--visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .back-top:hover {
+    background: var(--accent-deep);
+    color: #fff;
+  }
+
+  .back-top:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ===== TOC (desktop) ===== */
+  .toc {
+    display: none;
+    position: fixed;
+    right: calc(50% - var(--col-max) / 2 - 180px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    font-size: 12px;
+    line-height: 2.2;
+  }
+
+  @media (min-width: 1200px) {
+    .toc { display: block; }
+  }
+
+  .toc__list {
+    list-style: none;
+    border-left: 1px solid var(--line);
+    padding-left: 14px;
+  }
+
+  .toc__item a {
+    color: var(--text-dim);
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s ease;
+  }
+
+  .toc__item a:hover,
+  .toc__item--active a {
+    color: var(--accent);
+  }
+
+  .toc__num {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    margin-right: 6px;
+    opacity: 0.7;
+  }
+
+  /* ===== Scroll reveal ===== */
+  @media (prefers-reduced-motion: no-preference) {
+    .sec-reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .sec-reveal--in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== Mobile tweaks ===== */
+  @media (max-width: 480px) {
+    :root {
+      --body-size: 17px;
+    }
+    .container {
+      padding-left: 48px;
+      padding-right: 16px;
+    }
+    .axis {
+      left: 16px;
+    }
+    .hero {
+      padding: 72px 0 56px;
+    }
+    section[data-sec] {
+      padding: 36px 0 8px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+<div class="axis" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="container">
+
+    <!-- ========== HERO ========== -->
+    <header class="hero" id="top">
+      <!-- 印刷套准标记 SVG -->
+      <svg class="register-mark" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.5" fill="none" stroke="#FFD23F" stroke-width="1"/>
+        <line x1="8" y1="0" x2="8" y2="16" stroke="#FFD23F" stroke-width="1"/>
+        <line x1="0" y1="8" x2="16" y2="8" stroke="#FFD23F" stroke-width="1"/>
+      </svg>
+
+      <div class="hero__eyebrow">DESIGNER · AI ERA</div>
+
+      <h1 class="hero__title">
+        AI时代下的设计师<em>该何去何从</em>？
+      </h1>
+
+      <p class="hero__subtitle">
+        一位从大厂离开的设计师，在 AI 浪潮的焦虑中，重新找回对生活的热情与创作的冲动。
+      </p>
+
+      <div class="hero__meta">
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">阅读时长</span>
+          <span class="hero__meta-value">约 4 分钟</span>
+        </div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">章节</span>
+          <span class="hero__meta-value">10 章</span>
+        </div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-label">字数</span>
+          <span class="hero__meta-value">约 1400 字</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========== CONTENT ========== -->
+    <main class="content">
+
+      <!-- 01 -->
+      <section data-sec="01" id="sec-01" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">01</div>
+        <h2 class="sec__heading">我曾经是一名设计师</h2>
+        <p class="sec__body">我曾经是一名设计师，在互联网的四年里也混成了一个小领导，参与过裁员方案的拟定，也招进来很多所谓的高材生。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 02 -->
+      <section data-sec="02" id="sec-02" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">02</div>
+        <h2 class="sec__heading">那个晚上八点，两份简历</h2>
+        <p class="sec__body">记得某个晚上八点，我正在健身房吭哧吭哧地锻炼，HR突然给我发来两份简历，一个是国美本、UCL硕，一个是美本美硕，而且QS都是在前五十。HR给我发信息说：怎么样，姐，这回满意了吧？我却突然陷入了沉思。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 03 -->
+      <section data-sec="03" id="sec-03" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">03</div>
+        <h2 class="sec__heading">一个没有技术含量的岗位</h2>
+        <p class="sec__body">这是一个毫无技术含量的岗位，日薪一百五十块钱，而且没有转正的机会。我们公司又在杭州市中心，算上一个月的房租成本，相当于是倒贴实习。但这样的工作被学历如此漂亮的两位同学竞争，而且这两位同学的学历远超我这个&quot;+1&quot;。那天晚上我突然觉得我离离职应该不远了。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 04 -->
+      <section data-sec="04" id="sec-04" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">04</div>
+        <h2 class="sec__heading">升职，也许只是生对了年份</h2>
+        <p class="sec__body">我不觉得工作以后三四年，我的升职是因为我本身很优秀，我也不觉得一年两次的裁员名单，每次都没有我是因为我很能干，只不过是因为我比后来工作的人早出生了几年，我又比先工作的人晚出生了几年。我悲观地认为几年以后我也会是池中之鱼，所以我选择自己先离开了。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 05 -->
+      <section data-sec="05" id="sec-05" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">05</div>
+        <h2 class="sec__heading">AI越热闹，人越焦虑</h2>
+        <p class="sec__body">AI的发展一年比一年吓人，越来越多的设计师失业，甚至没有失业的人会更焦虑，好不容易下班了还要自学一下Vibe Coding，明天又去学一下AI视频，不断地幻想自己完蛋了。前两天一个AI剪视频的工具找到我，希望能合作推广，我没有回复，因为我现在停止了对所有技术类工具的探索。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 06 -->
+      <section data-sec="06" id="sec-06" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">06</div>
+        <h2 class="sec__heading">我更想先解决更难的事</h2>
+        <p class="sec__body">当然我并不抵触这些工具，甚至我很希望能学会，只是从优先级来看，我觉得在这个技术爆炸的时代，激发人的表达欲和创作欲是要比学一个工具来得更难的。尤其我上班的后两年，我才二十几岁，我就觉得活着没有什么意思。在那种状态下跟一个人去谈工具、谈效率，就像我是一头驴，我要花时间、花金钱去给自己换一个好的磨，继续循环驴拉磨的一生。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 07 -->
+      <section data-sec="07" id="sec-07" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">07</div>
+        <h2 class="sec__heading">先找回热情，再学工具</h2>
+        <p class="sec__body">我一想到这些，我就失去了所有的驱动力，所以我想先解决更难的事情，就是激发自己对于生活的热情，从而激发自己的创造力。这个时候我可以再让自己去学我想学的工具。可能会有人说这个时候已经晚了，我在这一方面是乐观的，因为我做过体验设计师，我知道现在所有的工具它的设计原则都是简单、易用、好上手，否则这个工具会失去它的商业价值。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 08 -->
+      <section data-sec="08" id="sec-08" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">08</div>
+        <h2 class="sec__heading">追不上的浪潮</h2>
+        <p class="sec__body">但另一方面我也悲观地认为我没有办法抓住每一个新的技术和工具，因为它们迭代得实在太快。比如年初小龙虾火爆的时候，我想说过段时间我也要研究研究，结果过段时间没人讨论这个了。现在信息爆炸的时代可能突然杀出一个半成品，一群卖Token的人会把这个东西捧上天，大家就马上用，马上买，顺便在各个社交媒体上制造了一大波焦虑，华丽退场。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 09 -->
+      <section data-sec="09" id="sec-09" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">09</div>
+        <h2 class="sec__heading">回归古法，重新找到冲动</h2>
+        <p class="sec__body">基于这种背景我干脆开始回归到了古法学习，就是看书，而且是实体书，有社会学的，有心理学的，有艺术史的，有设计学的，甚至也有AI相关的书。我也开始认真地生活，小到每天早上先安静地给自己做一杯咖啡，大到下雪天一个人跑到黄山去徒步，就为了看一眼没见过的雾凇。我也终于静下心来思考设计和创作的本质，我发现当我不再聚焦工具和效率，不再焦虑自己怎么还没有多学一个新技能的时候，我反而找到了最初做设计的那种冲动，就是想要表达什么或者想要解决什么。梵高如果每天焦虑自己不会写AIGC的提示词，他可能根本画不出星空。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- 10 -->
+      <section data-sec="10" id="sec-10" class="sec-reveal">
+        <div class="sec__number" aria-hidden="true">10</div>
+        <h2 class="sec__heading">这条视频，是我的自我表达</h2>
+        <p class="sec__body">今天这条视频我也是把我这些年的亲身经历做了一个自我的表达，与此同时我也希望刷到这条视频的朋友可以少一些焦虑和自我怀疑，在这样一次一次的创作循环里也陆续有一些品牌来洽谈合作。我仍然觉得自己还是一个设计师，只是我设计的对象是我的账号。</p>
+      </section>
+      <hr class="sec-divider">
+
+      <!-- ========== ENDING ========== -->
+      <footer class="ending">
+        <div class="ending__mark" aria-hidden="true"></div>
+        <p class="ending__text">
+          全文完<br>
+          <span style="opacity:0.6; font-size: 13px;">感谢阅读</span>
+        </p>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- TOC 桌面端 -->
+  <nav class="toc" aria-label="章节目录">
+    <ol class="toc__list">
+      <li class="toc__item" data-toc="01"><a href="#sec-01"><span class="toc__num">01</span><span>我曾经是一名设计师</span></a></li>
+      <li class="toc__item" data-toc="02"><a href="#sec-02"><span class="toc__num">02</span><span>那个晚上八点，两份简历</span></a></li>
+      <li class="toc__item" data-toc="03"><a href="#sec-03"><span class="toc__num">03</span><span>一个没有技术含量的岗位</span></a></li>
+      <li class="toc__item" data-toc="04"><a href="#sec-04"><span class="toc__num">04</span><span>升职，也许只是生对了年份</span></a></li>
+      <li class="toc__item" data-toc="05"><a href="#sec-05"><span class="toc__num">05</span><span>AI越热闹，人越焦虑</span></a></li>
+      <li class="toc__item" data-toc="06"><a href="#sec-06"><span class="toc__num">06</span><span>我更想先解决更难的事</span></a></li>
+      <li class="toc__item" data-toc="07"><a href="#sec-07"><span class="toc__num">07</span><span>先找回热情，再学工具</span></a></li>
+      <li class="toc__item" data-toc="08"><a href="#sec-08"><span class="toc__num">08</span><span>追不上的浪潮</span></a></li>
+      <li class="toc__item" data-toc="09"><a href="#sec-09"><span class="toc__num">09</span><span>回归古法，重新找到冲动</span></a></li>
+      <li class="toc__item" data-toc="10"><a href="#sec-10"><span class="toc__num">10</span><span>这条视频，是我的自我表达</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- Back to top button -->
+  <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+</div>
+
+<script>
+  // ===== Reading Progress =====
+  const progressBar = document.getElementById('progressBar');
+
+  function updateProgress() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = progress + '%';
+  }
+
+  // ===== Back to Top =====
+  const backTop = document.getElementById('backTop');
+
+  function updateBackTop() {
+    if (window.scrollY > 400) {
+      backTop.classList.add('back-top--visible');
+    } else {
+      backTop.classList.remove('back-top--visible');
+    }
+  }
+
+  backTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ===== Scroll Reveal =====
+  const reveals = document.querySelectorAll('.sec-reveal');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setupReveal() {
+    if (prefersReducedMotion) {
+      reveals.forEach(el => el.classList.add('sec-reveal--in'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('sec-reveal--in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+  }
+
+  // ===== TOC Active =====
+  const tocItems = document.querySelectorAll('.toc__item');
+  const sections = document.querySelectorAll('section[data-sec]');
+
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 120) {
+        current = sec.getAttribute('data-sec');
+      }
+    });
+    tocItems.forEach(item => {
+      item.classList.toggle('toc__item--active', item.dataset.toc === current);
+    });
+  }
+
+  // ===== Combined scroll handler =====
+  function onScroll() {
+    updateProgress();
+    updateBackTop();
+    updateToc();
+  }
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        onScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // ===== Init =====
+  document.addEventListener('DOMContentLoaded', () => {
+    updateProgress();
+    updateBackTop();
+    updateToc();
+    setupReveal();
+  });
+
+  // Run once on load (in case DOMContentLoaded already fired)
+  updateProgress();
+  updateBackTop();
+  setupReveal();
+</script>
+
+</body>
+</html>
