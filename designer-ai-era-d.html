@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计师与 AI 时代 · 方案 D：印刷制版</title>
+<style>
+/* ========== 设计 Tokens ========== */
+:root {
+  --paper: #F5F1E8;
+  --paper-dark: #EDE8DB;
+  --ink: #1A1A1A;
+  --ink-soft: #4A4A4A;
+  --ink-light: #8A8A80;
+  --rule: #C8C4B8;
+
+  --c-cyan: #00AEEF;
+  --c-yellow: #FFD100;
+  --c-red: #E4002B;      /* M 品红禁区 → 正红替代 */
+  --c-black: #1A1A1A;
+  --c-orange: #FF6B00;   /* Pantone 专色 */
+  --c-green: #00A86B;    /* Pantone 专色 */
+  --c-purple: #5B2C9A;   /* Pantone 专色 */
+  --c-blue: #003DA5;     /* Pantone 专色 */
+
+  --font-serif: "Songti SC", "Noto Serif SC", SimSun, "Source Han Serif SC", Georgia, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --font-mono: "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+
+  --safe-side: clamp(16px, 4vw, 64px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--paper);
+  color: var(--ink);
+  line-height: 1.9;
+  font-size: 16px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 纸纹 —— 极细 SVG 噪点（data-URI） */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.58  0 0 0 0 0.5  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+/* 出血 / 安全区边线 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 12px;
+  border: 1px dashed var(--rule);
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  body::after { display: block; }
+}
+
+/* ========== 裁切角标（四角 L 形） ========== */
+.crop-mark {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  z-index: 20;
+  pointer-events: none;
+}
+.crop-mark svg { width: 100%; height: 100%; }
+
+.crop-mark--tl { top: 8px; left: 8px; }
+.crop-mark--tr { top: 8px; right: 8px; }
+.crop-mark--bl { bottom: 8px; left: 8px; }
+.crop-mark--br { bottom: 8px; right: 8px; }
+
+@media (max-width: 767px) {
+  .crop-mark { width: 16px; height: 16px; }
+}
+
+/* ========== 套准标记 ========== */
+.reg-mark {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  z-index: 15;
+  pointer-events: none;
+}
+.reg-mark svg { width: 100%; height: 100%; }
+
+.reg-mark--top { top: 8px; left: 50%; transform: translateX(-50%); }
+.reg-mark--bottom { bottom: 8px; left: 50%; transform: translateX(-50%); }
+
+@media (max-width: 767px) {
+  .reg-mark { width: 24px; height: 24px; }
+  .reg-mark--top { top: 6px; }
+  .reg-mark--bottom { bottom: 6px; }
+}
+
+/* ========== 顶部 CMYK 色标条 ========== */
+.cmyk-bar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 6px var(--safe-side);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cmyk-bar__swatches {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.cmyk-swatch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cmyk-swatch__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.cmyk-swatch__dot--c { background: var(--c-cyan); }
+.cmyk-swatch__dot--y { background: var(--c-yellow); }
+.cmyk-swatch__dot--r { background: var(--c-red); }
+.cmyk-swatch__dot--k { background: var(--c-black); }
+
+.cmyk-swatch__label {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.cmyk-bar__info {
+  color: var(--ink-light);
+  font-size: 10px;
+}
+.cmyk-bar__info span { color: var(--ink-soft); }
+
+@media (max-width: 600px) {
+  .cmyk-bar__info { display: none; }
+  .cmyk-bar { justify-content: center; }
+}
+
+/* ========== 封面 ========== */
+.cover {
+  position: relative;
+  z-index: 5;
+  padding: clamp(80px, 12vw, 160px) var(--safe-side) clamp(60px, 8vw, 120px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cover__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.cover__eyebrow::before {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: var(--ink-soft);
+}
+
+.cover__title {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: clamp(36px, 8vw, 96px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 40px;
+}
+.cover__title em {
+  display: block;
+  font-style: normal;
+  margin-top: 0.1em;
+  position: relative;
+}
+.cover__title em::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.15em;
+  width: 100%;
+  height: 6px;
+  background: var(--c-yellow);
+  z-index: -1;
+}
+
+.cover__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.cover__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cover__meta-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+}
+.cover__meta-value {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* 封面 Pantone 色号贴纸 */
+.cover__pantone {
+  position: absolute;
+  top: 120px;
+  right: var(--safe-side);
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 16px 18px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  transform: rotate(3deg);
+  z-index: 2;
+  max-width: 140px;
+}
+.cover__pantone-swatch {
+  width: 100%;
+  height: 40px;
+  background: var(--c-red);
+  margin-bottom: 8px;
+}
+.cover__pantone-name {
+  font-weight: 700;
+  font-size: 11px;
+  margin-bottom: 4px;
+  letter-spacing: 0.1em;
+}
+.cover__pantone-code {
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 767px) {
+  .cover__pantone {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: rotate(2deg);
+    margin: 24px 0 0 auto;
+  }
+}
+
+/* ========== 目录 ========== */
+.toc {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px var(--safe-side);
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+.toc__title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.toc__title::before {
+  content: "CONTENTS";
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-light);
+  font-weight: 400;
+}
+
+.toc__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px 32px;
+}
+.toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--rule);
+  font-family: var(--font-serif);
+}
+.toc__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-light);
+  min-width: 28px;
+}
+.toc__name {
+  font-size: 15px;
+  flex: 1;
+}
+.toc__page {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* ========== 章节 ========== */
+.sections {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section {
+  padding: clamp(48px, 6vw, 80px) var(--safe-side);
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.section__num-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 60px;
+}
+.section__num {
+  font-family: var(--font-serif);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  line-height: 0.9;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.section__num-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+@media (max-width: 600px) {
+  .section__num-wrap { min-width: 40px; }
+  .section__num-label { display: none; }
+}
+
+.section__title-block {
+  flex: 1;
+  padding-top: 0.3em;
+}
+.section__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section__pantone-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid currentColor;
+  padding: 2px 8px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.section__pantone-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.section__title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(24px, 4vw, 42px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.section__subtitle {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+/* 正文区 + 批注栏 */
+.section__body-wrap {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 32px;
+  max-width: 860px;
+  margin-left: 84px;
+}
+
+@media (max-width: 900px) {
+  .section__body-wrap {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .section__header { gap: 12px; }
+  .section__body-wrap { margin-left: 52px; }
+}
+
+/* 正文 */
+p.body {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 1.4em;
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+p.body:last-child { margin-bottom: 0; }
+
+/* 首段首字下沉 */
+p.body:first-of-type::first-letter {
+  font-family: var(--font-serif);
+  font-size: 3.4em;
+  font-weight: 900;
+  float: left;
+  line-height: 0.9;
+  padding: 6px 10px 0 0;
+}
+
+/* 批注栏 */
+.annotations {
+  position: relative;
+}
+.annotation {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 10px 12px;
+  border-left: 2px solid var(--c-red);
+  background: var(--paper-dark);
+  margin-bottom: 16px;
+}
+.annotation--sticky {
+  position: sticky;
+  top: 80px;
+}
+.annotation__label {
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--c-red);
+  margin-bottom: 4px;
+  display: block;
+}
+.annotation p { margin-bottom: 0.5em; }
+.annotation p:last-child { margin-bottom: 0; }
+
+@media (max-width: 900px) {
+  .annotation--sticky { position: relative; top: auto; }
+  .annotations { display: flex; flex-wrap: wrap; gap: 12px; }
+  .annotation { flex: 1 1 200px; margin-bottom: 0; }
+}
+
+/* ========== Pull Quote（套红印刷） ========== */
+.pull-quote {
+  margin: 40px 0 40px 84px;
+  padding: 32px;
+  background: var(--ink);
+  color: var(--c-yellow);
+  position: relative;
+  max-width: 720px;
+}
+.pull-quote::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border: 1px solid var(--ink);
+  pointer-events: none;
+  transform: translate(4px, 4px);
+  background: var(--c-red);
+  z-index: -1;
+}
+.pull-quote__text {
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+.pull-quote__mark {
+  font-family: var(--font-serif);
+  font-size: 64px;
+  line-height: 0.6;
+  color: var(--c-yellow);
+  margin-bottom: 16px;
+  display: block;
+  font-weight: 900;
+}
+
+@media (max-width: 600px) {
+  .pull-quote { margin: 32px 0; padding: 24px; }
+}
+
+/* ========== 章节末尾分隔符 ========== */
+.section__endmark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
+  color: var(--ink-light);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+.section__endmark::before,
+.section__endmark::after {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: var(--rule);
+}
+.endmark-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ========== 各章主色 ========== */
+[data-sec="1"] .section__pantone-tag { color: var(--c-red); }
+[data-sec="1"] .section__pantone-dot { background: var(--c-red); }
+[data-sec="1"] .section__num { color: var(--c-red); }
+[data-sec="1"] .annotation { border-left-color: var(--c-red); }
+[data-sec="1"] .annotation__label { color: var(--c-red); }
+[data-sec="1"] .endmark-dot { background: var(--c-red); }
+
+[data-sec="2"] .section__pantone-tag { color: var(--c-cyan); }
+[data-sec="2"] .section__pantone-dot { background: var(--c-cyan); }
+[data-sec="2"] .section__num { color: var(--c-cyan); }
+[data-sec="2"] .annotation { border-left-color: var(--c-cyan); }
+[data-sec="2"] .annotation__label { color: var(--c-cyan); }
+[data-sec="2"] .endmark-dot { background: var(--c-cyan); }
+
+[data-sec="3"] .section__pantone-tag { color: var(--c-yellow); }
+[data-sec="3"] .section__pantone-dot { background: var(--c-yellow); }
+[data-sec="3"] .section__num { color: var(--ink); -webkit-text-stroke: 1px var(--c-yellow); paint-order: stroke fill; }
+[data-sec="3"] .annotation { border-left-color: var(--c-orange); }
+[data-sec="3"] .annotation__label { color: var(--c-orange); }
+[data-sec="3"] .endmark-dot { background: var(--c-yellow); }
+
+[data-sec="4"] .section__pantone-tag { color: var(--c-green); }
+[data-sec="4"] .section__pantone-dot { background: var(--c-green); }
+[data-sec="4"] .section__num { color: var(--c-green); }
+[data-sec="4"] .annotation { border-left-color: var(--c-green); }
+[data-sec="4"] .annotation__label { color: var(--c-green); }
+[data-sec="4"] .endmark-dot { background: var(--c-green); }
+
+[data-sec="5"] .section__pantone-tag { color: var(--c-blue); }
+[data-sec="5"] .section__pantone-dot { background: var(--c-blue); }
+[data-sec="5"] .section__num { color: var(--c-blue); }
+[data-sec="5"] .annotation { border-left-color: var(--c-blue); }
+[data-sec="5"] .annotation__label { color: var(--c-blue); }
+[data-sec="5"] .endmark-dot { background: var(--c-blue); }
+
+[data-sec="6"] .section__pantone-tag { color: var(--c-purple); }
+[data-sec="6"] .section__pantone-dot { background: var(--c-purple); }
+[data-sec="6"] .section__num { color: var(--c-purple); }
+[data-sec="6"] .annotation { border-left-color: var(--c-purple); }
+[data-sec="6"] .annotation__label { color: var(--c-purple); }
+[data-sec="6"] .endmark-dot { background: var(--c-purple); }
+
+[data-sec="7"] .section__pantone-tag { color: var(--c-red); }
+[data-sec="7"] .section__pantone-dot { background: var(--c-red); }
+[data-sec="7"] .section__num { color: var(--c-red); }
+[data-sec="7"] .annotation { border-left-color: var(--c-red); }
+[data-sec="7"] .annotation__label { color: var(--c-red); }
+[data-sec="7"] .endmark-dot { background: var(--c-red); }
+
+[data-sec="8"] .section__pantone-tag { color: var(--c-orange); }
+[data-sec="8"] .section__pantone-dot { background: var(--c-orange); }
+[data-sec="8"] .section__num { color: var(--c-orange); }
+[data-sec="8"] .annotation { border-left-color: var(--c-orange); }
+[data-sec="8"] .annotation__label { color: var(--c-orange); }
+[data-sec="8"] .endmark-dot { background: var(--c-orange); }
+
+[data-sec="9"] .section__pantone-tag { color: var(--c-cyan); }
+[data-sec="9"] .section__pantone-dot { background: var(--c-cyan); }
+[data-sec="9"] .section__num { color: var(--c-cyan); }
+[data-sec="9"] .annotation { border-left-color: var(--c-cyan); }
+[data-sec="9"] .annotation__label { color: var(--c-cyan); }
+[data-sec="9"] .endmark-dot { background: var(--c-cyan); }
+
+[data-sec="10"] .section__pantone-tag { color: var(--ink); }
+[data-sec="10"] .section__pantone-dot { background: var(--c-yellow); }
+[data-sec="10"] .section__num { color: var(--ink); }
+[data-sec="10"] .annotation { border-left-color: var(--c-yellow); }
+[data-sec="10"] .annotation__label { color: var(--c-yellow); }
+[data-sec="10"] .endmark-dot { background: var(--ink); }
+
+/* ========== 页脚 ========== */
+.footer {
+  position: relative;
+  z-index: 5;
+  padding: 48px var(--safe-side) 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+}
+.footer__value {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 700;
+}
+.footer__swatches {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+.footer__sw {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--ink);
+}
+.footer__sw--c { background: var(--c-cyan); }
+.footer__sw--y { background: var(--c-yellow); }
+.footer__sw--r { background: var(--c-red); }
+.footer__sw--k { background: var(--c-black); }
+
+/* ========== 入场动画 ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal.is-visible {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; }
+  .reveal.is-visible { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ========== 打印样式 ========== */
+@media print {
+  .cmyk-bar { position: static; }
+  .crop-mark, .reg-mark { position: absolute; }
+  .pull-quote { break-inside: avoid; }
+  .section { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- 裁切角标 -->
+<div class="crop-mark crop-mark--tl">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="0.8">
+    <path d="M24 8 L8 8 L8 24"/>
+    <path d="M0 16 L16 16 L16 0" opacity="0"/>
+  </svg>
+</div>
+<div class="crop-mark crop-mark--tr">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="0.8">
+    <path d="M0 8 L16 8 L16 24"/>
+  </svg>
+</div>
+<div class="crop-mark crop-mark--bl">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="0.8">
+    <path d="M24 16 L8 16 L8 0"/>
+  </svg>
+</div>
+<div class="crop-mark crop-mark--br">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="0.8">
+    <path d="M0 16 L16 16 L16 0"/>
+  </svg>
+</div>
+
+<!-- 套准标记 -->
+<div class="reg-mark reg-mark--top" aria-hidden="true">
+  <svg viewBox="0 0 40 40">
+    <circle cx="20" cy="20" r="18" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="12" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="6" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="20" y1="2" x2="20" y2="38" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="2" y1="20" x2="38" y2="20" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="6" y1="6" x2="34" y2="34" stroke="#1A1A1A" stroke-width="0.3"/>
+    <line x1="34" y1="6" x2="6" y2="34" stroke="#1A1A1A" stroke-width="0.3"/>
+  </svg>
+</div>
+<div class="reg-mark reg-mark--bottom" aria-hidden="true">
+  <svg viewBox="0 0 40 40">
+    <circle cx="20" cy="20" r="18" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="12" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="6" fill="none" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="20" y1="2" x2="20" y2="38" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="2" y1="20" x2="38" y2="20" stroke="#1A1A1A" stroke-width="0.5"/>
+    <line x1="6" y1="6" x2="34" y2="34" stroke="#1A1A1A" stroke-width="0.3"/>
+    <line x1="34" y1="6" x2="6" y2="34" stroke="#1A1A1A" stroke-width="0.3"/>
+  </svg>
+</div>
+
+<!-- 顶部 CMYK 色标条 -->
+<header class="cmyk-bar">
+  <div class="cmyk-bar__swatches">
+    <div class="cmyk-swatch">
+      <div class="cmyk-swatch__dot cmyk-swatch__dot--c"></div>
+      <span class="cmyk-swatch__label">C 100 M 0 Y 0 K 0</span>
+    </div>
+    <div class="cmyk-swatch">
+      <div class="cmyk-swatch__dot cmyk-swatch__dot--y"></div>
+      <span class="cmyk-swatch__label">C 0 M 0 Y 100 K 0</span>
+    </div>
+    <div class="cmyk-swatch">
+      <div class="cmyk-swatch__dot cmyk-swatch__dot--r"></div>
+      <span class="cmyk-swatch__label">C 0 M 100 Y 100 K 0</span>
+    </div>
+    <div class="cmyk-swatch">
+      <div class="cmyk-swatch__dot cmyk-swatch__dot--k"></div>
+      <span class="cmyk-swatch__label">C 0 M 0 Y 0 K 100</span>
+    </div>
+  </div>
+  <div class="cmyk-bar__info">
+    PROOF · <span>设计师与 AI 时代</span> · VARIANT D
+  </div>
+</header>
+
+<!-- 封面 -->
+<section class="cover reveal">
+  <div class="cover__eyebrow">行业观察 · 2026</div>
+  <h1 class="cover__title">
+    设计师与
+    <em>AI 时代</em>
+  </h1>
+
+  <div class="cover__pantone">
+    <div class="cover__pantone-swatch"></div>
+    <div class="cover__pantone-name">PANTONE</div>
+    <div class="cover__pantone-code">186 C · Red</div>
+  </div>
+
+  <div class="cover__meta">
+    <div class="cover__meta-item">
+      <span class="cover__meta-label">Published</span>
+      <span class="cover__meta-value">2026 / 10</span>
+    </div>
+    <div class="cover__meta-item">
+      <span class="cover__meta-label">Pages</span>
+      <span class="cover__meta-value">10 章</span>
+    </div>
+    <div class="cover__meta-item">
+      <span class="cover__meta-label">Format</span>
+      <span class="cover__meta-value">长文 / 观点</span>
+    </div>
+    <div class="cover__meta-item">
+      <span class="cover__meta-label">Press Proof</span>
+      <span class="cover__meta-value">Variant D</span>
+    </div>
+  </div>
+</section>
+
+<!-- 目录 -->
+<nav class="toc reveal">
+  <h2 class="toc__title">目录</h2>
+  <ol class="toc__list">
+    <li class="toc__item"><span class="toc__num">01</span><span class="toc__name">章节标题一</span><span class="toc__page">001</span></li>
+    <li class="toc__item"><span class="toc__num">02</span><span class="toc__name">章节标题二</span><span class="toc__page">008</span></li>
+    <li class="toc__item"><span class="toc__num">03</span><span class="toc__name">章节标题三</span><span class="toc__page">015</span></li>
+    <li class="toc__item"><span class="toc__num">04</span><span class="toc__name">章节标题四</span><span class="toc__page">022</span></li>
+    <li class="toc__item"><span class="toc__num">05</span><span class="toc__name">章节标题五</span><span class="toc__page">030</span></li>
+    <li class="toc__item"><span class="toc__num">06</span><span class="toc__name">章节标题六</span><span class="toc__page">037</span></li>
+    <li class="toc__item"><span class="toc__num">07</span><span class="toc__name">章节标题七</span><span class="toc__page">044</span></li>
+    <li class="toc__item"><span class="toc__num">08</span><span class="toc__name">章节标题八</span><span class="toc__page">051</span></li>
+    <li class="toc__item"><span class="toc__num">09</span><span class="toc__name">章节标题九</span><span class="toc__page">058</span></li>
+    <li class="toc__item"><span class="toc__num">10</span><span class="toc__name">章节标题十</span><span class="toc__page">065</span></li>
+  </ol>
+</nav>
+
+<!-- 正文区 -->
+<main class="sections">
+
+<!-- 10 个章节，由 JS 生成占位符 -->
+</main>
+
+<!-- 页脚 -->
+<footer class="footer reveal">
+  <div class="footer__col">
+    <span class="footer__label">Title</span>
+    <span class="footer__value">设计师与 AI 时代</span>
+  </div>
+  <div class="footer__col">
+    <span class="footer__label">Edition</span>
+    <span class="footer__value">Variant D · Press Proof</span>
+  </div>
+  <div class="footer__col">
+    <span class="footer__label">Process</span>
+    <span class="footer__value">4-Color Offset + Spot</span>
+    <div class="footer__swatches">
+      <div class="footer__sw footer__sw--c"></div>
+      <div class="footer__sw footer__sw--y"></div>
+      <div class="footer__sw footer__sw--r"></div>
+      <div class="footer__sw footer__sw--k"></div>
+    </div>
+  </div>
+  <div class="footer__col">
+    <span class="footer__label">Stock</span>
+    <span class="footer__value">120gsm Uncoated</span>
+  </div>
+</footer>
+
+<script>
+// 生成 10 个章节占位符
+(function() {
+  const sections = document.querySelector('.sections');
+  const secNames = [
+    '章节标题一','章节标题二','章节标题三','章节标题四','章节标题五',
+    '章节标题六','章节标题七','章节标题八','章节标题九','章节标题十'
+  ];
+  const subtitles = [
+    '技术迭代与职业边界的再定义',
+    '从工具到伙伴，协作模式的变迁',
+    '创造力的本质是否被重新书写',
+    '设计教育的代际断层与衔接',
+    '商业设计流程中的 AI 渗透',
+    '审美判断力的不可替代性',
+    '从执行型到策略型的身份转型',
+    '版权、伦理与原创性的边界',
+    '工具民主化带来的行业生态重塑',
+    '面向未来的设计师能力清单'
+  ];
+  const pantones = [
+    { code: 'PANTONE 186 C', note: '专色红' },
+    { code: 'PANTONE 306 C', note: '专色青' },
+    { code: 'PANTONE 109 C', note: '专色黄' },
+    { code: 'PANTONE 347 C', note: '专色绿' },
+    { code: 'PANTONE 286 C', note: '专色蓝' },
+    { code: 'PANTONE 2685 C', note: '专色紫' },
+    { code: 'PANTONE 485 C', note: '专色朱红' },
+    { code: 'PANTONE 151 C', note: '专色橙' },
+    { code: 'PANTONE 3125 C', note: '专色青绿' },
+    { code: 'PANTONE BLACK C', note: '专黑' }
+  ];
+  const annotations = [
+    [
+      { label: '校对备注', body: ['此处可插入行业数据图表。', '待补充 2026 年最新调研。'] },
+      { label: '版式建议', body: ['左页放案例图，右页文字。', '注意视觉动线。'] }
+    ],
+    [
+      { label: '待校', body: ['协作流程图需重新绘制。', '建议用横版双栏。'] },
+      { label: '批注', body: ['此处论点需加强数据支撑。'] }
+    ],
+    [
+      { label: '内容提示', body: ['可引入历史案例做对比。', '包豪斯时期的技术变革参照。'] }
+    ],
+    [
+      { label: '编辑建议', body: ['教育章节可增加访谈引用。'] },
+      { label: '待补', body: ['需补充国内外院校课程对比表。'] }
+    ],
+    [
+      { label: '批注', body: ['商业流程的拆解可更细。', '按 5 个阶段展开。'] }
+    ],
+    [
+      { label: '重点标注', body: ['本章为核心论点章，版式需强化。'], sticky: true },
+      { label: '待校', body: ['审美判断力的定义需更清晰。'] }
+    ],
+    [
+      { label: '版式建议', body: ['可用大号引言分隔段落。'] },
+      { label: '批注', body: ['身份转型部分可以更有温度。'] }
+    ],
+    [
+      { label: '法务提示', body: ['版权部分引用需核实。', '注意措辞准确性。'] }
+    ],
+    [
+      { label: '批注', body: ['生态重塑章节可加全景图。'], sticky: true },
+      { label: '待补', body: ['小型工作室案例需补充。'] }
+    ],
+    [
+      { label: '总结', body: ['最后一章可做能力清单图表化。', '用图标配文字更易读。'], sticky: true },
+      { label: '终校', body: ['全书统一术语表。'] }
+    ]
+  ];
+
+  // 假文生成
+  function fakeWen(len) {
+    const chars = '设计创意视觉品牌产品界面交互用户体验技术变革时代行业职业发展趋势人工智能机器学习生成式模型工具效率流程协作团队沟通策略思维方法论体系框架语言符号色彩造型构图空间节奏韵律质感材料工艺印刷纸质版式编排字体排版网格系统节奏层次比例尺度对比统一和谐平衡动势张力细节品质打磨精进迭代优化创新突破边界可能未来当下过去传统现代数字物理虚拟实体感知认知情感价值意义';
+    let result = '';
+    for (let i = 0; i < len; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result;
+  }
+
+  // 生成 4-5 段正文
+  function generateBody() {
+    const count = 4 + Math.floor(Math.random() * 2);
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      const len = 100 + Math.floor(Math.random() * 80);
+      html += `<p class="body">${fakeWen(len)}。</p>`;
+    }
+    return html;
+  }
+
+  for (let i = 1; i <= 10; i++) {
+    const sec = document.createElement('section');
+    sec.className = 'section reveal';
+    sec.setAttribute('data-sec', i);
+    const num = String(i).padStart(2, '0');
+
+    const annos = annotations[i-1];
+    let annoHtml = '';
+    annos.forEach(a => {
+      const sticky = a.sticky ? ' annotation--sticky' : '';
+      let bodyHtml = '';
+      a.body.forEach(p => { bodyHtml += `<p>${p}</p>`; });
+      annoHtml += `<div class="annotation${sticky}"><span class="annotation__label">${a.label}</span>${bodyHtml}</div>`;
+    });
+
+    // 每 3 章插入一个 pull quote
+    const hasPullQuote = i % 3 === 0;
+    let pullQuoteHtml = '';
+    if (hasPullQuote) {
+      pullQuoteHtml = `
+        <aside class="pull-quote">
+          <span class="pull-quote__mark">"</span>
+          <p class="pull-quote__text">${fakeWen(30)}，${fakeWen(28)}。</p>
+        </aside>
+      `;
+    }
+
+    sec.innerHTML = `
+      <header class="section__header">
+        <div class="section__num-wrap">
+          <span class="section__num">${num}</span>
+          <span class="section__num-label">CHAPTER</span>
+        </div>
+        <div class="section__title-block">
+          <div class="section__eyebrow">
+            <span class="section__pantone-tag">
+              <span class="section__pantone-dot"></span>
+              ${pantones[i-1].code}
+            </span>
+            <span>${pantones[i-1].note}</span>
+          </div>
+          <h2 class="section__title">${secNames[i-1]}</h2>
+          <p class="section__subtitle">${subtitles[i-1]}</p>
+        </div>
+      </header>
+      <div class="section__body-wrap">
+        <div class="section__content">
+          ${generateBody()}
+          ${pullQuoteHtml}
+          ${hasPullQuote ? generateBody() : ''}
+        </div>
+        <aside class="annotations">
+          ${annoHtml}
+        </aside>
+      </div>
+      <div class="section__endmark">
+        <span class="endmark-dot"></span>
+        END OF SECTION ${num}
+        <span class="endmark-dot"></span>
+      </div>
+    `;
+    sections.appendChild(sec);
+  }
+})();
+
+// 滚动淡入
+(function() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  const items = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  items.forEach((el, i) => {
+    el.style.animationDelay = (i % 3) * 0.08 + 's';
+    observer.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>
