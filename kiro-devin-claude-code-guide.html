@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devin / Kiro / DevEco 模型接入 Claude Code CLI：详细技术指南</title>
+<style>
+:root{
+  --bg:#ffffff;--paper:#fcfcfd;--soft:#f8fafc;--soft2:#f1f5f9;
+  --ink:#0b1220;--muted:#5b6779;--muted2:#94a3b8;
+  --line:#e3e8ef;--line2:#eef1f5;
+  --blue:#1d4ed8;--blue2:#2563eb;--blue-soft:#eff6ff;--blue-line:#bfdbfe;
+  --cyan:#0d9488;--cyan-soft:#f0fdfa;--cyan-line:#99f6e4;
+  --amber:#f59e0b;--amber-soft:#fffbeb;--amber-line:#fde68a;
+  --red:#e11d48;--red-soft:#fff1f3;--red-line:#fecdd3;
+  --green:#16a34a;--green-soft:#f0fdf4;--green-line:#bbf7d0;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Noto Sans SC",sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  --serif:"Songti SC","STSong","Noto Serif SC",Georgia,"Times New Roman",serif;
+  --grid:rgba(148,163,184,.16);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4,p,ul,ol{margin:0}
+ul,ol{padding-left:1.15em}
+li{margin:4px 0}
+
+/* ========== 顶栏 ========== */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.3) blur(14px);border-bottom:1px solid var(--line)}
+.tb{max-width:1180px;margin:0 auto;padding:0 26px;height:58px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.mark{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:-.02em}
+.brand small{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);font-weight:600;margin-left:2px}
+.vdiv{width:1px;height:16px;background:var(--line)}
+.docname{font-size:12.5px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1}
+.ver{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap}
+.ver i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .12s linear}
+
+/* ========== Hero ========== */
+.hero{position:relative;border-bottom:1px solid var(--line);overflow:hidden;background:
+  linear-gradient(var(--grid) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/28px 28px,
+  #fff}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(820px 380px at 24% 26%,rgba(255,255,255,.95),transparent 72%);pointer-events:none}
+.hero-in{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:70px 26px 52px;display:grid;grid-template-columns:1.04fr .96fr;gap:50px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue)}
+.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--blue)}
+h1{margin:18px 0 0;font-size:clamp(34px,4vw,52px);line-height:1.16;letter-spacing:-.035em;font-weight:700;word-break:keep-all}
+h1 .l2{display:block;color:var(--ink)}
+h1 .l2 em{font-style:normal;color:var(--cyan)}
+.hero-sub{margin-top:18px;max-width:560px;color:var(--muted);font-size:15px;line-height:1.85}
+.cta{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;color:var(--ink);transition:transform .2s,box-shadow .2s,background .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -14px rgba(11,18,32,.3);text-decoration:none}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.primary:hover{background:var(--blue);border-color:var(--blue)}
+.btn .arr{transition:transform .2s}
+.btn:hover .arr{transform:translateX(3px)}
+.blueprint{align-self:center}
+.blueprint svg{display:block;width:100%;height:auto}
+.bp-caption{margin-top:10px;display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2)}
+.bp-caption .n{color:var(--cyan)}
+
+.stats{max-width:1180px;margin:0 auto;padding:0 26px 30px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stats::before{content:"";grid-column:1/-1;height:1px;background:var(--line);margin-bottom:22px}
+.stat{border-left:2px solid var(--line);padding-left:14px}
+.stat b{display:block;font-family:var(--mono);font-size:25px;font-weight:700;letter-spacing:-.04em}
+.stat span{font-size:11.5px;color:var(--muted)}
+
+/* ========== 布局 ========== */
+.shell{max-width:1180px;margin:0 auto;padding:0 26px}
+.layout{display:grid;grid-template-columns:206px minmax(0,800px);justify-content:center;gap:54px;align-items:start}
+
+/* ========== 目录 ========== */
+.toc{position:sticky;top:86px;padding-top:14px;font-size:12.5px;max-height:calc(100vh - 110px);overflow:auto}
+.toc-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:8px 10px 8px 14px;border-left:1px solid var(--line);color:var(--muted);font-weight:500;transition:color .18s,border-color .18s,background .18s}
+.toc a:hover{color:var(--ink);text-decoration:none;background:var(--soft)}
+.toc a .n{font-family:var(--mono);font-size:9.5px;color:var(--muted2);flex:0 0 auto}
+.toc a.on{border-left-color:var(--blue);color:var(--ink);font-weight:700;background:linear-gradient(90deg,var(--blue-soft),transparent)}
+.toc a.on .n{color:var(--blue)}
+.toc-card{margin-top:20px;padding:14px 15px;border:1px solid var(--line);background:var(--soft);font-size:11.5px}
+.toc-card b{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600}
+.toc-card span{display:block;color:var(--ink);font-weight:600;margin:2px 0 10px}
+.toc-card span:last-child{margin-bottom:0}
+
+/* ========== 文档信息 ========== */
+.meta-block{margin:26px 0 6px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta-grid div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta-grid div:nth-child(2n){border-right:0}
+.meta-grid div:nth-child(n+3){border-bottom:0}
+.meta-grid b{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);font-weight:600;margin-bottom:3px}
+.meta-grid span{display:block;font-size:11.5px;color:var(--ink);font-weight:600;line-height:1.5}
+
+/* ========== 章节 ========== */
+main{padding-bottom:30px;min-width:0}
+.chapter{position:relative;padding:62px 0 14px;border-top:1px dashed var(--line);scroll-margin-top:82px}
+.chapter:first-of-type{border-top:none;padding-top:56px}
+.chap-idx{position:absolute;right:-14px;top:30px;font-family:var(--mono);font-size:100px;line-height:1;font-weight:700;color:var(--soft2);letter-spacing:-.06em;pointer-events:none;user-select:none}
+.kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:600}
+h2{margin:10px 0 18px;font-family:var(--serif);font-size:clamp(27px,3.1vw,36px);line-height:1.26;letter-spacing:-.01em;font-weight:700}
+.lead{color:var(--muted);font-size:16px;line-height:1.85;margin-bottom:4px}
+.h3{display:flex;align-items:baseline;gap:10px;margin:36px 0 12px;font-size:19.5px;font-weight:700;letter-spacing:-.015em}
+.h3 .num{font-family:var(--mono);font-size:11.5px;color:var(--cyan);font-weight:600;letter-spacing:.04em}
+.h4{margin:24px 0 10px;font-size:15.5px;font-weight:700}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+code{font-family:var(--mono);font-size:.87em;background:#eef2f7;color:#1e293b;padding:1px 5px;border:1px solid #e2e8f0;border-radius:5px;word-break:break-word}
+h2 code,.h3 code,.h4 code{background:none;border:0;padding:0;color:inherit;font-size:.9em}
+.list{margin:14px 0 22px;padding:0;list-style:none;display:grid;gap:8px}
+.list li{position:relative;padding-left:20px;font-size:14.6px;line-height:1.75}
+.list li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border:1px solid var(--muted2);transform:rotate(45deg)}
+
+/* ========== 提示卡 ========== */
+.note{display:flex;gap:14px;align-items:flex-start;margin:24px 0;padding:16px 18px;border:1px solid var(--line);border-left-width:3px;border-radius:10px;font-size:13.8px;line-height:1.78}
+.note .n-ico{flex:0 0 auto;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding-top:3px}
+.note > div{min-width:0}
+.note p{margin:0 0 8px}
+.note p:last-child{margin-bottom:0}
+.note.info{background:var(--blue-soft);border-color:var(--blue-line);border-left-color:var(--blue);color:#1e3a8a}
+.note.info .n-ico{color:var(--blue)}
+.note.warn{background:var(--amber-soft);border-color:var(--amber-line);border-left-color:#b45309;color:#78350f}
+.note.warn .n-ico{color:#b45309}
+.note.danger{background:var(--red-soft);border-color:var(--red-line);border-left-color:var(--red);color:#881337}
+.note.danger .n-ico{color:var(--red)}
+.note.ok{background:var(--green-soft);border-color:var(--green-line);border-left-color:var(--green);color:#065f46}
+.note.ok .n-ico{color:#047857}
+
+/* ========== 表格 ========== */
+.table-card{margin:26px 0;overflow-x:auto;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:13.2px;line-height:1.7}
+thead tr{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink)}
+thead th{text-align:left;padding:10px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:top}
+tbody tr:hover{background:var(--soft)}
+.table-note{margin:-10px 0 22px;font-size:11.5px;color:var(--muted2);font-family:var(--mono)}
+
+/* ========== 对比卡 ========== */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:26px 0}
+.card{position:relative;background:#fff;border:1px solid var(--line);padding:20px;transition:.2s}
+.card::before,.card::after{content:"";position:absolute;width:9px;height:9px;border:1px solid var(--muted2);opacity:.5}
+.card::before{left:-1px;top:-1px;border-right:0;border-bottom:0}
+.card::after{right:-1px;bottom:-1px;border-left:0;border-top:0}
+.card:hover{box-shadow:0 18px 36px -24px rgba(11,18,32,.35);border-color:#cbd5e1}
+.card .tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:3px 8px;border:1px solid;margin-bottom:10px}
+.card.pick-a .tag{color:var(--blue);border-color:var(--blue-line);background:var(--blue-soft)}
+.card.pick-b .tag{color:var(--cyan);border-color:var(--cyan-line);background:var(--cyan-soft)}
+.card h4{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.2px;color:var(--muted);line-height:1.72;margin:0}
+
+/* ========== 图 ========== */
+.figure{position:relative;margin:30px 0 6px;padding:20px;border:1px dashed #cbd5e1;max-width:100%;background:
+  linear-gradient(var(--soft2) 1px,transparent 1px) 0 0/22px 22px,
+  linear-gradient(90deg,var(--soft2) 1px,transparent 1px) 0 0/22px 22px,
+  #fff;overflow-x:auto}
+.figure svg{display:block;width:100%;height:auto;min-width:560px}
+figcaption{margin:9px 0 26px;display:flex;gap:12px;align-items:baseline;font-size:12px;color:var(--muted)}
+figcaption .fig-n{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;white-space:nowrap;font-weight:600}
+
+/* ========== 步骤 ========== */
+.steps{margin:28px 0 30px}
+.step{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr);gap:20px;padding-bottom:30px}
+.step:last-child{padding-bottom:0}
+.step:not(:last-child)::before{content:"";position:absolute;left:18px;top:40px;bottom:0;width:1px;background:repeating-linear-gradient(180deg,var(--line) 0 6px,transparent 6px 12px)}
+.step-n{width:36px;height:36px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%;font-family:var(--mono);font-size:12.5px;font-weight:700;background:#fff;flex:0 0 auto}
+.step-body{min-width:0;padding-top:1px}
+.step-body h3{margin:1px 0 8px;font-size:17.5px;font-weight:700}
+.step-body p,.step-body ul{font-size:14.2px;color:var(--ink)}
+.step-body p{margin:0 0 10px}
+.step-body h4{margin:16px 0 8px;font-family:var(--mono);font-size:11.5px;color:var(--blue);font-weight:600;letter-spacing:.04em}
+
+/* ========== 代码 ========== */
+.code{margin:16px 0 22px;border:1px solid var(--line);border-left:3px solid var(--blue);background:var(--paper);overflow:hidden}
+.code-bar{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line2);font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--muted);flex-wrap:wrap}
+.code-bar .lang{color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.code-bar .copy{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--muted);font-family:var(--mono);font-size:9.5px;padding:3px 9px;cursor:pointer;border-radius:5px;transition:.18s}
+.code-bar .copy:hover{color:var(--ink);border-color:#cbd5e1}
+.code pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.4px;line-height:1.78;color:#1e293b;tab-size:2;white-space:pre}
+
+/* ========== 重点引述 ========== */
+.callout{margin:26px 0;padding:20px 22px;border:1px solid var(--blue-line);background:linear-gradient(135deg,var(--blue-soft),#fbfdff);border-radius:12px;font-size:15px;line-height:1.78}
+.callout .c-label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:7px;font-weight:600}
+.callout p{margin:0}
+.callout b{color:var(--ink)}
+
+/* ========== 列表卡 ========== */
+.pill-list{list-style:none;padding:0;margin:18px 0 24px;display:grid;gap:9px}
+.pill-list li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;align-items:start;padding:11px 14px;border:1px solid var(--line);background:#fff;font-size:13.8px;line-height:1.72}
+.pill-list li .p-n{width:22px;height:22px;display:grid;place-items:center;background:var(--soft2);border:1px solid var(--line);font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted)}
+.pill-list li b{color:var(--ink)}
+
+/* ========== 参考资料 ========== */
+.ref-group{margin:22px 0 8px;font-size:15.5px;font-weight:700}
+.ref-list{list-style:none;padding:0;margin:12px 0 26px;display:grid;gap:9px}
+.ref-list li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;padding:12px 15px;border:1px solid var(--line);background:#fff;transition:.18s}
+.ref-list li:hover{border-color:#cbd5e1;background:var(--soft)}
+.ref-list .r-n{font-family:var(--mono);font-size:10px;color:var(--muted2);padding-top:2px}
+.ref-list a{font-weight:600}
+.ref-list p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.65}
+
+/* ========== 原文 ASCII 图 ========== */
+.ascii{margin:0 0 26px;border:1px solid var(--line);background:var(--paper)}
+.ascii summary{cursor:pointer;padding:10px 14px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--muted);list-style:none}
+.ascii summary::-webkit-details-marker{display:none}
+.ascii summary::before{content:"▸ ";color:var(--muted2)}
+.ascii[open] summary::before{content:"▾ "}
+.ascii pre{margin:0;padding:14px 18px;border-top:1px solid var(--line2);font-family:var(--mono);font-size:11.5px;line-height:1.7;overflow-x:auto;color:#1e293b}
+
+/* ========== 页脚 ========== */
+footer{border-top:1px solid var(--ink);margin-top:44px}
+.foot-in{max-width:1180px;margin:0 auto;padding:22px 26px 44px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)}
+
+/* ========== 动效 ========== */
+@media (prefers-reduced-motion:no-preference){
+  .hero-in > div:first-child > *{animation:rise .6s cubic-bezier(.2,.7,.3,1) both}
+  .hero-in > div:first-child > *:nth-child(2){animation-delay:.06s}
+  .hero-in > div:first-child > *:nth-child(3){animation-delay:.12s}
+  .hero-in > div:first-child > *:nth-child(4){animation-delay:.18s}
+  .blueprint{animation:rise .9s .18s cubic-bezier(.2,.7,.3,1) both}
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .65s cubic-bezier(.2,.7,.3,1),transform .65s cubic-bezier(.2,.7,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ========== 响应式 ========== */
+@media (max-width:1020px){
+  .hero-in{grid-template-columns:1fr;gap:36px;padding:48px 22px 40px}
+  .blueprint{order:-1}
+  .stats{grid-template-columns:1fr 1fr}
+  .layout{grid-template-columns:minmax(0,1fr);gap:0}
+  .toc{display:none}
+  .chap-idx{display:none}
+  .tb{padding:0 18px}
+  .shell{padding:0 18px}
+  .cards{grid-template-columns:1fr}
+  .figure svg{min-width:420px}
+  .docname{display:none}
+}
+@media (max-width:620px){
+  .brand small{display:none}
+  .meta-grid{grid-template-columns:1fr}
+  .meta-grid div{border-right:0}
+  .meta-grid div:nth-child(3){border-bottom:1px solid var(--line)}
+  .stats{grid-template-columns:1fr 1fr;gap:14px}
+  .chapter{padding:52px 0 10px}
+  h2{font-size:26px}
+  .note{font-size:13px;padding:14px 15px}
+  .table-card table{font-size:12.4px}
+  .figure{margin-left:-18px;margin-right:-18px;padding:14px}
+  .figure svg{min-width:360px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb">
+    <div class="brand"><span class="mark">CC</span>Claude Code Docs <small>/ guide</small></div>
+    <span class="vdiv"></span>
+    <span class="docname">Devin / Kiro / DevEco 模型接入 Claude Code CLI：详细技术指南</span>
+    <span class="spacer"></span>
+    <span class="ver"><i></i>v1.3 · 2026-11-26</span>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <div>
+      <span class="eyebrow">Technical Guide · Kiro / Devin / DevEco</span>
+      <h1>让 Claude Code 自己执行<span class="l2"><em>编程 Agent 工作流</em>。</span></h1>
+      <p class="hero-sub">目标：保留 Claude Code CLI 的 Agent Harness、工具调用与本地执行能力，将底层模型请求转发至 Kiro、Devin 或 DevEco 账号可用的模型服务。</p>
+      <div class="cta">
+        <a class="btn primary" href="#ch3">先读风险提示 <span class="arr">→</span></a>
+        <a class="btn" href="#ch4">直接看方案</a>
+      </div>
+    </div>
+    <div class="blueprint">
+      <svg viewBox="0 0 520 560" role="img" aria-label="架构总览：用户、Claude Code CLI、本机适配代理与上游模型">
+        <defs>
+          <marker id="h-ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+          </marker>
+          <marker id="h-ar-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/>
+          </marker>
+          <pattern id="h-grid" width="14" height="14" patternUnits="userSpaceOnUse">
+            <path d="M0 7 H14 M7 0 V14" stroke="#eef2f7" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="520" height="560" fill="url(#h-grid)" rx="14"/>
+        <text x="24" y="30" font-family="SF Mono,monospace" font-size="9.5" letter-spacing="2" fill="#94a3b8">ARCHITECTURE / 1.2</text>
+        <line x1="24" y1="40" x2="496" y2="40" stroke="#e2e8f0"/>
+
+        <!-- 用户 -->
+        <rect x="24" y="58" width="112" height="58" rx="8" fill="#fff" stroke="#0b1220" stroke-width="1.1"/>
+        <circle cx="48" cy="87" r="11" fill="#f1f5f9" stroke="#cbd5e1"/>
+        <path d="M39 96c2-7 6-10 9-10s7 3 9 10" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+        <text x="68" y="83" font-family="SF Mono,monospace" font-size="8.5" fill="#94a3b8" letter-spacing="1">USER</text>
+        <text x="68" y="99" font-size="12" fill="#0b1220" font-weight="600">用户</text>
+
+        <line x1="140" y1="87" x2="168" y2="87" stroke="#1d4ed8" stroke-width="1.2" marker-end="url(#h-ar-b)"/>
+
+        <!-- Claude Code CLI -->
+        <rect x="172" y="46" width="324" height="146" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.3"/>
+        <text x="188" y="68" font-family="SF Mono,monospace" font-size="8.5" fill="#1d4ed8" letter-spacing="1.4">CLAUDE CODE CLI</text>
+        <text x="188" y="88" font-size="13" fill="#0b1220" font-weight="700">Agent 循环与上下文管理</text>
+        <rect x="188" y="100" width="136" height="24" fill="#fff" stroke="#bfdbfe"/>
+        <text x="196" y="116" font-size="10" fill="#0b1220">工具调用决策</text>
+        <rect x="332" y="100" width="148" height="24" fill="#fff" stroke="#bfdbfe"/>
+        <text x="340" y="116" font-size="10" fill="#0b1220">文件读写 · 编辑</text>
+        <rect x="188" y="130" width="136" height="24" fill="#fff" stroke="#bfdbfe"/>
+        <text x="196" y="146" font-size="10" fill="#0b1220">终端命令</text>
+        <rect x="332" y="130" width="148" height="24" fill="#fff" stroke="#bfdbfe"/>
+        <text x="340" y="146" font-size="10" fill="#0b1220">权限检查与执行</text>
+        <text x="188" y="176" font-family="SF Mono,monospace" font-size="8.5" fill="#64748b">LOCAL EXECUTION</text>
+
+        <!-- 协议请求 -->
+        <text x="322" y="214" text-anchor="end" font-family="SF Mono,monospace" font-size="8.5" fill="#64748b">ANTHROPIC MESSAGES API</text>
+        <line x1="334" y1="196" x2="334" y2="230" stroke="#1d4ed8" stroke-width="1.2" marker-end="url(#h-ar-b)"/>
+
+        <!-- 本机代理 -->
+        <rect x="172" y="234" width="324" height="108" rx="8" fill="#fff" stroke="#0b1220" stroke-width="1.1"/>
+        <text x="188" y="256" font-family="SF Mono,monospace" font-size="8.5" fill="#94a3b8" letter-spacing="1.4">LOCAL PROXY · 127.0.0.1</text>
+        <text x="188" y="276" font-size="13" fill="#0b1220" font-weight="700">本机适配代理</text>
+        <rect x="188" y="288" width="90" height="22" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="195" y="303" font-size="9" fill="#5b6779">协议转换</text>
+        <rect x="284" y="288" width="94" height="22" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="291" y="303" font-size="9" fill="#5b6779">模型 ID 映射</text>
+        <rect x="188" y="314" width="90" height="22" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="195" y="329" font-size="9" fill="#5b6779">SSE 流式转换</text>
+        <rect x="284" y="314" width="94" height="22" fill="#f8fafc" stroke="#e2e8f0"/>
+        <text x="291" y="329" font-size="9" fill="#5b6779">上游认证 · 错误映射</text>
+
+        <!-- 分叉 -->
+        <line x1="334" y1="346" x2="334" y2="372" stroke="#94a3b8" stroke-width="1.1"/>
+        <line x1="334" y1="372" x2="94" y2="372" stroke="#94a3b8" stroke-width="1.1" marker-end="url(#h-ar)"/>
+        <line x1="334" y1="372" x2="260" y2="372" stroke="#94a3b8" stroke-width="1.1" marker-end="url(#h-ar)"/>
+        <line x1="334" y1="372" x2="426" y2="372" stroke="#94a3b8" stroke-width="1.1" marker-end="url(#h-ar)"/>
+
+        <!-- 上游 -->
+        <rect x="15" y="386" width="158" height="86" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.2"/>
+        <text x="27" y="406" font-family="SF Mono,monospace" font-size="8" fill="#0d9488" letter-spacing="1.2">KIRO</text>
+        <text x="27" y="425" font-size="10.5" fill="#0b1220" font-weight="600">Kiro 后端模型</text>
+        <text x="27" y="443" font-size="8" fill="#5b6779">kirocc · :3456</text>
+        <text x="27" y="457" font-size="8" fill="#5b6779">/v1/messages</text>
+
+        <rect x="181" y="386" width="158" height="86" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1"/>
+        <text x="193" y="406" font-family="SF Mono,monospace" font-size="8" fill="#94a3b8" letter-spacing="1.2">DEVIN</text>
+        <text x="193" y="425" font-size="10.5" fill="#0b1220" font-weight="600">Devin 后端模型</text>
+        <text x="193" y="443" font-size="8" fill="#5b6779">devin2api · :8080</text>
+        <text x="193" y="457" font-size="8" fill="#5b6779">/v1/* · Token</text>
+
+        <rect x="347" y="386" width="158" height="86" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1"/>
+        <text x="359" y="406" font-family="SF Mono,monospace" font-size="8" fill="#94a3b8" letter-spacing="1.2">DEVECO</text>
+        <text x="359" y="425" font-size="10.5" fill="#0b1220" font-weight="600">DevEco 后端模型</text>
+        <text x="359" y="443" font-size="8" fill="#5b6779">opencode · :17128</text>
+        <text x="359" y="457" font-size="8" fill="#5b6779">/anthropic</text>
+
+        <!-- 注释 -->
+        <line x1="24" y1="502" x2="496" y2="502" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+        <text x="24" y="522" font-family="SF Mono,monospace" font-size="8.5" fill="#94a3b8">默认绑定 127.0.0.1 · 不将代理开放到公网</text>
+
+        <circle r="3" fill="#1d4ed8">
+          <animateMotion dur="2.6s" repeatCount="indefinite" path="M140 87 L168 87"/>
+        </circle>
+        <circle r="3" fill="#1d4ed8">
+          <animateMotion dur="2.6s" begin="1.2s" repeatCount="indefinite" path="M334 196 L334 230"/>
+        </circle>
+        <circle r="2.6" fill="#0d9488">
+          <animateMotion dur="2.6s" begin=".6s" repeatCount="indefinite" path="M334 346 L334 372 L94 372"/>
+        </circle>
+        <circle r="2.6" fill="#94a3b8">
+          <animateMotion dur="2.6s" begin="1.4s" repeatCount="indefinite" path="M334 346 L334 372 L260 372"/>
+        </circle>
+        <circle r="2.6" fill="#94a3b8">
+          <animateMotion dur="2.6s" begin="2.2s" repeatCount="indefinite" path="M334 346 L334 372 L426 372"/>
+        </circle>
+      </svg>
+      <div class="bp-caption"><span class="n">FIG 01</span><span>目标架构 · 模型负责推理，Claude Code 负责执行</span></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>03</b><span>适配方案</span></div>
+    <div class="stat"><b>05</b><span>验证等级</span></div>
+    <div class="stat"><b>09</b><span>故障排查</span></div>
+    <div class="stat"><b>12</b><span>章节</span></div>
+  </div>
+</section>
+
+<div class="shell">
+  <div class="layout">
+
+    <aside class="toc" id="toc">
+      <div class="toc-label">本页目录</div>
+      <a href="#ch1"><span class="n">01</span>目标与架构</a>
+      <a href="#ch2"><span class="n">02</span>方案比较与推荐</a>
+      <a href="#ch3"><span class="n">03</span>账号风险与服务条款</a>
+      <a href="#ch4"><span class="n">04</span>方案 A：Kiro</a>
+      <a href="#ch5"><span class="n">05</span>方案 B：Devin</a>
+      <a href="#ch6"><span class="n">06</span>方案 C：DevEco</a>
+      <a href="#ch7"><span class="n">07</span>验证推理与工具调用</a>
+      <a href="#ch8"><span class="n">08</span>常见故障排查</a>
+      <a href="#ch9"><span class="n">09</span>凭据、日志与安全</a>
+      <a href="#ch10"><span class="n">10</span>升级、停用与回滚</a>
+      <a href="#ch11"><span class="n">11</span>最终建议</a>
+      <a href="#ch12"><span class="n">12</span>参考资料</a>
+    </aside>
+
+    <main>
+      <div class="meta-block">
+        <div class="meta-grid">
+          <div><b>文档版本：</b><span>1.3</span></div>
+          <div><b>调研日期：</b><span>2026-10-23</span></div>
+          <div><b>更新：</b><span>2026-11-26 新增第 6 章（DevEco → Claude Code CLI）；原第 6–11 章顺延为第 7–12 章</span></div>
+          <div><b>目标环境：</b><span>macOS（Apple Silicon，包含 M 系列 Mac）；其他系统按对应项目文档调整</span></div>
+        </div>
+        <div class="note danger" style="margin-top:18px">
+          <span class="n-ico">重要</span>
+          <div><p><b>重要说明</b>：本文覆盖三个社区适配项目的技术接入方法，不代表 Kiro、Cognition/Devin、华为 DevEco 或 Anthropic 对这种组合提供官方支持。技术上能连通，不等于符合上游服务条款。特别是 Kiro 已明确限制通过第三方自动化 Harness 将请求路由到 Kiro 原生接口之外的使用方式；Devin 的可接受使用政策也包含针对逆向工程、规避访问控制及滥用自动化的限制；DevEco Code 属于华为账号体系，本文所述代理使用其 OAuth 登录与内部 MaaS 接口，项目自身也未声明获得华为官方授权。请先阅读第 3 节，再决定是否实际部署。本文不提供规避封号或风控检测的方法。</p></div>
+        </div>
+      </div>
+      <section class="chapter" id="ch1">
+        <span class="chap-idx">01</span>
+        <div class="kicker">CHAPTER 01</div>
+        <h2>目标与架构</h2>
+
+        <div class="h3"><span class="num">1.1</span>目标是什么</div>
+        <p class="lead">目标并不是通过 Claude Code 去创建 Devin 云端开发任务，而是让 Claude Code 自己执行编程 Agent 工作流：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>分析用户目标与当前代码库；</span></li>
+          <li><span class="p-n">2</span><span>规划修改步骤并进行多轮推理；</span></li>
+          <li><span class="p-n">3</span><span>决定是否调用工具以及使用什么参数；</span></li>
+          <li><span class="p-n">4</span><span>由 Claude Code 在本地读取或修改文件、运行终端命令；</span></li>
+          <li><span class="p-n">5</span><span>将工具返回结果发回模型，再继续推理，直到任务完成。</span></li>
+        </ul>
+        <p>三种方案分别使用以下社区项目作为协议适配器：</p>
+        <ul class="list">
+          <li>Kiro：<a href="https://github.com/d-kuro/kirocc" target="_blank" rel="noopener"><code>d-kuro/kirocc</code></a></li>
+          <li>Devin：<a href="https://github.com/WncFht/devin2api" target="_blank" rel="noopener"><code>WncFht/devin2api</code></a></li>
+          <li>DevEco：<a href="https://github.com/wenyinos/opencode-deveco" target="_blank" rel="noopener"><code>wenyinos/opencode-deveco</code></a></li>
+        </ul>
+
+        <div class="h3"><span class="num">1.2</span>典型架构</div>
+        <figure class="figure">
+          <svg viewBox="0 0 900 360" role="img" aria-label="典型架构：用户、Claude Code CLI、本机适配代理、Kiro 与 Devin">
+            <defs>
+              <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+              <marker id="a2b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">CLIENT</text>
+            <rect x="20" y="116" width="96" height="66" rx="6" fill="#fff" stroke="#0b1220"/>
+            <circle cx="42" cy="144" r="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+            <path d="M34 152c2-6 5-9 8-9s6 3 8 9" fill="none" stroke="#94a3b8" stroke-width="1.1"/>
+            <text x="58" y="142" font-family="SF Mono, monospace" font-size="8" fill="#94a3b8" letter-spacing="1">USER</text>
+            <text x="58" y="158" font-size="12" fill="#0b1220" font-weight="600">用户</text>
+
+            <line x1="120" y1="149" x2="136" y2="149" stroke="#94a3b8" marker-end="url(#a2)"/>
+
+            <rect x="140" y="56" width="280" height="252" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
+            <text x="156" y="80" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#1d4ed8">CLAUDE CODE CLI</text>
+            <text x="156" y="102" font-size="13" font-weight="700" fill="#0b1220">Agent 循环与上下文管理</text>
+            <rect x="156" y="116" width="248" height="28" fill="#fff" stroke="#bfdbfe"/>
+            <text x="166" y="134" font-size="10" fill="#0b1220">工具调用决策</text>
+            <rect x="156" y="150" width="248" height="28" fill="#fff" stroke="#bfdbfe"/>
+            <text x="166" y="168" font-size="10" fill="#0b1220">文件读写、编辑、终端命令</text>
+            <rect x="156" y="184" width="248" height="28" fill="#fff" stroke="#bfdbfe"/>
+            <text x="166" y="202" font-size="10" fill="#0b1220">权限检查与工具执行</text>
+            <text x="156" y="290" font-family="SF Mono, monospace" font-size="8" fill="#64748b" letter-spacing="1">LOCAL EXECUTION</text>
+
+            <line x1="420" y1="149" x2="444" y2="149" stroke="#1d4ed8" marker-end="url(#a2b)"/>
+
+            <rect x="448" y="88" width="232" height="190" rx="7" fill="#fff" stroke="#0b1220"/>
+            <text x="462" y="112" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#94a3b8">LOCAL PROXY · localhost</text>
+            <text x="462" y="134" font-size="12.5" font-weight="700" fill="#0b1220">本机适配代理</text>
+            <rect x="462" y="148" width="204" height="24" fill="#f8fafc" stroke="#e2e8f0"/>
+            <text x="470" y="164" font-size="9.5" fill="#5b6779">协议转换</text>
+            <rect x="462" y="178" width="204" height="24" fill="#f8fafc" stroke="#e2e8f0"/>
+            <text x="470" y="194" font-size="9.5" fill="#5b6779">模型 ID 映射</text>
+            <rect x="462" y="208" width="204" height="24" fill="#f8fafc" stroke="#e2e8f0"/>
+            <text x="470" y="224" font-size="9.5" fill="#5b6779">SSE 流式响应转换</text>
+            <rect x="462" y="238" width="204" height="24" fill="#f8fafc" stroke="#e2e8f0"/>
+            <text x="470" y="254" font-size="9.5" fill="#5b6779">上游认证与错误映射</text>
+
+            <path d="M680 149 H696 V124 H708" fill="none" stroke="#94a3b8" marker-end="url(#a2)"/>
+            <path d="M696 149 V240 H708" fill="none" stroke="#94a3b8" marker-end="url(#a2)"/>
+
+            <rect x="712" y="84" width="168" height="80" rx="6" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.2"/>
+            <text x="724" y="106" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#0d9488">KIRO</text>
+            <text x="724" y="126" font-size="12" font-weight="600" fill="#0b1220">Kiro 后端模型</text>
+            <text x="724" y="146" font-family="SF Mono, monospace" font-size="8.5" fill="#5b6779">127.0.0.1:3456</text>
+
+            <rect x="712" y="200" width="168" height="80" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+            <text x="724" y="222" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#94a3b8">DEVIN</text>
+            <text x="724" y="242" font-size="12" font-weight="600" fill="#0b1220">Devin 账号可用的模型</text>
+            <text x="724" y="262" font-family="SF Mono, monospace" font-size="8.5" fill="#5b6779">127.0.0.1:8080</text>
+
+            <line x1="20" y1="326" x2="880" y2="326" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="346" font-family="SF Mono, monospace" font-size="8.5" fill="#94a3b8">Anthropic Messages API 兼容请求 · 本机适配代理负责协议转换与流式响应</text>
+
+            <circle r="3" fill="#1d4ed8"><animateMotion dur="2.4s" repeatCount="indefinite" path="M420 149 L444 149"/></circle>
+            <circle r="3" fill="#0d9488"><animateMotion dur="2.4s" begin="1s" repeatCount="indefinite" path="M680 149 L708 149"/></circle>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 02</span><span>模型负责生成推理结果、决定调用工具以及生成调用参数。</span></figcaption>
+
+        <details class="ascii">
+          <summary>原文 ASCII 架构示意</summary>
+          <pre>用户
+ │
+ ▼
+Claude Code CLI
+ ├─ Agent 循环与上下文管理
+ ├─ 工具调用决策
+ ├─ 文件读写、编辑、终端命令
+ └─ 权限检查与工具执行
+ │
+ │ Anthropic Messages API 兼容请求
+ ▼
+本机适配代理（localhost）
+ ├─ 协议转换
+ ├─ 模型 ID 映射
+ ├─ SSE 流式响应转换
+ └─ 上游认证与错误映射
+ │
+ ├──────────────┐
+ ▼              ▼
+Kiro 后端模型    Devin 账号可用的模型</pre>
+        </details>
+
+        <div class="h3"><span class="num">1.3</span>谁负责推理，谁负责执行工具？</div>
+        <p>在这种架构中，<b>模型负责生成推理结果、决定调用工具以及生成调用参数；Claude Code 通常负责执行本地工具</b>。例如，模型提出读取 <code>src/main.ts</code>，Claude Code 读取后把结果回传；模型再提出修改文件或运行测试，Claude Code 执行后继续回传结果。</p>
+        <p>这不是将 Devin、Kiro 或 DevEco 自己的完整 Agent Harness 搬进 Claude Code，也不等于完全复制原生 Claude 模型的行为。兼容程度仍取决于模型和代理是否正确支持：</p>
+        <ul class="list">
+          <li>Anthropic Messages API 请求与响应结构；</li>
+          <li>流式 SSE 事件；</li>
+          <li><code>tool_use</code> 与 <code>tool_result</code> 的多轮往返；</li>
+          <li>推理内容或 extended thinking 的跨轮传递；</li>
+          <li>模型 ID、上下文长度、图片输入及其他模型能力；</li>
+          <li>错误状态、限流、超时与重试。</li>
+        </ul>
+
+        <div class="h3"><span class="num">1.4</span>前置条件</div>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>已安装并能正常运行 Claude Code CLI。</span></li>
+          <li><span class="p-n">2</span><span>具备相应的 Kiro、Devin 或 DevEco 账号及其允许使用的凭据。</span></li>
+          <li><span class="p-n">3</span><span>能在本机启动代理，并访问其环回地址（<code>127.0.0.1</code>）。</span></li>
+          <li><span class="p-n">4</span><span>接受模型兼容性可能不完整，重要代码变更需要人工审查与测试。</span></li>
+          <li><span class="p-n">5</span><span>DevEco 方案另需 Node.js 20+，以及可登录 DevEco Code 的中国大陆站华为账号。</span></li>
+        </ul>
+      </section>
+      <section class="chapter" id="ch2">
+        <span class="chap-idx">02</span>
+        <div class="kicker">CHAPTER 02</div>
+        <h2>方案比较与推荐</h2>
+
+        <div class="table-card">
+          <table style="min-width:820px">
+            <thead>
+              <tr><th style="width:13%">维度</th><th>Kiro + <code>kirocc</code></th><th>Devin + <code>devin2api</code></th><th>DevEco + <code>opencode-deveco</code></th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>主要目的</b></td><td>将 Kiro 后端包装成 Anthropic Messages API</td><td>将 Devin 账号可用模型包装成 Anthropic/OpenAI 兼容接口</td><td>将 DevEco Code 账号模型包装成 OpenAI/Anthropic 兼容接口</td></tr>
+              <tr><td><b>Claude Code 接口</b></td><td><code>http://127.0.0.1:3456</code>，默认端口</td><td><code>http://127.0.0.1:8080</code>，安装配置可调整</td><td><code>http://127.0.0.1:17128/anthropic</code>，默认端口</td></tr>
+              <tr><td><b>工具调用</b></td><td>项目实现了 Anthropic 工具调用转换；需实测具体模型</td><td>项目宣称支持工具调用、推理内容往返和流式输出；需实测具体模型</td><td>代理实现 Anthropic <code>tool_use</code> 与 OpenAI <code>tool_calls</code> 的双向转换；<code>tool_choice</code> 转为枚举形式</td></tr>
+              <tr><td><b>凭据来源</b></td><td>Kiro CLI 登录凭据，或符合条件的 Kiro API Key</td><td>Devin 平台 API Key、会话 Token 或 CLI 凭据文件，具体取决于版本与配置</td><td>中国大陆站华为账号 OAuth；jwtToken 落盘，accessToken 内存刷新</td></tr>
+              <tr><td><b>项目形态</b></td><td>以 Go 编写的本地轻量代理</td><td>当前仓库具备管理面板、下游 Token、账户管理、模型目录等功能</td><td>TypeScript 本地代理 + opencode 插件；daemon 监督、崩溃自动重启</td></tr>
+              <tr><td><b>账号风险</b></td><td>Kiro 官方 FAQ 明确不允许第三方 Harness 将请求路由到原生接口之外</td><td>官方并未将此项目背后的内部 RPC 宣布为通用模型推理 API；Cognition 政策含逆向工程和访问控制限制</td><td>非官方项目，使用华为账号 OAuth 与内部 MaaS 接口；未声明获华为授权</td></tr>
+              <tr><td><b>适合谁</b></td><td>适合在明确获准的测试环境验证协议兼容性</td><td>适合研究模型协议适配，但应先取得服务方许可并评估账号风险</td><td>适合已有中国站华为账号、在隔离环境验证协议兼容性</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <span class="c-label">重要结论：</span>
+          <p><b>不应把“有代理项目”“普通问答可以回复”或“暂时没有发现封号案例”视为长期稳定或官方允许的证据。</b>若账号安全优先，应使用服务方明确支持的 API、官方 CLI，或官方支持的兼容集成方式。</p>
+        </div>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 340" role="img" aria-label="Kiro 与 Devin 两套方案的接口、凭据与风险对比">
+            <defs>
+              <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">SIDE BY SIDE</text>
+            <line x1="450" y1="52" x2="450" y2="300" stroke="#e2e8f0" stroke-dasharray="3 4"/>
+
+            <text x="34" y="56" font-family="SF Mono, monospace" font-size="9" letter-spacing="1.6" fill="#1d4ed8">PLAN A / KIRO</text>
+            <text x="34" y="86" font-size="19" font-weight="700" fill="#0b1220">Kiro + kirocc</text>
+            <rect x="34" y="100" width="380" height="58" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="48" y="120" font-family="SF Mono, monospace" font-size="10" fill="#1d4ed8">http://127.0.0.1:3456</text>
+            <text x="48" y="140" font-size="10.5" fill="#0b1220">Kiro CLI 登录凭据 · Kiro API Key</text>
+            <rect x="34" y="168" width="380" height="44" fill="#fff" stroke="#e2e8f0"/>
+            <text x="48" y="186" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1" fill="#94a3b8">IMPLEMENTATION</text>
+            <text x="48" y="202" font-size="10.5" fill="#0b1220">Anthropic Messages API · Go 本地轻量代理</text>
+            <rect x="34" y="222" width="380" height="52" fill="#fff1f3" stroke="#fecdd3"/>
+            <text x="48" y="240" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1" fill="#e11d48">RISK</text>
+            <text x="48" y="258" font-size="10.5" fill="#881337">官方 FAQ 明确不允许第三方 Harness</text>
+            <text x="34" y="300" font-size="10" fill="#5b6779">适合：明确获准的测试环境</text>
+
+            <text x="470" y="56" font-family="SF Mono, monospace" font-size="9" letter-spacing="1.6" fill="#0d9488">PLAN B / DEVIN</text>
+            <text x="470" y="86" font-size="19" font-weight="700" fill="#0b1220">Devin + devin2api</text>
+            <rect x="470" y="100" width="380" height="58" fill="#f0fdfa" stroke="#99f6e4"/>
+            <text x="484" y="120" font-family="SF Mono, monospace" font-size="10" fill="#0d9488">http://127.0.0.1:8080</text>
+            <text x="484" y="140" font-size="10.5" fill="#0b1220">平台 API Key · 会话 Token · CLI 凭据文件</text>
+            <rect x="470" y="168" width="380" height="44" fill="#fff" stroke="#e2e8f0"/>
+            <text x="484" y="186" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1" fill="#94a3b8">IMPLEMENTATION</text>
+            <text x="484" y="202" font-size="10.5" fill="#0b1220">Anthropic / OpenAI 兼容 · 管理面板与下游 Token</text>
+            <rect x="470" y="222" width="380" height="52" fill="#fff1f3" stroke="#fecdd3"/>
+            <text x="484" y="240" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1" fill="#e11d48">RISK</text>
+            <text x="484" y="258" font-size="10.5" fill="#881337">内部 RPC · 政策含逆向工程与访问控制限制</text>
+            <text x="470" y="300" font-size="10" fill="#5b6779">适合：先取得服务方许可并评估风险</text>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 03</span><span>不应把“有代理项目”视为长期稳定或官方允许的证据。</span></figcaption>
+      </section>
+      <section class="chapter" id="ch3">
+        <span class="chap-idx">03</span>
+        <div class="kicker">CHAPTER 03</div>
+        <h2>账号风险、服务条款与公开封号反馈</h2>
+
+        <div class="h3"><span class="num">3.1</span>Kiro：存在明确的官方限制与社区风险信号</div>
+        <p>Kiro 官方 FAQ 在“可以使用哪些工具”相关条目中说明，Kiro 订阅可以用于 Kiro IDE、Kiro CLI、Kiro Web、Kiro Crew、兼容 ACP 的 IDE，以及某些软件开发自动化场景；但不允许通过 OpenClaw 这类第三方自动化 Harness，将请求路由到 Kiro 原生接口之外。</p>
+        <p>参考：<a href="https://kiro.dev/faq/" target="_blank" rel="noopener">Kiro 官方 FAQ</a></p>
+        <p>这意味着，即使 <code>kirocc</code> 在技术上能把 Anthropic Messages 请求转换给 Kiro 后端，也不能据此认定该接入方式获 Kiro 官方许可。</p>
+        <p>社区方面，公开讨论中可见一些反代或 Claude Code 相关账号被暂时停用的报告。例如：</p>
+        <ul class="list">
+          <li><a href="https://github.com/jwadow/kiro-gateway/issues/115" target="_blank" rel="noopener"><code>jwadow/kiro-gateway</code> Issue #115</a>：作者称两个账号被风控，并提到与 Kiro 反代 Claude Code 有关的使用背景；</li>
+          <li><a href="https://github.com/kirodotdev/Kiro/issues/8036" target="_blank" rel="noopener"><code>kirodotdev/Kiro</code> Issue #8036</a>：报告中提到 Claude Code、Kiro 与 Omniroute 的组合；</li>
+          <li><a href="https://github.com/kirodotdev/Kiro/issues/9715" target="_blank" rel="noopener"><code>kirodotdev/Kiro</code> Issue #9715</a>：用户称在其认为正常的使用情况下遇到临时停用提示。</li>
+        </ul>
+        <p>这些都是用户提交的个案或故障报告，不是官方调查结论，也不能据此计算封号率。它们只能说明：账号停用反馈确实存在，其中部分案例与第三方 Harness 或代理使用有关；另一些报告则不能确认与代理有关。</p>
+        <div class="note warn">
+          <span class="n-ico">RISK</span>
+          <div><p><b>风险判断：</b>如需严格遵守 Kiro 服务条款，不应按本节之后的技术步骤将 Kiro 订阅接入 Claude Code；应使用 Kiro 原生 CLI 或官方明确支持的集成方式。本指南仍记录技术流程，是为了说明架构及便于获授权的测试和兼容性研究，不是对该用法的合规背书。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">3.2</span>Devin：没有可靠封号率数据，不代表更安全</div>
+        <p><code>devin2api</code> 自身声明其为非官方项目、不隶属于 Cognition，并使用 Devin 凭据访问内部 RPC 接口。项目 README 也明确要求使用者自行负责遵守 Devin 的服务条款。</p>
+        <p>参考：<a href="https://github.com/WncFht/devin2api" target="_blank" rel="noopener">WncFht/devin2api README</a></p>
+        <p>Cognition 的 <a href="https://cognition.com/legal/acceptable-use-policy" target="_blank" rel="noopener">Acceptable Use Policy</a>（页面标注于 2026-06-30 更新）包含不得规避访问控制或安全机制、不得进行未经允许的逆向工程或抓取等限制，并说明违反政策可能导致暂停服务访问。</p>
+        <p>需要区分两件事：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>Devin 有官方 API，可以用于官方文档规定的任务、会话和开发工作流集成；</span></li>
+          <li><span class="p-n">2</span><span>这不等于官方提供了一个通用推理 API，允许把 Devin 内部模型包装成 Claude Code 的模型后端。</span></li>
+        </ul>
+        <p>本次公开检索没有发现足够可靠、可核实的 <code>devin2api</code> 使用者封号统计，也未找到能够证明其比 Kiro 代理安全的证据。社区样本少、反馈不公开或故障没有被报告，都可能造成“看起来没有封号”的错觉。</p>
+        <div class="note warn">
+          <span class="n-ico">RISK</span>
+          <div><p><b>风险判断：</b>Devin 方案的封号发生率无法量化；但由于其调用内部 RPC 的性质和服务政策，不能把它视为无风险，也不建议将重要主账号作为长期生产方案使用。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">3.3</span>DevEco：非官方代理，依赖华为账号 OAuth 与内部 MaaS 接口</div>
+        <p><code>opencode-deveco</code> 以 MIT 许可开源，项目自身定位为让 opencode 使用 DevEco Code 账号，并未声明与华为的隶属关系或获得官方授权。它通过浏览器完成华为账号 OAuth 登录，随后以 Bearer token 调用 <code>cn.devecostudio.huawei.com</code> 的 <code>codeGenie</code> MaaS 接口。</p>
+        <p>需要区分两件事：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>DevEco Code 是华为面向开发者的官方产品，账号体系与模型服务由华为提供；</span></li>
+          <li><span class="p-n">2</span><span>这不等于华为授权第三方代理把 DevEco 账号包装成 Claude Code 或任意 OpenAI 兼容客户端的模型后端。</span></li>
+        </ul>
+        <p>公开信息方面，截至 2026-11-26，该仓库约 40 stars、6 forks，没有公开的封号统计或官方支持声明。样本量同样不足以证明“没有风险”，只能说明目前没有可核实的风险反馈。</p>
+        <div class="note warn">
+          <span class="n-ico">RISK</span>
+          <div><p><b>风险判断：</b>DevEco 方案的账号风险无法量化；其调用的是华为账号体系与内部 MaaS 接口，且代理自身不做下游鉴权。不应把重要主账号或生产工作流作为长期方案，使用前应自行核对华为 DevEco Code 的服务条款。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">3.4</span>风险等级应怎样理解</div>
+        <div class="table-card">
+          <table style="min-width:760px">
+            <thead>
+              <tr><th style="width:27%">风险类型</th><th>Kiro</th><th>Devin</th><th>DevEco</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>官方明确支持 Claude Code 通过该代理调用账号额度</b></td><td>未发现；官方 FAQ 反而限制第三方 Harness 路由到原生接口之外</td><td>未发现官方对该代理或内部推理 RPC 的支持声明</td><td>未发现；项目未声明获华为授权</td></tr>
+              <tr><td><b>内部接口变更造成故障</b></td><td>有可能</td><td>有可能，内部 RPC 变化是重要维护风险</td><td>有可能；依赖 OAuth、token 刷新与 codeGenie 路由</td></tr>
+              <tr><td><b>账号临时停用反馈</b></td><td>有公开报告，包括部分与代理背景相关的案例</td><td>无足够可靠的公开样本用于估算发生率</td><td>无可靠公开样本</td></tr>
+              <tr><td><b>能否保证不封号</b></td><td>不能</td><td>不能</td><td>不能</td></tr>
+              <tr><td><b>是否适合高价值主账号</b></td><td>不推荐</td><td>不推荐，除非服务方明确书面授权</td><td>不推荐</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note danger">
+          <span class="n-ico">STOP</span>
+          <div><p>不要通过频繁更换账号、伪装客户端、轮换网络出口或其他方式尝试规避风控；这些方法不能保证避免停用，还可能让服务条款风险更高。出现停用时应通过官方支持渠道申诉。</p></div>
+        </div>
+      </section>
+      <section class="chapter" id="ch4">
+        <span class="chap-idx">04</span>
+        <div class="kicker">CHAPTER 04</div>
+        <h2>方案 A：Kiro → Claude Code CLI</h2>
+
+        <div class="note warn">
+          <span class="n-ico">条款</span>
+          <div><p><b>条款提醒：</b>以下是 <code>kirocc</code> 的技术接入示例。Kiro 官方 FAQ 对第三方 Harness 的使用有限制，因此在没有得到 Kiro 明确许可之前，不应将此流程视为受支持的日常使用方法。若严格遵循 Kiro 条款，请改用 Kiro CLI、Kiro IDE，或官方明确支持的 ACP 集成。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">4.1</span>项目与工作原理</div>
+        <p>项目地址：<a href="https://github.com/d-kuro/kirocc" target="_blank" rel="noopener">https://github.com/d-kuro/kirocc</a></p>
+        <p><code>kirocc</code> 是本地协议适配代理，项目说明支持：</p>
+        <ul class="list">
+          <li>Anthropic Messages API 的 <code>/v1/messages</code>；</li>
+          <li>流式与非流式请求；</li>
+          <li><code>/v1/models</code> 模型目录；</li>
+          <li>将 Anthropic 请求结构转换为 Kiro 后端格式，并将上游事件流转回 Anthropic SSE；</li>
+          <li>读取 Kiro CLI 本地凭据并刷新令牌，或使用 Kiro API Key；</li>
+          <li>模型名称映射与部分推理强度选项。</li>
+        </ul>
+        <p>这些是项目公开说明的能力，不代表所有模型、参数及 Claude Code 特性都已经与 Anthropic 原生 API 完全一致。</p>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 310" role="img" aria-label="Kiro 接入链路">
+            <defs>
+              <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+              <marker id="a4b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">KIRO → CLAUDE CODE</text>
+
+            <rect x="20" y="56" width="206" height="72" rx="6" fill="#f0fdfa" stroke="#0d9488"/>
+            <text x="34" y="78" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#0d9488">CREDENTIAL · 1</text>
+            <text x="34" y="98" font-size="11.5" font-weight="600" fill="#0b1220">Kiro CLI 登录凭据</text>
+            <text x="34" y="116" font-size="9.5" fill="#5b6779">读取凭据数据库并刷新令牌</text>
+
+            <rect x="20" y="142" width="206" height="72" rx="6" fill="#f0fdfa" stroke="#0d9488"/>
+            <text x="34" y="164" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#0d9488">CREDENTIAL · 2</text>
+            <text x="34" y="184" font-size="11.5" font-weight="600" fill="#0b1220">Kiro API Key</text>
+            <text x="34" y="202" font-size="9.5" fill="#5b6779">Pro / Pro+ / Pro Max / Power</text>
+
+            <line x1="230" y1="135" x2="288" y2="135" stroke="#94a3b8" marker-end="url(#a4)"/>
+
+            <rect x="292" y="64" width="268" height="150" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
+            <text x="308" y="88" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#1d4ed8">KIROCC · 127.0.0.1:3456</text>
+            <text x="308" y="110" font-size="13" font-weight="700" fill="#0b1220">本地协议适配代理</text>
+            <text x="308" y="132" font-size="9.5" fill="#5b6779">/v1/messages · /v1/models</text>
+            <text x="308" y="150" font-size="9.5" fill="#5b6779">流式 / 非流式 · SSE 转换</text>
+            <text x="308" y="168" font-size="9.5" fill="#5b6779">模型名称映射 · 推理强度</text>
+            <rect x="308" y="180" width="236" height="22" fill="#fff" stroke="#bfdbfe"/>
+            <text x="316" y="195" font-size="9.5" fill="#1e3a8a">KIROCC_API_KEY · 下游鉴权（可选）</text>
+
+            <line x1="564" y1="139" x2="606" y2="139" stroke="#1d4ed8" marker-end="url(#a4b)"/>
+
+            <rect x="610" y="64" width="270" height="150" rx="7" fill="#fff" stroke="#0b1220" stroke-width="1.2"/>
+            <text x="626" y="88" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#94a3b8">CLAUDE CODE CLI</text>
+            <text x="626" y="110" font-size="13" font-weight="700" fill="#0b1220">Agent Harness</text>
+            <text x="626" y="132" font-size="9.5" fill="#5b6779">ANTHROPIC_BASE_URL</text>
+            <text x="626" y="150" font-size="9.5" fill="#5b6779">ANTHROPIC_AUTH_TOKEN</text>
+            <text x="626" y="168" font-size="9.5" fill="#5b6779">CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY</text>
+            <text x="626" y="192" font-size="9.5" fill="#1d4ed8">/model 发现网关模型</text>
+
+            <line x1="20" y1="250" x2="880" y2="250" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="270" font-size="9.5" fill="#881337">风险：Kiro 官方 FAQ 限制第三方 Harness 将请求路由到原生接口之外</text>
+            <text x="20" y="288" font-family="SF Mono, monospace" font-size="8.5" fill="#94a3b8">Kiro Cli credential → kirocc → /v1/messages → Claude Code</text>
+
+            <circle r="3" fill="#0d9488"><animateMotion dur="2.6s" repeatCount="indefinite" path="M230 139 L288 139"/></circle>
+            <circle r="3" fill="#1d4ed8"><animateMotion dur="2.6s" begin="1.2s" repeatCount="indefinite" path="M564 139 L606 139"/></circle>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 04</span><span>Anthropic 请求结构转换为 Kiro 后端格式，上游事件流转回 Anthropic SSE。</span></figcaption>
+
+        <div class="h3"><span class="num">4.2</span>认证方式</div>
+        <p>项目 README 列出两种主要来源：</p>
+        <div class="cards">
+          <div class="card pick-a">
+            <h4>方式 1：Kiro CLI 登录凭据</h4>
+            <p>在本机安装并登录 Kiro CLI，由 <code>kirocc</code> 读取其凭据数据库。优点是不用手动填写 Kiro API Key；缺点是依赖本机 CLI 的登录状态和凭据存储。</p>
+          </div>
+          <div class="card pick-b">
+            <h4>方式 2：Kiro API Key</h4>
+            <p>项目 README 说明，符合条件的 Kiro Pro、Pro+、Pro Max 和 Power 订阅用户可以在 Kiro 设置页面创建 API Key；组织订阅还可能需要管理员开启相关设置。</p>
+          </div>
+        </div>
+        <p>参考：<a href="https://kiro.dev/faq/" target="_blank" rel="noopener">Kiro 官方 FAQ</a>；<a href="https://github.com/d-kuro/kirocc" target="_blank" rel="noopener">kirocc README</a></p>
+
+        <div class="h3"><span class="num">4.3</span>kiro-cli 安装对 shell 配置文件的改动（dotfiles 集成）</div>
+        <div class="note danger">
+          <span class="n-ico">巨坑</span>
+          <div><p>此为巨坑：对 ~/.zshrc、~/.zprofile 添加的 hooks 会对 Claude code + herdr app 造成严重的错误，所以要执行后面提到的删除。</p></div>
+        </div>
+        <p>kiro-cli 由 Amazon Q CLI（fig 血统）改名而来，自带 <code>kiro-cli integrations</code> 子命令管理"系统集成"，<b>保留着向 shell 配置文件写入 hook 的逻辑</b>。安装或首次启动流程会自动注入 shell 集成，并非只在手动执行 <code>integrations install</code> 时才写入。以下为 v2.33.1（macOS，2026-10-24 安装）的实测结论，不同版本行为可能变化。</p>
+
+        <div class="h4">实际写入情况</div>
+        <div class="table-card">
+          <table style="min-width:700px">
+            <thead><tr><th style="width:30%">目标</th><th style="width:14%">安装后</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td><code>~/.zshrc</code> / <code>~/.zprofile</code></td><td><b>写入 hook</b></td><td>zsh 的 pre/post hook 分置于这两个文件；本机已事后手动清除</td></tr>
+              <tr><td><code>~/.bashrc</code> / <code>~/.bash_profile</code> / <code>~/.profile</code></td><td>本机未涉及</td><td>bash 集成同样会写 <code>.bashrc</code>/<code>.profile</code>，但本机从未存在这些文件</td></tr>
+              <tr><td><code>~/.config/fish/conf.d/00_fig_pre.fish</code>、<code>99_fig_post.fish</code></td><td>自动创建</td><td>与 <code>~/.local/bin</code> 下的符号链接在同一分钟生成；fish 有 <code>conf.d</code> 自动加载机制，无需改 rc 文件</td></tr>
+              <tr><td><code>~/.local/bin/</code> 下符号链接与 PTY 包装二进制</td><td>自动创建</td><td><code>kiro-cli</code>、<code>kiro-cli-chat</code>、<code>kiro-cli-term</code>，以及 <code>zsh (kiro-cli-term)</code> 等包装可执行文件</td></tr>
+              <tr><td><code>/usr/local/bin/kiro</code> 路由脚本</td><td>不创建</td><td>仅显式执行 <code>kiro-cli integrations install kiro-command-router</code>（需管理员权限）时写入</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="h4">判断依据（时间线）：</div>
+        <figure class="figure">
+          <svg viewBox="0 0 900 250" role="img" aria-label="kiro-cli dotfiles 写入与清除时间线">
+            <defs>
+              <marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">TIMELINE · DOTFILES</text>
+            <line x1="60" y1="120" x2="840" y2="120" stroke="#cbd5e1" stroke-width="1.5"/>
+            <rect x="56" y="112" width="16" height="16" rx="3" fill="#f59e0b" stroke="#b45309"/>
+            <rect x="268" y="112" width="16" height="16" rx="3" fill="#ef4444" stroke="#991b1b"/>
+            <rect x="480" y="112" width="16" height="16" rx="3" fill="#16a34a" stroke="#047857"/>
+            <rect x="692" y="112" width="16" height="16" rx="3" fill="#94a3b8" stroke="#64748b"/>
+
+            <text x="64" y="76" font-family="SF Mono, monospace" font-size="9" letter-spacing="1" fill="#b45309">10-24 00:34</text>
+            <text x="64" y="96" font-size="12.5" font-weight="700" fill="#0b1220">安装自动注入</text>
+            <text x="64" y="154" font-size="9.5" fill="#5b6779">fish conf.d 与符号链接</text>
+            <text x="64" y="170" font-size="9.5" fill="#5b6779">同一分钟生成</text>
+
+            <text x="276" y="76" font-family="SF Mono, monospace" font-size="9" letter-spacing="1" fill="#991b1b">安装流程</text>
+            <text x="276" y="96" font-size="12.5" font-weight="700" fill="#0b1220">zsh hooks 写入</text>
+            <text x="276" y="154" font-size="9.5" fill="#5b6779">.zshrc / .zprofile</text>
+            <text x="276" y="170" font-size="9.5" fill="#5b6779">pre / post hook</text>
+
+            <text x="488" y="76" font-family="SF Mono, monospace" font-size="9" letter-spacing="1" fill="#047857">11-08 22:03</text>
+            <text x="488" y="96" font-size="12.5" font-weight="700" fill="#0b1220">手动清除</text>
+            <text x="488" y="154" font-size="9.5" fill="#5b6779">两次编辑相差 6 秒</text>
+            <text x="488" y="170" font-size="9.5" fill="#5b6779">.zprofile 清理后 0 字节</text>
+
+            <text x="700" y="76" font-family="SF Mono, monospace" font-size="9" letter-spacing="1" fill="#64748b">复检</text>
+            <text x="700" y="96" font-size="12.5" font-weight="700" fill="#0b1220">status → ✘</text>
+            <text x="700" y="154" font-size="9.5" fill="#5b6779">只反映当前内容</text>
+            <text x="700" y="170" font-size="9.5" fill="#5b6779">不能证明从未写入</text>
+
+            <text x="20" y="216" font-size="9.5" fill="#5b6779">.zshrc 中残留的 </text>
+            <text x="120" y="216" font-family="SF Mono, monospace" font-size="9" fill="#1d4ed8">export PATH="$HOME/.local/bin:$PATH"</text>
+            <text x="425" y="216" font-size="9.5" fill="#5b6779">正是 kiro shell 集成的 PATH 行。</text>
+
+            <circle r="3" fill="#b45309"><animateMotion dur="3s" repeatCount="indefinite" path="M72 120 L276 120"/></circle>
+            <circle r="3" fill="#047857"><animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M488 120 L700 120"/></circle>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 05</span><span>fish conf.d 与 kiro-cli 符号链接在同一分钟自动生成，证明安装流程确实自动执行了集成注入。</span></figcaption>
+
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>fish conf.d 两个文件与 kiro-cli 符号链接在同一分钟（10-24 00:34）自动生成，证明安装流程确实自动执行了集成注入，zsh/bash 属于同一套逻辑；</span></li>
+          <li><span class="p-n">2</span><span><code>~/.zshrc</code> 与 <code>~/.zprofile</code> 的修改时间为 11-08 22:03（相差 6 秒，同一次手动编辑会话），晚于安装时间，与手动清除 hook 的动作吻合；<code>~/.zprofile</code> 清理后为 0 字节；</span></li>
+          <li><span class="p-n">3</span><span><code>~/.zshrc</code> 中残留的 <code>export PATH="$HOME/.local/bin:$PATH"</code> 正是 kiro shell 集成的 PATH 行——kiro 二进制内 fish 文件的原话注释为 <code># Keeps ~/.local/bin on PATH (previously added by the Kiro CLI shell integration)</code>。</span></li>
+        </ul>
+
+        <div class="note info">
+          <span class="n-ico">NOTE</span>
+          <div><p><b>重要提醒：<code>kiro-cli integrations status dotfiles</code> 显示的 <code>✘</code> 只反映文件的当前内容，不能证明"从未写入"。</b>清除过 hook 之后状态自然回到 <code>✘</code>。查看状态的命令：</p></div>
+        </div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>查看 dotfiles 集成状态</span><span class="copy">复制</span></div>
+          <pre>kiro-cli integrations status dotfiles</pre>
+        </div>
+        <p><code>✔</code> 表示对应文件当前含有其 hook，<code>✘</code> 表示当前没有。zsh 条目为 <code>zsh pre post into .zshrc</code> 与 <code>zsh pre post into .zprofile</code> 两条，bash 为 <code>.bashrc</code>/<code>.profile</code> 两条。</p>
+
+        <div class="h4">写入内容与作用</div>
+        <p>写入 <code>~/.zshrc</code>、<code>~/.zprofile</code>、<code>~/.bashrc</code>、<code>~/.profile</code> 的是 <code>kiro-cli init &lt;shell&gt; pre|post</code> 生成的 hook 脚本，作用有三：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span><b>PATH 注入</b>：把 <code>~/.local/bin</code> 加入 <code>PATH</code>，保证 <code>kiro-cli</code> 系列命令在任意 shell 中可用；</span></li>
+          <li><span class="p-n">2</span><span><b>PTY 包装</b>：在交互式 shell 外层启动 <code>kiro-cli-term</code>（figterm），拦截按键与输出流——这是内联补全、快捷键呼起终端内 chat 的基础；</span></li>
+          <li><span class="p-n">3</span><span><b>会话上下文跟踪</b>：通过 <code>Q_PARENT</code>、<code>Q_TERM</code> 等环境变量识别嵌套会话、tmux、VSCode 任务与非交互 shell，避免在非交互环境中误启动包装。</span></li>
+        </ul>
+        <p>kiro-cli 平时不驻留 shell，要给"任意终端"提供内联体验，只能在 shell 启动时由 rc 文件（或终端专属集成：iTerm2 脚本、VSCode/Cursor 扩展等）拉起包装器，这就是 dotfile 注入存在的目的。<b>本指南只需要 <code>kiro-cli login</code> 生成凭据供 <code>kirocc</code> 读取，完全不需要这些集成，安装后建议按下方「卸载方法」清除。</b></p>
+
+        <div class="h4">卸载方法</div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>卸载 dotfiles 集成</span><span class="copy">复制</span></div>
+          <pre>kiro-cli integrations uninstall dotfiles</pre>
+        </div>
+        <ul class="list">
+          <li>卸载是安装的对称回滚：只删除它自己写入的 hook 块与文件，不碰用户其他配置；</li>
+          <li>集成状态按<b>文件是否存在</b>判定：若已手动删除文件或 hook，命令会返回 <code>Not installed</code> 并跳过（此时卸载动作本身无意义，价值在于留下"用户已卸载"的标记）；</li>
+          <li>卸载后用 <code>kiro-cli integrations status dotfiles</code> 复核，预期全部显示 <code>✘</code>。</li>
+        </ul>
+        <p>手动清理同样可行：删除 fish 的 <code>00_fig_pre.fish</code> / <code>99_fig_post.fish</code>，并从 <code>~/.zshrc</code>、<code>~/.zprofile</code> 中移除 kiro 注入的 hook 行（PATH 注入行如仍需 <code>~/.local/bin</code>，可保留）。</p>
+
+        <div class="h4">卸载影响</div>
+        <div class="table-card">
+          <table style="min-width:620px">
+            <thead><tr><th style="width:56%">影响项</th><th>结果</th></tr></thead>
+            <tbody>
+              <tr><td><code>kiro-cli chat</code> / <code>login</code> / <code>agent</code> 等命令功能</td><td>不受影响</td></tr>
+              <tr><td>凭据数据库（<code>~/Library/Application Support/kiro-cli/data.sqlite3</code>）及 <code>kirocc</code> 读取凭据</td><td>不受影响</td></tr>
+              <tr><td>终端内联补全、快捷键呼起 kiro 交互</td><td>失去（该体验本就依赖此集成）</td></tr>
+              <tr><td>shell 启动</td><td>略有改善（不再尝试拉起 PTY 包装）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note warn">
+          <span class="n-ico">注意</span>
+          <div><p><b>注意事项</b>：kiro-cli 更新或桌面应用启动时存在自动重装集成的逻辑。如果卸载命令因 hook 已被手动删除而提前返回 <code>Not installed</code>，"用户已卸载"的跳过标记可能未落盘（表现为 <code>~/Library/Application Support/kiro-cli/settings.json</code> 尚不存在）。若日后发现 hook 或 conf.d 文件再次出现，直接删除即可；或在文件存在时重新执行一次卸载，让该标记正式生效。</p></div>
+        </div>
+        <div class="h3"><span class="num">4.4</span>安装</div>
+        <p>适用于 macOS 的 Homebrew 安装命令：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>Homebrew 安装</span><span class="copy">复制</span></div>
+          <pre>brew install d-kuro/tap/kirocc</pre>
+        </div>
+        <p>也可以从 Go 安装：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>Go 安装</span><span class="copy">复制</span></div>
+          <pre>go install github.com/d-kuro/kirocc/cmd/kirocc@latest</pre>
+        </div>
+        <p>安装前请查看项目 README 与发布记录，确认当前版本支持你的操作系统、Go 版本和登录方式。项目 README 当前列出的 Go 版本要求可能随版本变化。</p>
+
+        <div class="h3"><span class="num">4.5</span>启动代理</div>
+        <div class="h4">选项 A：依赖 Kiro CLI 已登录凭据</div>
+        <p>先确认 Kiro CLI 已安装并成功登录，再运行：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>启动 kirocc</span><span class="copy">复制</span></div>
+          <pre>kirocc</pre>
+        </div>
+        <p>默认监听地址为：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">text</span><span>默认监听地址</span><span class="copy">复制</span></div>
+          <pre>http://127.0.0.1:3456</pre>
+        </div>
+        <p>默认绑定本机回环地址，不应为了方便而把代理开放到公网。</p>
+
+        <div class="h4">选项 B：使用 Kiro API Key</div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>使用 Kiro API Key</span><span class="copy">复制</span></div>
+          <pre>export KIRO_API_KEY='ksk_替换为真实Kiro_API_Key'
+kirocc</pre>
+        </div>
+        <p>如果账号使用的区域与默认区域不同，应根据项目当前 README 检查 <code>KIRO_API_REGION</code> 配置。不要把 API Key 提交到 Git、写进公开脚本或发送给第三方。</p>
+
+        <div class="note info">
+          <span class="n-ico">建议</span>
+          <div><p><b>建议：保护本地代理入口</b><br><code>kirocc</code> 支持为代理本身设置访问密钥。需要时可在启动前配置：</p></div>
+        </div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>设置代理访问密钥</span><span class="copy">复制</span></div>
+          <pre>export KIROCC_API_KEY='换成一条独立的本地代理强密码'
+kirocc</pre>
+        </div>
+        <p>此密钥和 <code>KIRO_API_KEY</code> 是两回事：</p>
+        <ul class="list">
+          <li><code>KIRO_API_KEY</code>：代理访问 Kiro 上游；</li>
+          <li><code>KIROCC_API_KEY</code>：下游客户端访问本地 <code>kirocc</code> 代理。</li>
+        </ul>
+        <p>具体环境变量名称及优先级请以当前 README 为准。</p>
+
+        <div class="h3"><span class="num">4.6</span>先验证代理，不要立即运行大型编程任务</div>
+        <p>在另一个终端查询模型目录：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>查询模型目录</span><span class="copy">复制</span></div>
+          <pre>curl -sS http://127.0.0.1:3456/v1/models</pre>
+        </div>
+        <p>如果启用了代理自身的 API Key：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>携带鉴权查询</span><span class="copy">复制</span></div>
+          <pre>curl -sS \
+  -H "Authorization: Bearer ${KIROCC_API_KEY}" \
+  http://127.0.0.1:3456/v1/models</pre>
+        </div>
+        <p>预期结果是返回 JSON 模型目录。实际字段和模型 ID 以当前版本输出为准。若这里已经返回 401、403 或连接失败，应先排查登录、区域、API Key 和端口，不要直接进入 Claude Code 调试。</p>
+
+        <div class="h3"><span class="num">4.7</span>使用 Claude Code CLI 接入</div>
+        <p>新开一个终端。若代理没有开启自己的客户端鉴权，项目示例允许使用一个非空占位值；如果启用了 <code>KIROCC_API_KEY</code>，则应把它作为下游令牌传给 Claude Code：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>接入 Claude Code</span><span class="copy">复制</span></div>
+          <pre># 如果第一终端已设置代理访问密钥，在本终端也设置同一个值；未启用代理鉴权时可使用 dummy。
+export KIROCC_API_KEY='与启动 kirocc 时相同的本地代理密钥'
+
+env \
+  ANTHROPIC_BASE_URL="http://127.0.0.1:3456" \
+  ANTHROPIC_AUTH_TOKEN="${KIROCC_API_KEY:-dummy}" \
+  CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1 \
+  claude</pre>
+        </div>
+        <p><code>CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1</code> 是项目 README 提到的可选设置，用于让 Claude Code 的 <code>/model</code> 选择器发现网关模型。请确认你的 Claude Code 版本仍支持此变量。</p>
+        <p>如果你的 shell 中已经存在指向 Anthropic 官方 API 或其他网关的环境变量，最好使用单独的命令、函数或终端窗口测试，不要在全局配置中覆盖正在使用的设置。</p>
+
+        <div class="h3"><span class="num">4.8</span>模型选择与兼容性</div>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>先运行 <code>/model</code>，查看代理返回的模型。</span></li>
+          <li><span class="p-n">2</span><span>选择模型名称与实际后端映射一致的选项。</span></li>
+          <li><span class="p-n">3</span><span>不要仅凭模型名称判断真实模型能力；代理可能把兼容名称映射到不同的上游模型。</span></li>
+          <li><span class="p-n">4</span><span>如果需要较长上下文，查看项目当前文档关于相应上下文窗口的具体选择规则。某些情况下需要在 <code>/model</code> 中明确选择不同上下文窗口的条目。</span></li>
+          <li><span class="p-n">5</span><span>推理强度、图片、搜索工具等功能要分别测试。某个字段被接受，不等于上游模型一定支持该功能。</span></li>
+        </ul>
+        <div class="note warn">
+          <span class="n-ico">特别</span>
+          <div><p><b>特别说明：</b>项目 README 提到 Kiro 自身没有 Web Search 时，可以选择代理侧搜索提供商；没有配置对应提供商时，携带特定 Web Search 工具的请求可能被拒绝。不要认为 Claude Code 的每一个内置工具都能原样转发给上游模型。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">4.9</span>停止</div>
+        <p>如果在前台运行，使用 <code>Ctrl+C</code> 停止 <code>kirocc</code>。如果你通过其他服务管理方式常驻运行，请按自己的启动方式关闭代理，并清除当前终端中的相关环境变量。</p>
+      </section>
+      <section class="chapter" id="ch5">
+        <span class="chap-idx">05</span>
+        <div class="kicker">CHAPTER 05</div>
+        <h2>方案 B：Devin → Claude Code CLI</h2>
+
+        <div class="h3"><span class="num">5.1</span>项目与工作原理</div>
+        <p>项目地址：<a href="https://github.com/WncFht/devin2api" target="_blank" rel="noopener">https://github.com/WncFht/devin2api</a></p>
+        <p>当前项目提供 Anthropic Messages、OpenAI Chat Completions 和 OpenAI Responses 等兼容接口，并包含管理页面、模型目录、上游账号配置、下游 Token、用量与日志查看功能。项目使用 Devin 账号凭据访问非公开的内部 RPC 接口，并明确声明它不是 Cognition 官方项目。</p>
+        <p>文档中部分操作路径、配置字段和启动参数可能随版本变化。请以准备安装的 release 所附 README 和 <code>config.example.yaml</code> 为准。</p>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 330" role="img" aria-label="Devin 接入链路：上游凭据、devin2api 与下游 Token">
+            <defs>
+              <marker id="a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+              <marker id="a6c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#0d9488"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">DEVIN → CLAUDE CODE</text>
+
+            <rect x="20" y="50" width="196" height="56" rx="6" fill="#fff" stroke="#cbd5e1"/>
+            <text x="32" y="70" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#94a3b8">CREDENTIAL · 1</text>
+            <text x="32" y="90" font-size="10.5" font-weight="600" fill="#0b1220">平台 API Key</text>
+
+            <rect x="20" y="118" width="196" height="56" rx="6" fill="#fff" stroke="#cbd5e1"/>
+            <text x="32" y="138" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#94a3b8">CREDENTIAL · 2</text>
+            <text x="32" y="158" font-size="10.5" font-weight="600" fill="#0b1220">CLI 凭据文件</text>
+
+            <rect x="20" y="186" width="196" height="56" rx="6" fill="#fff" stroke="#cbd5e1"/>
+            <text x="32" y="206" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#94a3b8">CREDENTIAL · 3</text>
+            <text x="32" y="226" font-size="10.5" font-weight="600" fill="#0b1220">固定会话 Token</text>
+
+            <line x1="220" y1="146" x2="256" y2="146" stroke="#94a3b8" marker-end="url(#a6)"/>
+
+            <rect x="260" y="50" width="286" height="192" rx="7" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.2"/>
+            <text x="276" y="74" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#0d9488">DEVIN2API · 127.0.0.1:8080</text>
+            <text x="276" y="96" font-size="13" font-weight="700" fill="#0b1220">本地代理与管理面板</text>
+            <text x="276" y="118" font-size="9.5" fill="#5b6779">/v1/* · Anthropic / OpenAI 兼容</text>
+            <text x="276" y="136" font-size="9.5" fill="#5b6779">/web · 账户管理 · 模型目录</text>
+            <text x="276" y="154" font-size="9.5" fill="#5b6779">下游 Token Store · 用量与日志</text>
+            <rect x="276" y="176" width="254" height="46" fill="#fff" stroke="#99f6e4"/>
+            <text x="286" y="194" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1" fill="#94a3b8">UPSTREAM RPC</text>
+            <text x="286" y="210" font-size="9.5" fill="#0b1220">https://server.codeium.com</text>
+
+            <line x1="550" y1="146" x2="590" y2="146" stroke="#0d9488" marker-end="url(#a6c)"/>
+
+            <rect x="594" y="60" width="286" height="172" rx="7" fill="#fff" stroke="#0b1220" stroke-width="1.2"/>
+            <text x="610" y="84" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#94a3b8">CLAUDE CODE CLI</text>
+            <text x="610" y="106" font-size="12.5" font-weight="700" fill="#0b1220">下游 Token 接入</text>
+            <text x="610" y="128" font-family="SF Mono, monospace" font-size="9" fill="#5b6779">ANTHROPIC_BASE_URL=:8080</text>
+            <text x="610" y="146" font-family="SF Mono, monospace" font-size="9" fill="#5b6779">ANTHROPIC_AUTH_TOKEN=DEVIN2API</text>
+            <text x="610" y="164" font-family="SF Mono, monospace" font-size="9" fill="#5b6779">ANTHROPIC_MODEL=/v1/models ID</text>
+            <text x="610" y="190" font-size="9.5" fill="#1d4ed8">/web/tokens.html · 明文只显示一次</text>
+
+            <line x1="20" y1="270" x2="880" y2="270" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="290" font-size="9.5" fill="#881337">风险：使用 Devin 凭据访问非公开内部 RPC，项目非官方</text>
+            <text x="20" y="308" font-family="SF Mono, monospace" font-size="8.5" fill="#94a3b8">launchd · ~/.local/bin · ~/Library/Application Support/devin-2api</text>
+
+            <circle r="3" fill="#0d9488"><animateMotion dur="2.8s" repeatCount="indefinite" path="M220 146 L256 146"/></circle>
+            <circle r="3" fill="#0d9488"><animateMotion dur="2.8s" begin="1.4s" repeatCount="indefinite" path="M550 146 L590 146"/></circle>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 06</span><span>项目使用 Devin 账号凭据访问非公开的内部 RPC 接口，并明确声明它不是 Cognition 官方项目。</span></figcaption>
+
+        <div class="h3"><span class="num">5.2</span>Devin 上游凭据：优先选维护成本较低的来源</div>
+        <p>当前项目 README 列出几种上游凭据来源：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span><b>平台 API Key</b>：项目将其作为优先推荐的凭据来源，并描述其可用于刷新会话 Token；但这不代表官方授权将内部 RPC 用作通用模型推理 API。</span></li>
+          <li><span class="p-n">2</span><span><b>CLI 凭据文件</b>：通过项目所需的 Devin CLI 登录流程生成凭据文件，代理可重新读取文件以跟随 CLI 续期。README 示例路径为 macOS/Linux 的 <code>~/.local/share/devin/credentials.toml</code>，但实际位置取决于所安装的 CLI 版本。</span></li>
+          <li><span class="p-n">3</span><span><b>固定会话 Token</b>：项目也支持固定 Token，不过它可能存在服务端有效期，失效后需要重新获取。</span></li>
+        </ul>
+        <div class="note warn">
+          <span class="n-ico">建议</span>
+          <div><p><b>建议：</b>不要一开始就复制或导出桌面应用内部数据库中的会话 Token。优先核实平台 API Key 的官方用途，或使用项目支持的 CLI 凭据文件方式。无论采用哪种方式，都要将凭据视为密码并遵守 Devin 的适用条款。</p></div>
+        </div>
+        <p>项目说明和凭据字段请查看：<a href="https://github.com/WncFht/devin2api" target="_blank" rel="noopener">devin2api README</a></p>
+
+        <div class="h3"><span class="num">5.3</span>下载与安装</div>
+        <p>macOS 可使用项目的部署脚本，也可检查 GitHub Releases 的预编译二进制。该项目部署脚本会下载 release 并进行校验；但由于它会执行本机命令，建议先检查代码再运行。</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>克隆仓库</span><span class="copy">复制</span></div>
+          <pre>git clone https://github.com/WncFht/devin2api
+cd devin2api</pre>
+        </div>
+        <p>先查看当前部署脚本和配置示例：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>检查部署脚本与配置</span><span class="copy">复制</span></div>
+          <pre>less scripts/deploy/deploy.sh
+less config.example.yaml</pre>
+        </div>
+        <p>如果想预先通过 YAML 配置上游账号，请在部署前先执行：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>复制配置示例</span><span class="copy">复制</span></div>
+          <pre>cp config.example.yaml config.yaml</pre>
+        </div>
+        <p>然后按照第 5.4 节的示例核对并编辑 <code>config.yaml</code>。如果选择首次启动后通过管理面板配置，也可以按项目提示继续，不必提前填入完整上游账号。完成配置后，再按当前 README 中的 macOS 指引执行部署。</p>
+        <p>项目当前 README 说明，macOS 托管部署会使用 <code>launchd</code>，二进制通常位于 <code>~/.local/bin</code>，配置与状态位于 <code>~/Library/Application Support/devin-2api</code>。具体路径以实际安装输出为准。</p>
+        <p>如果你更偏向可审计安装，可以直接在 GitHub Releases 下载匹配 <code>darwin-arm64</code> 的二进制，并核对项目发布页提供的校验文件；不要从不明镜像下载。Apple Silicon 的 Mac 应优先选择 <code>arm64</code> 构建。</p>
+
+        <div class="h3"><span class="num">5.4</span>配置本机监听、上游模型和日志</div>
+        <p>如果你准备在部署前通过 YAML 预置上游账号，可在 <code>config.yaml</code> 中合并下方<b>结构示例</b>；如果已经启动服务，也可根据当前版本提供的账户管理页面配置。字段必须以当前版本 <code>config.example.yaml</code> 为准；不要把示例当成可以不经核对直接覆盖的完整配置：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">yaml</span><span>config.yaml · 结构示例</span><span class="copy">复制</span></div>
+          <pre>server:
+  listen: "127.0.0.1:8080"
+
+devin:
+  base_url: "https://server.codeium.com"
+  accounts:
+    - name: "main"
+      api_key: "cog_替换为你自己的平台API_Key"
+  model: "swe-2-max"
+
+debug:
+  enabled: false
+
+dashboard:
+  password: "请改成独立的长随机密码"</pre>
+        </div>
+        <p>重要事项：</p>
+        <ul class="list">
+          <li><code>api_key</code>、<code>token</code> 和 <code>credentials_file</code> 是不同的凭据来源，不能随意混用字段名。</li>
+          <li><code>swe-2-max</code> 仅是项目文档出现过的示例模型名称；实际应使用模型目录返回的 ID。</li>
+          <li>将监听地址绑定到 <code>127.0.0.1</code>，不要直接监听所有网络接口。</li>
+          <li>将调试日志设为关闭，除非正在定位故障且已确认日志不会记录敏感提示词或代码。</li>
+          <li>管理面板密码必须是独立强密码；不要使用与 Devin 账号、系统账号相同的密码。</li>
+          <li>如果配置文件是 Git 仓库的一部分，务必确保真实凭据不会提交；优先使用项目的状态目录与管理面板管理账户。</li>
+        </ul>
+        <p>如果你选择预先编辑 <code>config.yaml</code>，完成后执行部署：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>部署</span><span class="copy">复制</span></div>
+          <pre>bash scripts/deploy/deploy.sh --release latest</pre>
+        </div>
+        <p>该脚本会按项目流程拉取并校验 release 二进制。当前仓库也有账户管理页面；你可以根据该版本的文档在 <code>/web/accounts.html</code> 中管理上游账户，而不必把凭据直接写在项目仓库内。若使用配置文件，请确认该版本如何重新加载设置。</p>
+
+        <div class="h3"><span class="num">5.5</span>启动后验证服务</div>
+        <p>先检查健康状态：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>健康检查</span><span class="copy">复制</span></div>
+          <pre>curl -sS http://127.0.0.1:8080/healthz</pre>
+        </div>
+        <p>如果服务正常，项目文档描述的响应会包含类似 <code>status</code>、<code>version</code> 和 <code>uptime_seconds</code> 的字段。</p>
+        <p>然后打开本机管理页面：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">text</span><span>管理页面</span><span class="copy">复制</span></div>
+          <pre>http://127.0.0.1:8080/web</pre>
+        </div>
+        <p>使用配置中的管理面板密码登录。请按当前项目界面设置或确认上游账户状态。若通过账户管理面板新增上游账号，确认它已通过上游认证且模型目录可用。</p>
+
+        <div class="h3"><span class="num">5.6</span>创建下游本地 API Token</div>
+        <p><code>devin2api</code> 的当前 README 说明，<code>/v1/*</code> 接口由单独的下游 Token Store 管理。下游令牌不是 Devin 上游凭据。</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>打开：<code>http://127.0.0.1:8080/web/tokens.html</code></span></li>
+          <li><span class="p-n">2</span><span>创建一条供本机 Claude Code 使用的下游 Token。</span></li>
+          <li><span class="p-n">3</span><span>复制令牌并安全保存。项目说明令牌明文只在创建时显示，存储端保存的是哈希。</span></li>
+          <li><span class="p-n">4</span><span>将该令牌临时放入终端变量；不要提交到 Git，也不要放在公开示例中。</span></li>
+        </ul>
+        <p>如果当前版本的安装脚本或管理面板界面有所变化，以对应版本的文档为准。</p>
+
+        <div class="h3"><span class="num">5.7</span>查询模型目录</div>
+        <p>在当前终端中设置下游令牌：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>设置下游令牌</span><span class="copy">复制</span></div>
+          <pre>export DEVIN2API_TOKEN='替换成上一步生成的本地下游Token'</pre>
+        </div>
+        <p>查询模型：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>查询模型目录</span><span class="copy">复制</span></div>
+          <pre>curl -sS \
+  -H "Authorization: Bearer ${DEVIN2API_TOKEN}" \
+  http://127.0.0.1:8080/v1/models</pre>
+        </div>
+        <p>使用模型目录中真实返回的 ID，不要照抄示例中的 <code>swe-2-max</code>。如果得到 401，先确认请求使用的是管理面板创建的<b>下游 Token</b>，而不是 <code>cog_...</code> Devin 上游凭据。如果返回 <code>unavailable</code>，检查上游账号池是否为空或上游认证是否失效。</p>
+
+        <div class="h3"><span class="num">5.8</span>配置 Claude Code CLI</div>
+        <p>在同一终端执行：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>接入 Claude Code</span><span class="copy">复制</span></div>
+          <pre>env \
+  ANTHROPIC_BASE_URL="http://127.0.0.1:8080" \
+  ANTHROPIC_AUTH_TOKEN="${DEVIN2API_TOKEN}" \
+  ANTHROPIC_MODEL="把这里替换成 /v1/models 返回的模型ID" \
+  claude</pre>
+        </div>
+        <p>这里的 <code>ANTHROPIC_AUTH_TOKEN</code> 是访问本地代理的下游 Token，而非 Devin 上游凭据。<code>ANTHROPIC_MODEL</code> 应替换成模型目录的实际 ID。Claude Code 的版本和项目适配层可能会影响模型名称的处理方式，若 <code>/model</code> 选择器不能自动发现模型，可先通过环境变量显式指定，再按项目文档调整。</p>
+        <p>不要将 <code>/v1</code> 写进 <code>ANTHROPIC_BASE_URL</code>，除非你使用的客户端或项目文档明确要求这样做；Claude Code 通常会自行拼接相应的 Messages 路径。</p>
+
+        <div class="h3"><span class="num">5.9</span>可选：将配置封装为命令</div>
+        <p>如果已完成合规性审查并决定在本机测试，可以在当前终端中设置变量，然后使用环境变量启动：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>封装为命令</span><span class="copy">复制</span></div>
+          <pre>export DEVIN2API_TOKEN='你的本地下游Token'
+export DEVIN_MODEL='实际模型ID'
+
+env \
+  ANTHROPIC_BASE_URL="http://127.0.0.1:8080" \
+  ANTHROPIC_AUTH_TOKEN="$DEVIN2API_TOKEN" \
+  ANTHROPIC_MODEL="$DEVIN_MODEL" \
+  claude</pre>
+        </div>
+        <p>不建议把长期凭据直接写进共享的 <code>~/.zshrc</code>、仓库脚本或团队配置文件。可使用密码管理器、系统凭据存储或每次运行时输入的方式保存秘密。</p>
+
+        <div class="h3"><span class="num">5.10</span>重要限制</div>
+        <ul class="list">
+          <li>适配器的 Anthropic 兼容层不代表上游支持 Anthropic 的所有参数。</li>
+          <li>上游内部 RPC、模型 ID 或授权机制变动时，代理可能需要更新，且可能暂时失效。</li>
+          <li>项目管理面板与调试日志能查看请求信息；涉及私有仓库、密钥或客户资料时，应关闭调试日志并检查日志目录。</li>
+          <li>本代理会将提示词、代码片段和工具调用相关信息传送给 Devin 上游。请确认数据使用、保留和训练政策符合你的需求。</li>
+          <li>不要将代理开放在公网或共享网络中。否则他人可能消耗你的 Devin 额度或访问管理面板。</li>
+        </ul>
+      </section>
+
+      <section class="chapter" id="ch6">
+        <span class="chap-idx">06</span>
+        <div class="kicker">CHAPTER 06</div>
+        <h2>方案 C：DevEco → Claude Code CLI</h2>
+
+        <div class="note warn">
+          <span class="n-ico">条款</span>
+          <div><p><b>条款提醒：</b>以下是 <code>opencode-deveco</code> 的技术接入示例。该项目为非官方代理，使用华为账号 OAuth 与 DevEco Code 的内部 MaaS 接口；华为未声明支持此类第三方包装。若严格遵循服务条款，请使用 DevEco Code 官方客户端。本节仅记录技术流程，便于获授权的测试与兼容性研究。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">6.1</span>项目与工作原理</div>
+        <p>项目地址：<a href="https://github.com/wenyinos/opencode-deveco" target="_blank" rel="noopener">https://github.com/wenyinos/opencode-deveco</a></p>
+        <p><code>opencode-deveco</code> 是一个 TypeScript 编写的本地代理（兼 opencode 插件），把华为 DevEco Code 的账号与模型包装成 OpenAI 兼容端点，并额外提供 Anthropic Messages API 兼容层。它最初服务于 opencode，但 <code>/anthropic/v1/messages</code> 端点同样可供 Claude Code 使用。项目版本 1.3.0，MIT 许可。</p>
+        <p>实际生效的是<b>本地 HTTP 代理</b>，而不是纯插件：opencode 已发布的二进制不加载外部插件的 auth hooks，因此项目把代理作为真正的接入路径；<code>src/plugin.ts</code> 的 auth hook 仅为前向兼容保留。</p>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 330" role="img" aria-label="DevEco 接入链路：华为 OAuth、opencode-deveco 本地代理与 DevEco 云端">
+            <defs>
+              <marker id="a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+              <marker id="a7c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#0d9488"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">DEVECO → CLAUDE CODE</text>
+
+            <rect x="20" y="52" width="206" height="62" rx="6" fill="#f0fdfa" stroke="#0d9488"/>
+            <text x="34" y="74" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#0d9488">HUAWEI OAUTH</text>
+            <text x="34" y="94" font-size="11" font-weight="600" fill="#0b1220">浏览器登录 · 中国站</text>
+            <text x="34" y="108" font-size="9" fill="#5b6779">siteId=1</text>
+
+            <rect x="20" y="128" width="206" height="62" rx="6" fill="#fff" stroke="#cbd5e1"/>
+            <text x="34" y="150" font-family="SF Mono, monospace" font-size="8" letter-spacing="1.2" fill="#94a3b8">CREDENTIAL</text>
+            <text x="34" y="170" font-size="11" font-weight="600" fill="#0b1220">jwt.json · 0600</text>
+            <text x="34" y="184" font-size="9" fill="#5b6779">accessToken · 30 分钟</text>
+
+            <line x1="230" y1="146" x2="262" y2="146" stroke="#0d9488" marker-end="url(#a7c)"/>
+
+            <rect x="266" y="52" width="304" height="200" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
+            <text x="282" y="76" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#1d4ed8">OPENCODE-DEVECO · 127.0.0.1:17128</text>
+            <text x="282" y="98" font-size="13" font-weight="700" fill="#0b1220">本地代理</text>
+            <text x="282" y="120" font-size="9.5" fill="#5b6779">/anthropic/v1/messages</text>
+            <text x="282" y="138" font-size="9.5" fill="#5b6779">/v2/chat/completions · /v2/models</text>
+            <text x="282" y="156" font-size="9.5" fill="#5b6779">Anthropic ↔ OpenAI 协议转换</text>
+            <text x="282" y="174" font-size="9.5" fill="#5b6779">token 刷新 · 401 重试一次</text>
+            <text x="282" y="192" font-size="9.5" fill="#5b6779">串行生成 · 队列上限 3</text>
+            <text x="282" y="210" font-size="9.5" fill="#5b6779">tool_use / thinking / 图片路由</text>
+            <rect x="282" y="220" width="272" height="22" fill="#fff" stroke="#bfdbfe"/>
+            <text x="290" y="235" font-size="9" fill="#1e3a8a">opencode-oauth-dummy-key · 下游占位</text>
+
+            <line x1="574" y1="146" x2="606" y2="146" stroke="#0d9488" marker-end="url(#a7c)"/>
+
+            <rect x="610" y="52" width="270" height="200" rx="7" fill="#fff" stroke="#0b1220" stroke-width="1.2"/>
+            <text x="626" y="76" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="#94a3b8">DEVECO CLOUD</text>
+            <text x="626" y="98" font-size="13" font-weight="700" fill="#0b1220">codeGenie MaaS</text>
+            <text x="626" y="120" font-size="9.5" fill="#5b6779">cn.devecostudio.huawei.com</text>
+            <text x="626" y="138" font-size="9.5" fill="#5b6779">/sse/codeGenie/maas/v2</text>
+            <text x="626" y="158" font-size="9.5" fill="#0b1220">GLM-5.1 · GLM-5.3</text>
+            <text x="626" y="176" font-size="9.5" fill="#0b1220">Qwen3_VL · deepseek-v4-flash</text>
+            <text x="626" y="198" font-size="9.5" fill="#5b6779">非流式 → /no-stream</text>
+            <text x="626" y="216" font-size="9.5" fill="#5b6779">Chat-Id · Session-Id · exitSessionQueue</text>
+
+            <line x1="20" y1="272" x2="880" y2="272" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="292" font-size="9.5" fill="#881337">风险：非官方项目，使用华为账号 OAuth 与内部 MaaS 接口；代理自身不做下游鉴权</text>
+            <text x="20" y="310" font-family="SF Mono, monospace" font-size="8.5" fill="#94a3b8">单实例 · 空闲超时 120s · 非中国区 403 · 欧洲时区 451</text>
+
+            <circle r="3" fill="#0d9488"><animateMotion dur="2.8s" repeatCount="indefinite" path="M230 146 L262 146"/></circle>
+            <circle r="3" fill="#1d4ed8"><animateMotion dur="2.8s" begin="1.4s" repeatCount="indefinite" path="M574 146 L606 146"/></circle>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 07</span><span>项目把代理作为真正的接入路径；<code>src/plugin.ts</code> 的 auth hook 仅为前向兼容保留。</span></figcaption>
+
+        <p>代理的主要能力：</p>
+        <ul class="list">
+          <li><code>POST /anthropic/v1/messages</code>：Anthropic Messages API，自动转换为 OpenAI Chat Completions；</li>
+          <li><code>POST /v2/chat/completions</code>：OpenAI 兼容；默认非流式，显式 <code>"stream": true</code> 才走 SSE；</li>
+          <li><code>GET /v2/models</code>：动态获取模型列表，失败回退静态列表，缓存 1 小时；</li>
+          <li><code>GET /v2/login</code>、<code>GET /v2/status</code>、<code>GET /v2/logout</code>：华为 OAuth 登录与登录态；</li>
+          <li>Anthropic 路径支持 <code>tool_use</code> / <code>tool_result</code>、thinking 块、图片与 SSE；</li>
+          <li><code>tool_choice</code> 会转换为 DevEco 接受的枚举形式（<code>auto</code> / <code>none</code> / <code>required</code>）；</li>
+          <li><code>max_tokens</code> 透传；上游流中断时补发标准 Anthropic <code>error</code> 事件。</li>
+        </ul>
+
+        <div class="h3"><span class="num">6.2</span>认证方式</div>
+        <p>仅支持<b>中国大陆站点</b>（<code>siteId=1</code>）的华为账号，与 DevEco Code 上游一致。浏览器打开代理返回的登录地址完成 OAuth：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>登录与状态</span><span class="copy">复制</span></div>
+          <pre>curl http://127.0.0.1:17128/v2/login     # 302 跳转华为 OAuth（或返回 login_url）
+curl http://127.0.0.1:17128/v2/status    # 轮询直到 {"logged_in":true,...}</pre>
+        </div>
+        <p>凭证分三层：</p>
+        <div class="table-card">
+          <table style="min-width:560px">
+            <thead><tr><th style="width:21%">凭证</th><th style="width:19%">生命周期</th><th>位置</th></tr></thead>
+            <tbody>
+              <tr><td><code>jwtToken</code></td><td>天 / 周级</td><td><code>~/.config/opencode/opencode-deveco/jwt.json</code>（0600 明文 JSON）</td></tr>
+              <tr><td><code>accessToken</code></td><td>30 分钟</td><td>代理进程内存</td></tr>
+              <tr><td>浏览器 OAuth</td><td>一次性</td><td>回调端口 10101、34567–34570，仅绑 loopback</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><code>accessToken</code> 过期会自动用 <code>jwtToken</code> 静默刷新；上游返回 401 时代理会再刷新一次并重试。只有 <code>jwtToken</code> 本身失效才需要重新浏览器登录。目录可用 <code>XDG_CONFIG_HOME</code> / <code>OPENCODE_CONFIG_DIR</code> 覆盖。</p>
+        <p>无头服务器需要浏览器与回调共享 localhost 时，可用 SSH 隧道：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>SSH 隧道</span><span class="copy">复制</span></div>
+          <pre>ssh -L 10101:127.0.0.1:10101 -L 17128:127.0.0.1:17128 user@server</pre>
+        </div>
+        <p>然后在桌面机器浏览器打开 <code>http://127.0.0.1:17128/v2/login</code>。回调端口以登录 URL 里的 <code>port=</code> 为准。</p>
+
+        <div class="h3"><span class="num">6.3</span>安装与构建</div>
+        <p>需要 Node.js 20+。仓库内已带 <code>dist/</code> 构建产物；从源码构建：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>构建</span><span class="copy">复制</span></div>
+          <pre>git clone https://github.com/wenyinos/opencode-deveco
+cd opencode-deveco
+npm install
+npm run build      # tsc 编译 src/ → dist/
+npm run test       # 可选：vitest</pre>
+        </div>
+
+        <div class="h3"><span class="num">6.4</span>启动代理</div>
+        <p>项目根目录的启动脚本会拉起 daemon 监督的代理（本仓库中随附 <code>svc-opencode-deveco.sh</code>）：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>服务脚本</span><span class="copy">复制</span></div>
+          <pre>./svc-opencode-deveco.sh              # 启动，默认端口 17128
+./svc-opencode-deveco.sh stop         # 先停 daemon，再停监听进程
+./svc-opencode-deveco.sh restart      # 重启</pre>
+        </div>
+        <p>直接运行的方式：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>直接运行</span><span class="copy">复制</span></div>
+          <pre>node dist/proxy.js        # 前台，日志到终端
+npm start                 # daemon + 代理，崩溃自动重启
+npm start -- --port=17129</pre>
+        </div>
+        <p>默认监听 <code>http://127.0.0.1:17128</code>，可用 <code>DEVECO_PROXY_PORT</code> 或 <code>--port=</code> 覆盖。日志位于 <code>opencode-deveco/opencode-deveco.log</code>。</p>
+
+        <div class="h3"><span class="num">6.5</span>先验证代理</div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>验证</span><span class="copy">复制</span></div>
+          <pre>curl -sS http://127.0.0.1:17128/v2/status
+curl -sS http://127.0.0.1:17128/v2/models
+
+curl -sS http://127.0.0.1:17128/anthropic/v1/messages \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: opencode-oauth-dummy-key' \
+  -d '{"model":"GLM-5.1","max_tokens":16,"messages":[{"role":"user","content":"hi"}]}'</pre>
+        </div>
+        <p>预期：<code>status</code> 返回 <code>logged_in: true</code>；<code>models</code> 返回模型列表；Anthropic 端点返回标准 <code>message</code> 结构。未登录时请求会返回 401 并附登录 URL，先按 6.2 完成登录。</p>
+
+        <div class="h3"><span class="num">6.6</span>使用 Claude Code CLI 接入</div>
+        <p>在启动 Claude Code 的终端中设置：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>接入 Claude Code</span><span class="copy">复制</span></div>
+          <pre>env \
+  ANTHROPIC_BASE_URL="http://127.0.0.1:17128/anthropic" \
+  ANTHROPIC_API_KEY="opencode-oauth-dummy-key" \
+  ANTHROPIC_MODEL="GLM-5.1" \
+  claude</pre>
+        </div>
+        <p>注意：</p>
+        <ul class="list">
+          <li><code>ANTHROPIC_BASE_URL</code> 必须带 <code>/anthropic</code>，因为 Claude Code 会自行拼接 <code>/v1/messages</code>；</li>
+          <li><code>ANTHROPIC_API_KEY</code> 是占位值，真实 token 由代理注入；</li>
+          <li><code>ANTHROPIC_MODEL</code> 必须是模型目录中的精确 ID（<code>GLM-5.1</code> / <code>GLM-5.3</code>），不是 <code>glm-5</code>。</li>
+        </ul>
+
+        <div class="h3"><span class="num">6.7</span>模型选择与能力</div>
+        <p>当前可用模型（以 <code>/v2/models</code> 实际返回为准）：</p>
+        <div class="table-card">
+          <table style="min-width:620px">
+            <thead><tr><th>模型</th><th>上下文</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td><code>GLM-5.3</code></td><td>170k 声明 / ≈200K 实测</td><td>工具调用、thinking；默认 <code>high</code> 档</td></tr>
+              <tr><td><code>GLM-5.1</code></td><td>170k 声明 / ≈200K 实测</td><td>工具调用、thinking</td></tr>
+              <tr><td><code>Qwen3_VL_235B_A22B_Instruct</code></td><td>—</td><td>视觉模型；文本模型收到图片时自动改路由</td></tr>
+              <tr><td><code>deepseek-v4-flash</code></td><td>1,044,480 tokens（实测硬上限）</td><td>隐藏模型，不在动态列表，需手工指定</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="list">
+          <li>上下文数据来自项目 README 的 needle-in-haystack 实测（2026-09-17），不是上游声明值；建议留余量（GLM-5.1 按 ~190K、GLM-5.3 按 ~180K 更稳）。</li>
+          <li><code>GLM-5.x</code> 是纯文本模型；最新一条用户消息含图片时，代理自动改走视觉模型，历史图片替换为 <code>[图片]</code> 占位符。</li>
+          <li>思考内容会放到独立通道：Anthropic 端点返回标准 <code>thinking</code> block，正文保持干净。</li>
+          <li>模型 id 大小写敏感，必须精确。</li>
+        </ul>
+
+        <div class="h3"><span class="num">6.8</span>重要限制</div>
+        <ul class="list">
+          <li><b>单实例</b>：同一 <code>jwtToken</code> 不支持两个进程并发刷新，只能跑一个代理。</li>
+          <li><b>串行生成</b>：<code>DEVECO_MAX_CONCURRENCY</code> 默认 1，超出按序排队（<code>DEVECO_MAX_QUEUE</code> 默认 3，再超出返回 429）。</li>
+          <li><b>空闲超时</b>：上游连续沉默 120 秒才中断，不限制总时长。</li>
+          <li><b>区域与身份</b>：非中国区账号返回 403；欧洲时区返回 451；未实名账号会收到实名提示。</li>
+          <li><b>会话 key</b>：默认以对话首条 user 消息为键，system 提示词变化不会反复新建上游会话；可用 <code>x-session-id</code> 等头显式固定。</li>
+          <li><b>代理自身不做下游鉴权</b>，只应绑定 <code>127.0.0.1</code>，不要暴露到公网。</li>
+        </ul>
+
+        <div class="h3"><span class="num">6.9</span>停止</div>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>停止</span><span class="copy">复制</span></div>
+          <pre>./svc-opencode-deveco.sh stop</pre>
+        </div>
+        <p>或前台运行时 <code>Ctrl+C</code>；daemon 会一并停止代理。停止后如需彻底清理，可删除 <code>~/.config/opencode/opencode-deveco/jwt.json</code>。</p>
+      </section>
+      <section class="chapter" id="ch7">
+        <span class="chap-idx">07</span>
+        <div class="kicker">CHAPTER 07</div>
+        <h2>验证 Claude Code 的推理和工具调用闭环</h2>
+        <p class="lead">不要只用“你好”这种普通问答来验证。应分别验证 API、工具调用与多轮推理。</p>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 320" role="img" aria-label="五级验证阶梯">
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">VERIFICATION LADDER</text>
+            <line x1="70" y1="270" x2="850" y2="270" stroke="#e2e8f0"/>
+            <rect x="70" y="190" width="130" height="60" fill="#dbeafe" stroke="#bfdbfe"/>
+            <rect x="230" y="165" width="130" height="85" fill="#bfdbfe" stroke="#93c5fd"/>
+            <rect x="390" y="140" width="130" height="110" fill="#93c5fd" stroke="#60a5fa"/>
+            <rect x="550" y="115" width="130" height="135" fill="#60a5fa" stroke="#3b82f6"/>
+            <rect x="710" y="90" width="130" height="160" fill="#1d4ed8" stroke="#1e40af"/>
+
+            <text x="86" y="212" font-family="SF Mono, monospace" font-size="10" fill="#1e3a8a">01</text>
+            <text x="246" y="187" font-family="SF Mono, monospace" font-size="10" fill="#1e3a8a">02</text>
+            <text x="406" y="162" font-family="SF Mono, monospace" font-size="10" fill="#1e3a8a">03</text>
+            <text x="566" y="137" font-family="SF Mono, monospace" font-size="10" fill="#fff">04</text>
+            <text x="726" y="112" font-family="SF Mono, monospace" font-size="10" fill="#fff">05</text>
+
+            <text x="70" y="292" font-size="10" font-weight="600" fill="#0b1220">API 连通</text>
+            <text x="230" y="292" font-size="10" font-weight="600" fill="#0b1220">普通对话</text>
+            <text x="390" y="292" font-size="10" font-weight="600" fill="#0b1220">读取文件</text>
+            <text x="550" y="292" font-size="10" font-weight="600" fill="#0b1220">受控写入</text>
+            <text x="710" y="292" font-size="10" font-weight="600" fill="#0b1220">多轮任务</text>
+
+            <text x="70" y="310" font-size="8.5" fill="#94a3b8">模型目录</text>
+            <text x="230" y="310" font-size="8.5" fill="#94a3b8">引用真实文件</text>
+            <text x="390" y="310" font-size="8.5" fill="#94a3b8">工具结果回传</text>
+            <text x="550" y="310" font-size="8.5" fill="#94a3b8">测试闭环</text>
+            <text x="710" y="310" font-size="8.5" fill="#94a3b8">读取→修改→测试→修复</text>
+
+            <line x1="70" y1="78" x2="800" y2="78" stroke="#cbd5e1" stroke-dasharray="3 4"/>
+            <text x="70" y="66" font-family="SF Mono, monospace" font-size="8.5" fill="#64748b">由低到高 · 每一级都可复现</text>
+            <path d="M78 74 L96 70 L78 66" fill="none" stroke="#94a3b8"/>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 08</span><span>应分别验证 API、工具调用与多轮推理。</span></figcaption>
+
+        <div class="h3"><span class="num">7.1</span>第一级：API 连通性</div>
+        <ul class="list">
+          <li>Kiro：<code>GET http://127.0.0.1:3456/v1/models</code></li>
+          <li>Devin：<code>GET http://127.0.0.1:8080/healthz</code>，再使用下游 Token 调用 <code>GET /v1/models</code></li>
+          <li>DevEco：<code>GET http://127.0.0.1:17128/v2/status</code>，再调用 <code>GET http://127.0.0.1:17128/v2/models</code></li>
+        </ul>
+        <p>确认能返回模型目录，且没有持续出现认证或限流错误。</p>
+
+        <div class="h3"><span class="num">7.2</span>第二级：普通对话</div>
+        <p>在 Claude Code 中要求模型解释一个已知文件中的函数，并指出对应代码行。检查回答是否确实参考了文件，而不是凭空猜测。</p>
+
+        <div class="h3"><span class="num">7.3</span>第三级：读取文件与工具结果回传</div>
+        <p>在一个测试仓库中，要求 Claude Code：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>读取一个指定源文件；</span></li>
+          <li><span class="p-n">2</span><span>总结一个小函数当前的行为；</span></li>
+          <li><span class="p-n">3</span><span>根据源文件而不是凭空假设，指出一个低风险改进点。</span></li>
+        </ul>
+        <p>确认 Claude Code 真实执行了读取工具，并将文件内容回传给模型。</p>
+
+        <div class="h3"><span class="num">7.4</span>第四级：受控写入与测试</div>
+        <p>使用 Git 工作分支或一次性测试目录，要求它修改一个无关紧要的字符串或一个简单测试，然后运行指定的测试命令。检查：</p>
+        <ul class="list">
+          <li>模型是否给出合适的工具调用；</li>
+          <li>Claude Code 是否成功执行；</li>
+          <li>工具结果是否传回模型；</li>
+          <li>模型是否根据测试结果继续推理；</li>
+          <li>文件改动是否合理、可撤销。</li>
+        </ul>
+        <div class="note warn">
+          <span class="n-ico">注意</span>
+          <div><p>不要直接在生产仓库做第一次验证。首次测试时限制权限，重要命令由人工确认。</p></div>
+        </div>
+
+        <div class="h3"><span class="num">7.5</span>第五级：多轮工具调用与较长任务</div>
+        <p>测试连续的“读取 → 修改 → 测试 → 根据错误修复”流程。若任务中途停顿，分别检查 Claude Code、代理日志与上游服务的错误时间，不要立刻重复提交造成额度消耗。</p>
+
+        <div class="h3"><span class="num">7.6</span>验收清单</div>
+        <div class="table-card">
+          <table style="min-width:560px">
+            <thead><tr><th style="width:20%">验收项</th><th>通过标准</th></tr></thead>
+            <tbody>
+              <tr><td><b>API 连通</b></td><td>模型目录与基础消息请求能成功返回</td></tr>
+              <tr><td><b>流式响应</b></td><td>输出可以持续到达，没有频繁中断或 SSE 解析错误</td></tr>
+              <tr><td><b>工具调用</b></td><td>模型输出有效工具调用，Claude Code 能执行并回传结果</td></tr>
+              <tr><td><b>多轮推理</b></td><td>模型能基于工具返回继续下一步，而非丢失上下文</td></tr>
+              <tr><td><b>错误处理</b></td><td>429、401、超时等状态能被识别并定位</td></tr>
+              <tr><td><b>代码正确性</b></td><td>修改经过测试与人工 review，不仅仅是模型宣称成功</td></tr>
+              <tr><td><b>安全性</b></td><td>代理只监听本机，凭据与敏感日志得到保护</td></tr>
+              <tr><td><b>DevEco 登录态</b></td><td><code>/v2/status</code> 返回 <code>logged_in:true</code>，且 <code>/v2/models</code> 可返回目录</td></tr>
+              <tr><td><b>服务条款</b></td><td>已确认目标接入方式获服务提供方允许，或不用于实际账号与生产工作</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="chapter" id="ch8">
+        <span class="chap-idx">08</span>
+        <div class="kicker">CHAPTER 08</div>
+        <h2>常见故障排查</h2>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 360" role="img" aria-label="八类常见故障">
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">TROUBLESHOOTING · 8 CASES</text>
+
+            <rect x="20" y="46" width="204" height="126" fill="#fff1f3" stroke="#fecdd3"/>
+            <text x="32" y="66" font-family="SF Mono, monospace" font-size="8.5" fill="#e11d48">01</text>
+            <text x="32" y="86" font-size="10.5" font-weight="700" fill="#0b1220">连接失败</text>
+            <text x="32" y="102" font-size="8.5" fill="#881337">Connection refused</text>
+            <text x="32" y="126" font-size="8.5" fill="#5b6779">代理未启动 · 端口不对</text>
+            <text x="32" y="142" font-size="8.5" fill="#5b6779">只监听 127.0.0.1 · Docker localhost</text>
+
+            <rect x="240" y="46" width="204" height="126" fill="#fff7ed" stroke="#fed7aa"/>
+            <text x="252" y="66" font-family="SF Mono, monospace" font-size="8.5" fill="#b45309">02</text>
+            <text x="252" y="86" font-size="10.5" font-weight="700" fill="#0b1220">401 Unauthorized</text>
+            <text x="252" y="102" font-size="8.5" fill="#78350f">上游 Key 与下游 Token 混淆</text>
+            <text x="252" y="126" font-size="8.5" fill="#5b6779">重新登录 CLI · 检查令牌有效</text>
+            <text x="252" y="142" font-size="8.5" fill="#5b6779">账户配置已加载</text>
+
+            <rect x="460" y="46" width="204" height="126" fill="#fff1f3" stroke="#fecdd3"/>
+            <text x="472" y="66" font-family="SF Mono, monospace" font-size="8.5" fill="#e11d48">03</text>
+            <text x="472" y="86" font-size="10.5" font-weight="700" fill="#0b1220">403 / 账号停用</text>
+            <text x="472" y="102" font-size="8.5" fill="#881337">temporarily suspended</text>
+            <text x="472" y="126" font-size="8.5" fill="#5b6779">停止请求 · 保存 Request ID</text>
+            <text x="472" y="142" font-size="8.5" fill="#5b6779">按官方支持渠道处理</text>
+
+            <rect x="680" y="46" width="204" height="126" fill="#fffbeb" stroke="#fde68a"/>
+            <text x="692" y="66" font-family="SF Mono, monospace" font-size="8.5" fill="#b45309">04</text>
+            <text x="692" y="86" font-size="10.5" font-weight="700" fill="#0b1220">429 Too Many</text>
+            <text x="692" y="102" font-size="8.5" fill="#78350f">Retry-After · 代理日志</text>
+            <text x="692" y="126" font-size="8.5" fill="#5b6779">降低并发与重复重试</text>
+            <text x="692" y="142" font-size="8.5" fill="#5b6779">不要把 429 误认成封号</text>
+
+            <rect x="20" y="196" width="204" height="126" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="32" y="216" font-family="SF Mono, monospace" font-size="8.5" fill="#1d4ed8">05</text>
+            <text x="32" y="236" font-size="10.5" font-weight="700" fill="#0b1220">工具调用失败</text>
+            <text x="32" y="252" font-size="8.5" fill="#1e3a8a">协议只有部分兼容</text>
+            <text x="32" y="276" font-size="8.5" fill="#5b6779">tool_use / tool_result 对应</text>
+            <text x="32" y="292" font-size="8.5" fill="#5b6779">先做小型单工具测试</text>
+
+            <rect x="240" y="196" width="204" height="126" fill="#f0fdfa" stroke="#99f6e4"/>
+            <text x="252" y="216" font-family="SF Mono, monospace" font-size="8.5" fill="#0d9488">06</text>
+            <text x="252" y="236" font-size="10.5" font-weight="700" fill="#0b1220">unavailable</text>
+            <text x="252" y="252" font-size="8.5" fill="#0f766e">上游账户池为空</text>
+            <text x="252" y="276" font-size="8.5" fill="#5b6779">/web/accounts.html</text>
+            <text x="252" y="292" font-size="8.5" fill="#5b6779">检查账户认证状态</text>
+
+            <rect x="460" y="196" width="204" height="126" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="472" y="216" font-family="SF Mono, monospace" font-size="8.5" fill="#1d4ed8">07</text>
+            <text x="472" y="236" font-size="10.5" font-weight="700" fill="#0b1220">流式输出停住</text>
+            <text x="472" y="252" font-size="8.5" fill="#1e3a8a">代理日志 · 上游状态</text>
+            <text x="472" y="276" font-size="8.5" fill="#5b6779">客户端总超时 · 网络连接</text>
+            <text x="472" y="292" font-size="8.5" fill="#5b6779">避免同时开多个相同请求</text>
+
+            <rect x="680" y="196" width="204" height="126" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="692" y="216" font-family="SF Mono, monospace" font-size="8.5" fill="#1d4ed8">08</text>
+            <text x="692" y="236" font-size="10.5" font-weight="700" fill="#0b1220">模型列表缺失</text>
+            <text x="692" y="252" font-size="8.5" fill="#1e3a8a">查询 /v1/models 真实输出</text>
+            <text x="692" y="276" font-size="8.5" fill="#5b6779">上游访问权 · 模型别名</text>
+            <text x="692" y="292" font-size="8.5" fill="#5b6779">先显式指定实际模型 ID</text>
+
+            <line x1="20" y1="342" x2="880" y2="342" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="356" font-family="SF Mono, monospace" font-size="8" fill="#94a3b8">顺序：先确认调用 → 再看触发 → 最后看节点内部错误</text>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 09</span><span>大多数“AI 不调用工具”“调用被中断”，都能在下面找到原因。</span></figcaption>
+
+        <div class="h3"><span class="num">8.1</span>连接失败 / Connection refused</div>
+        <p>检查代理是否启动、端口是否正确、服务是否只监听 <code>127.0.0.1</code>，以及 Claude Code 所在环境能否访问该地址。Docker 环境中的 <code>localhost</code> 指向容器自身，需要按容器网络架构设置转发地址。</p>
+
+        <div class="h3"><span class="num">8.2</span>401 Unauthorized</div>
+        <p><b>Kiro：</b></p>
+        <ul class="list">
+          <li>是否把上游 Kiro Key 与代理自身的 <code>KIROCC_API_KEY</code> 混淆；</li>
+          <li>是否需要重新登录 Kiro CLI；</li>
+          <li>Key 是否撤销或账号是否有相应订阅权限；</li>
+          <li>客户端传的 <code>ANTHROPIC_AUTH_TOKEN</code> 是否与代理要求一致。</li>
+        </ul>
+        <p><b>Devin：</b></p>
+        <ul class="list">
+          <li>是否使用下游代理 Token，而不是 <code>cog_...</code> 上游 Key；</li>
+          <li>Token 是否在 <code>/web/tokens.html</code> 创建且仍有效；</li>
+          <li>上游凭据是否已失效或被撤销；</li>
+          <li>账户配置是否加载成功。</li>
+        </ul>
+        <p><b>DevEco：</b></p>
+        <ul class="list">
+          <li>是否完成华为 OAuth 登录（<code>GET /v2/status</code> 应返回 <code>logged_in:true</code>）；</li>
+          <li><code>ANTHROPIC_API_KEY</code> 是否为占位值 <code>opencode-oauth-dummy-key</code>（代理不做下游鉴权，真实 token 由代理注入）；</li>
+          <li><code>jwtToken</code> 是否失效（<code>~/.config/opencode/opencode-deveco/jwt.json</code>），必要时重新访问 <code>/v2/login</code>；</li>
+          <li><code>ANTHROPIC_BASE_URL</code> 是否带 <code>/anthropic</code> 前缀。</li>
+        </ul>
+
+        <div class="h3"><span class="num">8.3</span>403 / 账号暂时停用</div>
+        <p>对 Kiro，若返回“User ID temporarily suspended”或类似安全锁定消息，应停止通过代理发起请求，保存 Request ID 与发生时间，并按官方支持渠道处理。不要尝试以更换账号、伪装网络或自动轮换凭据来规避。</p>
+        <p>对 Devin，若上游拒绝认证或限制访问，先查看代理返回的错误阶段与官方账户状态；不要连续高频重试或尝试绕过服务端限制。</p>
+
+        <div class="h3"><span class="num">8.4</span>429 Too Many Requests</div>
+        <p>可能是客户端重复请求、本地代理并发限制、上游速率限制或套餐额度问题。查看 <code>Retry-After</code>（如果存在）、代理日志和上游账户用量。降低并发与重复重试，等限制窗口结束后再测试。不要把 429 误认成封号证据。</p>
+
+        <div class="h3"><span class="num">8.5</span>能回答文本，但工具调用失败</div>
+        <p>这种情况常见于协议只有部分兼容。检查：</p>
+        <ul class="list">
+          <li>当前后端模型是否支持工具调用；</li>
+          <li>代理是否能保留 <code>tool_use</code> 与 <code>tool_result</code> 的对应关系；</li>
+          <li>工具结果是否被完整返回；</li>
+          <li>模型是否正确处理结束原因与多轮对话；</li>
+          <li>当前模型是否支持所请求的推理、图片或搜索功能。</li>
+        </ul>
+        <p>优先使用小型、单工具测试重现问题，不要一开始就用复杂的多代理任务。</p>
+
+        <div class="h3"><span class="num">8.6</span>Devin 返回 <code>unavailable</code></div>
+        <p>当前 <code>devin2api</code> README 说明，空的上游账户池可能导致接口返回 <code>unavailable</code>。前往 <code>/web/accounts.html</code> 检查是否存在可用的上游账户及其认证状态。</p>
+
+        <div class="h3"><span class="num">8.7</span>流式输出停住</div>
+        <p>检查代理日志、上游状态、客户端总超时和网络连接。项目可能会为某些状态返回重试提示，也可能因客户端总超时而提前结束。避免同时开多个相同请求，防止重复耗费额度。</p>
+
+        <div class="h3"><span class="num">8.8</span>模型列表里没有预期模型</div>
+        <ul class="list">
+          <li>查询 <code>/v1/models</code> 的真实输出；</li>
+          <li>确认上游账号有该模型的访问权；</li>
+          <li>检查模型别名配置与代理版本；</li>
+          <li>对 Claude Code 先显式指定实际模型 ID，再排查模型选择器发现机制。</li>
+        </ul>
+
+        <div class="h3"><span class="num">8.9</span>DevEco 常见问题</div>
+        <ul class="list">
+          <li><b>401 / 未登录</b>：先访问 <code>GET /v2/login</code> 完成华为 OAuth；<code>/v2/status</code> 显示 <code>logged_in:false</code> 时，请求会返回 401 并附登录 URL。</li>
+          <li><b>403 / 非中国区或未实名</b>：代理只接受中国大陆站（<code>siteId=1</code>）华为账号；非中国区返回 403，未实名账号会收到实名提示。</li>
+          <li><b>451</b>：欧洲时区（含官方列表里的俄罗斯/中亚特例）的推理请求会被直接拒绝，与官方客户端行为一致。</li>
+          <li><b>429 / 队列满</b>：<code>DEVECO_MAX_CONCURRENCY</code> 默认 1、<code>DEVECO_MAX_QUEUE</code> 默认 3，突发请求会排队或直接 429；降低并发或调大队列，不要高频重试。</li>
+          <li><b>长回复中途 <code>Upstream stream ended early</code></b>：上游连续沉默超过 120 秒才会中断；重试或压缩对话历史，不要误判为账号问题。</li>
+          <li><b>模型不存在 / <code>ProviderModelNotFoundError</code></b>：模型 id 必须精确写成 <code>GLM-5.1</code> / <code>GLM-5.3</code>（不是 <code>glm-5</code>）；<code>deepseek-v4-flash</code> 不在动态列表，需要手工指定。</li>
+          <li><b>第二个实例刷新失败</b>：同一 <code>jwtToken</code> 不支持两个进程并发刷新，只能保留一个代理；先停掉旧实例再启动。</li>
+          <li><b><code>/v2</code> 前缀</b>：所有端点均可省略 <code>/v2</code>（如 <code>GET /status</code>）；Claude Code 使用的 Anthropic 路径是 <code>/anthropic/v1/messages</code>。</li>
+        </ul>
+      </section>
+      <section class="chapter" id="ch9">
+        <span class="chap-idx">09</span>
+        <div class="kicker">CHAPTER 09</div>
+        <h2>凭据、日志与项目安全</h2>
+
+        <div class="h3"><span class="num">9.1</span>明确区分两层凭据</div>
+        <div class="table-card">
+          <table style="min-width:640px">
+            <thead><tr><th style="width:12%">方案</th><th>上游凭据</th><th>Claude Code 使用的下游凭据</th></tr></thead>
+            <tbody>
+              <tr><td><b>Kiro</b></td><td>Kiro CLI 凭据或 <code>KIRO_API_KEY</code></td><td>代理没有启用客户端鉴权时可能是占位令牌；启用时使用 <code>KIROCC_API_KEY</code></td></tr>
+              <tr><td><b>Devin</b></td><td>Devin 平台 API Key、会话 Token 或凭据文件</td><td>在本地管理面板创建的 <code>devin2api</code> 下游 Token</td></tr>
+              <tr><td><b>DevEco</b></td><td>华为账号 OAuth：<code>jwtToken</code>（<code>~/.config/opencode/opencode-deveco/jwt.json</code>，0600）与内存 <code>accessToken</code></td><td>占位 API Key <code>opencode-oauth-dummy-key</code>；代理不做下游鉴权</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>上下游凭据不应混用。任何一个泄露都可能造成账号接管、额度消耗或未经授权的调用。</p>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 380" role="img" aria-label="上游凭据与下游凭据分层">
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">TWO LAYERS OF CREDENTIALS</text>
+
+            <rect x="24" y="52" width="356" height="76" rx="7" fill="#f0fdfa" stroke="#0d9488"/>
+            <text x="38" y="72" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#0d9488">UPSTREAM / KIRO</text>
+            <text x="38" y="92" font-size="12" font-weight="700" fill="#0b1220">上游凭据</text>
+            <text x="38" y="110" font-size="10.5" fill="#0b1220">Kiro CLI 凭据或 KIRO_API_KEY</text>
+            <text x="38" y="124" font-size="9.5" fill="#5b6779">代理访问 Kiro 上游</text>
+
+            <rect x="24" y="140" width="356" height="76" rx="7" fill="#f8fafc" stroke="#cbd5e1"/>
+            <text x="38" y="160" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#94a3b8">UPSTREAM / DEVIN</text>
+            <text x="38" y="180" font-size="12" font-weight="700" fill="#0b1220">上游凭据</text>
+            <text x="38" y="198" font-size="10.5" fill="#0b1220">平台 API Key · 会话 Token · 凭据文件</text>
+            <text x="38" y="212" font-size="9.5" fill="#5b6779">代理访问 Devin 内部 RPC</text>
+
+            <rect x="24" y="228" width="356" height="76" rx="7" fill="#f8fafc" stroke="#cbd5e1"/>
+            <text x="38" y="248" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#94a3b8">UPSTREAM / DEVECO</text>
+            <text x="38" y="268" font-size="12" font-weight="700" fill="#0b1220">上游凭据</text>
+            <text x="38" y="286" font-size="10.5" fill="#0b1220">华为账号 OAuth · jwt.json（0600）</text>
+            <text x="38" y="300" font-size="9.5" fill="#5b6779">代理访问 DevEco MaaS</text>
+
+            <line x1="448" y1="42" x2="448" y2="324" stroke="#fecdd3" stroke-dasharray="4 4"/>
+            <circle cx="448" cy="180" r="21" fill="#fff1f3" stroke="#e11d48"/>
+            <path d="M441 173 L455 187 M455 173 L441 187" stroke="#e11d48" stroke-width="1.6"/>
+            <text x="448" y="226" font-family="SF Mono, monospace" font-size="8" letter-spacing="1" fill="#e11d48" text-anchor="middle">NOT MIXED</text>
+
+            <rect x="520" y="52" width="356" height="76" rx="7" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="534" y="72" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#1d4ed8">DOWNSTREAM / KIRO</text>
+            <text x="534" y="92" font-size="12" font-weight="700" fill="#0b1220">下游凭据</text>
+            <text x="534" y="110" font-size="10.5" fill="#0b1220">KIROCC_API_KEY 或占位令牌</text>
+            <text x="534" y="124" font-size="9.5" fill="#5b6779">客户端访问本地 kirocc 代理</text>
+
+            <rect x="520" y="140" width="356" height="76" rx="7" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="534" y="160" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#1d4ed8">DOWNSTREAM / DEVIN</text>
+            <text x="534" y="180" font-size="12" font-weight="700" fill="#0b1220">下游凭据</text>
+            <text x="534" y="198" font-size="10.5" fill="#0b1220">devin2api 下游 Token</text>
+            <text x="534" y="212" font-size="9.5" fill="#5b6779">在本地管理面板创建</text>
+
+            <rect x="520" y="228" width="356" height="76" rx="7" fill="#eff6ff" stroke="#bfdbfe"/>
+            <text x="534" y="248" font-family="SF Mono, monospace" font-size="8.5" letter-spacing="1.2" fill="#1d4ed8">DOWNSTREAM / DEVECO</text>
+            <text x="534" y="268" font-size="12" font-weight="700" fill="#0b1220">下游凭据</text>
+            <text x="534" y="286" font-size="10.5" fill="#0b1220">opencode-oauth-dummy-key</text>
+            <text x="534" y="300" font-size="9.5" fill="#5b6779">代理不做下游鉴权</text>
+
+            <line x1="24" y1="344" x2="876" y2="344" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="24" y="364" font-size="9.5" fill="#881337">任何一个泄露都可能造成账号接管、额度消耗或未经授权的调用。</text>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 10</span><span>上下游凭据不应混用。</span></figcaption>
+
+        <div class="h3"><span class="num">9.2</span>本地网络暴露</div>
+        <ul class="list">
+          <li>默认绑定 <code>127.0.0.1</code>；</li>
+          <li>不要映射到公网或局域网，除非已设计鉴权、TLS、防火墙与访问控制；</li>
+          <li>不要把空密码的管理面板暴露到非可信网络；</li>
+          <li>不要因排障方便而关闭代理鉴权后忘记恢复；</li>
+          <li>如果需要从容器或其他设备访问，先单独设计网络安全配置，不要简单改为 <code>0.0.0.0</code>；</li>
+          <li>DevEco 代理自身不做下游鉴权，只应绑定 <code>127.0.0.1</code>；无头登录用的 SSH 隧道也只转发 loopback 端口。</li>
+        </ul>
+
+        <div class="h3"><span class="num">9.3</span>日志与代码隐私</div>
+        <p>代理可能接触到完整提示词、代码片段、工具调用参数和工具返回结果。处理商业代码、客户数据或秘密时：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>关闭调试日志与不必要的遥测；</span></li>
+          <li><span class="p-n">2</span><span>检查日志目录及保留时长；</span></li>
+          <li><span class="p-n">3</span><span>避免启用包含请求或响应正文的追踪功能；</span></li>
+          <li><span class="p-n">4</span><span>不要上传含有令牌的日志；</span></li>
+          <li><span class="p-n">5</span><span>不要将 <code>.env</code>、<code>config.yaml</code>、数据库或凭据文件提交到 Git；</span></li>
+          <li><span class="p-n">6</span><span>对代理源码进行审计，尤其是网络请求目的地、日志和更新机制。</span></li>
+        </ul>
+        <p>DevEco 代理的日志（<code>opencode-deveco.log</code>）记录模型、耗时与 token 用量，不记录请求正文；可用 <code>DEVECO_LOG_LEVEL</code> 控制详细程度。<code>jwt.json</code> 是明文长效凭据，应与密码同等保护。</p>
+
+        <div class="h3"><span class="num">9.4</span>更新与供应链</div>
+        <ul class="list">
+          <li>固定一个已经验证的 release 版本，而不是不审查地自动跟随最新版本；</li>
+          <li>更新前先检查 release notes 与源代码变化；</li>
+          <li>从官方 GitHub 仓库下载，并核对项目提供的 SHA-256 校验文件（如有）；</li>
+          <li>保留可回滚的版本和配置备份；</li>
+          <li>对会自动更新的常驻服务，了解其二进制替换和重启逻辑；</li>
+          <li>DevEco 为本地 TypeScript 构建，使用仓库的 <code>package-lock.json</code> 固定依赖；从官方仓库拉取并审阅 <code>src/proxy.ts</code> 的转发目的地与日志逻辑。</li>
+        </ul>
+      </section>
+      <section class="chapter" id="ch10">
+        <span class="chap-idx">10</span>
+        <div class="kicker">CHAPTER 10</div>
+        <h2>升级、停用与回滚</h2>
+
+        <figure class="figure">
+          <svg viewBox="0 0 900 250" role="img" aria-label="启用、停止、清理与回滚的生命周期">
+            <defs>
+              <marker id="a10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+              </marker>
+            </defs>
+            <text x="20" y="26" font-family="SF Mono, monospace" font-size="9" letter-spacing="2" fill="#94a3b8">LIFECYCLE</text>
+            <line x1="104" y1="110" x2="806" y2="110" stroke="#e2e8f0"/>
+
+            <circle cx="80" cy="110" r="24" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+            <text x="80" y="115" font-family="SF Mono, monospace" font-size="11" font-weight="700" fill="#047857" text-anchor="middle">01</text>
+            <text x="80" y="68" font-size="11.5" font-weight="700" fill="#0b1220" text-anchor="middle">启用</text>
+            <text x="80" y="86" font-size="9" fill="#5b6779" text-anchor="middle">临时 env 启动</text>
+            <text x="80" y="158" font-size="9" fill="#5b6779" text-anchor="middle">前台运行</text>
+
+            <circle cx="260" cy="110" r="24" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="260" y="115" font-family="SF Mono, monospace" font-size="11" font-weight="700" fill="#b45309" text-anchor="middle">02</text>
+            <text x="260" y="68" font-size="11.5" font-weight="700" fill="#0b1220" text-anchor="middle">临时停止</text>
+            <text x="260" y="86" font-size="9" fill="#5b6779" text-anchor="middle">Ctrl+C / status</text>
+            <text x="260" y="158" font-size="9" fill="#5b6779" text-anchor="middle">按服务管理方式关闭</text>
+
+            <circle cx="440" cy="110" r="24" fill="#fff1f3" stroke="#e11d48" stroke-width="1.5"/>
+            <text x="440" y="115" font-family="SF Mono, monospace" font-size="11" font-weight="700" fill="#e11d48" text-anchor="middle">03</text>
+            <text x="440" y="68" font-size="11.5" font-weight="700" fill="#0b1220" text-anchor="middle">停用清理</text>
+            <text x="440" y="86" font-size="9" fill="#5b6779" text-anchor="middle">撤销 Key / Token</text>
+            <text x="440" y="158" font-size="9" fill="#5b6779" text-anchor="middle">清除日志与备份</text>
+
+            <circle cx="620" cy="110" r="24" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+            <text x="620" y="115" font-family="SF Mono, monospace" font-size="11" font-weight="700" fill="#1d4ed8" text-anchor="middle">04</text>
+            <text x="620" y="68" font-size="11.5" font-weight="700" fill="#0b1220" text-anchor="middle">回滚</text>
+            <text x="620" y="86" font-size="9" fill="#5b6779" text-anchor="middle">还原 shell 配置</text>
+            <text x="620" y="158" font-size="9" fill="#5b6779" text-anchor="middle">开新终端验证</text>
+
+            <circle cx="800" cy="110" r="24" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="800" y="115" font-family="SF Mono, monospace" font-size="11" font-weight="700" fill="#5b6779" text-anchor="middle">05</text>
+            <text x="800" y="68" font-size="11.5" font-weight="700" fill="#0b1220" text-anchor="middle">复原</text>
+            <text x="800" y="86" font-size="9" fill="#5b6779" text-anchor="middle">回到原模型服务</text>
+            <text x="800" y="158" font-size="9" fill="#5b6779" text-anchor="middle">检查残留变量</text>
+
+            <line x1="106" y1="110" x2="234" y2="110" stroke="#94a3b8" marker-end="url(#a10)"/>
+            <line x1="286" y1="110" x2="414" y2="110" stroke="#94a3b8" marker-end="url(#a10)"/>
+            <line x1="466" y1="110" x2="594" y2="110" stroke="#94a3b8" marker-end="url(#a10)"/>
+            <line x1="646" y1="110" x2="774" y2="110" stroke="#94a3b8" marker-end="url(#a10)"/>
+
+            <line x1="20" y1="200" x2="880" y2="200" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <text x="20" y="220" font-size="9.5" fill="#5b6779">若曾在 <tspan font-family="SF Mono, monospace" fill="#1d4ed8">~/.zshrc</tspan>、<tspan font-family="SF Mono, monospace" fill="#1d4ed8">~/.bashrc</tspan> 或 <tspan font-family="SF Mono, monospace" fill="#1d4ed8">~/.claude/settings.json</tspan> 写入代理地址，请删除或还原。</text>
+            <text x="20" y="238" font-family="SF Mono, monospace" font-size="8.5" fill="#94a3b8">SVG 图注 · 按原文 9.1 — 9.3 整理</text>
+          </svg>
+        </figure>
+        <figcaption><span class="fig-n">FIG 11</span><span>临时 env 启动，会话结束后直接恢复平时的终端环境。</span></figcaption>
+
+        <div class="h3"><span class="num">10.1</span>临时停止</div>
+        <ul class="list">
+          <li>前台启动的进程：用 <code>Ctrl+C</code> 正常结束；</li>
+          <li>Devin 托管部署：按当前项目 README 的 <code>status</code>、<code>uninstall</code> 或服务管理命令操作；</li>
+          <li>Kiro：若使用 <code>launchd</code>、其他守护进程或容器，请按相应方式停止；</li>
+          <li>DevEco：<code>./svc-opencode-deveco.sh stop</code>（先停 daemon，再停监听进程）。</li>
+        </ul>
+
+        <div class="h3"><span class="num">10.2</span>停用后清理</div>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span>停止代理服务；</span></li>
+          <li><span class="p-n">2</span><span>撤销不再需要的上游 API Key；</span></li>
+          <li><span class="p-n">3</span><span>删除或停用代理下游 Token；</span></li>
+          <li><span class="p-n">4</span><span>清除 shell 环境变量；</span></li>
+          <li><span class="p-n">5</span><span>清理存有敏感数据的调试日志和配置备份；</span></li>
+          <li><span class="p-n">6</span><span>若曾将令牌写入 Git，立即撤销令牌并清理仓库历史（单纯删除文件并不能使已泄露令牌失效）；</span></li>
+          <li><span class="p-n">7</span><span>DevEco 方案还需删除 <code>~/.config/opencode/opencode-deveco/jwt.json</code>，并移除本地 <code>dist/</code> 构建产物或整个克隆目录。</span></li>
+        </ul>
+
+        <div class="h3"><span class="num">10.3</span>回到 Claude Code 原来的模型服务</div>
+        <p>本指南使用临时 <code>env ... claude</code> 的方式启动，可以在当前会话结束后直接恢复平时的终端环境。若你曾在 <code>~/.zshrc</code>、<code>~/.bashrc</code> 或 <code>~/.claude/settings.json</code> 中写入代理地址，请删除或还原对应设置，并开一个新终端验证。</p>
+        <p>检查当前环境是否还残留代理变量：</p>
+        <div class="code">
+          <div class="code-bar"><span class="lang">bash</span><span>检查残留变量</span><span class="copy">复制</span></div>
+          <pre>printf 'ANTHROPIC_BASE_URL=%s\n' "${ANTHROPIC_BASE_URL:-&lt;unset&gt;}"
+printf 'ANTHROPIC_MODEL=%s\n' "${ANTHROPIC_MODEL:-&lt;unset&gt;}"</pre>
+        </div>
+        <p>不要在不确认原值的情况下直接覆盖个人配置。若原来使用其他 API 网关，应按备份内容恢复。</p>
+      </section>
+      <section class="chapter" id="ch11">
+        <span class="chap-idx">11</span>
+        <div class="kicker">CHAPTER 11</div>
+        <h2>最终建议</h2>
+        <p class="lead">如果最终目标是稳定地在 Claude Code 中使用其他模型，并保留完整的推理与工具调用能力，建议按以下原则决策：</p>
+        <ul class="pill-list">
+          <li><span class="p-n">1</span><span><b>优先考虑官方允许的 API 或集成机制。</b>这是减少账号风险与内部接口变更风险的最有效方式。</span></li>
+          <li><span class="p-n">2</span><span><b>不要把 Kiro 反代直接当作长期主力。</b>Kiro 官方 FAQ 已明确限制第三方 Harness 将请求路由到原生接口之外；公开社区也出现了相关账号停用报告。</span></li>
+          <li><span class="p-n">3</span><span><b>不要因为暂时没看到 Devin 封号报告就认为 Devin 更安全。</b><code>devin2api</code> 使用内部 RPC；官方政策也存在逆向工程与访问控制限制。没有可靠统计就不能推导封号率。</span></li>
+          <li><span class="p-n">4</span><span><b>先验证工具闭环再评价实际编程效果。</b>文本回答只是最低门槛；必须实测工具调用、多轮回传、流式输出、测试修复流程、稳定性和用量。</span></li>
+          <li><span class="p-n">5</span><span><b>主账号、重要代码与生产任务应优先选择可获得官方支持的方式。</b>对非官方代理，限定在隔离测试环境，并准备随时停用与撤销凭据。</span></li>
+          <li><span class="p-n">6</span><span><b>DevEco 方案同样属于非官方适配。</b>代理使用华为账号 OAuth 和内部 MaaS 接口，且自身不做下游鉴权；只应在隔离环境使用，并严格绑定 <code>127.0.0.1</code>。</span></li>
+        </ul>
+
+        <div class="h3">决策摘要</div>
+        <ul class="list">
+          <li>若服务条款合规是前提：不要使用未经允许的 Kiro 反代；Devin 与 DevEco 也应先确认服务方对第三方代理的许可。</li>
+          <li>若目标是技术研究：可在隔离环境评估三个适配器，但应把账号停用、额度损失、隐私泄露及上游协议变化纳入成本。</li>
+          <li>若目标是长期生产使用：优先改接官方文档明确支持的推理 API 或网关，而非依赖内部 RPC、OAuth 包装或桌面应用凭据。</li>
+        </ul>
+      </section>
+      <section class="chapter" id="ch12">
+        <span class="chap-idx">12</span>
+        <div class="kicker">CHAPTER 12</div>
+        <h2>参考资料</h2>
+        <p class="lead">以下页面在 <b>2026-10-23</b> 调研时访问；DevEco 相关条目于 <b>2026-11-26</b> 补充。仓库、条款和项目配置可能继续变化，实际操作前请再次核对。</p>
+
+        <div class="h3">Kiro 与 <code>kirocc</code></div>
+        <ul class="ref-list">
+          <li><span class="r-n">1</span><div><a href="https://kiro.dev/faq/" target="_blank" rel="noopener">Kiro 官方 FAQ</a><p>— Kiro 支持的使用入口和第三方自动化 Harness 限制。</p></div></li>
+          <li><span class="r-n">2</span><div><a href="https://github.com/d-kuro/kirocc" target="_blank" rel="noopener">d-kuro/kirocc GitHub 仓库</a><p>— 安装方式、认证、端口、环境变量、模型发现与兼容性说明。</p></div></li>
+          <li><span class="r-n">3</span><div><a href="https://github.com/jwadow/kiro-gateway/issues/115" target="_blank" rel="noopener">Kiro 反代 Claude Code 风控讨论：Issue #115</a><p>— 用户报告，非官方统计。</p></div></li>
+          <li><span class="r-n">4</span><div><a href="https://github.com/kirodotdev/Kiro/issues/8036" target="_blank" rel="noopener">Kiro 官方仓库中的账号停用报告：Issue #8036</a><p>— 用户报告，提及 Claude Code 与第三方网关组合。</p></div></li>
+          <li><span class="r-n">5</span><div><a href="https://github.com/kirodotdev/Kiro/issues/9715" target="_blank" rel="noopener">Kiro 官方仓库中的临时停用报告：Issue #9715</a><p>— 用户报告，不足以证明所有案例由代理导致。</p></div></li>
+        </ul>
+
+        <div class="h3">Devin 与 <code>devin2api</code></div>
+        <ul class="ref-list">
+          <li><span class="r-n">6</span><div><a href="https://github.com/WncFht/devin2api" target="_blank" rel="noopener">WncFht/devin2api GitHub 仓库</a><p>— 当前安装方式、配置字段、内部 RPC 说明、下游 Token、日志与模型目录。</p></div></li>
+          <li><span class="r-n">7</span><div><a href="https://cognition.com/legal/acceptable-use-policy" target="_blank" rel="noopener">Cognition Acceptable Use Policy</a><p>— 页面标注 2026-06-30 更新；有关逆向工程、访问控制与服务暂停的条款。</p></div></li>
+          <li><span class="r-n">8</span><div><a href="https://docs.devin.ai/api-reference/overview" target="_blank" rel="noopener">Cognition 官方 Devin API 文档</a><p>— 官方 Devin API 的受支持集成入口；应与内部推理 RPC 区分。</p></div></li>
+        </ul>
+
+        <div class="h3">DevEco 与 <code>opencode-deveco</code></div>
+        <ul class="ref-list">
+          <li><span class="r-n">9</span><div><a href="https://github.com/wenyinos/opencode-deveco" target="_blank" rel="noopener">wenyinos/opencode-deveco GitHub 仓库</a><p>— 代理实现、华为 OAuth、Anthropic/OpenAI 端点、模型实测与限制说明。</p></div></li>
+          <li><span class="r-n">10</span><div><a href="https://opencode.ai" target="_blank" rel="noopener">opencode 官网</a><p>— 该项目的上游客户端；<code>opencode-deveco</code> 同时作为其 provider 使用。</p></div></li>
+        </ul>
+
+        <div class="h3">阅读这些资料时应注意</div>
+        <ul class="list">
+          <li>GitHub Issue 反映的是个人报告，而不是官方调查结论或统计封号率。</li>
+          <li>适配器 README 描述的是项目实现，不等于上游服务方确认的支持范围。</li>
+          <li>政策文本可能随时间更新；涉及账号处罚或业务用途时，直接向服务方确认最可靠。</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span>Claude Code Docs · 社区适配方案技术指南</span>
+    <span>文档版本 1.3 · 调研 2026-10-23 · 更新 2026-11-26</span>
+  </div>
+</footer>
+
+<script>
+/* 滚动淡入 */
+const io = new IntersectionObserver(es => {
+  for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* 目录高亮 */
+const chapters = [...document.querySelectorAll('main .chapter')];
+const links = [...document.querySelectorAll('.toc a')];
+let ticking = false;
+function onScroll(){
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(() => {
+    const y = window.scrollY + 120;
+    let idx = 0;
+    chapters.forEach((c,i) => { if (c.offsetTop <= y) idx = i; });
+    links.forEach((a,i) => a.classList.toggle('on', i === idx));
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = h > 0 ? Math.min(100, Math.max(0, window.scrollY / h * 100)) : 0;
+    const bar = document.getElementById('progress');
+    if (bar) bar.style.width = p + '%';
+    ticking = false;
+  });
+}
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+links.forEach(a => a.addEventListener('click', () => {
+  links.forEach(x => x.classList.remove('on'));
+  a.classList.add('on');
+}));
+
+/* 复制代码 */
+document.querySelectorAll('.copy').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const pre = btn.closest('.code')?.querySelector('pre');
+    if (!pre) return;
+    const txt = pre.innerText;
+    try { await navigator.clipboard.writeText(txt); } catch(e) {}
+    const t = btn.textContent; btn.textContent = '已复制';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = t; btn.disabled = false; }, 1400);
+  });
+});
+
+/* SVG 虚线描边 */
+const drawIO = new IntersectionObserver(es => {
+  for (const e of es) {
+    if (!e.isIntersecting) continue;
+    e.target.querySelectorAll('.draw').forEach((p, i) => {
+      const len = p.getTotalLength ? p.getTotalLength() : 0;
+      if (!len) return;
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+      p.style.transition = `stroke-dashoffset 1.4s cubic-bezier(.2,.7,.3,1) ${i * .12}s`;
+      requestAnimationFrame(() => { p.style.strokeDashoffset = '0'; });
+    });
+    drawIO.unobserve(e.target);
+  }
+}, { threshold: 0.2 });
+document.querySelectorAll('.figure').forEach(f => drawIO.observe(f));
+</script>
+</body>
+</html>
